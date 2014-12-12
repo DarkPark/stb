@@ -37,6 +37,7 @@ Available commands:
  img:release       | remove and copy release images
  lint              | analyse JavaScript code for potential errors and problems
  static            | serve files in the build directory
+ weinre            | WEb INspector REmote debugger server
 
 
 ## Contributing

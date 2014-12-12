@@ -1,5 +1,5 @@
 /**
- * Weinre server configuration.
+ * WEb INspector REmote debugger server configuration.
  *
  * @namespace
  * @author Stanislav Kalashnik <sk@infomir.eu>
