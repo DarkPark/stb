@@ -9,10 +9,12 @@
 'use strict';
 
 var gulp      = require('gulp'),
-	cliParams = require('minimist')(process.argv.slice(2));
+	gutil     = require('gulp-util'),
+	cliParams = require('minimist')(process.argv.slice(2)),
+	task;
 
 
-console.log(cliParams);
+//console.log(cliParams);
 
 gulp.task('init', function () {
 	console.log('init task');
@@ -23,6 +25,19 @@ gulp.task('default', function () {
 	console.log('default task');
 });
 
-console.log(gulp);
+// task specified by user to execute
+task = gulp.tasks[cliParams['_'][0]];
 
-gulp.start('default');
+// no command-line parameters
+if ( !task ) {
+	console.log('Available sub-commands:');
+	// dump available tasks
+	Object.keys(gulp.tasks).forEach(function ( name ) {
+		console.log('\t* ' + gutil.colors.green(gulp.tasks[name].name));
+	});
+
+	return;
+}
+
+// exec selected task
+gulp.start(task.name);
