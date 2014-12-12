@@ -20,10 +20,6 @@ var path      = require('path'),
 process.env.CWD = process.cwd();
 process.env.STB = path.normalize(__dirname + '/..');
 
-
-//console.log(cliParams);
-
-
 // iterates over the specified directory requiring each file
 require('fs').readdirSync(path.join(process.env.STB, 'tasks')).forEach(function ( name ) {
 	require(path.join(process.env.STB, 'tasks', name));
@@ -37,7 +33,7 @@ if ( !task ) {
 	console.log('Available sub-commands:');
 	// dump available tasks
 	Object.keys(gulp.tasks).forEach(function ( name ) {
-		console.log('\t* ' + gutil.colors.green(gulp.tasks[name].name));
+		console.log('  * ' + gutil.colors.green(gulp.tasks[name].name));
 	});
 
 	return;
@@ -45,24 +41,3 @@ if ( !task ) {
 
 // exec selected task
 gulp.start(task.name);
-
-
-//var spawn, weinre, title = 'gulp';
-//
-//	spawn  = require('child_process').spawn;
-//	weinre = spawn('gulp', [task.name]);
-//
-//	weinre.on('error', function () {
-//		gutil.log(title, gutil.colors.red('FATAL ERROR'), '(check weinre is globally installed)');
-//	});
-//
-//	weinre.stderr.on('data', function ( data ) {
-//		gutil.log(title, gutil.colors.red(data.toString().trim()));
-//	});
-//
-//	weinre.stdout.on('data', function ( data ) {
-//		data.toString().trim().split('\n').forEach(function ( line ) {
-//			gutil.log(title, line.trim().split(' weinre: ').pop());
-//		});
-//	});
-//
