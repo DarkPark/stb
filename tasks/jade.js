@@ -9,6 +9,7 @@
 var gulp    = require('gulp'),
 	jade    = require('gulp-jade'),
 	plumber = require('gulp-plumber'),
+	rename  = require('gulp-rename'),
 	project = require('../package.json');
 
 
@@ -24,6 +25,7 @@ gulp.task('jade:develop', function () {
 				version: project.version
 			}
 		}))
+		.pipe(rename('index.html'))
 		.pipe(gulp.dest('./build/develop/'));
 });
 
@@ -40,6 +42,7 @@ gulp.task('jade:release', function () {
 				version: project.version
 			}
 		}))
+		.pipe(rename('index.html'))
 		.pipe(gulp.dest('./build/release/'));
 });
 
