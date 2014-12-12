@@ -1,0 +1,13 @@
+doctype html
+html
+	head
+		title=title
+		meta(charset="utf-8")
+		link(rel="icon", type="image/png", href="favicon.png")
+		script(type="text/javascript", src="app.js")
+
+	body
+		include ./pages/init.jade
+
+		if develop
+			include develop.jade

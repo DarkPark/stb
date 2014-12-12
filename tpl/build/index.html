@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Entry point</title>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="favicon.png">
+
+	<style>
+		html, body { background:#000; color:#fff; font-size:20px; font-family:Verdana,sans-serif; }
+
+		/* table cell spacing/padding reset */
+		table { border:0; border-collapse:collapse }
+		table td { padding:0 }
+
+		/* meta-classes */
+		.maxh { height:100% }
+		.maxw { width:100% }
+
+		.list { margin: 10px auto }
+		.list tr { height:80px; cursor: pointer; }
+		.list tr:hover { background-color:#8b7f0c; }
+		.list tr:hover td.link { color: #000 }
+		.list td { padding:0 20px; border:1px solid #222; }
+		.list td.icon { width:40px; text-align:center; }
+		.list td.name { font-weight: bold }
+		.list td.link { color: grey }
+	</style>
+
+	<script type="text/javascript">
+		window.moveTo(0, 0);
+		window.resizeTo(screen.width, screen.height);
+	</script>
+</head>
+<body>
+
+	<table class="list">
+		<tr onclick="location.href = 'develop/#pageBase'">
+			<td class="icon"><img src="develop/favicon.png"></td>
+			<td class="name">develop:base</td>
+			<!--<td class="link">localhost:8000/develop</td>-->
+		</tr>
+		<tr onclick="location.href = 'release/#pageBase'">
+			<td class="icon"><img src="release/favicon.png"></td>
+			<td class="name">release:base</td>
+			<!--<td class="link">localhost:8000/release</td>-->
+		</tr>
+		<tr onclick="location.href = location.protocol + '//localhost:8080/client/#anonymous'">
+			<td class="icon"><img src="develop/favicon.png"></td>
+			<td class="name">weinre</td>
+			<!--<td class="link">localhost:8080/client/#anonymous</td>-->
+		</tr>
+	</table>
+
+</body>
+</html>
