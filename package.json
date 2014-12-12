@@ -25,6 +25,7 @@
 		"minimist": "^1.1.0",
 		"node-static": "^0.7.6",
 		"requirem": "^0.7.5",
+		"webpack": "^1.4.13",
 		"ws": "^0.6.3"
 	},
 	"license": "GPL-3.0"
