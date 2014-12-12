@@ -24,6 +24,13 @@ cd myapp
 stb-cli init
 ```
 
+Available commands:
+
+ Name          | Description
+---------------|-------------
+ init          | initial creation of all necessary files and folders
+
+
 ## Contributing
 
 See the [CONTRIBUTING Guidelines](https://...)
