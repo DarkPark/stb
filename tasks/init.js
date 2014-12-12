@@ -12,7 +12,12 @@ var gulp = require('gulp');
 
 gulp.task('init', function () {
 	// copy template files to the current dir
-	return gulp.src(__dirname + '/../tpl/**')
+	gulp.src(__dirname + '/../tpl/**')
 		.pipe(require('gulp-conflict')('./'))
-		.pipe(gulp.dest('./'))
+		.pipe(gulp.dest('./'));
+
+	// copy template files to the current dir
+	gulp.src(__dirname + '/../config/**', {base: __dirname + '/../'})
+		.pipe(require('gulp-conflict')('./'))
+		.pipe(gulp.dest('./'));
 });
