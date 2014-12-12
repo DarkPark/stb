@@ -8,16 +8,21 @@
 
 'use strict';
 
-var gulp = require('gulp');
+var gulp      = require('gulp'),
+	cliParams = require('minimist')(process.argv.slice(2));
 
 
-console.log('init');
+console.log(cliParams);
 
+gulp.task('init', function () {
+	console.log('init task');
+});
 
 // build everything and open main entry page
 gulp.task('default', function () {
 	console.log('default task');
 });
 
+console.log(gulp);
 
 gulp.start('default');
