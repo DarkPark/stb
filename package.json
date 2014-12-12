@@ -13,6 +13,7 @@
 	"bin": "./bin/stb-cli.js",
 	"dependencies": {
 		"gulp": "^3.8.0",
+		"gulp-util": "^3.0.1",
 		"minimist": "^1.1.0"
 	},
 	"license": "GPL-3.0"
