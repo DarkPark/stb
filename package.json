@@ -1,0 +1,18 @@
+{
+	"name": "stb-cli",
+	"version": "0.1.0",
+	"description": "STB framework command-line tools",
+	"author": {
+		"name": "Stanislav Kalashnik",
+		"email": "sk@infomir.eu"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:DarkPark/stb-cli.git"
+	},
+	"bin": "./bin/stb-cli.js",
+	"dependencies": {
+		"gulp": "^3.8.0"
+	},
+	"license": "GPL-3.0"
+}
