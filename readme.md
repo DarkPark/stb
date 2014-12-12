@@ -30,6 +30,9 @@ Available commands:
 -------------------|-------------
  init              | initial creation of all necessary files and folders
  code-proxy        | proxy js code execution from a desktop browser to STB
+ jade              | compile all HTML files from Jade sources
+ jade:develop      | compile develop HTML files from Jade sources
+ jade:release      | compile release HTML files from Jade sources
  img               | execute all the tasks to remove and copy all images
  img:clean         | remove all images
  img:clean:develop | remove develop images
