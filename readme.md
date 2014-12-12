@@ -26,9 +26,15 @@ stb-cli init
 
 Available commands:
 
- Name          | Description
----------------|-------------
- init          | initial creation of all necessary files and folders
+ Name              | Description
+-------------------|-------------
+ init              | initial creation of all necessary files and folders
+ img               | execute all the tasks to remove and copy all images
+ img:clean         | remove all images
+ img:clean:develop | remove develop images
+ img:clean:release | remove release images
+ img:develop       | remove and copy develop images
+ img:release       | remove and copy release images
 
 
 ## Contributing
