@@ -35,6 +35,7 @@ Available commands:
  img:clean:release | remove release images
  img:develop       | remove and copy develop images
  img:release       | remove and copy release images
+ lint              | analyse JavaScript code for potential errors and problems
 
 
 ## Contributing
