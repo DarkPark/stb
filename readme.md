@@ -29,6 +29,7 @@ Available commands:
  Name              | Description
 -------------------|-------------
  init              | initial creation of all necessary files and folders
+ code-proxy        | proxy js code execution from a desktop browser to STB
  img               | execute all the tasks to remove and copy all images
  img:clean         | remove all images
  img:clean:develop | remove develop images
