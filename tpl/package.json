@@ -1,0 +1,10 @@
+{
+	"name": "stb-app",
+	"version": "0.0.1",
+	"description": "",
+	"author": "",
+	"dependencies": {
+		"stb": "^0.3.10"
+	},
+	"license": "GPL-3.0"
+}
