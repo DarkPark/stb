@@ -8,7 +8,8 @@
 
 'use strict';
 
-var gulp = require('gulp');
+var path = require('path'),
+	gulp = require('gulp');
 
 
 gulp.task('init', function () {
@@ -18,7 +19,12 @@ gulp.task('init', function () {
 		.pipe(gulp.dest('./'));
 
 	// copy template files to the current dir
-	gulp.src(__dirname + '/../config/**', {base: __dirname + '/../'})
+	gulp.src(__dirname + '/../config/**', {base: path.join(__dirname, '..')})
+		.pipe(require('gulp-conflict')('./'))
+		.pipe(gulp.dest('./'));
+
+	// copy ESLint config to the current dir
+	gulp.src(path.join(__dirname, '..', '.eslintrc'))
 		.pipe(require('gulp-conflict')('./'))
 		.pipe(gulp.dest('./'));
 });

@@ -7,11 +7,12 @@
 
 'use strict';
 
-require('stb/shims');
 
 var router = require('stb/router'),
-	keys   = require('stb/keys'),
 	app    = require('stb/app');
+
+
+require('stb/shims');
 
 
 // apply screen size, position and margins
