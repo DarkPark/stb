@@ -11,20 +11,29 @@ npm install -g stb-cli
 
 ## Usage
 
-Create a new folder for your project:
+Create a new folder for your project and move to it:
 
 ```bash
 mkdir myapp
+cd myapp
 ```
 
 Run the generator from within the new folder:
 
 ```bash
-cd myapp
 stb-cli init
 ```
 
-Available commands:
+This will create all necessary files and folders (with smart conflict resolution mechanism
+in case there are already some files in the current directory) and install all necessary package dependencies.
+
+To start working with a project it's necessary to make initial build and start all servers:
+
+```bash
+stb-cli serve
+```
+
+Full list of available commands:
 
  Name              | Description
 -------------------|-------------
@@ -46,13 +55,12 @@ Available commands:
  weinre            | WEb INspector REmote debugger server
 
 
-## Contributing
+## Contribution
 
-See the [CONTRIBUTING Guidelines](https://...)
-
-
-## Support
-If you have any problem or suggestion please open an issue [here](https://.../issues).
+If you have any problem or suggestion please open an issue [here](https://github.com/DarkPark/stb-cli/issues).
+Pull requests are welcomed with respect to the [JavaScript Code Style](https://github.com/DarkPark/jscs) and included [ESLint](http://eslint.org/) rules.
 
 
 ## License
+
+`stb-cli` is released under the [GPL-3.0 License](http://opensource.org/licenses/GPL-3.0).
