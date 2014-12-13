@@ -10,7 +10,7 @@
 var path   = require('path'),
 	gulp   = require('gulp'),
 	gutil  = require('gulp-util'),
-	config = require(__dirname + '/../lib/config')('weinre'),
+	config = require(path.join(__dirname, '..', 'lib', 'config'))('weinre'),
 	title  = 'weinre: ';
 
 

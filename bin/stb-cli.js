@@ -40,7 +40,7 @@ function load ( dir ) {
 // set env vars for current working dir
 // and the dir with stb-cli package
 process.env.CWD = process.cwd();
-process.env.STB = path.normalize(__dirname + '/..');
+process.env.STB = path.join(__dirname, '..');
 
 // try to load base gulp tasks
 load(path.join(process.env.STB, 'tasks'));
@@ -55,9 +55,7 @@ if ( !task ) {
 	Object.keys(gulp.tasks).forEach(function ( name ) {
 		console.log('  * ' + gutil.colors.green(gulp.tasks[name].name));
 	});
-
-	return;
+} else {
+	// exec selected task
+	gulp.start(task.name);
 }
-
-// exec selected task
-gulp.start(task.name);

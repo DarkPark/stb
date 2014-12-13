@@ -10,7 +10,7 @@
 var path   = require('path'),
 	gulp   = require('gulp'),
 	gutil  = require('gulp-util'),
-	config = require(__dirname + '/../lib/config')('static'),
+	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
 	title  = 'static: ';
 
 
@@ -35,8 +35,8 @@ gulp.task('static', function () {
 					}
 
 					if ( config.logging ) {
-						msDiff = (msCurr-msInit).toString();
-						msDiff = msDiff.slice(0,-3) + '\t' + gutil.colors.grey(msDiff.substr(-3));
+						msDiff = (msCurr - msInit).toString();
+						msDiff = msDiff.slice(0, -3) + '\t' + gutil.colors.grey(msDiff.substr(-3));
 
 						gutil.log(title, [
 							msDiff,

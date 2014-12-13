@@ -9,7 +9,8 @@
 
 var gulp   = require('gulp'),
 	gutil  = require('gulp-util'),
-	config = require(__dirname + '/../lib/config')('proxy'),
+	path   = require('path'),
+	config = require(path.join(__dirname, '..', 'lib', 'config'))('proxy'),
 	title  = 'proxy:   ';
 
 
