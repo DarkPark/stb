@@ -7,7 +7,8 @@
 
 'use strict';
 
-var gulp   = require('gulp'),
+var path   = require('path'),
+	gulp   = require('gulp'),
 	gutil  = require('gulp-util'),
 	config = require(__dirname + '/../lib/config')('weinre'),
 	title  = 'weinre: ';
@@ -18,7 +19,7 @@ gulp.task('weinre', function () {
 
 	if ( config.active ) {
 		spawn  = require('child_process').spawn;
-		weinre = spawn('weinre', [
+		weinre = spawn(path.join('node_modules', '.bin', 'weinre'), [
 			'--httpPort',  config.port,
 			'--boundHost', config.host,
 			'--verbose',   config.logging.toString(),
@@ -30,7 +31,7 @@ gulp.task('weinre', function () {
 		});
 
 		weinre.on('error', function () {
-			gutil.log(title, gutil.colors.red('FATAL ERROR'), '(check weinre is globally installed)');
+			gutil.log(title, gutil.colors.red('FATAL ERROR'), '(check weinre is installed)');
 		});
 
 		weinre.stderr.on('data', function ( data ) {
