@@ -72,7 +72,7 @@
 		"no-undef": 1,
 		"no-undefined": 1,
 		"no-unused-vars": [1, {"vars": "all", "args": "all"}],
-		"no-use-before-define": 1,
+		"no-use-before-define": [1, "nofunc"],
 		"no-mixed-requires": 0,
 		"no-new-require": 0,
 		"no-path-concat": 1,

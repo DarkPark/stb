@@ -7,9 +7,9 @@
 
 'use strict';
 
-var gulp   = require('gulp'),
+var path   = require('path'),
+	gulp   = require('gulp'),
 	gutil  = require('gulp-util'),
-	path   = require('path'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('proxy'),
 	title  = 'proxy:   ';
 

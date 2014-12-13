@@ -3,6 +3,7 @@
 	"version": "0.0.1",
 	"description": "",
 	"author": "",
+	"repository": {},
 	"dependencies": {
 		"stb": "^0.3.10"
 	},

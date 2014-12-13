@@ -1,6 +1,7 @@
 /**
  * Initial creation of all necessary files and folders.
  * Has smart conflict resolution mechanism.
+ * Installs all necessary package dependencies.
  *
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
@@ -8,23 +9,53 @@
 
 'use strict';
 
-var path = require('path'),
-	gulp = require('gulp');
+var npm   = require('npm'),
+	path  = require('path'),
+	gulp  = require('gulp'),
+	gutil = require('gulp-util');
 
 
 gulp.task('init', function () {
+	console.log(gutil.colors.green('project structure cloning ...'));
 	// copy template files to the current dir
-	gulp.src(__dirname + '/../tpl/**')
+	gulp.src([__dirname + '/../tpl/**', path.join(__dirname, '..', '.eslintrc')])
 		.pipe(require('gulp-conflict')('./'))
-		.pipe(gulp.dest('./'));
+		.pipe(gulp.dest('./'))
+		.on('end', function () {
+			// copy config files to the current dir
+			gulp.src(__dirname + '/../config/**', {base: path.join(__dirname, '..')})
+				.pipe(require('gulp-conflict')('./'))
+				.pipe(gulp.dest('./'))
+				.on('end', function () {
+					console.log(gutil.colors.green('done\n'));
 
-	// copy template files to the current dir
-	gulp.src(__dirname + '/../config/**', {base: path.join(__dirname, '..')})
-		.pipe(require('gulp-conflict')('./'))
-		.pipe(gulp.dest('./'));
+					console.log(gutil.colors.green('installing dependencies ...'));
+					npm.load({loaded: false}, function ( error ) {
+						var config = require(path.join(process.env.CWD, 'package.json')),
+							pkgSet = [];
 
-	// copy ESLint config to the current dir
-	gulp.src(path.join(__dirname, '..', '.eslintrc'))
-		.pipe(require('gulp-conflict')('./'))
-		.pipe(gulp.dest('./'));
+						// build package name@version list
+						Object.keys(config.dependencies).forEach(function ( name ) {
+							pkgSet.push(name + '@' + config.dependencies[name]);
+						});
+
+						if ( error ) {
+							console.log(error);
+						} else {
+							// do the installation
+							npm.commands.install(pkgSet, function ( error ) {
+								if ( error ) {
+									console.log(error);
+								} else {
+									console.log(gutil.colors.green('done'));
+								}
+							});
+							npm.on('log', function ( message ) {
+								// log the progress of the installation
+								console.log(message);
+							});
+						}
+					});
+				});
+		});
 });
