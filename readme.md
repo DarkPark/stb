@@ -41,6 +41,7 @@ Available commands:
  img:release       | remove and copy release images
  lint              | analyse JavaScript code for potential errors and problems
  logger            | WebSocket server to translate log messages from STB to a desktop console
+ serve             | main entry point - rebuild everything, start all watchers and servers
  static            | serve files in the build directory
  weinre            | WEb INspector REmote debugger server
 
