@@ -2,6 +2,7 @@
  * All the tasks to remove and copy all images.
  *
  * @author Stanislav Kalashnik <sk@infomir.eu>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';

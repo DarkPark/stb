@@ -2,6 +2,7 @@
  * Proxy js code execution from a desktop browser to STB.
  *
  * @author Stanislav Kalashnik <sk@infomir.eu>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
