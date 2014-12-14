@@ -14,7 +14,7 @@ var gulp    = require('gulp'),
 
 
 // enable colors in console
-require('tinycolor');
+//require('tinycolor');
 
 
 gulp.task('webpack:develop', function () {

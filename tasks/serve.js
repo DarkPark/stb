@@ -8,7 +8,11 @@
 
 'use strict';
 
-var gulp    = require('gulp'),
+var path    = require('path'),
+	gulp    = require('gulp'),
+	gutil   = require('gulp-util'),
+	livereload = require('gulp-livereload'),
+	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
 	cliParams = require('minimist')(process.argv.slice(2));
 	//plumber = require('gulp-plumber'),
 	//del     = require('del')
@@ -40,7 +44,7 @@ gulp.task('release', ['lint', 'img:release', 'jade:release', 'less:release', 'we
 
 
 // build everything and open main entry page
-gulp.task('default', ['develop', 'release'], function () {
+gulp.task('serve', ['develop', 'release'], function () {
 	// manage gulp from command line
 	var runtime = require('gulp-runtime');
 	runtime.setPrompt('');
@@ -53,7 +57,7 @@ gulp.task('default', ['develop', 'release'], function () {
 	});
 
 	// popup browser if not prevented
-	if ( !argv.noopen ) {
+	if ( !cliParams.noopen ) {
 		require('open')('http://localhost:8000/');
 		// report
 		gutil.log(
