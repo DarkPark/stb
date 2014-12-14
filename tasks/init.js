@@ -9,7 +9,8 @@
 
 'use strict';
 
-var npm   = require('npm'),
+var fs    = require('fs'),
+	npm   = require('npm'),
 	path  = require('path'),
 	gulp  = require('gulp'),
 	gutil = require('gulp-util');
@@ -28,6 +29,11 @@ gulp.task('init', function () {
 				.pipe(gulp.dest('./'))
 				.on('end', function () {
 					console.log(gutil.colors.green('done'));
+
+					fs.mkdirSync('./build/develop');
+					fs.mkdirSync('./build/release');
+					fs.mkdirSync('./build/develop/css');
+					fs.mkdirSync('./build/release/css');
 
 					npm.load({loaded: false}, function ( error ) {
 						var config = require(path.join(process.env.CWD, 'package.json')),
