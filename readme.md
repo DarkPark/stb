@@ -48,6 +48,9 @@ Full list of available commands:
  img:clean:release | remove release images
  img:develop       | remove and copy develop images
  img:release       | remove and copy release images
+ less              | compile all Less files into a set of css files with maps
+ less:develop      | compile develop Less files into a set of css files with maps
+ less:release      | compile release Less files into a set of css files with maps
  lint              | analyse JavaScript code for potential errors and problems
  logger            | WebSocket server to translate log messages from STB to a desktop console
  serve             | main entry point - rebuild everything, start all watchers and servers
