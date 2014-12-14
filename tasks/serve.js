@@ -11,7 +11,6 @@
 var path    = require('path'),
 	gulp    = require('gulp'),
 	gutil   = require('gulp-util'),
-	livereload = require('gulp-livereload'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
 	cliParams = require('minimist')(process.argv.slice(2));
 	//plumber = require('gulp-plumber'),
@@ -21,19 +20,6 @@ var path    = require('path'),
 gulp.task('develop', [
 	'lint', 'img:develop', 'jade:develop', 'less:develop', 'webpack:develop', 'static', 'weinre', 'proxy', 'logger'
 ], function () {
-	// http server lr
-	if ( config.active && config.livereload ) {
-		livereload.listen({silent: true});
-
-		// reload
-		gulp.watch(['./build/**/*.{html,js,css}']).on('change', function ( file ) {
-			// report
-			gutil.log('watch:  ', 'reload ' + gutil.colors.magenta('./' + path.relative(__dirname, file.path)));
-			// reload
-			livereload.changed(file);
-		});
-	}
-
 	// build
 	gulp.watch(['./app/jade/**/*.jade'], ['jade:develop']);
 	gulp.watch(['./app/less/**/*.less', './app/less/vars/*.js', './config/metrics.js'], ['less:develop']);

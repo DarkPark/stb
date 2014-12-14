@@ -10,6 +10,7 @@
 var path   = require('path'),
 	gulp   = require('gulp'),
 	gutil  = require('gulp-util'),
+	glr    = require('gulp-livereload'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
 	title  = 'static: ';
 
@@ -57,5 +58,17 @@ gulp.task('static', function () {
 			gutil.log(title, gutil.colors.green(msg));
 			gutil.log(title, hash);
 		});
+
+		if ( config.livereload ) {
+			glr.listen({silent: true});
+
+			// reload
+			gulp.watch(['./build/**/*.{html,js,css}']).on('change', function ( file ) {
+				// report
+				gutil.log('watch:  ', 'reload ' + gutil.colors.magenta('./' + path.relative(process.env.CWD, file.path)));
+				// reload
+				glr.changed(file);
+			});
+		}
 	}
 });
