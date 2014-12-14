@@ -17,8 +17,9 @@ var request = require('stb/request'),
 
 // additional top-level key handler
 window.addEventListener('load', function developEventListenerLoad () {
-	// export to globals
-	window.$develop = document.querySelector('body > div.develop');
+	// export to globals div for develop HTML elements
+	window.$develop = document.body.appendChild(document.createElement('div'));
+	window.$develop.className = 'develop';
 
 	grid.init();
 

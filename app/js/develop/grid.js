@@ -47,7 +47,7 @@ module.exports = window.grid = {
 	init: function () {
 		var self = this;
 
-		this.$canvas = window.$develop.querySelector('canvas');
+		this.$canvas = window.$develop.appendChild(document.createElement('canvas'));
 		this.ctx = this.$canvas.getContext('2d');
 
 		// apply size
