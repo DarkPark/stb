@@ -12,9 +12,6 @@ var router = require('stb/router'),
 	app    = require('stb/app');
 
 
-require('stb/shims');
-
-
 // apply screen size, position and margins
 //app.setScreen(require('../../config/metrics')[screen.height]);
 

@@ -4,8 +4,6 @@
 	"description": "",
 	"author": "",
 	"repository": {},
-	"dependencies": {
-		"stb": "^0.3.10"
-	},
+	"dependencies": {},
 	"license": "GPL-3.0"
 }
