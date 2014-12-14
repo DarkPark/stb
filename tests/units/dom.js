@@ -7,11 +7,12 @@
 
 /* jshint undef:false */
 
+// dependencies
+var dom = require('dom');
+
+
 // declare named module
 QUnit.module('dom');
-
-// dependencies
-var dom = require('../../dist/dom');
 
 
 test('tag', function testTag () {

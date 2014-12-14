@@ -7,11 +7,12 @@
 
 /* jshint undef:false */
 
+// dependencies
+var Emitter = require('emitter');
+
+
 // declare named module
 QUnit.module('emitter');
-
-// dependencies
-var Emitter = require('../../dist/emitter');
 
 
 test('constructor', function testConstructor () {

@@ -7,11 +7,12 @@
 
 /* jshint undef:false */
 
+// dependencies
+var Model = require('model');
+
+
 // declare named module
 QUnit.module('model');
-
-// dependencies
-var Model = require('../../dist/model');
 
 
 test('constructor', function testConstructor () {

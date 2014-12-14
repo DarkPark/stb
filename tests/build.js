@@ -47,21 +47,22 @@
   \******************/
 /***/ function(module, exports, __webpack_require__) {
 
-			__webpack_require__(/*! /home/dp/Projects/web/stb/test/units/dom.js */4);
-			__webpack_require__(/*! /home/dp/Projects/web/stb/test/units/emitter.js */5);
-			module.exports = __webpack_require__(/*! /home/dp/Projects/web/stb/test/units/model.js */6);
+			__webpack_require__(/*! /home/dp/Projects/web/stb/tests/units/dom.js */4);
+			__webpack_require__(/*! /home/dp/Projects/web/stb/tests/units/emitter.js */5);
+			module.exports = __webpack_require__(/*! /home/dp/Projects/web/stb/tests/units/model.js */6);
 
 
 /***/ },
 /* 1 */
-/*!*************************!*\
-  !*** ./dist/emitter.js ***!
-  \*************************/
+/*!***************************!*\
+  !*** ./app/js/emitter.js ***!
+  \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
 			/**
 			 * @module stb/emitter
 			 * @author Stanislav Kalashnik <sk@infomir.eu>
+			 * @license GNU GENERAL PUBLIC LICENSE Version 3
 			 */
 			
 			'use strict';
@@ -110,6 +111,12 @@
 				 * obj.addListener('click', function ( data ) { ... });
 				 */
 				addListener: function ( name, callback ) {
+					// @ifdef DEBUG
+					if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+					if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+					// @endif
+			
 					// valid input
 					if ( name && typeof callback === 'function' ) {
 						// initialization may be required
@@ -129,6 +136,12 @@
 				 */
 				once: function ( name, callback ) {
 					var self = this;
+			
+					// @ifdef DEBUG
+					if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+					if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+					// @endif
 			
 					// valid input
 					if ( name && typeof callback === 'function' ) {
@@ -155,6 +168,12 @@
 				addListeners: function ( callbacks ) {
 					var name;
 			
+					// @ifdef DEBUG
+					if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+					if ( typeof callbacks !== 'object' ) { throw 'wrong callbacks type'; }
+					if ( Object.keys(callbacks).length === 0 ) { throw 'no callbacks given'; }
+					// @endif
+			
 					// valid input
 					if ( typeof callbacks === 'object' ) {
 						for ( name in callbacks ) {
@@ -176,6 +195,12 @@
 				 * obj.removeListener('click', func1);
 				 */
 				removeListener: function ( name, callback ) {
+					// @ifdef DEBUG
+					if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+					if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+					// @endif
+			
 					// the event exists and should have some callbacks
 					if ( Array.isArray(this.events[name]) ) {
 						// rework the callback list to exclude the given one
@@ -199,11 +224,19 @@
 				 * obj.removeAllListeners();
 				 */
 				removeAllListeners: function ( name ) {
+					// @ifdef DEBUG
+					if ( arguments.length !== 0 && (typeof name !== 'string' || name.length === 0) ) { throw 'wrong or empty name'; }
+					// @endif
+			
 					// check input
 					if ( arguments.length === 0 ) {
 						// no arguments so remove everything
 						this.events = {};
 					} else if ( name ) {
+						// @ifdef DEBUG
+						if ( this.events[name] !== undefined ) { throw 'event is not removed'; }
+						// @endif
+			
 						// only name is given so remove all callbacks for the given event
 						delete this.events[name];
 					}
@@ -224,9 +257,22 @@
 					var event = this.events[name],
 						i;
 			
+					// @ifdef DEBUG
+					if ( arguments.length < 1 ) { throw 'wrong arguments number'; }
+					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+					// @endif
+			
 					// the event exists and should have some callbacks
 					if ( event !== undefined ) {
+						// @ifdef DEBUG
+						if ( !Array.isArray(event) ) { throw 'wrong event type'; }
+						// @endif
+			
 						for ( i = 0; i < event.length; i++ ) {
+							// @ifdef DEBUG
+							if ( typeof event[i] !== 'function' ) { throw 'wrong event callback type'; }
+							// @endif
+			
 							// invoke the callback with parameters
 							event[i](data);
 						}
@@ -241,14 +287,15 @@
 
 /***/ },
 /* 2 */
-/*!*********************!*\
-  !*** ./dist/dom.js ***!
-  \*********************/
+/*!***********************!*\
+  !*** ./app/js/dom.js ***!
+  \***********************/
 /***/ function(module, exports, __webpack_require__) {
 
 			/**
 			 * @module stb/dom
 			 * @author Stanislav Kalashnik <sk@infomir.eu>
+			 * @license GNU GENERAL PUBLIC LICENSE Version 3
 			 */
 			
 			'use strict';
@@ -423,14 +470,15 @@
 
 /***/ },
 /* 3 */
-/*!***********************!*\
-  !*** ./dist/model.js ***!
-  \***********************/
+/*!*************************!*\
+  !*** ./app/js/model.js ***!
+  \*************************/
 /***/ function(module, exports, __webpack_require__) {
 
 			/**
 			 * @module stb/model
 			 * @author Stanislav Kalashnik <sk@infomir.eu>
+			 * @license GNU GENERAL PUBLIC LICENSE Version 3
 			 */
 			
 			'use strict';
@@ -450,6 +498,10 @@
 			 * @param {Object} [data={}] init attributes
 			 */
 			function Model ( data ) {
+				// @ifdef DEBUG
+				if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
+				// @endif
+			
 				// parent init
 				Emitter.call(this);
 			
@@ -491,6 +543,10 @@
 			Model.prototype.clear = function () {
 				var data = this.data;
 			
+				// @ifdef DEBUG
+				if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+				// @endif
+			
 				// is there any data?
 				if ( Object.keys(data).length > 0 ) {
 					// reset
@@ -526,6 +582,10 @@
 			 * @fires Model#init
 			 */
 			Model.prototype.init = function ( data ) {
+				// @ifdef DEBUG
+				if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+				// @endif
+			
 				// valid input
 				if ( data ) {
 					// reset data
@@ -551,6 +611,10 @@
 			 * @return {boolean}
 			 */
 			Model.prototype.has = function ( name ) {
+				// @ifdef DEBUG
+				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				// @endif
+			
 				// hasOwnProperty method is not available directly in case of Object.create(null)
 				//return Object.hasOwnProperty.call(this.data, name);
 				return this.data.hasOwnProperty(name);
@@ -563,6 +627,10 @@
 			 * @return {*}
 			 */
 			Model.prototype.get = function ( name ) {
+				// @ifdef DEBUG
+				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				// @endif
+			
 				return this.data[name];
 			};
 			
@@ -591,6 +659,10 @@
 			Model.prototype.set = function ( name, value ) {
 				var isAttrSet = name in this.data,
 					emitData  = {name: name, curr: value};
+			
+				// @ifdef DEBUG
+				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				// @endif
 			
 				if ( isAttrSet ) {
 					// update
@@ -629,6 +701,10 @@
 			Model.prototype.unset = function ( name ) {
 				var isAttrSet = name in this.data,
 					emitData;
+			
+				// @ifdef DEBUG
+				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				// @endif
 			
 				if ( isAttrSet ) {
 					emitData = {name: name, prev: this.data[name]};
@@ -729,24 +805,26 @@
 
 /***/ },
 /* 4 */
-/*!***************************!*\
-  !*** ./test/units/dom.js ***!
-  \***************************/
+/*!****************************!*\
+  !*** ./tests/units/dom.js ***!
+  \****************************/
 /***/ function(module, exports, __webpack_require__) {
 
 			/**
 			 * @author Stanislav Kalashnik <sk@infomir.eu>
+			 * @license GNU GENERAL PUBLIC LICENSE Version 3
 			 */
 			
 			'use strict';
 			
 			/* jshint undef:false */
 			
+			// dependencies
+			var dom = __webpack_require__(/*! dom */ 2);
+			
+			
 			// declare named module
 			QUnit.module('dom');
-			
-			// dependencies
-			var dom = __webpack_require__(/*! ../../dist/dom */ 2);
 			
 			
 			test('tag', function testTag () {
@@ -899,24 +977,26 @@
 
 /***/ },
 /* 5 */
-/*!*******************************!*\
-  !*** ./test/units/emitter.js ***!
-  \*******************************/
+/*!********************************!*\
+  !*** ./tests/units/emitter.js ***!
+  \********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 			/**
 			 * @author Stanislav Kalashnik <sk@infomir.eu>
+			 * @license GNU GENERAL PUBLIC LICENSE Version 3
 			 */
 			
 			'use strict';
 			
 			/* jshint undef:false */
 			
+			// dependencies
+			var Emitter = __webpack_require__(/*! emitter */ 1);
+			
+			
 			// declare named module
 			QUnit.module('emitter');
-			
-			// dependencies
-			var Emitter = __webpack_require__(/*! ../../dist/emitter */ 1);
 			
 			
 			test('constructor', function testConstructor () {
@@ -1177,24 +1257,26 @@
 
 /***/ },
 /* 6 */
-/*!*****************************!*\
-  !*** ./test/units/model.js ***!
-  \*****************************/
+/*!******************************!*\
+  !*** ./tests/units/model.js ***!
+  \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
 			/**
 			 * @author Stanislav Kalashnik <sk@infomir.eu>
+			 * @license GNU GENERAL PUBLIC LICENSE Version 3
 			 */
 			
 			'use strict';
 			
 			/* jshint undef:false */
 			
+			// dependencies
+			var Model = __webpack_require__(/*! model */ 3);
+			
+			
 			// declare named module
 			QUnit.module('model');
-			
-			// dependencies
-			var Model = __webpack_require__(/*! ../../dist/model */ 3);
 			
 			
 			test('constructor', function testConstructor () {
