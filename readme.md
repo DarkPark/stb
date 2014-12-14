@@ -1,13 +1,29 @@
 STB single page application framework
 =====================================
 
+Provides development environment and base components in a form of [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) modules
+for [set-top box](http://en.wikipedia.org/wiki/Set-top_box) software production.
+
+This framework is targeted on the client side and requires a building stage with [Webpack](http://webpack.github.io/) or [Browserify](http://browserify.org/).
+
+
 ## Getting Started
 
-Install `stb` globally:
+[Node.js](http://nodejs.org/) and [NPM](https://www.npmjs.com/) should be installed beforehand.
+Please follow the official [instruction](http://nodejs.org/download/).
+
+`stb` is available as an [npm package](https://www.npmjs.org/package/stb) and should be installed globally:
 
 ```bash
 npm install -g stb
 ```
+
+In Linux this can be done as a root:
+
+```bash
+sudo npm install -g stb
+```
+
 
 ## Usage
 
@@ -59,6 +75,20 @@ Full list of available commands:
  webpack:develop   | compile develop version of all CommonJS modules into a single js file
  webpack:release   | compile release version of all CommonJS modules into a single js file
  weinre            | WEb INspector REmote debugger server
+
+
+## Structure
+
+ Path   | Description
+--------|-------------
+ app    | contains all framework JavaScript modules and associated Less files
+ bin    | main command-line script available globally
+ config | base config files for all servers
+ doc    | help files generated from JSDocs comments in framework modules
+ lib    | modules required to framework work
+ tasks  | gulp tasks to provide all the functionality
+ test   | QUnit tests files (units and static)
+ tpl    | a new application directory structure and base files
 
 
 ## Contribution
