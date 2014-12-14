@@ -1,6 +1,6 @@
 {
-	"name": "stb-cli",
-	"version": "0.1.0",
+	"name": "stb",
+	"version": "0.2.0",
 	"description": "STB framework command-line tools",
 	"author": {
 		"name": "Stanislav Kalashnik",
@@ -8,9 +8,9 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:DarkPark/stb-cli.git"
+		"url": "git@github.com:DarkPark/stb.git"
 	},
-	"bin": "./bin/stb-cli.js",
+	"bin": "./bin/stb.js",
 	"dependencies": {
 		"code-proxy": "^1.2.15",
 		"del": "^1.1.0",
