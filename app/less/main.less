@@ -1,0 +1,46 @@
+// common for all graphical resolution block
+//
+// @author Stanislav Kalashnik <sk@infomir.eu>
+// @license GNU GENERAL PUBLIC LICENSE Version 3
+
+// visible page content size
+//@screenAvailHeight: @screenHeight - (@screenAvailTop   + @screenAvailBottom);
+//@screenAvailWidth:  @screenWidth  - (@screenAvailRight + @screenAvailLeft);
+
+@pathIcons: '../img/@{height}/icons/';
+
+html, body {
+	width               : unit(@width,  px);
+	height              : unit(@height, px);
+	overflow            : hidden;
+	background-color    : #000;
+	color               : #fff;
+	margin              : 0;
+	padding             : 0;
+	font-family         : Ubuntu, sans-serif;
+	font-size           : unit(@fontSize, px);
+	-webkit-user-select : none;
+}
+
+// table cell spacing/padding reset
+table {
+	border          : 0;
+	border-collapse : collapse;
+	border-spacing  : 0;
+	td {
+		padding : 0
+	}
+}
+
+// meta-classes
+.maxh { height : 100% }
+.maxw { width : 100% }
+a { text-decoration : none }
+
+
+// top-level page blocks
+@import "pages";
+
+@import "components";
+
+@import "icons";

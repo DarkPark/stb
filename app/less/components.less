@@ -1,0 +1,242 @@
+// styles necessary for components
+//
+// @author Stanislav Kalashnik <sk@infomir.eu>
+// @license GNU GENERAL PUBLIC LICENSE Version 3
+
+.component {
+	// component's outer dom element
+
+	&.page {
+		// hidden by default
+		width      : unit(@availWidth,  px);
+		height     : unit(@availHeight, px);
+		padding    : unit(@availTop, px) unit(@availRight, px) unit(@availBottom, px) unit(@availLeft, px);
+		position   : absolute;
+		visibility : hidden;
+
+		// only one active page is visible
+		&.active {
+			visibility : visible
+		}
+	}
+
+	&.modal {
+		width            : unit(@width, px);
+		height           : unit(@height, px);
+		top              : 0;
+		left             : 0;
+		position         : absolute;
+		background-color : black;
+		opacity          : 0.6;
+	}
+
+	&.modalBox {
+		// inheritance
+		.component.modal();
+
+		display : table;
+
+		> div.cell {
+			display        : table-cell;
+			vertical-align : middle;
+			text-align     : center;
+
+			> div.content {
+				display          : inline-block;
+				background-color : #333;
+				min-width        : 20%;
+				min-height       : 10%;
+			}
+		}
+	}
+
+	&.modalMessage {
+		// inheritance
+		.component.modalBox();
+
+		> div.cell > div.content {
+			> div.header {
+
+			}
+		}
+	}
+
+	&.panel {
+		padding : 1%;
+		//background-color: #222;
+	}
+
+	&.button {
+		background-color : #002042;
+		outline          : 2px solid grey;
+		outline-offset   : -2px;
+		display          : inline-block;
+		padding          : 1%;
+		cursor           : pointer;
+
+		&.icon {
+			padding-left: 4.5%;
+			background-repeat: no-repeat;
+			background-position: 10px center;
+		}
+
+		&:hover {
+			background-color : #005b9c;
+		}
+
+		&.focus {
+			background-color : #005b9c;
+			outline : 2px solid red;
+		}
+
+		&.click {
+			background-color : #0073c4;
+		}
+	}
+
+	&.checkBox {
+		display: inline-block;
+		width: unit(@checkBoxWidth, px);
+		height: unit(@checkBoxHeight, px);
+		border: 3px solid #005b9c;
+		background-color: #333;
+
+		&.checked {
+			background-color: orange;
+		}
+	}
+
+	&.grid {
+		//display: inline-block;
+		//width: unit(@checkBoxWidth, px);
+		//height: unit(@checkBoxHeight, px);
+		//border: 3px solid #005b9c;
+		background-color: #333;
+
+		table {
+			width: 100%;
+			table-layout: fixed;
+
+			td.cell {
+				padding : 1%;
+				vertical-align: middle;
+				text-align: center;
+			}
+			td.cell.focus {
+				background-color: orange;
+			}
+		}
+	}
+
+	/*&.list {
+		background-color: #222;
+		table-layout: fixed;
+		width: 100%;
+		//min-height: 250px;
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			//display: table;
+
+			> .item {
+				cursor: pointer;
+				vertical-align: middle;
+				//display: table-cell;
+				padding: 10px;
+
+				&.focus {
+					background-color: #8b7f0c;
+				}
+			}
+		}
+
+		//> .body {
+			//display : table-column;
+
+
+		//}
+
+		&.horizontal {
+			display: table;
+			//table-layout: fixed;
+			//width: 100%;
+			//min-height: 50px;
+
+			ul {
+				list-style: none;
+				display: table-row;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+
+				> .item {
+					//float: left;
+					display        : table-cell;
+					text-align     : center;
+					vertical-align : middle;
+					padding: 10px;
+				}
+			}
+
+			//> .body {
+			//display : table-row;
+
+
+			//}
+		}
+	}*/
+
+	&.list {
+		background-color: #222;
+		//display: table;
+		//table-layout: fixed;
+		width: 100%;
+		//min-height: 250px;
+
+		//> .body {
+		//display : table-column;
+
+		> .item {
+			cursor: pointer;
+			padding: 0 10px;
+			vertical-align: middle;
+			height: unit(@listItemHeight, px);
+			line-height: unit(@listItemHeight, px);
+			//display: table-row;
+
+			&.focus {
+				background-color: orange;
+			}
+		}
+		//}
+	}
+	&.list.horizontal {
+		display: table;
+		table-layout: fixed;
+		width: 100%;
+		//min-height: 50px;
+
+		//> .body {
+		//display : table-row;
+
+		> .item {
+			display        : table-cell;
+			text-align     : center;
+			vertical-align : middle;
+		}
+		//}
+	}
+
+	&.progressBar {
+		height: unit(@progressBarHeight, px);
+		background-color: grey;
+
+		> .value {
+			height: unit(@progressBarHeight, px);
+			background-color: orange;
+		}
+	}
+}
