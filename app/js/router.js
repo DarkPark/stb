@@ -108,7 +108,9 @@ router.init = function ( pages ) {
 /**
  * Extract the page name and data from url hash.
  *
- * @return {{name: string, data: string[]}}
+ * @param {string} hash address hash part to parse
+ *
+ * @return {{name: string, data: string[]}} parsed data
  *
  * @example
  * router.parse('#main/some/additional/data');
@@ -122,11 +124,10 @@ router.parse = function ( hash ) {
 	};
 
 	// get and decode all parts
-	hash = hash.split('/').map(decodeURIComponent);
+	page.data = hash.split('/').map(decodeURIComponent);
 	// the first part is a page id
-	page.name = hash.shift().slice(1);
 	// everything else is optional path
-	page.data = hash;
+	page.name = page.data.shift().slice(1);
 
 	return page;
 };
@@ -164,8 +165,8 @@ router.stringify = function ( name, data ) {
  * Make the given inactive/hidden page active/visible.
  * Pass some data to the page and trigger the corresponding event.
  *
- * @param {Page} page
- * @param {*} [data]
+ * @param {Page} page item to show
+ * @param {*} [data] data to send to page
  *
  * @return {boolean} operation status
  */
@@ -193,7 +194,7 @@ router.show = function ( page, data ) {
 /**
  * Make the given active/visible page inactive/hidden and trigger the corresponding event.
  *
- * @param {Page} page
+ * @param {Page} page item to hide
  *
  * @return {boolean} operation status
  */
@@ -231,8 +232,6 @@ router.navigate = function ( name, data ) {
 	var pageFrom = this.current,
 		pageTo   = this.ids[name];
 
-	debug.log('router.navigate: ' + name, pageTo ? (pageTo === pageFrom ? 'grey' : 'green') : 'red');
-
 	// @ifdef DEBUG
 	if ( !pageTo || typeof pageTo !== 'object' ) { throw 'wrong pageTo type'; }
 	if ( !('active' in pageTo) ) { throw 'missing field "active" in pageTo'; }
@@ -240,6 +239,8 @@ router.navigate = function ( name, data ) {
 
 	// valid not already active page
 	if ( pageTo && !pageTo.active ) {
+		debug.log('router.navigate: ' + name, pageTo === pageFrom ? 'grey' : 'green');
+
 		// update url
 		location.hash = this.stringify(name, data);
 
@@ -255,6 +256,8 @@ router.navigate = function ( name, data ) {
 
 		return true;
 	}
+
+	debug.log('router.navigate: ' + name, 'red');
 
 	// nothing was done
 	return false;
@@ -278,7 +281,7 @@ router.back = function () {
 		pageFrom = this.history.pop();
 
 		// new tail
-		pageTo = this.history[this.history.length-1];
+		pageTo = this.history[this.history.length - 1];
 
 		// valid not already active page
 		if ( pageTo && !pageTo.active ) {

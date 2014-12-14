@@ -4,6 +4,10 @@
 		"node": true
 	},
 
+	"globals": {
+		"debug": false
+	},
+
 	"rules": {
 		"no-comma-dangle": 2,
 		"no-cond-assign": 2,
@@ -70,7 +74,7 @@
 		"no-label-var": 1,
 		"no-shadow-restricted-names": 1,
 		"no-undef": 1,
-		"no-undefined": 1,
+		"no-undefined": 0,
 		"no-unused-vars": [1, {"vars": "all", "args": "all"}],
 		"no-use-before-define": [1, "nofunc"],
 		"no-mixed-requires": 0,

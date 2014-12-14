@@ -67,7 +67,7 @@ app = new Model({
 /**
  * Set crops, total and content size.
  *
- * @param {Object} metrics
+ * @param {Object} metrics screen params specific to resolution
  */
 app.setScreen = function ( metrics ) {
 	var link;
@@ -100,7 +100,10 @@ app.setScreen(require('../../config/metrics')[screen.height]);
 
 /**
  * The load event is fired when a resource and its dependent resources have finished loading.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/load
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	var path;
@@ -142,7 +145,10 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 
 /**
  * The unload event is fired when the document or a child resource is being unloaded.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/unload
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 	debug.event(event);
@@ -187,7 +193,10 @@ window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 
 /**
  * The error event is fired when a resource failed to load.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/error
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('error', function globalEventListenerError ( event ) {
 	debug.event(event);
@@ -204,12 +213,14 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
  *   3. Application.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('keydown', function globalEventListenerKeydown ( event ) {
 	var page = router.current;
 
 	// filter phantoms
-	if ( event.keyCode === 0 ) { return false; }
+	if ( event.keyCode === 0 ) { return; }
 
 	// combined key code
 	event.code = event.keyCode;
@@ -244,7 +255,10 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 
 /**
  * The click event is fired when a pointing device button (usually a mouse button) is pressed and released on a single element.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/click
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('click', function globalEventListenerClick ( event ) {
 	debug.event(event);
@@ -255,7 +269,10 @@ window.addEventListener('click', function globalEventListenerClick ( event ) {
  * The contextmenu event is fired when the right button of the mouse is clicked (before the context menu is displayed),
  * or when the context menu key is pressed (in which case the context menu is displayed at the bottom left of the focused
  * element, unless the element is a tree, in which case the context menu is displayed at the bottom left of the current row).
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/contextmenu
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('contextmenu', function globalEventListenerContextmenu ( event ) {
 	debug.event(event);

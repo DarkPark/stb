@@ -131,7 +131,8 @@ Model.prototype.init = function ( data ) {
  * Check an attribute existence.
  *
  * @param {string} name attribute
- * @return {boolean}
+ *
+ * @return {boolean} attribute exists or not
  */
 Model.prototype.has = function ( name ) {
 	// @ifdef DEBUG
@@ -147,7 +148,8 @@ Model.prototype.has = function ( name ) {
  * Get the model attribute by name.
  *
  * @param {string} name attribute
- * @return {*}
+ *
+ * @return {*} associated value
  */
 Model.prototype.get = function ( name ) {
 	// @ifdef DEBUG
@@ -174,7 +176,7 @@ Model.prototype.get = function ( name ) {
  * Update or create a model attribute.
  *
  * @param {string} name attribute
- * @param {*} value
+ * @param {*} value associated value
  * @return {boolean} operation status (true - attribute value was changed/created)
  *
  * @fires Model#change
