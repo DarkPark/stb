@@ -1,10 +1,13 @@
 /**
  * Application geometry options for js/less.
  *
- * @namespace
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
+
+'use strict';
+
+// public export
 module.exports = {
 	480 : {
 		// screen base dimension
