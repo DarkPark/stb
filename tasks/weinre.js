@@ -19,7 +19,7 @@ gulp.task('weinre', function () {
 
 	if ( config.active ) {
 		spawn  = require('child_process').spawn;
-		weinre = spawn(path.join('node_modules', '.bin', 'weinre'), [
+		weinre = spawn(path.join(process.env.STB, 'node_modules', '.bin', 'weinre'), [
 			'--httpPort',  config.port,
 			'--boundHost', config.host,
 			'--verbose',   config.logging.toString(),
