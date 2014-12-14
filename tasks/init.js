@@ -27,33 +27,41 @@ gulp.task('init', function () {
 				.pipe(require('gulp-conflict')('./'))
 				.pipe(gulp.dest('./'))
 				.on('end', function () {
-					console.log(gutil.colors.green('done\n'));
+					console.log(gutil.colors.green('done'));
 
-					console.log(gutil.colors.green('installing dependencies ...'));
 					npm.load({loaded: false}, function ( error ) {
 						var config = require(path.join(process.env.CWD, 'package.json')),
 							pkgSet = [];
 
-						// build package name@version list
-						Object.keys(config.dependencies).forEach(function ( name ) {
-							pkgSet.push(name + '@' + config.dependencies[name]);
-						});
-
 						if ( error ) {
 							console.log(error);
-						} else {
-							// do the installation
-							npm.commands.install(pkgSet, function ( error ) {
-								if ( error ) {
-									console.log(error);
-								} else {
-									console.log(gutil.colors.green('done'));
-								}
+							return;
+						}
+
+						// section is present
+						if ( typeof config.dependencies === 'object' ) {
+							// build package name@version list
+							Object.keys(config.dependencies).forEach(function ( name ) {
+								pkgSet.push(name + '@' + config.dependencies[name]);
 							});
-							npm.on('log', function ( message ) {
-								// log the progress of the installation
-								console.log(message);
-							});
+
+							// there are some packages to install
+							if ( pkgSet.length > 0 ) {
+								console.log(gutil.colors.green('\ninstalling dependencies ...'));
+
+								// do the installation
+								npm.commands.install(pkgSet, function ( error ) {
+									if ( error ) {
+										console.log(error);
+									} else {
+										console.log(gutil.colors.green('done'));
+									}
+								});
+								npm.on('log', function ( message ) {
+									// log the progress of the installation
+									console.log(message);
+								});
+							}
 						}
 					});
 				});
