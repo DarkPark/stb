@@ -8,10 +8,10 @@
 
 'use strict';
 
-var path    = require('path'),
+var //path    = require('path'),
 	gulp    = require('gulp'),
 	gutil   = require('gulp-util'),
-	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
+	//config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
 	cliParams = require('minimist')(process.argv.slice(2));
 	//plumber = require('gulp-plumber'),
 	//del     = require('del')
@@ -32,15 +32,15 @@ gulp.task('release', ['lint', 'img:release', 'jade:release', 'less:release', 'we
 // build everything and open main entry page
 gulp.task('serve', ['develop', 'release'], function () {
 	// manage gulp from command line
-	var runtime = require('gulp-runtime');
-	runtime.setPrompt('');
-
-	// runtime reload of changed tasks
-	gulp.watch([__filename, './tasks/**/*.js'], function ( file ) {
-		// clear cache
-		runtime.require(file.path, {reload: true});
-		gutil.log('runtime:', gutil.colors.green('reloaded ') + file.path);
-	});
+	//var runtime = require('gulp-runtime');
+	//runtime.setPrompt('');
+    //
+	//// runtime reload of changed tasks
+	//gulp.watch([__filename, './tasks/**/*.js'], function ( file ) {
+	//	// clear cache
+	//	runtime.require(file.path, {reload: true});
+	//	gutil.log('runtime:', gutil.colors.green('reloaded ') + file.path);
+	//});
 
 	// popup browser if not prevented
 	if ( !cliParams.noopen ) {
