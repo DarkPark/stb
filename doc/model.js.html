@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: model.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: model.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module stb/model
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ */
+
+'use strict';
+
+var Emitter = require('./emitter');
+
+
+/**
+ * Base model implementation.
+ *
+ * Represents domain-specific data or information that an application will be working with.
+ * A typical example is a user account (e.g name, avatar, e-mail) or a music track (e.g title, year, album).
+ * Holds information, but don’t handle behaviour and don’t format information or influence how data appears.
+ *
+ * @constructor
+ *
+ * @param {Object} [data={}] init attributes
+ */
+function Model ( data ) {
+	// parent init
+	Emitter.call(this);
+
+	/**
+	 * Model attributes with given data or empty hash table.
+	 *
+	 * @member {Object.&lt;string, *>}
+	 **/
+	this.data = data || {};
+}
+
+
+// inheritance
+Model.prototype = Object.create(Emitter.prototype);
+Model.prototype.constructor = Model;
+
+
+// which of data fields is primary
+Model.prototype.idName = 'id';
+
+
+/**
+ * Remove all attributes from the model event.
+ *
+ * @event Model#clear
+ *
+ * @type {Object}
+ * @property {Object} data old model attributes
+ */
+
+
+/**
+ * Remove all attributes from the model.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires Model#clear
+ */
+Model.prototype.clear = function () {
+	var data = this.data;
+
+	// is there any data?
+	if ( Object.keys(data).length > 0 ) {
+		// reset
+		this.data = {};
+
+		// notify listeners
+		this.emit('clear', {data: data});
+
+		return true;
+	}
+
+	return false;
+};
+
+
+/**
+ * Set model data event.
+ *
+ * @event Model#init
+ *
+ * @type {Object}
+ * @property {Object} data new model attributes
+ */
+
+
+/**
+ * Clear and set model data.
+ *
+ * @param {Object} data attributes
+ * @return {boolean} operation status
+ *
+ * @fires Model#clear
+ * @fires Model#init
+ */
+Model.prototype.init = function ( data ) {
+	// valid input
+	if ( data ) {
+		// reset data
+		this.clear();
+
+		// init with given data
+		this.data = data;
+
+		// notify listeners
+		this.emit('init', {data: data});
+
+		return true;
+	}
+
+	return false;
+};
+
+
+/**
+ * Check an attribute existence.
+ *
+ * @param {string} name attribute
+ * @return {boolean}
+ */
+Model.prototype.has = function ( name ) {
+	// hasOwnProperty method is not available directly in case of Object.create(null)
+	//return Object.hasOwnProperty.call(this.data, name);
+	return this.data.hasOwnProperty(name);
+};
+
+/**
+ * Get the model attribute by name.
+ *
+ * @param {string} name attribute
+ * @return {*}
+ */
+Model.prototype.get = function ( name ) {
+	return this.data[name];
+};
+
+
+/**
+ * Update or create a model attribute event.
+ *
+ * @event Model#change
+ *
+ * @type {Object}
+ * @property {string} name attribute name
+ * @property {*} [prev] old/previous attribute value (can be absent on attribute creation)
+ * @property {*} [curr] new/current attribute value (can be absent on attribute removal)
+ */
+
+
+/**
+ * Update or create a model attribute.
+ *
+ * @param {string} name attribute
+ * @param {*} value
+ * @return {boolean} operation status (true - attribute value was changed/created)
+ *
+ * @fires Model#change
+ */
+Model.prototype.set = function ( name, value ) {
+	var isAttrSet = name in this.data,
+		emitData  = {name: name, curr: value};
+
+	if ( isAttrSet ) {
+		// update
+		emitData.prev = this.data[name];
+		// only if values are different
+		if ( value !== emitData.prev ) {
+			this.data[name] = value;
+
+			// notify listeners
+			this.emit('change', emitData);
+
+			return true;
+		}
+	} else {
+		// create
+		this.data[name] = value;
+
+		// notify listeners
+		this.emit('change', emitData);
+
+		return true;
+	}
+
+	return false;
+};
+
+
+/**
+ * Delete the given attribute by name.
+ *
+ * @param {string} name attribute
+ * @return {boolean} operation status (true - attribute was deleted)
+ *
+ * @fires Model#change
+ */
+Model.prototype.unset = function ( name ) {
+	var isAttrSet = name in this.data,
+		emitData;
+
+	if ( isAttrSet ) {
+		emitData = {name: name, prev: this.data[name]};
+		delete this.data[name];
+
+		// notify listeners
+		this.emit('change', emitData);
+
+		return true;
+	}
+
+	return false;
+};
+
+
+///**
+// * Extends the model with the given attribute list
+// * @param {Object} data
+// */
+//Model.prototype.attributes = function ( data ) {
+//	var index   = 0,
+//		keyList = data &amp;&amp; typeof data === 'object' ? Object.keys(data) : [];
+//	for ( ; index &lt; keyList.length; index++ ) {
+//		this.set(keyList[index], data[keyList[index]]);
+//	}
+//};
+
+
+///**
+// * Prepare all data for sending to a server
+// * @return {Object}
+// */
+//Model.prototype.pack = function () {
+//	return this._data;
+//};
+
+
+///**
+// * Restores the received data from a server to a model data
+// * @param {Object} data
+// * @return {Object}
+// */
+//Model.prototype.unpack = function ( data ) {
+//	return data;
+//};
+
+
+///**
+// * Sync model to a server
+// */
+//Model.prototype.save = function () {
+//	var self = this;
+//	if ( this.url ) {
+//		// collect data
+//		io.ajax(this.url, {
+//			// request params
+//			method: self._data[self.idName] ? 'put' : 'post',
+//			data  : self.pack(),
+//			onload: function ( data ) {
+//				data = self.unpack(self.parse(data));
+//				self.attributes(data);
+//				console.log(data);
+//				self.emit('save', true);
+//			},
+//			// error handlers
+//			onerror:   this.saveFailure,
+//			ontimeout: this.saveFailure
+//		});
+//	}
+//};
+
+
+///**
+// * Error handler while model data fetch
+// */
+//Model.prototype.saveFailure = function () {
+//	this.emit('save', false);
+//};
+
+
+///**
+// * Converts received data from a server to a model attributes
+// * @param {string} response
+// * @return {Object}
+// */
+//Model.prototype.parse = function ( response ) {
+//	var data = {};
+//	try {
+//		data = JSON.parse(response).data;
+//	} catch(e){ console.log(e); }
+//	return data;
+//};
+
+
+// public export
+module.exports = Model;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="PageManager.html">PageManager</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeScreenDimension">changeScreenDimension</a></li><li><a href="global.html#initGuest">initGuest</a></li><li><a href="global.html#initHost">initHost</a></li><li><a href="global.html#log">log</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 11 2014 14:13:43 GMT+0200 (EET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

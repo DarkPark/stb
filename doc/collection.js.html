@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: collection.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: collection.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module stb/collection
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ */
+
+'use strict';
+
+var Emitter = require('./emitter');
+
+
+/**
+ * Base collection implementation
+ *
+ * @constructor
+ *
+ * @param {Model[]} [data=[]] init model list
+ */
+function Collection ( data ) {
+	var model, i;
+
+	// parent init
+	Emitter.call(this);
+
+	/**
+	 * list of all stored data
+	 * @private
+	 */
+	this.data = [];
+
+	/**
+	 * hash table of all model ids
+	 * @private
+	 */
+	this.ids = {};
+
+	// extract ids
+	for ( i = 0; i &lt; this.data.length; i++ ) {
+		model = this.data[i];
+		this.ids[model.id || model.data[model.idName]] = model;
+	}
+
+	// apply list of items
+	if ( data !== undefined ) {
+		this.data = data;
+	}
+
+	// public attributes
+	//this.model = Model;
+	//this.url = null;
+	// which of data fields is primary
+	//this.idName = 'id';
+}
+
+
+// inheritance
+Collection.prototype = Object.create(Emitter.prototype);
+Collection.prototype.constructor = Collection;
+
+
+/**
+ * Remove all models from the collection event.
+ *
+ * @event Collection#clear
+ *
+ * @type {Object}
+ * @property {Model[]} data old model list
+ */
+
+
+/**
+ * Remove all models from the collection.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires Collection#clear
+ */
+Collection.prototype.clear = function () {
+	var data, i;
+
+	// is there any data?
+	if ( this.data.length > 0 ) {
+		// clone the model list
+		data = this.data.slice();
+
+		// remove all associated handlers
+		for ( i = 0; i &lt; this.data.length; i++ ) {
+			this.remove(this.data[0]);
+		}
+
+		// reset
+		this.data = [];
+		this.ids  = {};
+
+		// notify listeners
+		this.emit('clear', {data: data});
+
+		return true;
+	}
+
+	return false;
+};
+
+
+/**
+ * Set collection data event.
+ *
+ * @event Collection#init
+ *
+ * @type {Object}
+ * @property {Model[]} data new model list
+ */
+
+
+/**
+ * Clear and fill the collection with the given list of models.
+ *
+ * @param {Model[]} data model list
+ * @return {boolean} operation status
+ *
+ * @fires Collection#clear
+ * @fires Collection#init
+ */
+Collection.prototype.init = function ( data ) {
+	var i, model;
+
+	if ( Array.isArray(data) ) {
+		// reset data
+		this.clear();
+
+		// apply list
+		this.data = data;
+
+		// extract ids
+		for ( i = 0; i &lt; data.length; i++ ) {
+			model = data[i];
+			this.ids[model.id || model.data[model.idName]] = model;
+		}
+
+		// notify listeners
+		this.emit('init', {data: data});
+
+		return true;
+	}
+
+	return false;
+};
+
+
+/**
+ * Append the given model to the collection event.
+ *
+ * @event Collection#add
+ *
+ * @type {Object}
+ * @property {Model} item new model object
+ * @property {number} index model position in the list
+ */
+
+
+/**
+ * Append the given model to the collection.
+ *
+ * @param {Model} model
+ *
+ * @fires Collection#add
+ */
+Collection.prototype.add = function ( model ) {
+	// data
+	this.ids[model.id || model.data[model.idName]] = model;
+	this.data.push(model);
+
+	// notify listeners
+	this.emit('add', {item: model, index: this.data.length-1});
+};
+
+
+/**
+ * Insert the given model to some place in the collection
+ *
+ * @param {Model} model
+ * @param {number} index model position in the list
+ *
+ * @fires Collection#add
+ */
+Collection.prototype.insert = function ( model, index ) {
+	// data
+	this.ids[model.id || model.data[model.idName]] = model;
+	this.data.splice(index, 0, model);
+
+	// notify listeners
+	this.emit('add', {item: model, index: index});
+};
+
+
+/**
+ * Remove the given model from the collection event.
+ *
+ * @event Collection#remove
+ *
+ * @type {Object}
+ * @property {Model} item removed model object
+ * @property {number} index model position in the list
+ */
+
+
+/**
+ * Delete the given model from the collection.
+ *
+ * @param {Model} model
+ *
+ * @fires Collection#remove
+ */
+Collection.prototype.remove = function ( model ) {
+	var index = this.data.indexOf(model);
+
+	if ( index > -1 ) {
+		model.removeAllListeners();
+		this.data.splice(index, 1);
+		delete this.ids[model.id || model.data[model.idName]];
+		this.emit('remove', {item: model, index: index});
+	}
+};
+
+
+/**
+ * Check if the given object is present in the collection.
+ *
+ * @param {Model} item model to look for
+ * @return {boolean} search status
+ */
+Collection.prototype.has = function ( item ) {
+	return this.data.indexOf(item) >= 0;
+};
+
+
+/**
+ * Get a model by the given index in the collection.
+ *
+ * @param {number} index model position in the list
+ * @return {Model|null} model or null if fail to find
+ */
+Collection.prototype.at = function ( index ) {
+	return this.data[index] || null;
+};
+
+
+/**
+ * Get a model by its id.
+ *
+ * @param {String|Number} id
+ * @return {Model|null} model or null if fail to find
+ */
+Collection.prototype.get = function ( id ) {
+	return this.ids[id] || null;
+};
+
+
+// extending with base methods
+['filter', 'forEach', 'every', 'map', 'some'].forEach(function forEachMethods ( name ) {
+	Collection.prototype[name] = function methodWrapper () {
+		return Array.prototype[name].apply(this.data, arguments);
+	};
+});
+
+
+/**
+ * Apply the custom sort method for all models in the collection event.
+ *
+ * @event Collection#sort
+ */
+
+
+/**
+ * Apply the custom sort method for all models in the collection.
+ *
+ * @param {function} comparator
+ *
+ * @fires Collection#sort
+ */
+Collection.prototype.sort = function ( comparator ) {
+	// valid method
+	if ( comparator &amp;&amp; typeof comparator === 'function' ) {
+		this.data.sort(comparator);
+		this.emit('sort');
+	}
+};
+
+
+///**
+// * Collect models from a server
+// */
+//Collection.prototype.fetch = function () {
+//	var self = this, i;
+//	if ( this.model &amp;&amp; this.url ) {
+//		// collect data
+//		io.ajax(this.url, {
+//			// request params
+//			method   : 'get',
+//			onload   : function ( data ) {
+//				data = self.parse(data);
+//				// create models from response and add
+//				if ( Array.isArray(data) &amp;&amp; self.model ) {
+//					for ( i = 0; i &lt; data.length; i++ ) {
+//						// create a model from received data
+//						self.add(new (self.model)(data[i]));
+//					}
+//				}
+//				self.emit('fetch', true);
+//			},
+//			// error handlers
+//			onerror  : this.fetchFailure,
+//			ontimeout: this.fetchFailure
+//		});
+//	}
+//};
+//
+//
+///**
+// * Error handler while model data fetch
+// */
+//Collection.prototype.fetchFailure = function () {
+//	this.emit('fetch', false);
+//};
+//
+//
+///**
+// * Convert received data from a server to a model list
+// * @param {string} response
+// * @return {Array}
+// */
+//Collection.prototype.parse = function ( response ) {
+//	var data = [];
+//	try {
+//		data = JSON.parse(response).data;
+//	} catch ( e ) {
+//		console.log(e);
+//	}
+//	return data;
+//};
+
+
+Object.defineProperty(Collection.prototype, 'length', {
+	get: function () {
+		return this.data.length;
+	}
+});
+
+
+// public export
+module.exports = Collection;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="PageManager.html">PageManager</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeScreenDimension">changeScreenDimension</a></li><li><a href="global.html#initGuest">initGuest</a></li><li><a href="global.html#initHost">initHost</a></li><li><a href="global.html#log">log</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 11 2014 14:13:43 GMT+0200 (EET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

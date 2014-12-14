@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: page.manager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: page.manager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Base page implementation.
+ *
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ */
+
+'use strict';
+
+var Collection = require('./collection'),
+	Page = require('ui/page');
+
+
+/**
+ * @constructor
+ *
+ * @example
+ * var pm = new PageManager();
+ */
+function PageManager () {
+	// parent init
+	Collection.call(this);
+
+	this.history = [];
+	this.current = null;
+
+	// set connection
+	Page.prototype.manager = this;
+}
+
+
+// inheritance
+PageManager.prototype = Object.create(Collection.prototype);
+PageManager.prototype.constructor = PageManager;
+
+
+/**
+ * Hide page.
+ *
+ * @param {Page} page component to hide
+ */
+PageManager.prototype.add = function ( page ) {
+	var self = this;
+
+	// valid input object
+	if ( page instanceof Page ) {
+		// parent call
+		Collection.prototype.add.call(this, page);
+
+		// set link
+		//page.manager = this;
+
+		// correct current pointer
+		if ( page.active ) {
+			this.current = page;
+		}
+
+		page.addListener('show', function eventListenerShow () {
+			// new active is not the current
+			if ( self.current !== page ) {
+				// hide the currently visible page if any
+				if ( self.current ) { self.current.hide(); }
+				self.current = page;
+				self.history.push(page);
+			}
+		});
+
+		page.addListener('hide', function eventListenerHide () {
+			// hide the currently visible page if any
+			if ( self.history.length > 0 ) {
+				self.current.hide();
+			}
+			self.current = page;
+			self.history.pop();
+		});
+
+		return true;
+	}
+
+	return false;
+};
+
+
+/**
+ * Show page.
+ *
+ * @param {Page} page component to show
+ */
+PageManager.prototype.show = function ( page ) {
+	page.show();
+
+	if ( !this.has(page) ) {
+		this.add(page);
+	}
+
+	this.emit('show', {page: page});
+};
+
+
+/**
+ * Hide page.
+ *
+ * @param {Page} page component to hide
+ */
+PageManager.prototype.hide = function ( page ) {
+	page.hide();
+	this.emit('hide', {page: page});
+};
+
+
+/**
+ *
+ */
+PageManager.prototype.forward = function () {
+
+	this.emit('forward', {});
+};
+
+
+/**
+ *
+ */
+PageManager.prototype.backward = function () {
+
+	this.emit('backward', {});
+};
+
+
+PageManager.prototype.moveUp = function () {
+
+	this.emit('reorder', {});
+};
+
+
+PageManager.prototype.moveDown = function () {
+
+	this.emit('reorder', {});
+};
+
+
+PageManager.prototype.moveTop = function () {
+
+	this.emit('reorder', {});
+};
+
+
+PageManager.prototype.moveBottom = function () {
+
+	this.emit('reorder', {});
+};
+
+
+// public export
+module.exports = PageManager;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="PageManager.html">PageManager</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeScreenDimension">changeScreenDimension</a></li><li><a href="global.html#initGuest">initGuest</a></li><li><a href="global.html#initHost">initHost</a></li><li><a href="global.html#log">log</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 11 2014 14:13:43 GMT+0200 (EET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

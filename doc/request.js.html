@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: request.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: request.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Ajax request wrapper.
+ *
+ * @module stb/request
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ */
+
+'use strict';
+
+var request = {},
+	defaults = {
+		method    : 'GET',  // HTTP method to use, such as "GET", "POST", "PUT", "DELETE", etc.
+		async     : true,   // whether or not to perform the operation asynchronously
+		headers   : {},     // list of HTTP request headers
+		type      : 'text', // "", "arraybuffer", "blob", "document", "json", "text"
+		data      : null,   // data to send (plain object)
+		timeout   : 30000,  // amount of milliseconds a request can take before being terminated
+		onload    : null,   // callback when the request has successfully completed
+		onerror   : null,   // callback when the request has failed
+		ontimeout : null    // callback when the author specified timeout has passed before the request could complete
+	},
+	defaultsKeys = Object.keys(defaults);
+
+
+/**
+ * Main method to send ajax requests.
+ *
+ * @param {string} url address
+ * @param {Object} options Plain object with call parameters
+ * @return {XMLHttpRequest|Boolean} false in case of wrong params
+ *
+ * @example
+ * TODO: add
+ */
+request.ajax = function ( url, options ) {
+	var i, headersKeys, client;
+
+	// init
+	options = options || {};
+	// valid non-empty string
+	if ( url &amp;&amp; (typeof url === 'string' || url instanceof String) &amp;&amp; url.length > 0 ) {
+		// plain object is given as param
+		if ( options &amp;&amp; typeof options === 'object') {
+			// extend with default options
+			for ( i = 0 ; i &lt; defaultsKeys.length ; i++ ) {
+				// in case not redefined
+				if ( options[defaultsKeys[i]] === undefined ) {
+					options[defaultsKeys[i]] = defaults[defaultsKeys[i]];
+				}
+			}
+		}
+
+		client = new XMLHttpRequest();
+		// init a request
+		client.open(options.method, url, options.async);
+
+		// apply the given headers
+		if ( options.headers &amp;&amp; typeof options.headers === 'object') {
+			headersKeys = Object.keys(options.headers);
+			for ( i = 0; i &lt; headersKeys.length; i++ ) {
+				client.setRequestHeader(headersKeys[i], options.headers[headersKeys[i]]);
+			}
+		}
+
+		// set response type and timeout
+		client.responseType = options.type;
+		client.timeout      = options.timeout;
+
+		// callbacks
+		if ( options.onload &amp;&amp; typeof options.onload === 'function' ) {
+			client.onload = function onload () {
+				options.onload.call(this, this.response, this.status);
+			};
+		}
+		client.onerror   = options.onerror;
+		client.ontimeout = options.ontimeout;
+
+		// actual request
+		//client.send(this.encode(options.data));
+		client.send(options.data ? JSON.stringify(options.data) : null);
+
+		return client;
+	}
+	return false;
+};
+
+
+/**
+ * Serializes the given data for sending to the server via ajax call.
+ *
+ * @param {Object} data Plain object to serialize
+ * @return {string} null if no data to encode
+ *
+ * @example
+ * TODO: add
+ */
+request.encode = function ( data ) {
+	var result = [],
+		i, keys;
+
+	// input plain object validation
+	if ( data &amp;&amp; typeof data === 'object') {
+		keys = Object.keys(data);
+		// apply encoding
+		for ( i = 0; i &lt; keys.length; i++ ) {
+			result.push(encodeURIComponent(keys[i]) + '=' + encodeURIComponent(data[keys[i]]));
+		}
+		// build the list of params
+		if ( result.length > 0 ) {
+			return result.join('&amp;');
+		}
+	}
+	return null;
+};
+
+
+// public export
+module.exports = request;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="PageManager.html">PageManager</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeScreenDimension">changeScreenDimension</a></li><li><a href="global.html#initGuest">initGuest</a></li><li><a href="global.html#initHost">initHost</a></li><li><a href="global.html#log">log</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 11 2014 14:13:43 GMT+0200 (EET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

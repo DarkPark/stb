@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: router.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: router.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module stb/router
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ */
+
+'use strict';
+
+var Emitter = require('./emitter'),
+	router;
+
+
+/**
+ * @instance
+ * @type {Emitter}
+ */
+router = new Emitter();
+
+
+/**
+ * Current active/visible page.
+ *
+ * @readonly
+ * @type {Page}
+ */
+router.current = null;
+
+
+/**
+ * List of all visited pages.
+ *
+ * @readonly
+ * @type {Page[]}
+ */
+router.history = [];
+
+
+/**
+ * List of all stored pages.
+ *
+ * @readonly
+ * @type {Page[]}
+ */
+router.pages = [];
+
+
+/**
+ * Hash table of all pages ids with links to pages.
+ *
+ * @readonly
+ * @type {Object.&lt;string, Page>}
+ */
+router.ids = {};
+
+
+/**
+ * Set router data event.
+ *
+ * @event router#init
+ *
+ * @type {Object}
+ * @property {Page[]} pages new page list
+ */
+
+/**
+ * Clear and fill the router with the given list of pages.
+ *
+ * @param {Page[]} pages list of pages to add
+ * @return {boolean} operation status
+ *
+ * @fires router#init
+ */
+router.init = function ( pages ) {
+	var i, l, item;
+
+	if ( pages !== undefined ) {
+		// reset page list
+		this.pages = [];
+
+		// apply list
+		this.pages = pages;
+
+		// extract ids
+		for ( i = 0, l = pages.length; i &lt; l; i++ ) {
+			item = pages[i];
+			this.ids[item.id] = item;
+
+			// find the currently active page
+			if ( item.active ) {
+				this.current = item;
+			}
+		}
+
+		// notify listeners
+		this.emit('init', {pages: pages});
+
+		return true;
+	}
+
+	return false;
+};
+
+
+/**
+ * Extract the page name and data from url hash.
+ *
+ * @return {{name: string, data: string[]}}
+ *
+ * @example
+ * router.parse('#main/some/additional/data');
+ * // execution result
+ * {name: 'main', data: ['some', 'additional', 'data']}
+ */
+router.parse = function ( hash ) {
+	var page = {
+		name : '',
+		data : []
+	};
+
+	// get and decode all parts
+	hash = hash.split('/').map(decodeURIComponent);
+	// the first part is a page id
+	page.name = hash.shift().slice(1);
+	// everything else is optional path
+	page.data = hash;
+
+	return page;
+};
+
+
+/**
+ * Convert the given page name and its data to url hash.
+ *
+ * @param {string} name page name
+ * @param {string[]} [data=[]] page additional parameters
+ *
+ * @return {string} url hash
+ *
+ * @example
+ * router.stringify('main', ['some', 'additional', 'data']);
+ * // execution result
+ * '#main/some/additional/data'
+ */
+router.stringify = function ( name, data ) {
+	// validation
+	data = Array.isArray(data) ? data : [];
+
+	// encode all parts
+	name = encodeURIComponent(name);
+	data = data.map(encodeURIComponent);
+	// add encoded name to the beginning
+	data.unshift(name);
+
+	// build an uri
+	return data.join('/');
+};
+
+
+/**
+ * Make the given inactive/hidden page active/visible.
+ * Pass some data to the page and trigger the corresponding event.
+ *
+ * @param {Page} page
+ * @param {*} [data]
+ *
+ * @return {boolean} operation status
+ */
+router.show = function ( page, data ) {
+	// page available and can be hidden
+	if ( page &amp;&amp; !page.active ) {
+		// apply visibility
+		page.$node.classList.add('active');
+		page.active  = true;
+		this.current = page;
+
+		// notify listeners
+		page.emit('show', {page: page, data: data});
+
+		debug.log('component ' + page.constructor.name + '.' + page.id + ' show', 'green');
+
+		return true;
+	}
+
+	// nothing was done
+	return false;
+};
+
+
+/**
+ * Make the given active/visible page inactive/hidden and trigger the corresponding event.
+ *
+ * @param {Page} page
+ *
+ * @return {boolean} operation status
+ */
+router.hide = function ( page ) {
+	// page available and can be hidden
+	if ( page &amp;&amp; page.active ) {
+		// apply visibility
+		page.$node.classList.remove('active');
+		page.active  = false;
+		this.current = null;
+
+		// notify listeners
+		page.emit('hide', {page: page});
+
+		debug.log('component ' + page.constructor.name + '.' + page.id + ' hide', 'grey');
+
+		return true;
+	}
+
+	// nothing was done
+	return false;
+};
+
+
+/**
+ * Browse to a page with the given name.
+ * Do nothing if the name is invalid. Otherwise hide the current, show new and update history.
+ *
+ * @param {string} name page id
+ * @param {Array} [data] options to pass to the page on show
+ *
+ * @return {boolean} operation status
+ */
+router.navigate = function ( name, data ) {
+	var pageFrom = this.current,
+		pageTo   = this.ids[name];
+
+	debug.log('router.navigate: ' + name, pageTo ? (pageTo === pageFrom ? 'grey' : 'green') : 'red');
+
+	// valid not already active page
+	if ( pageTo &amp;&amp; !pageTo.active ) {
+		// update url
+		location.hash = this.stringify(name, data);
+
+		// apply visibility
+		this.hide(this.current);
+		this.show(pageTo, data);
+
+		// notify
+		this.emit('navigate', {from: pageFrom, to: pageTo});
+
+		// store
+		this.history.push(pageTo);
+
+		return true;
+	}
+
+	// nothing was done
+	return false;
+};
+
+
+/**
+ * Go back one step in the history.
+ * If there is no previous page, does nothing.
+ *
+ * @return {boolean} operation status
+ */
+router.back = function () {
+	var pageFrom, pageTo;
+
+	debug.log('router.back', this.history.length > 1 ? 'green' : 'red');
+
+	// there are some pages in the history
+	if ( this.history.length > 1 ) {
+		// remove the current
+		pageFrom = this.history.pop();
+
+		// new tail
+		pageTo = this.history[this.history.length-1];
+
+		// valid not already active page
+		if ( pageTo &amp;&amp; !pageTo.active ) {
+			// update url
+			location.hash = pageTo.id;
+
+			// apply visibility
+			this.hide(this.current);
+			this.show(pageTo);
+
+			// notify
+			this.emit('navigate', {from: pageFrom, to: pageTo});
+
+			return true;
+		}
+	}
+
+	// nothing was done
+	return false;
+};
+
+
+// public export
+module.exports = router;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="PageManager.html">PageManager</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#changeScreenDimension">changeScreenDimension</a></li><li><a href="global.html#initGuest">initGuest</a></li><li><a href="global.html#initHost">initHost</a></li><li><a href="global.html#log">log</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 11 2014 14:13:43 GMT+0200 (EET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
