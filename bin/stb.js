@@ -38,7 +38,7 @@ function load ( dir ) {
 }
 
 // set env vars for current working dir
-// and the dir with stb-cli package
+// and the dir with this stb package
 process.env.CWD = process.cwd();
 process.env.STB = path.join(__dirname, '..');
 

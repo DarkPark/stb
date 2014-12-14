@@ -1,12 +1,12 @@
-STB framework command-line tools
-================================
+STB single page application framework
+=====================================
 
 ## Getting Started
 
-Install `stb-cli` globally:
+Install `stb` globally:
 
 ```bash
-npm install -g stb-cli
+npm install -g stb
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ cd myapp
 Run the generator from within the new folder:
 
 ```bash
-stb-cli init
+stb init
 ```
 
 This will create all necessary files and folders (with smart conflict resolution mechanism
@@ -30,7 +30,7 @@ in case there are already some files in the current directory) and install all n
 To start working with a project it's necessary to make initial build and start all servers:
 
 ```bash
-stb-cli serve
+stb serve
 ```
 
 Full list of available commands:
@@ -63,10 +63,10 @@ Full list of available commands:
 
 ## Contribution
 
-If you have any problem or suggestion please open an issue [here](https://github.com/DarkPark/stb-cli/issues).
+If you have any problem or suggestion please open an issue [here](https://github.com/DarkPark/stb/issues).
 Pull requests are welcomed with respect to the [JavaScript Code Style](https://github.com/DarkPark/jscs) and included [ESLint](http://eslint.org/) rules.
 
 
 ## License
 
-`stb-cli` is released under the [GPL-3.0 License](http://opensource.org/licenses/GPL-3.0).
+`stb` is released under the [GPL-3.0 License](http://opensource.org/licenses/GPL-3.0).
