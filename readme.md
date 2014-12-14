@@ -52,6 +52,9 @@ Full list of available commands:
  logger            | WebSocket server to translate log messages from STB to a desktop console
  serve             | main entry point - rebuild everything, start all watchers and servers
  static            | serve files in the build directory
+ webpack           | compile all CommonJS modules into a single js file
+ webpack:develop   | compile develop version of all CommonJS modules into a single js file
+ webpack:release   | compile release version of all CommonJS modules into a single js file
  weinre            | WEb INspector REmote debugger server
 
 
