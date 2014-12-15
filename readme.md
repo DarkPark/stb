@@ -1,6 +1,8 @@
 STB single page application framework
 =====================================
 
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/DarkPark/stb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Provides development environment and base components in a form of [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) modules
 for [set-top box](http://en.wikipedia.org/wiki/Set-top_box) software production.
 
