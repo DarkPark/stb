@@ -7,9 +7,12 @@
 
 'use strict';
 
-var gulp    = require('gulp'),
+var fs      = require('fs'),
+	gulp    = require('gulp'),
 	gutil   = require('gulp-util'),
 	webpack = require('webpack'),
+	mtrBase = process.env.STB + '/config/metrics.js',
+	mtrUser = process.env.CWD + '/config/metrics.js',
 	title   = 'webpack:';
 
 
@@ -32,7 +35,8 @@ gulp.task('webpack:develop', function () {
 			extensions:['', '.js'],
 			alias: {
 				stb: process.env.STB + '/app/js/',
-				app: process.env.CWD + '/app/js/'
+				app: process.env.CWD + '/app/js/',
+				metrics: fs.existsSync(mtrUser) ? mtrUser : mtrBase
 			}
 		},
 		devtool: 'source-map',
@@ -67,6 +71,7 @@ gulp.task('webpack:release', function () {
 			extensions:['', '.js'],
 			alias: {
 				stb: process.env.STB + '/app/js/',
+				metrics: fs.existsSync(mtrUser) ? mtrUser : mtrBase
 			}
 		},
 		debug: false,

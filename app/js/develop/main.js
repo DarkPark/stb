@@ -9,7 +9,7 @@
 
 var app     = require('../app'),
 	storage = require('./storage'),
-	metrics = require('../../../config/metrics');
+	metrics = require('metrics');
 
 
 // export to globals for easy debugging

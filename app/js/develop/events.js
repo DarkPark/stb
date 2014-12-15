@@ -7,10 +7,10 @@
 
 'use strict';
 
-var request = require('stb/request'),
+var util    = require('util'),
+	app     = require('stb/app'),
+	request = require('stb/request'),
 	dom     = require('stb/dom'),
-	data    = require('stb/app').data,
-	util    = require('util'),
 	grid    = require('./grid'),
 	storage = require('./storage');
 
@@ -81,14 +81,14 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
 		// numpad 6
 		case 102:
 			// stress-testing for emulation
-			if ( !data.host ) {
+			if ( !app.data.host ) {
 				window.horde.unleash({nb: 500});
 			}
 			break;
 
 		// numpad 7
 		case 103:
-			if ( !data.host ) {
+			if ( !app.data.host ) {
 				debug.log('SpyJS in this mode is available only on STB devices.', 'red');
 			} else {
 				// SpyJS enable/disable
@@ -170,7 +170,7 @@ function changeScreenDimension ( width, height ) {
 		document.body.style.display = 'none';
 
 		// apply new metrics
-		require('stb/app').setScreen(require('../../../config/metrics')[height]);
+		app.setScreen(require('metrics')[height]);
 
 		// restore visibility
 		document.body.style.display = '';

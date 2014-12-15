@@ -96,7 +96,7 @@ app.setScreen = function ( metrics ) {
 
 
 // apply screen size, position and margins
-app.setScreen(require('../../config/metrics')[screen.height]);
+app.setScreen(require('metrics')[screen.height]);
 
 
 /**
