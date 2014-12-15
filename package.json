@@ -1,7 +1,7 @@
 {
 	"name": "stb",
-	"version": "0.2.0",
-	"description": "STB framework command-line tools",
+	"version": "0.4.0",
+	"description": "STB single page application framework",
 	"author": {
 		"name": "Stanislav Kalashnik",
 		"email": "sk@infomir.eu"
