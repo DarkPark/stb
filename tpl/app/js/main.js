@@ -7,13 +7,8 @@
 
 'use strict';
 
-
-var router = require('stb/router'),
-	app    = require('stb/app');
-
-
-// apply screen size, position and margins
-//app.setScreen(require('../../config/metrics')[screen.height]);
+var app    = require('stb/app'),
+	router = require('stb/router');
 
 
 app.addListeners({

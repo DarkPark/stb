@@ -8,7 +8,7 @@
 
 var Model  = require('./model'),
 	router = require('./router'),
-	app;
+	app, linkCSS;
 
 
 require('stb/shims');
@@ -65,32 +65,33 @@ app = new Model({
 
 
 /**
- * Set crops, total and content size.
+ * Set crops, total, content size and link the corresponding CSS file.
  *
  * @param {Object} metrics screen params specific to resolution
  */
 app.setScreen = function ( metrics ) {
-	var link;
+	// calculate and extend
+	metrics.availHeight = metrics.height - (metrics.availTop  + metrics.availBottom);
+	metrics.availWidth  = metrics.width  - (metrics.availLeft + metrics.availRight);
 
-	// init can be done only once with correct metrics
-	if ( !this.data.screen && metrics ) {
-		// calculate and extend
-		metrics.availHeight = metrics.height - (metrics.availTop  + metrics.availBottom);
-		metrics.availWidth  = metrics.width  - (metrics.availLeft + metrics.availRight);
+	// set max browser window size
+	window.moveTo(0, 0);
+	window.resizeTo(metrics.width, metrics.height);
 
-		// set max browser window size
-		window.moveTo(0, 0);
-		window.resizeTo(metrics.width, metrics.height);
-
-		// load CSS file base on resolution
-		link = document.createElement('link');
-		link.rel  = 'stylesheet';
-		link.href = 'css/' + metrics.height + '.css';
-		document.head.appendChild(link);
-
-		// provide global access
-		this.data.screen = metrics;
+	// already was initialized
+	if ( linkCSS ) {
+		// remove all current CSS styles
+		document.head.removeChild(linkCSS);
 	}
+
+	// load CSS file base on resolution
+	linkCSS = document.createElement('link');
+	linkCSS.rel  = 'stylesheet';
+	linkCSS.href = 'css/' + metrics.height + '.css';
+	document.head.appendChild(linkCSS);
+
+	// provide global access
+	this.data.screen = metrics;
 };
 
 

@@ -28,7 +28,7 @@ if ( app.data.host ) {
 	require('./weinre');
 }
 
-// apply screen size, position and margins
+// apply screen size, position, margins and styles
 app.setScreen(
 	metrics[storage.get('screen.height')] ||
 	metrics[screen.height] ||

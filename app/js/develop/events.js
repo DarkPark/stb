@@ -38,7 +38,8 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
 	switch ( event.keyCode ) {
 		// numpad 0
 		case 96:
-			changeScreenDimension(data.screen.width, data.screen.height);
+			debug.log('full document reload', 'red');
+			location.reload();
 			break;
 
 		// numpad 1
@@ -150,18 +151,24 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
 
 
 /**
- * Apply the given screen geometry and reload the page
- * @param {number} width
- * @param {number} height
+ * Apply the given screen geometry and reload the page.
+ *
+ * @param {number} width screen param
+ * @param {number} height screen param
  */
 function changeScreenDimension ( width, height ) {
-	debug.log(util.format('switch to %sx%s and reload', width, height), 'red');
+	debug.log(util.format('switch to %sx%s', width, height), 'red');
 
-	// save
+	// save in case of document reload
 	storage.set('screen.height', height);
 	storage.set('screen.width',  width);
 
-	// clear screen to indicate reload
-	document.body.innerHTML = null;
-	window.location.reload(true);
+	// hide content to avoid raw HTML blinking
+	document.body.style.display = 'none';
+
+	// apply new metrics
+	require('stb/app').setScreen(require('../../../config/metrics')[height]);
+
+	// restore visibility
+	document.body.style.display = '';
 }
