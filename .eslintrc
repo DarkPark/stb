@@ -3,9 +3,18 @@
 		"browser": true,
 		"node": true
 	},
-
 	"globals": {
-		"debug": false
+		"debug": false,
+		"dvbManager": false,
+		"gSTB": false,
+		"pvrManager": false,
+		"stbDownloadManager": false,
+		"stbStorage": false,
+		"stbUpdate": false,
+		"stbWebWindow": false,
+		"stbWildWebWindow": false,
+		"stbWindowMgr": false,
+		"timeShift": false
 	},
 
 	"rules": {
