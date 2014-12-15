@@ -12,10 +12,22 @@
 module.exports = {
 	fontSize: 18,
 
-	listItemHeight: 32,
+	panelPaddingX: 6,
+	panelPaddingY: 6,
 
-	progressBarHeight: 20,
+	buttonHeight:   24,
+	buttonPaddingX: 7,
+	buttonPaddingY: 4,
 
-	checkBoxWidth:  20,
-	checkBoxHeight: 20
+	listItemHeight:   32,
+	listItemPaddingX: 5,
+	listItemPaddingY: 3,
+
+	gridItemPaddingX: 5,
+	gridItemPaddingY: 3,
+
+	progressBarHeight: 16,
+
+	checkBoxWidth:  18,
+	checkBoxHeight: 18
 };

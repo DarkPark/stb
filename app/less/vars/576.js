@@ -14,7 +14,19 @@ var vars = require('./480');
 module.exports = {
 	fontSize: vars.fontSize,
 
-	listItemHeight: vars.listItemHeight * 1.2,
+	panelPaddingX: vars.panelPaddingX * 1.2,
+	panelPaddingY: vars.panelPaddingY,
+
+	buttonHeight:   vars.buttonHeight * 1.2,
+	buttonPaddingX: vars.buttonPaddingX,
+	buttonPaddingY: vars.buttonPaddingY * 1.2,
+
+	listItemHeight:   vars.listItemHeight * 1.2,
+	listItemPaddingX: vars.listItemPaddingX,
+	listItemPaddingY: vars.listItemPaddingY * 1.2,
+
+	gridItemPaddingX: vars.gridItemPaddingX,
+	gridItemPaddingY: vars.gridItemPaddingY * 1.2,
 
 	progressBarHeight: vars.progressBarHeight * 1.2,
 
