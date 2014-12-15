@@ -157,18 +157,25 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
  * @param {number} height screen param
  */
 function changeScreenDimension ( width, height ) {
-	debug.log(util.format('switch to %sx%s', width, height), 'red');
+	// check if it's necessary
+	if ( Number(storage.get('screen.height')) !== height ) {
+		// yes
+		debug.log(util.format('switch to %sx%s', width, height), 'red');
 
-	// save in case of document reload
-	storage.set('screen.height', height);
-	storage.set('screen.width',  width);
+		// save in case of document reload
+		storage.set('screen.height', height);
+		storage.set('screen.width',  width);
 
-	// hide content to avoid raw HTML blinking
-	document.body.style.display = 'none';
+		// hide content to avoid raw HTML blinking
+		document.body.style.display = 'none';
 
-	// apply new metrics
-	require('stb/app').setScreen(require('../../../config/metrics')[height]);
+		// apply new metrics
+		require('stb/app').setScreen(require('../../../config/metrics')[height]);
 
-	// restore visibility
-	document.body.style.display = '';
+		// restore visibility
+		document.body.style.display = '';
+	} else {
+		// not really
+		debug.log('no resolution change: new and current values are identical', 'red');
+	}
 }
