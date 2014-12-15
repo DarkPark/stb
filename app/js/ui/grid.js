@@ -101,7 +101,7 @@ function Grid ( config ) {
 
 	this.$node.appendChild(this.$body);
 
-	console.log(this.data);
+	debug.log(this.data);
 
 	for ( i = 0; i < this.data.length; i++ ) {
 		row = this.$body.insertRow();

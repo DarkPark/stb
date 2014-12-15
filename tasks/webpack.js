@@ -16,10 +16,6 @@ var fs      = require('fs'),
 	title   = 'webpack:';
 
 
-// enable colors in console
-//require('tinycolor');
-
-
 gulp.task('webpack:develop', function () {
 	webpack({
 //		entry: process.env.STB + '/app/js/develop/main.js',

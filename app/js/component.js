@@ -188,7 +188,7 @@ function Component ( config ) {
 		// @ifdef DEBUG
 		// middle mouse button
 		if ( event.button === 1 ) {
-			console.log(self);
+			debug.log(self);
 		}
 		// @endif
 
@@ -245,7 +245,7 @@ Component.prototype.add = function ( child ) {
 		this.emit('add', {item: child});
 
 		// @ifdef DEBUG
-		console.log('component ' + this.constructor.name + '.' + this.id + ' new child: ' + child.constructor.name + '.' + child.id);
+		debug.log('component ' + this.constructor.name + '.' + this.id + ' new child: ' + child.constructor.name + '.' + child.id);
 		// @endif
 	}
 };

@@ -14,6 +14,10 @@ var host   = require('stb/app').data.host,
 	socket;
 
 
+// enable colors in console
+require('tinycolor');
+
+
 (function connect () {
 	if ( !host ) {
 		return;
@@ -41,6 +45,8 @@ var host   = require('stb/app').data.host,
 
 /**
  * Wrapper to dump message locally and remotely.
+ *
+ * @param {string} message data to output and send
  */
 function log ( message ) {
 	gSTB.Debug(message);
@@ -79,8 +85,8 @@ module.exports = window.debug = {
 	/**
 	 * Print a plain colored string.
 	 *
-	 * @param {string} message
-	 * @param {string} [color]
+	 * @param {*} message data to output
+	 * @param {string} [color='black'] colour to set
 	 */
 	log: function ( message, color ) {
 		message = (message + '') || '(empty message)';
@@ -95,8 +101,8 @@ module.exports = window.debug = {
 	/**
 	 * Print the given var with caption.
 	 *
-	 * @param {*} data
-	 * @param {string} [title]
+	 * @param {*} data data to output
+	 * @param {string} [title] optional caption
 	 */
 	info: function ( data, title ) {
 		var type = Object.prototype.toString.call(data).match(/\s([a-zA-Z]+)/)[1].toLowerCase(),
@@ -129,7 +135,7 @@ module.exports = window.debug = {
 	/**
 	 * Print the given complex var with level restriction.
 	 *
-	 * @param {*} data
+	 * @param {*} data data to output
 	 * @param {number} [depth=0] amount of sub-levels to print
 	 */
 	inspect: function ( data, depth ) {
@@ -144,7 +150,7 @@ module.exports = window.debug = {
 	/**
 	 * Print the given event object in some special way.
 	 *
-	 * @param {Event} data
+	 * @param {Event} data event object
 	 */
 	event: function ( data ) {
 		var type  = data.type.toUpperCase(),
@@ -201,6 +207,8 @@ module.exports = window.debug = {
 
 	/**
 	 * Use to do some development-specific actions which are removed in release mode.
+	 *
+	 * @param {function} cb callback to execute
 	 *
 	 * @example
 	 * debug.stub(function () {

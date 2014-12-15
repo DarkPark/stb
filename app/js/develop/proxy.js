@@ -71,8 +71,6 @@ function initGuest () {
 			keysCode = util.format('Object.keys(%s)', stbObjName),
 			stbObjKeys;
 
-
-
 		// get data from cache if no connection
 		if ( !window.proxy.active && config.cache ) {
 			stbObjKeys = JSON.parse(localStorage.getItem('proxy:eval:' + keysCode));
