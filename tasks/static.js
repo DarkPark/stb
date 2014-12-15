@@ -27,8 +27,8 @@ gulp.task('static', function () {
 			request.addListener('end', function eventListenerEnd () {
 				// static files
 				files.serve(request, response, function serve ( e ) {
-					var msCurr = +new Date(),
-						addr   = request.connection.remoteAddress,
+					var msCurr  = +new Date(),
+						address = request.connection.remoteAddress,
 						msDiff;
 
 					if ( e ) {
@@ -41,7 +41,7 @@ gulp.task('static', function () {
 
 						gutil.log(title, [
 							msDiff,
-							addr ? (addr === '127.0.0.1' ? addr : gutil.colors.cyan(addr)) : gutil.colors.red('[0.0.0.0]'),
+							address ? (address === '127.0.0.1' ? address : gutil.colors.cyan(address)) : gutil.colors.red('[0.0.0.0]'),
 							e ? gutil.colors.red(e.status) : (response.statusCode === 200 ? gutil.colors.green(response.statusCode) : gutil.colors.yellow(response.statusCode)),
 							gutil.colors.grey(request.method),
 							request.url.replace(/\//g, gutil.colors.grey('/'))

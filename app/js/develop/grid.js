@@ -89,8 +89,8 @@ module.exports = window.grid = {
 
 		if ( event.shiftKey ) {
 			// snap to the point divisible by 10
-			this.cursorX = Math.round(event.x/10)*10;
-			this.cursorY = Math.round(event.y/10)*10;
+			this.cursorX = Math.round(event.x / 10) * 10;
+			this.cursorY = Math.round(event.y / 10) * 10;
 		} else if ( !event.ctrlKey ) {
 			// snap to the nearest line
 			this.points.concat(this.snaps).some(function ( point ) {
@@ -129,7 +129,7 @@ module.exports = window.grid = {
 		} else if ( event.button === 1 ) {
 			// middle mouse button
 			this.points.pop();
-			point = this.points[this.points.length-1];
+			point = this.points[this.points.length - 1];
 			if ( point ) {
 				this.lastX = point.x;
 				this.lastY = point.y;
@@ -141,7 +141,7 @@ module.exports = window.grid = {
 			// right mouse button
 			if ( matchPoint !== null ) {
 				this.points.splice(this.points.indexOf(matchPoint), 1);
-				point = this.points[this.points.length-1];
+				point = this.points[this.points.length - 1];
 				if ( point ) {
 					this.lastX = point.x;
 					this.lastY = point.y;
@@ -236,8 +236,8 @@ module.exports = window.grid = {
 		// title background
 		ctx.fillStyle = 'yellow';
 		ctx.fillRect(
-			this.cursorX > this.centerX ? this.cursorX-width  : this.cursorX,
-			this.cursorY > this.centerY ? this.cursorY-height : this.cursorY,
+			this.cursorX > this.centerX ? this.cursorX - width  : this.cursorX,
+			this.cursorY > this.centerY ? this.cursorY - height : this.cursorY,
 			width, height
 		);
 
@@ -274,11 +274,11 @@ module.exports = window.grid = {
 			ctx.lineWidth = 1.5;
 			ctx.beginPath();
 			// horizontal line
-			ctx.moveTo(point.x-options.mark, point.y);
-			ctx.lineTo(point.x+options.mark, point.y);
+			ctx.moveTo(point.x - options.mark, point.y);
+			ctx.lineTo(point.x + options.mark, point.y);
 			// vertical line
-			ctx.moveTo(point.x, point.y-options.mark);
-			ctx.lineTo(point.x, point.y+options.mark);
+			ctx.moveTo(point.x, point.y - options.mark);
+			ctx.lineTo(point.x, point.y + options.mark);
 			// draw
 			ctx.stroke();
 			ctx.lineWidth = this.lineWidth;

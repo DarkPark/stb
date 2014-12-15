@@ -150,8 +150,8 @@ function List ( config ) {
 					self.$body.insertBefore(self.$body.lastChild, self.$body.firstChild);
 
 					//if ( config.render !== undefined ) {
-					self.render(self.$body.firstChild, self.data[self.activeIndex-1]);
-					self.$body.firstChild.index = self.activeIndex-1;
+					self.render(self.$body.firstChild, self.data[self.activeIndex - 1]);
+					self.$body.firstChild.index = self.activeIndex - 1;
 					//} else {
 					//	self.$body.firstChild.innerHTML = self.data[self.activeIndex-1];
 					//}
@@ -163,7 +163,7 @@ function List ( config ) {
 			}
 		}
 		if ( (event.code === keys.down && self.type === self.TYPE_VERTICAL) || (event.code === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
-			if ( self.activeIndex < self.data.length-1 ) {
+			if ( self.activeIndex < self.data.length - 1 ) {
 				index++;
 
 				if ( !self.focusNext() ) {
@@ -172,8 +172,8 @@ function List ( config ) {
 					self.$body.appendChild(self.$body.firstChild);
 
 					//if ( config.render !== undefined ) {
-					self.render(self.$body.lastChild, self.data[self.activeIndex+1]);
-					self.$body.lastChild.index = self.activeIndex+1;
+					self.render(self.$body.lastChild, self.data[self.activeIndex + 1]);
+					self.$body.lastChild.index = self.activeIndex + 1;
 					//} else {
 					//	self.$body.lastChild.innerHTML = self.data[self.activeIndex + 1];
 					//}
