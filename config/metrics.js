@@ -36,10 +36,10 @@ module.exports = {
 		height: 720,
 		width : 1280,
 		// safe zone margins
-		availTop   : 30,
-		availBottom: 30,
-		availRight : 40,
-		availLeft  : 40
+		availTop   : 10,
+		availBottom: 10,
+		availRight : 10,
+		availLeft  : 10
 	},
 
 	1080: {
@@ -47,9 +47,9 @@ module.exports = {
 		height: 1080,
 		width : 1920,
 		// safe zone margins
-		availTop   : 40,
-		availBottom: 40,
-		availRight : 50,
-		availLeft  : 50
+		availTop   : 15,
+		availBottom: 15,
+		availRight : 15,
+		availLeft  : 15
 	}
 };
