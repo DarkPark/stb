@@ -114,11 +114,13 @@ function build ( mode, done ) {
 		}
 
 		// user
-		vars = requirem(varsFileUser, {reload: true});
-		// extend with less vars
-		for ( name in vars ) {
-			if ( vars.hasOwnProperty(name) ) {
-				options[mode][height].globalVars[name] = vars[name];
+		if ( fs.existsSync(varsFileUser) ) {
+			vars = requirem(varsFileUser, {reload: true});
+			// extend with less vars
+			for ( name in vars ) {
+				if ( vars.hasOwnProperty(name) ) {
+					options[mode][height].globalVars[name] = vars[name];
+				}
 			}
 		}
 
