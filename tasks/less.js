@@ -14,7 +14,10 @@ var gulp     = require('gulp'),
 	fs       = require('fs'),
 	gutil    = require('gulp-util'),
 	requirem = require('requirem'),
+	cfgBase  = process.env.STB + '/config/metrics.js',
+	cfgUser  = process.env.CWD + '/config/metrics.js',
 	title    = 'less:',
+
 
 	// main less options
 	defaults = {
@@ -52,8 +55,7 @@ var gulp     = require('gulp'),
 function prepare () {
 	// prepare options sets for all dimensions
 	Object.keys(defaults).forEach(function ( mode ) {
-		var metrics = requirem('./../config/metrics', {reload: true});
-		//var metrics = require('./../config/metrics');
+		var metrics = requirem(fs.existsSync(cfgUser) ? cfgUser : cfgBase, {reload: true});
 
 		options[mode] = {};
 
@@ -98,9 +100,21 @@ function build ( mode, done ) {
 
 	// dimensions
 	keys.forEach(function ( height ) {
-		var vars = requirem('./../app/less/vars/' + height + '.js', {reload: true}),
-			name;
+		var varsFileBase = process.env.STB + '/app/less/vars/' + height + '.js',
+			varsFileUser = process.env.CWD + '/app/less/vars/' + height + '.js',
+			vars, name;
 
+		// base
+		vars = requirem(varsFileBase, {reload: true});
+		// extend with less vars
+		for ( name in vars ) {
+			if ( vars.hasOwnProperty(name) ) {
+				options[mode][height].globalVars[name] = vars[name];
+			}
+		}
+
+		// user
+		vars = requirem(varsFileUser, {reload: true});
 		// extend with less vars
 		for ( name in vars ) {
 			if ( vars.hasOwnProperty(name) ) {
