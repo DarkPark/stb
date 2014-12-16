@@ -16,6 +16,10 @@ var path       = require('path'),
 	report     = require('./lib/report').webpack;
 
 
+// enable colors in console
+require('tty-colors');
+
+
 gulp.task('lint', function () {
 	return gulp
 		.src([
