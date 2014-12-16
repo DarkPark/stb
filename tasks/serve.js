@@ -48,7 +48,7 @@ gulp.task('serve', ['develop', 'release'], function () {
 		require('open')('http://localhost:8000/');
 		// report
 		gutil.log(
-			'runtime:', 'Root page was opened in the default browser. Use "' +
+			'runtime '.inverse, 'Root page was opened in the default browser. Use "' +
 			'gulp --noopen'.green + '" to prevent this.'
 		);
 	}

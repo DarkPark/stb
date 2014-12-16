@@ -56,12 +56,12 @@ gulp.on('err', function () {
 });
 
 gulp.on('task_start', function ( error ) {
-	gutil.log('Starting'.bold, error.task.cyan + ' ...');
+	gutil.log('Starting'.green.inverse, error.task.cyan + ' ...');
 });
 
 gulp.on('task_stop', function (e) {
 	gutil.log(
-		'Finished'.bold, e.task.cyan,
+		'Finished'.green.inverse, e.task.cyan,
 		'after', prettyTime(e.hrDuration).magenta
 	);
 });

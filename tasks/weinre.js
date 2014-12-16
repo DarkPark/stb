@@ -11,7 +11,7 @@ var path   = require('path'),
 	gulp   = require('gulp'),
 	gutil  = require('gulp-util'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('weinre'),
-	title  = 'weinre: ';
+	title  = 'weinre  '.inverse;
 
 
 gulp.task('weinre', function () {

@@ -12,7 +12,7 @@ var path   = require('path'),
 	gutil  = require('gulp-util'),
 	glr    = require('gulp-livereload'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
-	title  = 'static: ';
+	title  = 'static  '.inverse;
 
 
 gulp.task('static', function () {
@@ -65,7 +65,7 @@ gulp.task('static', function () {
 			// reload
 			gulp.watch(['./build/**/*.{html,js,css}']).on('change', function ( file ) {
 				// report
-				gutil.log('watch:  ', 'reload ' + ('./' + path.relative(process.env.CWD, file.path)).magenta);
+				gutil.log('watch   '.bgMagenta.white, 'reload ' + ('./' + path.relative(process.env.CWD, file.path)).bold);
 				// reload
 				glr.changed(file);
 			});

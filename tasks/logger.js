@@ -12,7 +12,7 @@ var path   = require('path'),
 	gutil  = require('gulp-util'),
 	ws     = require('ws'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('logger'),
-	title  = 'logger: '.yellow;
+	title  = 'logger  '.inverse.yellow;
 
 
 gulp.task('logger', function () {

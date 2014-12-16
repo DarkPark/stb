@@ -16,7 +16,7 @@ var gulp     = require('gulp'),
 	requirem = require('requirem'),
 	cfgBase  = process.env.STB + '/config/metrics.js',
 	cfgUser  = process.env.CWD + '/config/metrics.js',
-	title    = 'less:',
+	title    = 'less    '.inverse,
 
 
 	// main less options
