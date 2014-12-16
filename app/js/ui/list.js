@@ -122,9 +122,10 @@ function List ( config ) {
 
 			item.addEventListener('click', function () {
 				self.activeIndex = this.index;
-				self.activeItem.classList.remove('focus');
-				self.activeItem = this;
-				self.activeItem.classList.add('focus');
+				self.focusItem(this);
+				//self.activeItem.classList.remove('focus');
+				//self.activeItem = this;
+				//self.activeItem.classList.add('focus');
 			});
 		}
 		//this.items.push(this.$body.appendChild(item));
@@ -256,7 +257,7 @@ List.prototype.defaultRender = function ( $item, data ) {
 
 /**
  * Highlight the given DOM element as focused.
- * Remove focus from the previously focused item.
+ * Remove focus from the previously focused item and generate associated event.
  *
  * @param {Node} $item element to focus
  *
