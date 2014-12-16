@@ -20,7 +20,8 @@ var //path    = require('path'),
 gulp.task('develop', [
 	'lint', 'img:develop', 'jade:develop', 'less:develop', 'webpack:develop', 'static', 'weinre', 'proxy', 'logger'
 ], function () {
-	// build
+	// build and watch
+	gulp.watch(['./app/js/**/*.js'], ['webpack:develop']);
 	gulp.watch(['./app/jade/**/*.jade'], ['jade:develop']);
 	gulp.watch(['./app/less/**/*.less', './app/less/vars/*.js', './config/metrics.js'], ['less:develop']);
 });
