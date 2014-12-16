@@ -15,7 +15,7 @@ var host   = require('stb/app').data.host,
 
 
 // enable colors in console
-require('tinycolor');
+require('tty-colors');
 
 
 (function connect () {

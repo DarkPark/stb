@@ -13,7 +13,7 @@ var fs         = require('fs'),
 	path       = require('path'),
 	gulp       = require('gulp'),
 	gutil      = require('gulp-util'),
-	chalk      = require('chalk'),
+	//chalk      = require('chalk'),
 	prettyTime = require('pretty-hrtime'),
 	cliParams  = require('minimist')(process.argv.slice(2)),
 	task;
@@ -39,6 +39,11 @@ function load ( dir ) {
 	}
 }
 
+
+// enable colors in console
+require('tty-colors');
+
+
 // set env vars for current working dir
 // and the dir with this stb package
 process.env.CWD = process.cwd();
@@ -51,21 +56,21 @@ gulp.on('err', function () {
 });
 
 gulp.on('task_start', function ( error ) {
-	gutil.log('Starting', chalk.cyan(error.task) + '...');
+	gutil.log('Starting'.bold, error.task.cyan + ' ...');
 });
 
 gulp.on('task_stop', function (e) {
 	gutil.log(
-		'Finished', chalk.cyan(e.task),
-		'after', chalk.magenta(prettyTime(e.hrDuration))
+		'Finished'.bold, e.task.cyan,
+		'after', prettyTime(e.hrDuration).magenta
 	);
 });
 
 gulp.on('task_err', function ( error ) {
 	gutil.log(
-		chalk.cyan(error.task),
-		chalk.red('errored after'),
-		chalk.magenta(prettyTime(error.hrDuration))
+		error.task.cyan,
+		'errored after'.red,
+		prettyTime(error.hrDuration).magenta
 	);
 	console.log(error);
 });
@@ -87,7 +92,7 @@ if ( !task ) {
 	console.log('Available sub-commands:');
 	// dump available tasks
 	Object.keys(gulp.tasks).forEach(function ( name ) {
-		console.log('  * ' + gutil.colors.green(gulp.tasks[name].name));
+		console.log('  * ' + gulp.tasks[name].name.green);
 	});
 } else {
 	// exec selected task

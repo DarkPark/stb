@@ -40,7 +40,7 @@ gulp.task('webpack:develop', function () {
 			devtool: 'source-map',
 			node: {
 				console: false,
-				process: false,
+				process: true,
 				global: false,
 				buffer: false,
 				__filename: true,

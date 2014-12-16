@@ -17,7 +17,7 @@ var fs    = require('fs'),
 
 
 gulp.task('init', function () {
-	console.log(gutil.colors.green('project structure cloning ...'));
+	console.log('project structure cloning ...'.green);
 	// copy template files to the current dir
 	gulp.src([__dirname + '/../tpl/**', path.join(__dirname, '..', '.eslintrc')])
 		.pipe(require('gulp-conflict')('./'))
@@ -28,7 +28,7 @@ gulp.task('init', function () {
 				.pipe(require('gulp-conflict')('./'))
 				.pipe(gulp.dest('./'))
 				.on('end', function () {
-					console.log(gutil.colors.green('done'));
+					console.log('done'.green);
 
 					fs.mkdirSync('./build/develop');
 					fs.mkdirSync('./build/release');
@@ -53,14 +53,14 @@ gulp.task('init', function () {
 
 							// there are some packages to install
 							if ( pkgSet.length > 0 ) {
-								console.log(gutil.colors.green('\ninstalling dependencies ...'));
+								console.log('\ninstalling dependencies ...'.green);
 
 								// do the installation
 								npm.commands.install(pkgSet, function ( error ) {
 									if ( error ) {
 										console.log(error);
 									} else {
-										console.log(gutil.colors.green('done'));
+										console.log('done'.green);
 									}
 								});
 								npm.on('log', function ( message ) {

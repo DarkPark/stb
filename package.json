@@ -34,9 +34,15 @@
 		"open": "^0.0.5",
 		"pretty-hrtime": "^0.2.2",
 		"requirem": "^0.7.5",
-		"tinycolor": "0.0.1",
+		"tty-colors": "^0.0.4",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
 		"ws": "^0.6.3"
 	},
+	"keywords": [
+		"stb",
+		"device",
+		"tv",
+		"framework"
+	],
 	"license": "GPL-3.0"
 }

@@ -37,14 +37,14 @@ gulp.task('static', function () {
 
 					if ( config.logging ) {
 						msDiff = (msCurr - msInit).toString();
-						msDiff = msDiff.slice(0, -3) + '\t' + gutil.colors.grey(msDiff.substr(-3));
+						msDiff = msDiff.slice(0, -3) + '\t' + msDiff.substr(-3).toString().grey;
 
 						gutil.log(title, [
 							msDiff,
-							address ? (address === '127.0.0.1' ? address : gutil.colors.cyan(address)) : gutil.colors.red('[0.0.0.0]'),
-							e ? gutil.colors.red(e.status) : (response.statusCode === 200 ? gutil.colors.green(response.statusCode) : gutil.colors.yellow(response.statusCode)),
-							gutil.colors.grey(request.method),
-							request.url.replace(/\//g, gutil.colors.grey('/'))
+							address ? (address === '127.0.0.1' ? address : address.cyan) : '[0.0.0.0]'.red,
+							e ? e.status.red : (response.statusCode === 200 ? response.statusCode.toString().green : response.statusCode.toString().yellow),
+							request.method.grey,
+							request.url.replace(/\//g, '/'.grey)
 						].join('\t'));
 					}
 				});
@@ -55,7 +55,7 @@ gulp.task('static', function () {
 				hash = new Array(msg.length + 1).join('#');
 
 			gutil.log(title, hash);
-			gutil.log(title, gutil.colors.green(msg));
+			gutil.log(title, msg.green);
 			gutil.log(title, hash);
 		});
 
@@ -65,7 +65,7 @@ gulp.task('static', function () {
 			// reload
 			gulp.watch(['./build/**/*.{html,js,css}']).on('change', function ( file ) {
 				// report
-				gutil.log('watch:  ', 'reload ' + gutil.colors.magenta('./' + path.relative(process.env.CWD, file.path)));
+				gutil.log('watch:  ', 'reload ' + ('./' + path.relative(process.env.CWD, file.path)).magenta);
 				// reload
 				glr.changed(file);
 			});

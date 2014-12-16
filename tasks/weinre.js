@@ -27,15 +27,15 @@ gulp.task('weinre', function () {
 		]);
 
 		weinre.on('exit', function () {
-			gutil.log(title, gutil.colors.red('process terminated'));
+			gutil.log(title, 'process terminated'.red);
 		});
 
 		weinre.on('error', function () {
-			gutil.log(title, gutil.colors.red('FATAL ERROR'), '(check weinre is installed)');
+			gutil.log(title, 'FATAL ERROR'.red, '(check weinre is installed)');
 		});
 
 		weinre.stderr.on('data', function ( data ) {
-			gutil.log(title, gutil.colors.red(data.toString().trim()));
+			gutil.log(title, data.toString().trim().red);
 		});
 
 		weinre.stdout.on('data', function ( data ) {

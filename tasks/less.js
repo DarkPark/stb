@@ -76,7 +76,7 @@ function prepare () {
 				conf.sourceMapURL   = height + '.map';
 				conf.writeSourceMap = function ( map ) {
 					fs.writeFileSync(conf.sourceMapFile, map, {encoding:'utf8'});
-					gutil.log(title, '\t' + map.length + '\t' + conf.sourceMapFile.replace(/\//g, gutil.colors.grey('/')));
+					gutil.log(title, '\t' + map.length + '\t' + conf.sourceMapFile.replace(/\//g, '/'.grey));
 				};
 			}
 		});
@@ -96,7 +96,7 @@ function build ( mode, done ) {
 		keys = Object.keys(options[mode]),
 		tick = 0;
 
-	gutil.log(title, gutil.colors.grey('\tSize\tName'));
+	gutil.log(title, '\tSize\tName'.grey);
 
 	// dimensions
 	keys.forEach(function ( height ) {
@@ -128,10 +128,10 @@ function build ( mode, done ) {
 			var file = options[mode][height].cssFile;
 
 			if ( error ) {
-				gutil.log(title, '\t0\t' + gutil.colors.red(file) + '\t(' + error.message + ' in ' + error.filename + ' ' + error.line + ':' + error.column + ')');
+				gutil.log(title, '\t0\t' + file.red + '\t(' + error.message + ' in ' + error.filename + ' ' + error.line + ':' + error.column + ')');
 			} else {
 				fs.writeFileSync(file, data.css, {encoding:'utf8'});
-				gutil.log(title, '\t' + data.css.length + '\t' + file.replace(/\//g, gutil.colors.grey('/')));
+				gutil.log(title, '\t' + data.css.length + '\t' + file.replace(/\//g, '/'.grey));
 			}
 
 			tick++;

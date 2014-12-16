@@ -49,7 +49,7 @@ gulp.task('serve', ['develop', 'release'], function () {
 		// report
 		gutil.log(
 			'runtime:', 'Root page was opened in the default browser. Use "' +
-			gutil.colors.green('gulp --noopen') + '" to prevent this.'
+			'gulp --noopen'.green + '" to prevent this.'
 		);
 	}
 });
