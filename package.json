@@ -19,7 +19,7 @@
 		"gulp-conflict": "^0.3.0",
 		"gulp-eslint": "^0.2.0",
 		"gulp-jade": "^0.10.0",
-		"gulp-livereload": "^2.1.1",
+		"gulp-livereload": "^3.0.2",
 		"gulp-plumber": "^0.6.6",
 		"gulp-preprocess": "^1.2.0",
 		"gulp-rename": "^1.2.0",
@@ -34,7 +34,6 @@
 		"open": "^0.0.5",
 		"requirem": "^0.7.5",
 		"tinycolor": "0.0.1",
-		"webpack": "^1.4.13",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
 		"ws": "^0.6.3"
 	},

@@ -12,7 +12,8 @@ var path       = require('path'),
 	plumber    = require('gulp-plumber'),
 	eslint     = require('gulp-eslint'),
 	webpack    = require('gulp-webpack'),
-	preprocess = require('gulp-preprocess');
+	preprocess = require('gulp-preprocess'),
+	report     = require('./lib/report').webpack;
 
 
 gulp.task('lint', function () {
@@ -47,7 +48,7 @@ gulp.task('webpack', function () {
 		.pipe(plumber())
 		.pipe(webpack({
 			output: {
-				filename: './build.js',
+				filename: 'build.js',
 				pathinfo: true,
 				sourcePrefix: '\t\t\t'
 			},
@@ -59,7 +60,7 @@ gulp.task('webpack', function () {
 				// fix compilation persistence
 				new webpack.webpack.optimize.OccurenceOrderPlugin(true)
 			]
-		}))
+		}, null, report))
 		.pipe(gulp.dest('tests'));
 });
 
