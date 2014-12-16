@@ -70,7 +70,7 @@ request.ajax = function ( url, options ) {
 		// callbacks
 		if ( options.onload && typeof options.onload === 'function' ) {
 			client.onload = function onload () {
-				options.onload.call(this, this.response, this.status);
+				options.onload.call(this, this.response || this.responseText, this.status);
 			};
 		}
 		client.onerror   = options.onerror;
