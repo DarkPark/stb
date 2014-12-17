@@ -25,12 +25,12 @@ module.exports = {
 
 	// set of named configs
 	profiles: {
-		// extends the base profile
+		// extends the default config
 		develop: {
 			url: 'develop/'
 		},
 
-		// extends the base profile
+		// extends the default config
 		release: {
 			url: 'release/'
 		}

@@ -43,5 +43,13 @@ gulp.task('weinre', function () {
 				log(title, line.trim().split(' weinre: ').pop());
 			});
 		});
+
+		process.on('SIGINT', function() {
+			weinre.kill();
+			console.log(' weinre exit');
+
+			// graceful shutdown
+			process.exit();
+		});
 	}
 });
