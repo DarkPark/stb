@@ -24,7 +24,7 @@ gulp.task('img:clean:release', function ( done ) {
 
 gulp.task('img:develop', ['img:clean:develop'], function () {
 	return gulp
-		.src('./app/img/**', {base: './app/'})
+		.src(['./app/img/**', '!./app/img/**/readme.md'], {base: './app/'})
 		.pipe(plumber())
 		.pipe(gulp.dest('./build/develop/'));
 });
@@ -32,7 +32,7 @@ gulp.task('img:develop', ['img:clean:develop'], function () {
 
 gulp.task('img:release', ['img:clean:release'], function () {
 	return gulp
-		.src('./app/img/**', {base: './app/'})
+		.src(['./app/img/**', '!./app/img/**/readme.md'], {base: './app/'})
 		.pipe(plumber())
 		.pipe(gulp.dest('./build/release/'));
 });
