@@ -10,7 +10,7 @@
 // public export
 module.exports = {
 	// turn on/off server
-	active: true,
+	active: false,
 
 	// listening port
 	port: 8010
