@@ -92,7 +92,9 @@ function prepare () {
  */
 function build ( mode, done ) {
 	var less = require('less'),
-		data = fs.readFileSync(defaults[mode].filename, {encoding:'utf8'}),
+		dataBase = fs.readFileSync(defaults[mode].filename, {encoding:'utf8'}),
+		dataUser = fs.readFileSync(process.env.CWD + '/app/less/main.less', {encoding:'utf8'}),
+		data     = dataBase + dataUser,
 		keys = Object.keys(options[mode]),
 		tick = 0;
 

@@ -3,3 +3,23 @@
 //
 // @author Stanislav Kalashnik <sk@infomir.eu>
 // @license GNU GENERAL PUBLIC LICENSE Version 3
+
+
+#pageInit {
+	text-align : center;
+
+	.main {
+		margin-top  : unit(@fontSize * 2, px);
+		line-height : unit(@height - (@availTop + @availBottom) - @fontSize * 4, px);
+		font-size   : 150%;
+	}
+	.version {
+		padding-right : unit(@fontSize, px);
+		line-height   : unit(@fontSize * 2, px);
+		text-align    : right;
+		font-size     : 80%;
+		.value {
+			color : grey;
+		}
+	}
+}
