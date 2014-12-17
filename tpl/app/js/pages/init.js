@@ -9,9 +9,7 @@
 
 var id   = 'pageInit',
 	Page = require('stb/ui/page'),
-	page = new Page({
-		$node: document.getElementById(id)
-	});
+	page = new Page({$node: document.getElementById(id)});
 
 
 // public export

@@ -21,6 +21,22 @@ app.addListeners({
 	}
 });
 
+app.addListeners({
+	// all resources are loaded
+	load: function load () {
+		// set pages
+		router.init([
+			require('./pages/init')
+		]);
+	},
+
+	// everything is ready
+	done: function done () {
+		// go to the main page
+		router.navigate('pageMain');
+	}
+});
+
 
 // new way of string handling
 // all strings are in UTF-16
