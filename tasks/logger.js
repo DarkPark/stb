@@ -9,7 +9,7 @@
 
 var path   = require('path'),
 	gulp   = require('gulp'),
-	gutil  = require('gulp-util'),
+	log    = require('../lib/log'),
 	ws     = require('ws'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('logger'),
 	title  = 'logger  '.inverse.yellow;
@@ -23,20 +23,20 @@ gulp.task('logger', function () {
 		wss = new ws.Server({port: config.port});
 		// incoming
 		wss.on('connection', function ( socket ) {
-			gutil.log(title, 'connected');
+			log(title, 'connected');
 
 			socket.on('message', function ( data ) {
 				var messages = JSON.parse(data);
 				if ( Array.isArray(messages) ) {
 					messages.forEach(function ( message ) {
-						gutil.log(title, message);
+						log(title, message);
 					});
 				}
 			});
 		});
 		// report
 		wss.on('listening', function () {
-			gutil.log(title, 'listening ...');
+			log(title, 'listening ...');
 		});
 	}
 });

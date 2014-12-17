@@ -10,7 +10,7 @@
 
 var //path    = require('path'),
 	gulp    = require('gulp'),
-	gutil   = require('gulp-util'),
+	log     = require('../lib/log'),
 	//config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
 	cliParams = require('minimist')(process.argv.slice(2));
 	//plumber = require('gulp-plumber'),
@@ -40,16 +40,17 @@ gulp.task('serve', ['develop', 'release'], function () {
 	//gulp.watch([__filename, './tasks/**/*.js'], function ( file ) {
 	//	// clear cache
 	//	runtime.require(file.path, {reload: true});
-	//	gutil.log('runtime:', gutil.colors.green('reloaded ') + file.path);
+	//	log('runtime:', gutil.colors.green('reloaded ') + file.path);
 	//});
 
 	// popup browser if not prevented
 	if ( !cliParams.noopen ) {
 		require('open')('http://localhost:8000/');
 		// report
-		gutil.log(
-			'runtime '.inverse, 'Root page was opened in the default browser. Use "' +
-			'gulp --noopen'.green + '" to prevent this.'
-		);
+		log('runtime '.inverse,
+			'Root page was opened in the default browser. Use "' + 'gulp --noopen'.green + '" to prevent this.');
 	}
+
+	// connect to STB
+	require('../lib/ssh');
 });

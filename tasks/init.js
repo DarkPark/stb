@@ -12,8 +12,7 @@
 var fs    = require('fs'),
 	npm   = require('npm'),
 	path  = require('path'),
-	gulp  = require('gulp'),
-	gutil = require('gulp-util');
+	gulp  = require('gulp');
 
 
 gulp.task('init', function () {

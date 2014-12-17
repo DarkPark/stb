@@ -9,7 +9,7 @@
 
 var path   = require('path'),
 	gulp   = require('gulp'),
-	gutil  = require('gulp-util'),
+	log    = require('../lib/log'),
 	glr    = require('gulp-livereload'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
 	title  = 'static  '.inverse;
@@ -39,7 +39,8 @@ gulp.task('static', function () {
 						msDiff = (msCurr - msInit).toString();
 						msDiff = msDiff.slice(0, -3) + '\t' + msDiff.substr(-3).toString().grey;
 
-						gutil.log(title, [
+						log(title, [
+							'',
 							msDiff,
 							address ? (address === '127.0.0.1' ? address : address.cyan) : '[0.0.0.0]'.red,
 							e ? e.status.red : (response.statusCode === 200 ? response.statusCode.toString().green : response.statusCode.toString().yellow),
@@ -54,9 +55,9 @@ gulp.task('static', function () {
 				msg  = 'Serve directory ' + path.join(process.env.CWD, 'build') + ' at ' + 'http://' + ip + ':' + config.port + '/',
 				hash = new Array(msg.length + 1).join('#');
 
-			gutil.log(title, hash);
-			gutil.log(title, msg.green);
-			gutil.log(title, hash);
+			log(title, hash);
+			log(title, msg.green);
+			log(title, hash);
 		});
 
 		if ( config.livereload ) {
@@ -65,7 +66,7 @@ gulp.task('static', function () {
 			// reload
 			gulp.watch(['./build/**/*.{html,js,css}']).on('change', function ( file ) {
 				// report
-				gutil.log('watch   '.bgMagenta.white, 'reload ' + ('./' + path.relative(process.env.CWD, file.path)).bold);
+				log('watch   '.bgCyan.black, 'reload ' + ('./' + path.relative(process.env.CWD, file.path)).bold);
 				// reload
 				glr.changed(file);
 			});

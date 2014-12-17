@@ -82,7 +82,20 @@ stb serve
 After the `stb serve` command the [start page](http://localhost:8000/) should open in the default browser.
 This page should be accessible remotely on the STB device via <http://external_ip_address:8000/> address.
 
-It's possible to suppress a browser opening with `stb serve --noopen`.
+It's possible to suppress a browser opening with
+
+```bash
+stb serve --noopen
+```
+
+In case remote access to STB device is enabled and configured in application `./config/ssh.js` it's possible to activate one of the profiles:
+
+```bash
+stb serve --profile=develop
+```
+
+This will build and serve as usual but also connect to the STB device by SSH protocol and starts there a web browser with the configured page.
+
 
 At runtime the development mode has a set of useful function available via keyboard shortcuts:
 

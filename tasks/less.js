@@ -12,7 +12,7 @@
 
 var gulp     = require('gulp'),
 	fs       = require('fs'),
-	gutil    = require('gulp-util'),
+	log      = require('../lib/log'),
 	requirem = require('requirem'),
 	cfgBase  = process.env.STB + '/config/metrics.js',
 	cfgUser  = process.env.CWD + '/config/metrics.js',
@@ -76,7 +76,7 @@ function prepare () {
 				conf.sourceMapURL   = height + '.map';
 				conf.writeSourceMap = function ( map ) {
 					fs.writeFileSync(conf.sourceMapFile, map, {encoding:'utf8'});
-					gutil.log(title, '\t' + map.length + '\t' + conf.sourceMapFile.replace(/\//g, '/'.grey));
+					log(title, '\t' + map.length + '\t' + conf.sourceMapFile.replace(/\//g, '/'.grey));
 				};
 			}
 		});
@@ -98,7 +98,7 @@ function build ( mode, done ) {
 		keys = Object.keys(options[mode]),
 		tick = 0;
 
-	gutil.log(title, '\tSize\tName'.grey);
+	log(title, '\tSize\tName'.grey);
 
 	// dimensions
 	keys.forEach(function ( height ) {
@@ -130,10 +130,10 @@ function build ( mode, done ) {
 			var file = options[mode][height].cssFile;
 
 			if ( error ) {
-				gutil.log(title, '\t0\t' + file.red + '\t(' + error.message + ' in ' + error.filename + ' ' + error.line + ':' + error.column + ')');
+				log(title, '\t0\t' + file.red + '\t(' + error.message + ' in ' + error.filename + ' ' + error.line + ':' + error.column + ')');
 			} else {
 				fs.writeFileSync(file, data.css, {encoding:'utf8'});
-				gutil.log(title, '\t' + data.css.length + '\t' + file.replace(/\//g, '/'.grey));
+				log(title, '\t' + data.css.length + '\t' + file.replace(/\//g, '/'.grey));
 			}
 
 			tick++;

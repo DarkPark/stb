@@ -9,7 +9,7 @@
 
 var path   = require('path'),
 	gulp   = require('gulp'),
-	gutil  = require('gulp-util'),
+	log    = require('../lib/log'),
 	config = require(path.join(__dirname, '..', 'lib', 'config'))('weinre'),
 	title  = 'weinre  '.inverse;
 
@@ -27,20 +27,20 @@ gulp.task('weinre', function () {
 		]);
 
 		weinre.on('exit', function () {
-			gutil.log(title, 'process terminated'.red);
+			log(title, 'process terminated'.red);
 		});
 
 		weinre.on('error', function () {
-			gutil.log(title, 'FATAL ERROR'.red, '(check weinre is installed)');
+			log(title, 'FATAL ERROR'.red, '(check weinre is installed)');
 		});
 
 		weinre.stderr.on('data', function ( data ) {
-			gutil.log(title, data.toString().trim().red);
+			log(title, data.toString().trim().red);
 		});
 
 		weinre.stdout.on('data', function ( data ) {
 			data.toString().trim().split('\n').forEach(function ( line ) {
-				gutil.log(title, line.trim().split(' weinre: ').pop());
+				log(title, line.trim().split(' weinre: ').pop());
 			});
 		});
 	}

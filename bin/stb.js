@@ -12,8 +12,7 @@
 var fs         = require('fs'),
 	path       = require('path'),
 	gulp       = require('gulp'),
-	gutil      = require('gulp-util'),
-	//chalk      = require('chalk'),
+	log        = require('../lib/log'),
 	prettyTime = require('pretty-hrtime'),
 	cliParams  = require('minimist')(process.argv.slice(2)),
 	task;
@@ -52,22 +51,22 @@ process.env.STB = path.join(__dirname, '..');
 
 // logging for gulp
 gulp.on('err', function () {
-	gutil.log('Error');
+	log('Error');
 });
 
 gulp.on('task_start', function ( error ) {
-	gutil.log('Starting'.green.inverse, error.task.cyan + ' ...');
+	log('Starting'.green.inverse, error.task.cyan + ' ...');
 });
 
 gulp.on('task_stop', function (e) {
-	gutil.log(
+	log(
 		'Finished'.green.inverse, e.task.cyan,
 		'after', prettyTime(e.hrDuration).magenta
 	);
 });
 
 gulp.on('task_err', function ( error ) {
-	gutil.log(
+	log(
 		error.task.cyan,
 		'errored after'.red,
 		prettyTime(error.hrDuration).magenta

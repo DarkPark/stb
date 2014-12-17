@@ -24,7 +24,6 @@
 		"gulp-preprocess": "^1.2.0",
 		"gulp-rename": "^1.2.0",
 		"gulp-runtime": "^0.5.3",
-		"gulp-util": "^3.0.1",
 		"gulp-webpack": "^1.1.1",
 		"ip": "^0.3.2",
 		"jsdoc": "^3.3.0-alpha11",
@@ -34,6 +33,7 @@
 		"open": "^0.0.5",
 		"pretty-hrtime": "^0.2.2",
 		"requirem": "^0.7.5",
+		"ssh2": "^0.3.6",
 		"tty-colors": "^0.0.4",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
 		"ws": "^0.6.3"
