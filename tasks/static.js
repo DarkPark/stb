@@ -11,7 +11,7 @@ var path   = require('path'),
 	gulp   = require('gulp'),
 	log    = require('../lib/log'),
 	glr    = require('gulp-livereload'),
-	config = require(path.join(__dirname, '..', 'lib', 'config'))('static'),
+	config = require(path.join(process.env.STB, 'lib', 'config'))('static'),
 	title  = 'static  '.inverse;
 
 

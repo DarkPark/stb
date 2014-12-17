@@ -10,7 +10,7 @@
 var path   = require('path'),
 	gulp   = require('gulp'),
 	log    = require('../lib/log'),
-	config = require(path.join(__dirname, '..', 'lib', 'config'))('weinre'),
+	config = require(path.join(process.env.STB, 'lib', 'config'))('weinre'),
 	title  = 'weinre  '.inverse;
 
 

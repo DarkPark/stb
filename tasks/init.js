@@ -18,12 +18,12 @@ var fs    = require('fs'),
 gulp.task('init', function () {
 	console.log('project structure cloning ...'.green);
 	// copy template files to the current dir
-	gulp.src([__dirname + '/../tpl/**', path.join(__dirname, '..', '.eslintrc')])
+	gulp.src([process.env.STB + '/tpl/**', process.env.STB + '/.eslintrc'])
 		.pipe(require('gulp-conflict')('./'))
 		.pipe(gulp.dest('./'))
 		.on('end', function () {
 			// copy config files to the current dir
-			gulp.src(__dirname + '/../config/**', {base: path.join(__dirname, '..')})
+			gulp.src(process.env.STB + '/config/**', {base: process.env.STB})
 				.pipe(require('gulp-conflict')('./'))
 				.pipe(gulp.dest('./'))
 				.on('end', function () {
