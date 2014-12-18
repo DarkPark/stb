@@ -54,14 +54,14 @@ gulp.on('err', function () {
 	log('Error');
 });
 
-gulp.on('task_start', function ( error ) {
-	log('Starting'.green.inverse, error.task.cyan + ' ...');
+gulp.on('task_start', function ( info ) {
+	log('Starting'.green.inverse, info.task.cyan, ' ...');
 });
 
-gulp.on('task_stop', function (e) {
+gulp.on('task_stop', function ( info ) {
 	log(
-		'Finished'.green.inverse, e.task.cyan,
-		'after', prettyTime(e.hrDuration).magenta
+		'Finished'.green.inverse, info.task.cyan,
+		'after', prettyTime(info.hrDuration).magenta
 	);
 });
 
@@ -94,6 +94,11 @@ if ( !task ) {
 		console.log('  * ' + gulp.tasks[name].name.green);
 	});
 } else {
-	// exec selected task
-	gulp.start(task.name);
+	// first run or roop of the project
+	if ( task.name === 'init' || fs.existsSync(path.join(process.env.CWD, 'package.json')) ) {
+		// exec selected task
+		gulp.start(task.name);
+	} else {
+		console.log('Wrong current directory!\nThis command should be executed only in the root directory of the project.'.red);
+	}
 }
