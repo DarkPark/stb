@@ -13,7 +13,7 @@ var path    = require('path'),
 	plumber = require('gulp-plumber'),
 	rename  = require('gulp-rename'),
 	del     = require('del'),
-	project = require(path.join(process.env.CWD, 'package.json'));
+	pkgName = path.join(process.env.CWD, 'package.json');
 
 
 gulp.task('jade:clean:develop', function ( done ) {
@@ -30,6 +30,8 @@ gulp.task('jade:clean', ['jade:clean:develop', 'jade:clean:release']);
 
 
 gulp.task('jade:develop', function () {
+	var pkgInfo = require(pkgName);
+
 	return gulp
 		.src('./app/jade/main.jade')
 		.pipe(plumber())
@@ -37,8 +39,8 @@ gulp.task('jade:develop', function () {
 			pretty: true,
 			locals: {
 				develop: true,
-				title  : 'develop :: ' + project.name,
-				version: project.version
+				title  : 'develop :: ' + pkgInfo.name,
+				version: pkgInfo.version
 			}
 		}))
 		.pipe(rename('index.html'))
@@ -47,6 +49,8 @@ gulp.task('jade:develop', function () {
 
 
 gulp.task('jade:release', function () {
+	var pkgInfo = require(pkgName);
+
 	return gulp
 		.src('./app/jade/main.jade')
 		.pipe(plumber())
@@ -54,8 +58,8 @@ gulp.task('jade:release', function () {
 			pretty: false,
 			locals: {
 				develop: false,
-				title  : 'release :: ' + project.name,
-				version: project.version
+				title  : 'release :: ' + pkgInfo.name,
+				version: pkgInfo.version
 			}
 		}))
 		.pipe(rename('index.html'))
