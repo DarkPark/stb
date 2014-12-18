@@ -15,9 +15,7 @@ var fs    = require('fs'),
 	gulp  = require('gulp');
 
 
-gulp.task('init', function () {
-	console.log('project structure cloning ...'.green);
-
+gulp.task('init', function ( done ) {
 	// copy template files to the current dir
 	gulp.src([process.env.STB + '/tpl/**', process.env.STB + '/.eslintrc', process.env.STB + '/.editorconfig'])
 		.pipe(require('gulp-conflict')('./'))
@@ -28,12 +26,13 @@ gulp.task('init', function () {
 				.pipe(require('gulp-conflict')('./'))
 				.pipe(gulp.dest('./'))
 				.on('end', function () {
-					console.log('done'.green);
-
+					// manual empty dirs creation
 					fs.mkdirSync('./build/develop');
 					fs.mkdirSync('./build/release');
 					fs.mkdirSync('./build/develop/css');
 					fs.mkdirSync('./build/release/css');
+
+					done();
 
 					npm.load({loaded: false}, function ( error ) {
 						var config = require(path.join(process.env.CWD, 'package.json')),
