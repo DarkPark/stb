@@ -26,6 +26,11 @@ module.exports = {
 	// set of named configs
 	profiles: {
 		// extends the default config
+		root: {
+			url: ''
+		},
+
+		// extends the default config
 		develop: {
 			url: 'develop/'
 		},
