@@ -12,16 +12,6 @@ var app    = require('stb/app'),
 
 
 app.addListeners({
-	// event
-	load: function load () {
-		// set pages
-		router.init([
-			require('./pages/init')
-		]);
-	}
-});
-
-app.addListeners({
 	// all resources are loaded
 	load: function load () {
 		// set pages
