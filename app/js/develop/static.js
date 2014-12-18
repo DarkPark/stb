@@ -1,6 +1,7 @@
 /**
  * Static files reload on change.
  *
+ * @module stb/develop/static
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */

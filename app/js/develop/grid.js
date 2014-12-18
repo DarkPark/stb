@@ -1,6 +1,7 @@
 /**
  * Visual grid with cursor.
  *
+ * @module stb/develop/grid
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */

@@ -1,6 +1,7 @@
 /**
  * STB calls relay.
  *
+ * @module stb/develop/proxy
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */

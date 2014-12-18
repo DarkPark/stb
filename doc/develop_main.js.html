@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: stb/ui/button</title>
+    <title>JSDoc: Source: develop/main.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,145 +17,65 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: stb/ui/button</h1>
+    <h1 class="page-title">Source: develop/main.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Main module to setup development environment.
+ *
+ * @module stb/develop/main
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
+ */
 
-<article>
-    <div class="container-overview">
-    
-        
+'use strict';
 
-        
-            
-<dt>
-    
-</dt>
-<dd>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
+var app     = require('../app'),
+	storage = require('./storage'),
+	metrics = require('metrics');
 
 
-<dl class="details">
+// export to globals for easy debugging
+window.app    = app;
+window.router = require('../router');
 
-    
+// set global mode
+app.data.debug = true;
 
-    
+// STB device or emulation?
+app.data.host = (window.gSTB !== undefined);
 
-    
+// platform?
+if ( app.data.host ) {
+	// web inspector
+	require('./weinre');
+}
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:sk@infomir.eu">Stanislav Kalashnik</a></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>GNU GENERAL PUBLIC LICENSE Version 3</li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_button.js.html">ui/button.js</a>, <a href="ui_button.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
+// apply screen size, position, margins and styles
+app.setScreen(
+	metrics[storage.get('screen.height')] ||
+	metrics[screen.height] ||
+	metrics[720]
+);
 
 
-    
+// additional dev modules
+require('./static');
+require('./proxy');
+require('./events');
+require('./debug');
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-stb_ui_button-Button.html">Button</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+// the application itself
+require('app/main');
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -1,6 +1,7 @@
 /**
  * Save/restore data depending on the execution device.
  *
+ * @module stb/develop/storage
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
