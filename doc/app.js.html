@@ -36,7 +36,7 @@
 
 var Model  = require('./model'),
 	router = require('./router'),
-	app;
+	app, linkCSS;
 
 
 require('stb/shims');
@@ -93,42 +93,46 @@ app = new Model({
 
 
 /**
- * Set crops, total and content size.
+ * Set crops, total, content size and link the corresponding CSS file.
  *
- * @param {Object} metrics
+ * @param {Object} metrics screen params specific to resolution
  */
 app.setScreen = function ( metrics ) {
-	var link;
+	// calculate and extend
+	metrics.availHeight = metrics.height - (metrics.availTop  + metrics.availBottom);
+	metrics.availWidth  = metrics.width  - (metrics.availLeft + metrics.availRight);
 
-	// init can be done only once with correct metrics
-	if ( !this.data.screen &amp;&amp; metrics ) {
-		// calculate and extend
-		metrics.availHeight = metrics.height - (metrics.availTop  + metrics.availBottom);
-		metrics.availWidth  = metrics.width  - (metrics.availLeft + metrics.availRight);
+	// set max browser window size
+	window.moveTo(0, 0);
+	window.resizeTo(metrics.width, metrics.height);
 
-		// set max browser window size
-		window.moveTo(0, 0);
-		window.resizeTo(metrics.width, metrics.height);
-
-		// load CSS file base on resolution
-		link = document.createElement('link');
-		link.rel  = 'stylesheet';
-		link.href = 'css/' + metrics.height + '.css';
-		document.head.appendChild(link);
-
-		// provide global access
-		this.data.screen = metrics;
+	// already was initialized
+	if ( linkCSS ) {
+		// remove all current CSS styles
+		document.head.removeChild(linkCSS);
 	}
+
+	// load CSS file base on resolution
+	linkCSS = document.createElement('link');
+	linkCSS.rel  = 'stylesheet';
+	linkCSS.href = 'css/' + metrics.height + '.css';
+	document.head.appendChild(linkCSS);
+
+	// provide global access
+	this.data.screen = metrics;
 };
 
 
 // apply screen size, position and margins
-app.setScreen(require('../../config/metrics')[screen.height]);
+app.setScreen(require('metrics')[screen.height]);
 
 
 /**
  * The load event is fired when a resource and its dependent resources have finished loading.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/load
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	var path;
@@ -170,7 +174,10 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 
 /**
  * The unload event is fired when the document or a child resource is being unloaded.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/unload
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 	debug.event(event);
@@ -215,7 +222,10 @@ window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 
 /**
  * The error event is fired when a resource failed to load.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/error
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('error', function globalEventListenerError ( event ) {
 	debug.event(event);
@@ -232,12 +242,14 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
  *   3. Application.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('keydown', function globalEventListenerKeydown ( event ) {
 	var page = router.current;
 
 	// filter phantoms
-	if ( event.keyCode === 0 ) { return false; }
+	if ( event.keyCode === 0 ) { return; }
 
 	// combined key code
 	event.code = event.keyCode;
@@ -272,7 +284,10 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 
 /**
  * The click event is fired when a pointing device button (usually a mouse button) is pressed and released on a single element.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/click
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('click', function globalEventListenerClick ( event ) {
 	debug.event(event);
@@ -283,7 +298,10 @@ window.addEventListener('click', function globalEventListenerClick ( event ) {
  * The contextmenu event is fired when the right button of the mouse is clicked (before the context menu is displayed),
  * or when the context menu key is pressed (in which case the context menu is displayed at the bottom left of the focused
  * element, unless the element is a tree, in which case the context menu is displayed at the bottom left of the current row).
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/contextmenu
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('contextmenu', function globalEventListenerContextmenu ( event ) {
 	debug.event(event);
@@ -337,7 +355,7 @@ module.exports = app;
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Sun Dec 14 2014 17:18:25 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 18 2014 13:42:34 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>
