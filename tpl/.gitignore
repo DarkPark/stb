@@ -2,5 +2,3 @@
 node_modules
 build/release/*.map
 build/develop/*.map
-build/release/css/*.map
-build/develop/css/*.map
