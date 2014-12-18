@@ -11,7 +11,21 @@ var gulp    = require('gulp'),
 	jade    = require('gulp-jade'),
 	plumber = require('gulp-plumber'),
 	rename  = require('gulp-rename'),
+	del     = require('del'),
 	project = require('../package.json');
+
+
+gulp.task('jade:clean:develop', function ( done ) {
+	del('./build/develop/index.html', done);
+});
+
+
+gulp.task('jade:clean:release', function ( done ) {
+	del('./build/release/index.html', done);
+});
+
+
+gulp.task('jade:clean', ['jade:clean:develop', 'jade:clean:release']);
 
 
 gulp.task('jade:develop', function () {

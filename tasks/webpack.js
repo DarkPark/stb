@@ -12,8 +12,22 @@ var fs      = require('fs'),
 	plumber = require('gulp-plumber'),
 	webpack = require('gulp-webpack'),
 	report  = require('../lib/report').webpack,
+	del     = require('del'),
 	mtrBase = process.env.STB + '/config/metrics.js',
 	mtrUser = process.env.CWD + '/config/metrics.js';
+
+
+gulp.task('webpack:clean:develop', function ( done ) {
+	del(['./build/develop/app.js', './build/develop/app.js.map'], done);
+});
+
+
+gulp.task('webpack:clean:release', function ( done ) {
+	del(['./build/release/app.js'], done);
+});
+
+
+gulp.task('webpack:clean', ['webpack:clean:develop', 'webpack:clean:release']);
 
 
 gulp.task('webpack:develop', function () {

@@ -22,6 +22,9 @@ gulp.task('img:clean:release', function ( done ) {
 });
 
 
+gulp.task('img:clean', ['img:clean:develop', 'img:clean:release']);
+
+
 gulp.task('img:develop', ['img:clean:develop'], function () {
 	return gulp
 		.src(['./app/img/**', '!./app/img/**/readme.md'], {base: './app/'})
@@ -38,5 +41,4 @@ gulp.task('img:release', ['img:clean:release'], function () {
 });
 
 
-gulp.task('img:clean', ['img:clean:develop', 'img:clean:release']);
 gulp.task('img', ['img:develop', 'img:release']);

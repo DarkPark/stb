@@ -53,30 +53,41 @@ stb serve
 
 **Full list of available commands:**
 
- Name              | Description
--------------------|-------------
- init              | initial creation of all necessary files and folders
- code-proxy        | proxy js code execution from a desktop browser to STB
- jade              | compile all HTML files from Jade sources
- jade:develop      | compile develop HTML files from Jade sources
- jade:release      | compile release HTML files from Jade sources
- img               | execute all the tasks to remove and copy all images
- img:clean         | remove all images
- img:clean:develop | remove develop images
- img:clean:release | remove release images
- img:develop       | remove and copy develop images
- img:release       | remove and copy release images
- less              | compile all Less files into a set of css files with maps
- less:develop      | compile develop Less files into a set of css files with maps
- less:release      | compile release Less files into a set of css files with maps
- lint              | analyse JavaScript code for potential errors and problems
- logger            | WebSocket server to translate log messages from STB to a desktop console
- serve             | main entry point - rebuild everything, start all watchers and servers
- static            | serve files in the build directory
- webpack           | compile all CommonJS modules into a single js file
- webpack:develop   | compile develop version of all CommonJS modules into a single js file
- webpack:release   | compile release version of all CommonJS modules into a single js file
- weinre            | WEb INspector REmote debugger server
+ Name                  | Description
+-----------------------|-------------
+ init                  | initial creation of all necessary files and folders
+ serve                 | main entry point - rebuild everything, start all watchers and servers
+ develop               | run all development tasks
+ release               | run all production tasks
+ lint                  | analyse JavaScript code for potential errors and problems
+ static                | serve files in the build directory
+ proxy                 | proxy js code execution from a desktop browser to STB
+ logger                | WebSocket server to translate log messages from STB to a desktop console
+ weinre                | WEb INspector REmote debugger server
+ img                   | execute all the tasks to remove and copy all images
+ img:clean             | remove all images
+ img:clean:develop     | remove develop images
+ img:clean:release     | remove release images
+ img:develop           | remove and copy develop images
+ img:release           | remove and copy release images
+ jade                  | compile all HTML files from Jade sources
+ jade:clean            | remove all HTML files
+ jade:clean:develop    | remove develop HTML files
+ jade:clean:release    | remove release HTML files
+ jade:develop          | compile develop HTML files from Jade sources
+ jade:release          | compile release HTML files from Jade sources
+ less                  | compile all Less files into a set of css files with maps
+ less:clean            | remove all generated CSS and source-map files
+ less:clean:develop    | remove develop generated CSS and source-map files
+ less:clean:release    | remove release generated CSS and source-map files
+ less:develop          | compile develop Less files into a set of css files with maps
+ less:release          | compile release Less files into a set of css files with maps
+ webpack               | compile all CommonJS modules into a single js file
+ webpack:clean         | remove all JavaScript compiled files
+ webpack:develop       | compile develop version of all CommonJS modules into a single js file
+ webpack:release       | compile release version of all CommonJS modules into a single js file
+ webpack:clean:develop | remove develop JavaScript compiled files
+ webpack:clean:release | remove release JavaScript compiled files
 
 
 After the `stb serve` command the [start page](http://localhost:8000/) should open in the default browser.

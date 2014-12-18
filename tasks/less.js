@@ -14,6 +14,7 @@ var gulp     = require('gulp'),
 	fs       = require('fs'),
 	log      = require('../lib/log'),
 	requirem = require('requirem'),
+	del      = require('del'),
 	cfgBase  = process.env.STB + '/config/metrics.js',
 	cfgUser  = process.env.CWD + '/config/metrics.js',
 	title    = 'less    '.inverse,
@@ -142,6 +143,19 @@ function build ( mode, done ) {
 		});
 	});
 }
+
+
+gulp.task('less:clean:develop', function ( done ) {
+	del(['./build/develop/css/*.css', './build/develop/css/*.map'], done);
+});
+
+
+gulp.task('less:clean:release', function ( done ) {
+	del(['./build/release/css/*.css', './build/release/css/*.map'], done);
+});
+
+
+gulp.task('less:clean', ['less:clean:develop', 'less:clean:release']);
 
 
 gulp.task('less:develop', function ( done ) {

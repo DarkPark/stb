@@ -17,8 +17,9 @@ var fs    = require('fs'),
 
 gulp.task('init', function () {
 	console.log('project structure cloning ...'.green);
+
 	// copy template files to the current dir
-	gulp.src([process.env.STB + '/tpl/**', process.env.STB + '/.eslintrc'])
+	gulp.src([process.env.STB + '/tpl/**', process.env.STB + '/.eslintrc', process.env.STB + '/.editorconfig'])
 		.pipe(require('gulp-conflict')('./'))
 		.pipe(gulp.dest('./'))
 		.on('end', function () {
