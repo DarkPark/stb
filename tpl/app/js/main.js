@@ -32,8 +32,8 @@ app.addListeners({
 
 	// everything is ready
 	done: function done () {
-		// go to the main page
-		router.navigate('pageMain');
+		// go to the main page when necessary
+		/* router.navigate('pageMain'); */
 	}
 });
 
