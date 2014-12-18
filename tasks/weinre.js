@@ -19,6 +19,7 @@ gulp.task('weinre', function () {
 
 	if ( config.active ) {
 		spawn  = require('child_process').spawn;
+		//TODO: make it work on Windows
 		weinre = spawn(path.join(process.env.STB, 'node_modules', '.bin', 'weinre'), [
 			'--httpPort',  config.port,
 			'--boundHost', config.host,
