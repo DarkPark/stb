@@ -93,8 +93,8 @@ gulp.task('jsdoc', function ( done ) {
 
 // entry point
 gulp.task('default', ['webpack', 'jsdoc'], function () {
-	gulp.watch(['src/**/*.js', 'test/units/**/*.js'], ['webpack']);
-	gulp.watch(['dist/**/*.js'], ['jsdoc']);
+	gulp.watch(['./app/js/**/*.js', './tests/units/**/*.js'], ['webpack']);
+	gulp.watch(['./app/js/**/*.js'], ['jsdoc']);
 
 	// manage gulp from command line
 	//require('gulp-runtime').setPrompt('');
