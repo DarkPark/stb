@@ -266,8 +266,10 @@ Component.prototype.remove = function () {
 		}
 		this.parent.children.splice(this.parent.children.indexOf(this), 1);
 	}
-	// clear
-	this.clear();
+	// remove all children
+	this.children.forEach(function (child){
+		child.remove();
+	});
 	this.removeAllListeners();
 	this.$node.parentNode.removeChild(this.$node);
 
