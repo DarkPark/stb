@@ -7,12 +7,13 @@
 
 'use strict';
 
-var gulp    = require('gulp'),
+var path    = require('path'),
+	gulp    = require('gulp'),
 	jade    = require('gulp-jade'),
 	plumber = require('gulp-plumber'),
 	rename  = require('gulp-rename'),
 	del     = require('del'),
-	project = require('../package.json');
+	project = require(path.join(process.env.CWD, 'package.json'));
 
 
 gulp.task('jade:clean:develop', function ( done ) {
