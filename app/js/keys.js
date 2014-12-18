@@ -1,9 +1,14 @@
 /**
- * Global list of key codes
- * with shift key pressed +1000
- * with alt key pressed +2000
+ * Global list of key codes.
  *
- * @namespace
+ *  Value | Description
+ * -------|-------------
+ *  +1000 | shift key pressed
+ *  +2000 | alt key pressed
+ *
+ * @module stb/keys
+ * @author Stanislav Kalashnik <sk@infomir.eu>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';

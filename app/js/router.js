@@ -1,4 +1,6 @@
 /**
+ * Page navigation with history.
+ *
  * @module stb/router
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3

@@ -1,4 +1,6 @@
 /**
+ * HTML elements low-level handling.
+ *
  * @module stb/dom
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
