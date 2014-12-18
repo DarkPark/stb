@@ -14,6 +14,7 @@ var ModalBox = require('./modal.box.js'),
  * Base modal window implementation.
  *
  * @constructor
+ * @extends ModalBox
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  */

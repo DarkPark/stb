@@ -14,6 +14,7 @@ var Component = require('../component'),
  * Base list implementation.
  *
  * @constructor
+ * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {number} config.size amount of visible items on a page
@@ -123,6 +124,7 @@ function List ( config ) {
 			item.addEventListener('click', function () {
 				self.activeIndex = this.index;
 				self.focusItem(this);
+
 				//self.activeItem.classList.remove('focus');
 				//self.activeItem = this;
 				//self.activeItem.classList.add('focus');

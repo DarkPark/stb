@@ -14,6 +14,7 @@ var Component = require('../component'),
  * Base list implementation.
  *
  * @constructor
+ * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {number} config.size amount of visible items on a page

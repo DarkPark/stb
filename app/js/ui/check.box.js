@@ -14,6 +14,7 @@ var Component = require('../component'),
  * Base check box implementation.
  *
  * @constructor
+ * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {string} config.value initial state

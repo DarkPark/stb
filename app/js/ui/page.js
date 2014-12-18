@@ -16,6 +16,7 @@ var Component = require('../component');
  * It is added to the document body on creation if not already linked.
  *
  * @constructor
+ * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  *

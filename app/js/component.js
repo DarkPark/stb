@@ -19,6 +19,7 @@ var Emitter = require('./emitter'),
  * Each component has a unique ID given either from $node.id or from data.id. If not given will generate automatically.
  *
  * @constructor
+ * @extends Emitter
  *
  * @param {Object} [config={}] init parameters
  * @param {Node} config.id component unique identifier
@@ -182,13 +183,13 @@ function Component ( config ) {
 		// left mouse button
 		if ( event.button === 0 ) {
 			self.focus();
-			self.emit('click');
+			self.emit('click', {event: event});
 		}
 
 		// @ifdef DEBUG
 		// middle mouse button
 		if ( event.button === 1 ) {
-			debug.log(self);
+			debug.inspect(self);
 		}
 		// @endif
 
@@ -257,7 +258,7 @@ Component.prototype.add = function ( child ) {
  * @todo add recursive removal of all children
  */
 Component.prototype.remove = function () {
-	// inserted somewhere
+	// really inserted somewhere
 	if ( this.parent ) {
 		// active at the moment
 		if ( this.page.activeComponent === this ) {
@@ -266,10 +267,12 @@ Component.prototype.remove = function () {
 		}
 		this.parent.children.splice(this.parent.children.indexOf(this), 1);
 	}
+
 	// remove all children
-	this.children.forEach(function (child){
+	this.children.forEach(function ( child ) {
 		child.remove();
 	});
+
 	this.removeAllListeners();
 	this.$node.parentNode.removeChild(this.$node);
 

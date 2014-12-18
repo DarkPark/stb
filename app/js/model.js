@@ -17,6 +17,7 @@ var Emitter = require('./emitter');
  * Holds information, but don’t handle behaviour and don’t format information or influence how data appears.
  *
  * @constructor
+ * @extends Emitter
  *
  * @param {Object} [data={}] init attributes
  */

@@ -14,6 +14,7 @@ var Modal = require('./modal'),
  * Base modal window implementation.
  *
  * @constructor
+ * @extends Modal
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  */

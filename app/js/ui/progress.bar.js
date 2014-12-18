@@ -13,6 +13,7 @@ var Component = require('../component');
  * Base progress bar implementation.
  *
  * @constructor
+ * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {number} config.value initial value
@@ -93,7 +94,7 @@ function ProgressBar ( config ) {
 
 	// correct CSS class names
 	this.$node.classList.add('progressBar');
-	this.$body.className = 'value';
+	this.$body.classList.add('value');
 
 	// insert bar line
 	this.$node.appendChild(this.$body);
