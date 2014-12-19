@@ -38,7 +38,11 @@ function Button ( config ) {
 	this.$node.classList.add('button');
 
 	// set title
-	this.$body.innerHTML = config.value || this.constructor.name + '.' + this.id;
+	if ( config.value !== undefined ) {
+		this.$body.innerHTML = config.value;
+	} else {
+		this.$body.innerHTML = this.constructor.name + '.' + this.id;
+	}
 
 	if ( config.icon ) {
 		self.$node.classList.add('icon');
