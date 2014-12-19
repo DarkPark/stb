@@ -11,6 +11,16 @@ var Component = require('../component'),
 
 
 /**
+ * Mouse click event.
+ *
+ * @event List#click:item
+ *
+ * @type {Object}
+ * @property {Node} $item clicked HTML item
+ * @property {Event} event click event data
+ */
+
+/**
  * Base list implementation.
  *
  * @constructor
@@ -18,6 +28,8 @@ var Component = require('../component'),
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {number} config.size amount of visible items on a page
+ *
+ * @fires List#click:item
  */
 function List ( config ) {
 	var self = this,  // current execution context
@@ -125,7 +137,8 @@ function List ( config ) {
 				self.activeIndex = this.index;
 				self.focusItem(this);
 
-				self.emit('clickItem', {$item: this});
+				// notify
+				self.emit('click:item', {$item: this, event: event});
 
 				//event.stopPropagation();
 				//self.activeItem.classList.remove('focus');
@@ -147,7 +160,8 @@ function List ( config ) {
 		//var tmp;
 
 		if ( event.code === keys.ok ) {
-			self.emit('clickItem', {$item: self.activeItem});
+			// notify
+			self.emit('click:item', {$item: self.activeItem, event: event});
 		}
 
 		if ( (event.code === keys.up && self.type === self.TYPE_VERTICAL) || (event.code === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
@@ -299,6 +313,7 @@ List.prototype.focusItem = function ( $item ) {
 		$item.classList.add('focus');
 
 		/**
+		 * Set focus to an element.
 		 *
 		 * @event List#focus:item
 		 *
@@ -306,7 +321,7 @@ List.prototype.focusItem = function ( $item ) {
 		 * @property {*} [prev] old/previous focused HTML element
 		 * @property {*} [curr] new/current focused HTML element
 		 */
-		this.emit('focusItem', {prev: $prev, curr: $item});
+		this.emit('focus:item', {prev: $prev, curr: $item});
 
 		return true;
 	}
