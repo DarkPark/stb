@@ -197,6 +197,7 @@ function Component ( config ) {
 	this.$node.addEventListener('click', function ( event ) {
 		// left mouse button
 		if ( event.button === 0 ) {
+			// activate if possible
 			self.focus();
 
 			/**

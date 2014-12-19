@@ -121,10 +121,13 @@ function List ( config ) {
 		if ( this.data[i] !== undefined ) {
 			this.render(item, this.data[i]);
 
-			item.addEventListener('click', function () {
+			item.addEventListener('click', function ( event ) {
 				self.activeIndex = this.index;
 				self.focusItem(this);
 
+				self.emit('clickItem', {$item: this});
+
+				//event.stopPropagation();
 				//self.activeItem.classList.remove('focus');
 				//self.activeItem = this;
 				//self.activeItem.classList.add('focus');
@@ -142,6 +145,10 @@ function List ( config ) {
 
 	this.addListener('keydown', function ( event ) {
 		//var tmp;
+
+		if ( event.code === keys.ok ) {
+			self.emit('clickItem', {$item: self.activeItem});
+		}
 
 		if ( (event.code === keys.up && self.type === self.TYPE_VERTICAL) || (event.code === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
 			if ( self.activeIndex > 0 ) {
@@ -264,6 +271,8 @@ List.prototype.defaultRender = function ( $item, data ) {
  * @param {Node} $item element to focus
  *
  * @return {boolean} operation status
+ *
+ * @fires List#focus:item
  */
 List.prototype.focusItem = function ( $item ) {
 	var $prev = this.activeItem;
@@ -289,8 +298,15 @@ List.prototype.focusItem = function ( $item ) {
 		// correct CSS
 		$item.classList.add('focus');
 
-		// notify listeners
-		this.emit('move', {prev: $prev, curr: $item});
+		/**
+		 *
+		 * @event List#focus:item
+		 *
+		 * @type {Object}
+		 * @property {*} [prev] old/previous focused HTML element
+		 * @property {*} [curr] new/current focused HTML element
+		 */
+		this.emit('focusItem', {prev: $prev, curr: $item});
 
 		return true;
 	}
