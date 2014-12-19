@@ -30,6 +30,7 @@ var Emitter = require('./emitter'),
  * @param {Array.<Component>} [config.children=[]] list of components in this component
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
+ * @param {boolean} [config.focusable=true] component can accept focus or not
  *
  * @example
  * var component = new Component({
@@ -54,6 +55,13 @@ function Component ( config ) {
 	 * @type {boolean}
 	 */
 	this.visible = true;
+
+	/**
+	 * Component can accept focus or not.
+	 *
+	 * @type {boolean}
+	 */
+	this.focusable = true;
 
 	/**
 	 * DOM outer handle.
@@ -160,6 +168,11 @@ function Component ( config ) {
 	if ( config.visible === false ) {
 		// default state is visible
 		this.hide();
+	}
+
+	// can't accept focus
+	if ( config.focusable === false ) {
+		this.focusable = false;
 	}
 
 	// apply given events
@@ -319,8 +332,8 @@ Component.prototype.focus = function () {
 	var current = this.page.activeComponent;
 
 	// this is a visual component on a page
-	// and not already focused
-	if ( this.page && this !== current ) {
+	// not already focused and can accept focus
+	if ( this.focusable && this.page && this !== current ) {
 		// notify the current active component
 		if ( current ) { current.blur(); }
 
