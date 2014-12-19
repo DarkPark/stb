@@ -16,12 +16,23 @@ var Component = require('../component');
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
- * @param {number} config.value initial value
- * @param {number} config.max max progress value
- * @param {number} config.min min progress value
+ * @param {number} [config.value=0] initial value
+ * @param {number} [config.max=100] max progress value
+ * @param {number} [config.min=0] min progress value
  *
  * @example
- * var pb = new ProgressBar({value:0, max: 200});
+ * var pb = new ProgressBar({
+ *     min: -100,
+ *     max:  200,
+ *     events: {
+ *         done: function () {
+ *             debug.log('ProgressBar: done');
+ *         },
+ *         change: function ( data ) {
+ *             debug.log('ProgressBar: change to ' + data.curr + ' from ' + data.prev);
+ *         }
+ *     }
+ * });
  */
 function ProgressBar ( config ) {
 	// sanitize
@@ -115,10 +126,14 @@ ProgressBar.prototype.constructor = ProgressBar;
  *
  * @param {number} value new value to set
  * @return {boolean} operation result
+ *
+ * @fires ProgressBar#done
+ * @fires ProgressBar#change
  */
 ProgressBar.prototype.set = function ( value ) {
 	var prevValue = this.value;
 
+	// value changed but in the given range
 	if ( this.value !== value && value <= this.max && value >= this.min ) {
 		// @ifdef DEBUG
 		if ( Number(value) !== value ) { throw 'value must be a number'; }
@@ -127,24 +142,31 @@ ProgressBar.prototype.set = function ( value ) {
 		// set new value
 		this.value = value;
 
-		// get step in percents
-		value = Math.abs(this.min - this.value) / this.step;
+		// get value in percents
+		value = Math.abs(this.value - this.min) / this.step;
 
-		// check going beyond
-		if ( value >= 100 ) {
-			value = 100;
-			this.value = this.max;
-			this.emit('complete', {value: this.value});
-		} else if ( value < 0 ) {
-			value = 0;
-			this.value = this.min;
+		if ( value === 100 ) {
+			/**
+			 * Set progress to its maximum value.
+			 *
+			 * @event ProgressBar#done
+			 */
+			this.emit('done');
 		}
 
 		// set progress bar width
 		this.$body.style.width = value + '%';
 
-		// notify
-		this.emit('change', {value: this.value, prevValue: prevValue});
+		/**
+		 * Update progress value.
+		 *
+		 * @event ProgressBar#change
+		 *
+		 * @type {Object}
+		 * @property {*} [prev] old/previous progress value
+		 * @property {*} [curr] new/current progress value
+		 */
+		this.emit('change', {curr: this.value, prev: prevValue});
 
 		return true;
 	}
