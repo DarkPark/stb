@@ -135,6 +135,7 @@
 				 * @param {function} callback function to call on this event
 				 */
 				once: function ( name, callback ) {
+					// current execution context
 					var self = this;
 			
 					// @ifdef DEBUG
@@ -293,6 +294,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 			/**
+			 * HTML elements low-level handling.
+			 *
 			 * @module stb/dom
 			 * @author Stanislav Kalashnik <sk@infomir.eu>
 			 * @license GNU GENERAL PUBLIC LICENSE Version 3
@@ -494,6 +497,7 @@
 			 * Holds information, but don’t handle behaviour and don’t format information or influence how data appears.
 			 *
 			 * @constructor
+			 * @extends Emitter
 			 *
 			 * @param {Object} [data={}] init attributes
 			 */
