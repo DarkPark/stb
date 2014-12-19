@@ -285,6 +285,7 @@ List.prototype.focusItem = function ( $item ) {
 		}
 		// reassign
 		this.activeItem = $item;
+
 		// correct CSS
 		$item.classList.add('focus');
 
