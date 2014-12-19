@@ -50,11 +50,11 @@ function CheckBox ( config ) {
 	// invert on mouse click or enter
 	this.addListeners({
 		click: function () {
-			self.check(!self.value);
+			self.set(!self.value);
 		},
 		keydown: function ( event ) {
 			if ( event.code === keys.ok ) {
-				self.check(!self.value);
+				self.set(!self.value);
 			}
 		}
 	});
@@ -75,7 +75,7 @@ CheckBox.prototype.constructor = CheckBox;
  *
  * @fires CheckBox#change
  */
-CheckBox.prototype.check = function ( value ) {
+CheckBox.prototype.set = function ( value ) {
 	if ( this.value !== value ) {
 		// set new value
 		this.value = !this.value;
@@ -91,7 +91,7 @@ CheckBox.prototype.check = function ( value ) {
 		 * @type {Object}
 		 * @property {boolean} value current check state
 		 */
-		this.emit('check', {value: this.value});
+		this.emit('change', {value: this.value});
 
 		return true;
 	}
