@@ -30,15 +30,13 @@ var Emitter = require('./emitter'),
  * @param {Array.<Component>} [config.children=[]] list of components in this component
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
- * @param {string} config.class CSS class name
  *
  * @example
  * var component = new Component({
  *     $node: document.getElementById(id),
  *     events: {
  *         click: function () { ... }
- *     },
- *     class: 'modern'
+ *     }
  * });
  * component.add( ... );
  * component.focus();
@@ -139,15 +137,6 @@ function Component ( config ) {
 
 	// correct CSS class names
 	this.$node.classList.add('component');
-
-	// apply additional CSS class name
-	if ( config['class'] !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config['class'] !== 'string' || config['class'].length === 0 ) { throw 'wrong config.class type or empty value'; }
-		// @endif
-
-		this.$node.classList.add(config['class']);
-	}
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {
