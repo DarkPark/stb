@@ -153,5 +153,45 @@ ProgressBar.prototype.set = function ( value ) {
 };
 
 
+/**
+ * Change current max or/and min or/and value
+ *
+ * @param {Object} [config={}] parameters
+ * @param {number} config.value new initial value
+ * @param {number} config.max new max progress value
+ * @param {number} config.min new min progress value
+ */
+ProgressBar.prototype.updateStep = function ( config ) {
+	// assignment of configuration parameters if they were transferred
+	if ( config.max !== undefined ) {
+		// @ifdef DEBUG
+		if ( Number(config.max) !== config.max ) { throw 'config.max value must be a number'; }
+		// @endif
+
+		this.max = config.max;
+	}
+
+	if ( config.min !== undefined ) {
+		// @ifdef DEBUG
+		if ( Number(config.min) !== config.min ) { throw 'config.min value must be a number'; }
+		// @endif
+
+		this.min = config.min;
+	}
+
+	if ( config.value !== undefined ) {
+		// @ifdef DEBUG
+		if ( Number(config.value) !== config.value ) { throw 'config.value must be a number'; }
+		if ( config.value > this.max ) { throw 'config.value more than config.maximum'; }
+		if ( config.value < this.min ) { throw 'config.value less than config.minimum'; }
+		// @endif
+
+		this.value = config.value;
+	}
+
+	this.step = Math.abs(this.max - this.min) / 100;
+};
+
+
 // public export
 module.exports = ProgressBar;
