@@ -72,6 +72,8 @@ CheckBox.prototype.constructor = CheckBox;
  *
  * @param {boolean} value new value to set
  * @return {boolean} operation status
+ *
+ * @fires CheckBox#change
  */
 CheckBox.prototype.check = function ( value ) {
 	if ( this.value !== value ) {
@@ -81,7 +83,14 @@ CheckBox.prototype.check = function ( value ) {
 		// set visible changes
 		this.$node.classList.toggle('checked');
 
-		// notify
+		/**
+		 * Update progress value.
+		 *
+		 * @event ProgressBar#change
+		 *
+		 * @type {Object}
+		 * @property {boolean} value current check state
+		 */
 		this.emit('check', {value: this.value});
 
 		return true;

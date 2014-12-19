@@ -163,8 +163,8 @@ ProgressBar.prototype.set = function ( value ) {
 		 * @event ProgressBar#change
 		 *
 		 * @type {Object}
-		 * @property {number} [prev] old/previous progress value
-		 * @property {number} [curr] new/current progress value
+		 * @property {number} prev old/previous progress value
+		 * @property {number} curr new/current progress value
 		 */
 		this.emit('change', {curr: this.value, prev: prevValue});
 
