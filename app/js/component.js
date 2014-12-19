@@ -22,13 +22,14 @@ var Emitter = require('./emitter'),
  * @extends Emitter
  *
  * @param {Object} [config={}] init parameters
- * @param {Node} config.id component unique identifier
- * @param {Node} config.$node DOM element/fragment to be a component outer container
- * @param {Node} config.$body DOM element/fragment to be a component inner container (by default is the same as $node)
- * @param {Node} config.$content DOM element/fragment to be appended to the $body
- * @param {Component} config.parent link to the parent component which has this component as a child
- * @param {Array.<Component>} config.children list of components in this component
- * @param {Object.<string, function>} config.events list of event callbacks
+ * @param {Node} [config.id] component unique identifier (generated if not set)
+ * @param {Node} [config.$node] DOM element/fragment to be a component outer container
+ * @param {Node} [config.$body] DOM element/fragment to be a component inner container (by default is the same as $node)
+ * @param {Node} [config.$content] DOM element/fragment to be appended to the $body
+ * @param {Component} [config.parent] link to the parent component which has this component as a child
+ * @param {Array.<Component>} [config.children=[]] list of components in this component
+ * @param {Object.<string, function>} [config.events={}] list of event callbacks
+ * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {string} config.class CSS class name
  *
  * @example
@@ -47,6 +48,14 @@ var Emitter = require('./emitter'),
 function Component ( config ) {
 	// current execution context
 	var self = this;
+
+	/**
+	 * Component visibility state flag.
+	 *
+	 * @readonly
+	 * @type {boolean}
+	 */
+	this.visible = true;
 
 	/**
 	 * DOM outer handle.
@@ -81,7 +90,7 @@ function Component ( config ) {
 	/**
 	 * List of all children components.
 	 *
-	 * @type {Collection}
+	 * @type {Component[]}
 	 */
 	this.children = [];
 
@@ -156,6 +165,12 @@ function Component ( config ) {
 		// @endif
 
 		this.page = config.page;
+	}
+
+	// apply given visibility
+	if ( config.visible === false ) {
+		// default state is visible
+		this.hide();
 	}
 
 	// apply given events
@@ -306,6 +321,7 @@ Component.prototype.focus = function () {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
@@ -330,7 +346,68 @@ Component.prototype.blur = function () {
 		return true;
 	}
 
+	// nothing was done
 	return false;
+};
+
+
+/**
+ * Make the component visible and notify subscribers.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires Component#show
+ */
+Component.prototype.show = function () {
+	// is it hidden
+	if ( !this.visible ) {
+		// correct style
+		this.$node.classList.remove('hidden');
+		// flag
+		this.visible = true;
+
+		/**
+		 * Make the component visible.
+		 *
+		 * @event Component#show
+		 */
+		this.emit('show');
+
+		return true;
+	}
+
+	// nothing was done
+	return true;
+};
+
+
+/**
+ * Make the component hidden and notify subscribers.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires Component#hide
+ */
+Component.prototype.hide = function () {
+	// is it visible
+	if ( this.visible ) {
+		// correct style
+		this.$node.classList.add('hidden');
+		// flag
+		this.visible = false;
+
+		/**
+		 * Make the component hidden.
+		 *
+		 * @event Component#hide
+		 */
+		this.emit('hide');
+
+		return true;
+	}
+
+	// nothing was done
+	return true;
 };
 
 

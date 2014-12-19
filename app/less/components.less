@@ -6,6 +6,12 @@
 .component {
 	// component's outer dom element
 
+	&.hidden {
+		// need to force
+		// as some components apply "display" later
+		display: none !important;
+	}
+
 	&.page {
 		// hidden by default
 		width      : unit(@width,  px);
