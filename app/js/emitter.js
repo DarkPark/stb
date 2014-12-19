@@ -74,6 +74,7 @@ Emitter.prototype = {
 	 * @param {function} callback function to call on this event
 	 */
 	once: function ( name, callback ) {
+		// current execution context
 		var self = this;
 
 		// @ifdef DEBUG

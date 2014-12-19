@@ -46,6 +46,7 @@ module.exports = window.grid = {
 
 
 	init: function () {
+		// current execution context
 		var self = this;
 
 		this.$canvas = window.$develop.appendChild(document.createElement('canvas'));
@@ -81,6 +82,7 @@ module.exports = window.grid = {
 
 
 	mousemove: function ( event ) {
+		// current execution context
 		var self = this;
 
 		this.cursorX = event.x;
@@ -110,7 +112,7 @@ module.exports = window.grid = {
 
 	mousedown: function ( event ) {
 		var matchPoint = null,
-			self       = this,
+			self       = this,  // current execution context
 			point;
 
 		// all clicked crosses
@@ -176,7 +178,7 @@ module.exports = window.grid = {
 
 	repaint: function () {
 		var ctx  = this.ctx,
-			self = this;
+			self = this;  // current execution context
 
 		// remove all
 		ctx.clearRect(0, 0, data.screen.width, data.screen.height);

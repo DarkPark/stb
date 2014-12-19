@@ -23,6 +23,7 @@ var Component = require('../component'),
  * var cb = new CheckBox({value:true});
  */
 function CheckBox ( config ) {
+	// current execution context
 	var self = this;
 
 	// sanitize

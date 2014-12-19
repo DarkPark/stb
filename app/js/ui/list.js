@@ -20,7 +20,7 @@ var Component = require('../component'),
  * @param {number} config.size amount of visible items on a page
  */
 function List ( config ) {
-	var self = this,
+	var self = this,  // current execution context
 		index = 0,
 		i, item;
 
@@ -272,6 +272,7 @@ List.prototype.focusItem = function ( $item ) {
 	if ( $item !== undefined && $prev !== $item ) {
 		// @ifdef DEBUG
 		if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
+		if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
 		// @endif
 
 		// some item is focused already

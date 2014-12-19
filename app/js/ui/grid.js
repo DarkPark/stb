@@ -20,7 +20,7 @@ var Component = require('../component'),
  * @param {number} config.size amount of visible items on a page
  */
 function Grid ( config ) {
-	var self = this,
+	var self = this,  // current execution context
 		index = 0,
 		i, j, row, item;
 

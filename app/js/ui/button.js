@@ -26,6 +26,7 @@ var Component = require('../component');
  * });
  */
 function Button ( config ) {
+	// current execution context
 	var self = this;
 
 	// sanitize
