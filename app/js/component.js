@@ -45,8 +45,8 @@ var Emitter = require('./emitter'),
  * @todo find a solution to solve missing page link
  */
 function Component ( config ) {
-	var self = this,
-		i, len;
+	// current execution context
+	var self = this;
 
 	/**
 	 * DOM outer handle.
@@ -173,9 +173,7 @@ function Component ( config ) {
 		if ( !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
 		// @endif
 
-		for ( i = 0, len = config.children.length; i < len; i++ ) {
-			this.add(config.children[i]);
-		}
+		this.add.apply(this, config.children);
 	}
 
 	// component activation by mouse
@@ -254,8 +252,6 @@ Component.prototype.add = function ( child ) {
 
 /**
  * Delete this component and clear all associated events.
- *
- * @todo add recursive removal of all children
  */
 Component.prototype.remove = function () {
 	// really inserted somewhere
