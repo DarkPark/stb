@@ -153,7 +153,7 @@ ProgressBar.prototype.set = function ( value ) {
 /**
  * Init or re-init current max or/and min or/and value
  *
- * @param {Object} [config={}] init parameters (all inherited from the parent)
+ * @param {Object} [config={}] init parameters
  * @param {number} [config.value=0] initial value
  * @param {number} [config.max=100] max progress value
  * @param {number} [config.min=0] min progress value
