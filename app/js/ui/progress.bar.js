@@ -66,14 +66,10 @@ function ProgressBar ( config ) {
 	 */
 	this.step = 1;
 
-	this.init(config);
-
 	// create $body if not passed
 	if ( config.$body === undefined ) {
 		config.$body = document.createElement('div');
 	}
-
-	this.step = Math.abs(this.max - this.min) / 100;
 
 	// parent init
 	Component.call(this, config);
@@ -85,8 +81,8 @@ function ProgressBar ( config ) {
 	// insert bar line
 	this.$node.appendChild(this.$body);
 
-	// init bar size, (this.min - this.value) - calculate distance from start
-	this.$body.style.width = (Math.abs(this.min - this.value) / this.step) + '%';
+	// initiate values and progress line
+	this.init(config);
 }
 
 
@@ -151,7 +147,7 @@ ProgressBar.prototype.set = function ( value ) {
 
 
 /**
- * Init or re-init current max or/and min or/and value
+ * Init or re-init current max or/and min or/and value.
  *
  * @param {Object} [config={}] init parameters
  * @param {number} [config.value=0] initial value
@@ -187,6 +183,9 @@ ProgressBar.prototype.init = function ( config ) {
 	}
 
 	this.step = Math.abs(this.max - this.min) / 100;
+
+	// init bar size, (this.min - this.value) - calculate distance from start
+	this.$body.style.width = (Math.abs(this.min - this.value) / this.step) + '%';
 };
 
 
