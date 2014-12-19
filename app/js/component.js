@@ -196,6 +196,15 @@ function Component ( config ) {
 		// left mouse button
 		if ( event.button === 0 ) {
 			self.focus();
+
+			/**
+			 * Mouse click event.
+			 *
+			 * @event Component#click
+			 *
+			 * @type {Object}
+			 * @property {Event} event click event data
+			 */
 			self.emit('click', {event: event});
 		}
 
@@ -228,6 +237,8 @@ Component.prototype.constructor = Component;
  *
  * @param {...Component} [child] variable number of elements to append
  *
+ * @files Component#add
+ *
  * @example
  * panel.add(
  *     new Button( ... ),
@@ -255,7 +266,14 @@ Component.prototype.add = function ( child ) {
 			this.$body.appendChild(child.$node);
 		}
 
-		// notify listeners
+		/**
+		 * A child component is added.
+		 *
+		 * @event Component#add
+		 *
+		 * @type {Object}
+		 * @property {Component} child new component added
+		 */
 		this.emit('add', {item: child});
 
 		// @ifdef DEBUG
@@ -267,6 +285,8 @@ Component.prototype.add = function ( child ) {
 
 /**
  * Delete this component and clear all associated events.
+ *
+ * @fires Component#remove
  */
 Component.prototype.remove = function () {
 	// really inserted somewhere
@@ -287,7 +307,11 @@ Component.prototype.remove = function () {
 	this.removeAllListeners();
 	this.$node.parentNode.removeChild(this.$node);
 
-	// notify listeners
+	/**
+	 * Delete this component.
+	 *
+	 * @event Component#remove
+	 */
 	this.emit('remove');
 
 	debug.log('component ' + this.constructor.name + '.' + this.id + ' remove', 'red');
@@ -299,6 +323,8 @@ Component.prototype.remove = function () {
  * Notify the owner-page and apply CSS class.
  *
  * @return {boolean} operation status
+ *
+ * @fires Component#focus
  */
 Component.prototype.focus = function () {
 	var current = this.page.activeComponent;
@@ -313,7 +339,11 @@ Component.prototype.focus = function () {
 		this.page.activeComponent = current = this;
 		current.$node.classList.add('focus');
 
-		// notify listeners
+		/**
+		 * Make this component focused.
+		 *
+		 * @event Component#focus
+		 */
 		current.emit('focus');
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' focus');
@@ -331,6 +361,8 @@ Component.prototype.focus = function () {
  * Change page.activeComponent and notify subscribers.
  *
  * @return {boolean} operation status
+ *
+ * @fires Component#blur
  */
 Component.prototype.blur = function () {
 	// this is the active component
@@ -338,7 +370,11 @@ Component.prototype.blur = function () {
 		this.$node.classList.remove('focus');
 		this.page.activeComponent = null;
 
-		// notify listeners
+		/**
+		 * Remove focus from this component.
+		 *
+		 * @event Component#blur
+		 */
 		this.emit('blur');
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' blur', 'grey');

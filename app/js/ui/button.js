@@ -16,8 +16,8 @@ var Component = require('../component');
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
- * @param {string} config.value button caption text
- * @param {string} config.icon button icon name
+ * @param {string} [config.value] button caption text (generated if not set)
+ * @param {string} [config.icon] button icon name
  *
  * @example
  * var btn1 = new Button({
@@ -51,9 +51,16 @@ function Button ( config ) {
 	}
 
 	this.addListener('keydown', function ( event ) {
-		//debug.info(event);
 		if ( event.code === 13 ) {
-			self.emit('click');
+			/**
+			 * Mouse click event emulation.
+			 *
+			 * @event Button#click
+			 *
+			 * @type {Object}
+			 * @property {Event} event click event data
+			 */
+			self.emit('click', {event: event});
 		}
 	});
 
