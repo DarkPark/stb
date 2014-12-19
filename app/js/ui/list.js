@@ -305,6 +305,9 @@ List.prototype.focusItem = function ( $item ) {
 			// @endif
 
 			$prev.classList.remove('focus');
+
+			// notify
+			this.emit('blur:item', {$item: $prev});
 		}
 		// reassign
 		this.activeItem = $item;
@@ -318,10 +321,10 @@ List.prototype.focusItem = function ( $item ) {
 		 * @event List#focus:item
 		 *
 		 * @type {Object}
-		 * @property {*} [prev] old/previous focused HTML element
-		 * @property {*} [curr] new/current focused HTML element
+		 * @property {*} [$prev] old/previous focused HTML element
+		 * @property {*} [$curr] new/current focused HTML element
 		 */
-		this.emit('focus:item', {prev: $prev, curr: $item});
+		this.emit('focus:item', {$prev: $prev, $curr: $item});
 
 		return true;
 	}
