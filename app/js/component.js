@@ -32,6 +32,8 @@ var Emitter = require('./emitter'),
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
  *
+ * @fires Component#click
+ *
  * @example
  * var component = new Component({
  *     $node: document.getElementById(id),
@@ -197,9 +199,6 @@ function Component ( config ) {
 	this.$node.addEventListener('click', function ( event ) {
 		// left mouse button
 		if ( event.button === 0 ) {
-			// activate if possible
-			self.focus();
-
 			/**
 			 * Mouse click event.
 			 *
@@ -209,6 +208,12 @@ function Component ( config ) {
 			 * @property {Event} event click event data
 			 */
 			self.emit('click', {event: event});
+
+			// not prevented
+			if ( !event.stop ) {
+				// activate if possible
+				self.focus();
+			}
 		}
 
 		// @ifdef DEBUG
@@ -294,6 +299,10 @@ Component.prototype.add = function ( child ) {
 Component.prototype.remove = function () {
 	// really inserted somewhere
 	if ( this.parent ) {
+		// @ifdef DEBUG
+		if ( !(this.parent instanceof Component) ) { throw 'wrong this.parent type'; }
+		// @endif
+
 		// active at the moment
 		if ( this.page.activeComponent === this ) {
 			this.blur();
@@ -304,6 +313,10 @@ Component.prototype.remove = function () {
 
 	// remove all children
 	this.children.forEach(function ( child ) {
+		// @ifdef DEBUG
+		if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+		// @endif
+
 		child.remove();
 	});
 
