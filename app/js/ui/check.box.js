@@ -7,7 +7,8 @@
 'use strict';
 
 var Component = require('../component'),
-	keys      = require('../keys');
+	keys      = require('../keys'),
+	groups    = {};
 
 
 /**
@@ -17,7 +18,8 @@ var Component = require('../component'),
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
- * @param {string} config.value initial state
+ * @param {boolean} [config.value=false] initial state
+ * @param {string} [config.group] group name to work synchronously with other checkboxes
  *
  * @example
  * var cb = new CheckBox({value:true});
@@ -36,6 +38,13 @@ function CheckBox ( config ) {
 	 */
 	this.value = !!config.value;
 
+	/**
+	 * Group name to work synchronously with other checkboxes.
+	 *
+	 * @type {string}
+	 */
+	this.group = null;
+
 	// parent init
 	Component.call(this, config);
 
@@ -45,6 +54,23 @@ function CheckBox ( config ) {
 	// correct init styles
 	if ( this.value ) {
 		this.$node.classList.add('checked');
+	}
+
+	// apply hierarchy
+	if ( config.group !== undefined ) {
+		// @ifdef DEBUG
+		if ( typeof config.group !== 'string' || config.group.length === 0 ) { throw 'wrong or empty config.group'; }
+		// @endif
+
+		// save
+		this.group = config.group;
+
+		// fill groups data
+		if ( groups[config.group] === undefined ) {
+			groups[config.group] = [this];
+		} else {
+			groups[config.group].push(this);
+		}
 	}
 
 	// invert on mouse click or enter
@@ -76,7 +102,17 @@ CheckBox.prototype.constructor = CheckBox;
  * @fires CheckBox#change
  */
 CheckBox.prototype.set = function ( value ) {
+	var i, l;
+
 	if ( this.value !== value ) {
+		// going to be turned on and assigned to some group
+		if ( !this.value && this.group !== null ) {
+			// unset all checkboxes in this group
+			for ( i = 0, l = groups[this.group].length; i < l; i++ ) {
+				groups[this.group][i].set(false);
+			}
+		}
+
 		// set new value
 		this.value = !this.value;
 
