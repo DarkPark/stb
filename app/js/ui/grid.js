@@ -36,20 +36,20 @@ function Grid ( config ) {
 	 *
 	 * @type {Node}
 	 */
-	this.activeItem = null;
+	this.$focusItem = null;
 
-	this.activeIndex = 0;
+	//this.activeIndex = 0;
 
 	this.data = [];
 
-	this.type = 0;
+	//this.type = 0;
 
 	/**
 	 * Amount of visible items on a page.
 	 *
 	 * @type {number}
 	 */
-	this.size = 5;
+	//this.size = 5;
 
 	this.render = this.defaultRender;
 
@@ -72,23 +72,7 @@ function Grid ( config ) {
 	// correct CSS class names
 	this.$node.classList.add('grid');
 
-	// apply hierarchy
-	if ( config.data !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
-		// @endif
 
-		this.data = config.data;
-	}
-
-	// custom render method
-	if ( config.render !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
-		// @endif
-
-		this.render = config.render;
-	}
 
 	//if ( this.type === this.TYPE_HORIZONTAL ) {
 	//	this.$node.classList.add('horizontal');
@@ -102,50 +86,14 @@ function Grid ( config ) {
 
 	this.$node.appendChild(this.$body);
 
-	debug.log(this.data);
+	//debug.log(this.data);
 
-	for ( i = 0; i < this.data.length; i++ ) {
-		row = this.$body.insertRow();
-		for ( j = 0; j < this.data[i].length; j++ ) {
-			item = row.insertCell(-1);
-			item.x = j;
-			item.y = i;
-			item.className = 'cell';
-			//console.log(i, j);
-			//console.log(this.data[i][j]);
-			var itemData = this.data[i][j];
-			if ( typeof itemData === 'object' ) {
-				item.innerHTML = itemData.value;
-				item.colSpan = itemData.colSpan || 1;
-				item.rowSpan = itemData.rowSpan || 1;
-			} else {
-				item.innerHTML = itemData;
-			}
-			//if ( this.data[i] !== undefined ) {
-			//	this.render(item, this.data[i]);
-			//
-			//	item.addEventListener('click', function () {
-			//		self.activeIndex = this.index;
-			//		self.activeItem.classList.remove('focus');
-			//		self.activeItem = this;
-			//		self.activeItem.classList.add('focus');
-			//	});
-			//}
-		}
-		this.$body.appendChild(row);
+	this.init(config);
 
-		//this.items.push(this.$body.appendChild(item));
-		//this.$body.appendChild(item);
-	}
-
-
-	this.activeItem = this.$body.rows[0].cells[0];
-	this.$body.rows[0].cells[0].classList.add('focus');
-
-	//if ( this.activeItem === null ) {
-	//	this.activeItem = this.$body.firstChild;
+	//if ( this.$focusItem === null ) {
+	//	this.$focusItem = this.$body.firstChild;
 	//	//this.activeIndex = 0;
-	//	this.activeItem.classList.add('focus');
+	//	this.$focusItem.classList.add('focus');
 	//}
 
 	this.addListener('keydown', function ( event ) {
@@ -159,10 +107,10 @@ function Grid ( config ) {
 
 				break;
 			case keys.right:
-				self.focusItem(self.activeItem.nextSibling);
+				self.focusItem(self.$focusItem.nextSibling);
 				break;
 			case keys.left:
-				self.focusItem(self.activeItem.previousSibling);
+				self.focusItem(self.$focusItem.previousSibling);
 				break;
 		}
 
@@ -215,14 +163,14 @@ function Grid ( config ) {
 			//self.activeIndex = self.activeIndex - self.size - 1;
 			//self.focusFirst();
 			self.focusItem(self.$body.firstChild);
-			self.activeIndex = self.activeItem.index;
+			//self.activeIndex = self.$focusItem.index;
 		}
 		if ( event.code === keys.pageDown ) {
 			//self.activeIndex = self.activeIndex + self.size - 1;
 
 			//self.focusLast();
 			self.focusItem(self.$body.lastChild);
-			self.activeIndex = self.activeItem.index;
+			//self.activeIndex = self.$focusItem.index;
 
 			//for ( i = 0; i < self.size; i++ ) {
 			//self.render()
@@ -237,9 +185,9 @@ function Grid ( config ) {
 		//for ( i = 0; i < self.size; i++ ) {
 		//self.items[i].innerHTML = self.data[i+index];
 		//}
-		//self.activeItem.classList.remove('focus');
-		//self.activeItem = self.items[Math.abs(index % self.items.length)];
-		//self.activeItem.classList.add('focus');
+		//self.$focusItem.classList.remove('focus');
+		//self.$focusItem = self.items[Math.abs(index % self.items.length)];
+		//self.$focusItem.classList.add('focus');
 	});
 
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -256,9 +204,69 @@ function Grid ( config ) {
 Grid.prototype = Object.create(Component.prototype);
 Grid.prototype.constructor = Grid;
 
+//Grid.prototype.TYPE_VERTICAL   = 1;
+//Grid.prototype.TYPE_HORIZONTAL = 2;
 
-Grid.prototype.TYPE_VERTICAL   = 1;
-Grid.prototype.TYPE_HORIZONTAL = 2;
+
+Grid.prototype.init = function ( config ) {
+	var i, j, row, item;
+
+	// apply hierarchy
+	if ( config.data !== undefined ) {
+		// @ifdef DEBUG
+		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+		// @endif
+
+		this.data = config.data;
+	}
+
+	// custom render method
+	if ( config.render !== undefined ) {
+		// @ifdef DEBUG
+		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
+		// @endif
+
+		this.render = config.render;
+	}
+
+	for ( i = 0; i < this.data.length; i++ ) {
+		row = this.$body.insertRow();
+		for ( j = 0; j < this.data[i].length; j++ ) {
+			item = row.insertCell(-1);
+			item.x = j;
+			item.y = i;
+			item.className = 'cell';
+			//console.log(i, j);
+			//console.log(this.data[i][j]);
+			var itemData = this.data[i][j];
+			if ( typeof itemData === 'object' ) {
+				item.innerHTML = itemData.value;
+				item.colSpan = itemData.colSpan || 1;
+				item.rowSpan = itemData.rowSpan || 1;
+			} else {
+				item.innerHTML = itemData;
+			}
+			//if ( this.data[i] !== undefined ) {
+			//	this.render(item, this.data[i]);
+			//
+			//	item.addEventListener('click', function () {
+			//		self.activeIndex = this.index;
+			//		self.$focusItem.classList.remove('focus');
+			//		self.$focusItem = this;
+			//		self.$focusItem.classList.add('focus');
+			//	});
+			//}
+		}
+		this.$body.appendChild(row);
+
+		//this.items.push(this.$body.appendChild(item));
+		//this.$body.appendChild(item);
+	}
+
+
+	this.$focusItem = this.$body.rows[0].cells[0];
+	this.$body.rows[0].cells[0].classList.add('focus');
+};
 
 
 Grid.prototype.moveNext = function () {
@@ -289,7 +297,7 @@ Grid.prototype.defaultRender = function ( $item, data ) {
  * @return {boolean} operation status
  */
 Grid.prototype.focusItem = function ( $item ) {
-	var $prev = this.activeItem;
+	var $prev = this.$focusItem;
 
 	// different element
 	if ( $item !== undefined && $prev !== $item ) {
@@ -306,7 +314,7 @@ Grid.prototype.focusItem = function ( $item ) {
 			$prev.classList.remove('focus');
 		}
 		// reassign
-		this.activeItem = $item;
+		this.$focusItem = $item;
 
 		// correct CSS
 		$item.classList.add('focus');
@@ -324,15 +332,15 @@ Grid.prototype.focusItem = function ( $item ) {
 
 Grid.prototype.focusNext = function () {
 	//if ( this.activeIndex < this.size - 1 ) {
-	if ( this.activeItem !== this.$body.lastChild ) {
-		this.activeIndex++;
+	if ( this.$focusItem !== this.$body.lastChild ) {
+		//this.activeIndex++;
 		//console.log(this.activeIndex);
-		//this.activeItem.classList.remove('focus');
-		////this.activeItem = this.items[this.activeIndex];
-		//this.activeItem = this.activeItem.nextSibling;
-		//this.activeItem.classList.add('focus');
+		//this.$focusItem.classList.remove('focus');
+		////this.$focusItem = this.items[this.activeIndex];
+		//this.$focusItem = this.$focusItem.nextSibling;
+		//this.$focusItem.classList.add('focus');
 
-		return this.focusItem(this.activeItem.nextSibling);
+		return this.focusItem(this.$focusItem.nextSibling);
 	}
 	return false;
 };
@@ -340,32 +348,32 @@ Grid.prototype.focusNext = function () {
 
 Grid.prototype.focusPrev = function () {
 	//if ( this.activeIndex > 0 ) {
-	if ( this.activeItem !== this.$body.firstChild ) {
-		this.activeIndex--;
+	if ( this.$focusItem !== this.$body.firstChild ) {
+		//this.activeIndex--;
 		//console.log(this.activeIndex);
-		//this.activeItem.classList.remove('focus');
-		////this.activeItem = this.items[this.activeIndex];
-		//this.activeItem = this.activeItem.previousSibling;
-		//this.activeItem.classList.add('focus');
+		//this.$focusItem.classList.remove('focus');
+		////this.$focusItem = this.items[this.activeIndex];
+		//this.$focusItem = this.$focusItem.previousSibling;
+		//this.$focusItem.classList.add('focus');
 
-		return this.focusItem(this.activeItem.previousSibling);
+		return this.focusItem(this.$focusItem.previousSibling);
 	}
 	return false;
 };
 
 
 //Grid.prototype.focusFirst = function () {
-//	this.activeItem.classList.remove('focus');
-//	this.activeItem = this.$body.firstChild;
-//	this.activeItem.classList.add('focus');
-//	this.activeIndex = this.activeItem.index;
+//	this.$focusItem.classList.remove('focus');
+//	this.$focusItem = this.$body.firstChild;
+//	this.$focusItem.classList.add('focus');
+//	this.activeIndex = this.$focusItem.index;
 //};
 
 //Grid.prototype.focusLast = function () {
-//	this.activeItem.classList.remove('focus');
-//	this.activeItem = this.$body.lastChild;
-//	this.activeItem.classList.add('focus');
-//	this.activeIndex = this.activeItem.index;
+//	this.$focusItem.classList.remove('focus');
+//	this.$focusItem = this.$body.lastChild;
+//	this.$focusItem.classList.add('focus');
+//	this.activeIndex = this.$focusItem.index;
 //};
 
 

@@ -9,6 +9,7 @@
 var Component = require('../component'),
 	keys      = require('../keys');
 
+//TODO: replace innerHTML with innerText or textContent (http://jsperf.com/innerhtml-vs-innertext/39)
 
 /**
  * Mouse click event.
@@ -33,7 +34,7 @@ var Component = require('../component'),
  */
 function List ( config ) {
 	var self = this,  // current execution context
-		index = 0,
+		//index = 0,
 		i, item;
 
 	/**
@@ -48,9 +49,9 @@ function List ( config ) {
 	 *
 	 * @type {Node}
 	 */
-	this.activeItem = null;
+	this.$focusItem = null;
 
-	this.activeIndex = 0;
+	//this.activeIndex = 0;
 
 	this.data = [];
 
@@ -77,15 +78,6 @@ function List ( config ) {
 	// parent init
 	Component.call(this, config);
 
-	// list items amount on page
-	if ( config.size !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.size) !== config.size ) { throw 'config.size must be a number'; }
-		// @endif
-
-		this.size = config.size;
-	}
-
 	// horizontal or vertical
 	if ( config.type !== undefined ) {
 		// @ifdef DEBUG
@@ -98,24 +90,6 @@ function List ( config ) {
 	// correct CSS class names
 	this.$node.classList.add('list');
 
-	// apply list of items
-	if ( config.data !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
-		// @endif
-
-		this.data = config.data;
-	}
-
-	// custom render method
-	if ( config.render !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
-		// @endif
-
-		this.render = config.render;
-	}
-
 	if ( this.type === this.TYPE_HORIZONTAL ) {
 		this.$node.classList.add('horizontal');
 	}
@@ -124,49 +98,25 @@ function List ( config ) {
 	////this.$body.className = 'body';
 	//this.$node.appendChild(this.$body);
 
-	for ( i = 0; i < this.size; i++ ) {
-		//item = document.createElement('li');
-		item = document.createElement('div');
-		item.index = i;
-		item.className = 'item';
-		//item.innerHTML = this.data[i];
-		if ( this.data[i] !== undefined ) {
-			this.render(item, this.data[i]);
+	this.init(config);
 
-			item.addEventListener('click', function ( event ) {
-				self.activeIndex = this.index;
-				self.focusItem(this);
-
-				// notify
-				self.emit('click:item', {$item: this, event: event});
-
-				//event.stopPropagation();
-				//self.activeItem.classList.remove('focus');
-				//self.activeItem = this;
-				//self.activeItem.classList.add('focus');
-			});
-		}
-		//this.items.push(this.$body.appendChild(item));
-		this.$body.appendChild(item);
-	}
-
-	if ( this.activeItem === null ) {
-		this.activeItem = this.$body.firstChild;
-		//this.activeIndex = 0;
-		this.activeItem.classList.add('focus');
-	}
+	//if ( this.$focusItem === null ) {
+	//	this.$focusItem = this.$body.firstChild;
+	//	//this.activeIndex = 0;
+	//	this.$focusItem.classList.add('focus');
+	//}
 
 	this.addListener('keydown', function ( event ) {
 		//var tmp;
 
 		if ( event.code === keys.ok ) {
 			// notify
-			self.emit('click:item', {$item: self.activeItem, event: event});
+			self.emit('click:item', {$item: self.$focusItem, event: event});
 		}
 
 		if ( (event.code === keys.up && self.type === self.TYPE_VERTICAL) || (event.code === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
-			if ( self.activeIndex > 0 ) {
-				index--;
+			if ( self.$focusItem.index > 0 ) {
+				//index--;
 
 				if ( !self.focusPrev() ) {
 					// move the last item to the begging
@@ -174,8 +124,9 @@ function List ( config ) {
 					self.$body.insertBefore(self.$body.lastChild, self.$body.firstChild);
 
 					//if ( config.render !== undefined ) {
-					self.render(self.$body.firstChild, self.data[self.activeIndex - 1]);
-					self.$body.firstChild.index = self.activeIndex - 1;
+					self.render(self.$body.firstChild, self.data[self.$focusItem.index - 1]);
+					self.$body.firstChild.index = self.$focusItem.index - 1;
+					//self.$body.firstChild.data  = self.data[self.$focusItem.index];
 					//} else {
 					//	self.$body.firstChild.innerHTML = self.data[self.activeIndex-1];
 					//}
@@ -187,8 +138,8 @@ function List ( config ) {
 			}
 		}
 		if ( (event.code === keys.down && self.type === self.TYPE_VERTICAL) || (event.code === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
-			if ( self.activeIndex < self.data.length - 1 ) {
-				index++;
+			if ( self.$focusItem.index < self.data.length - 1 ) {
+				//index++;
 
 				if ( !self.focusNext() ) {
 					// move the first item to the end
@@ -196,8 +147,9 @@ function List ( config ) {
 					self.$body.appendChild(self.$body.firstChild);
 
 					//if ( config.render !== undefined ) {
-					self.render(self.$body.lastChild, self.data[self.activeIndex + 1]);
-					self.$body.lastChild.index = self.activeIndex + 1;
+					self.render(self.$body.lastChild, self.data[self.$focusItem.index + 1]);
+					self.$body.lastChild.index = self.$focusItem.index + 1;
+					//self.$body.firstChild.data  = self.data[self.$focusItem.index];
 					//} else {
 					//	self.$body.lastChild.innerHTML = self.data[self.activeIndex + 1];
 					//}
@@ -213,14 +165,14 @@ function List ( config ) {
 			//self.activeIndex = self.activeIndex - self.size - 1;
 			//self.focusFirst();
 			self.focusItem(self.$body.firstChild);
-			self.activeIndex = self.activeItem.index;
+			//self.$focusItem.index = self.$focusItem.index;
 		}
 		if ( event.code === keys.pageDown ) {
 			//self.activeIndex = self.activeIndex + self.size - 1;
 
 			//self.focusLast();
 			self.focusItem(self.$body.lastChild);
-			self.activeIndex = self.activeItem.index;
+			//self.$focusItem.index = self.$focusItem.index;
 
 			//for ( i = 0; i < self.size; i++ ) {
 				//self.render()
@@ -235,9 +187,9 @@ function List ( config ) {
 		//for ( i = 0; i < self.size; i++ ) {
 			//self.items[i].innerHTML = self.data[i+index];
 		//}
-		//self.activeItem.classList.remove('focus');
-		//self.activeItem = self.items[Math.abs(index % self.items.length)];
-		//self.activeItem.classList.add('focus');
+		//self.$focusItem.classList.remove('focus');
+		//self.$focusItem = self.items[Math.abs(index % self.items.length)];
+		//self.$focusItem.classList.add('focus');
 	});
 
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -259,6 +211,79 @@ List.prototype.TYPE_VERTICAL   = 1;
 List.prototype.TYPE_HORIZONTAL = 2;
 
 
+List.prototype.init = function ( config ) {
+	var self     = this,
+		currSize = this.$body.children.length,
+		onClick  = function ( event ) {
+			if ( this.data !== undefined ) {
+				self.focusItem(this);
+				// notify
+				self.emit('click:item', {$item: this, event: event});
+			}
+			//self.$focusItem.index = this.index;
+			//event.stopPropagation();
+			//self.$focusItem.classList.remove('focus');
+			//self.$focusItem = this;
+			//self.$focusItem.classList.add('focus');
+		},
+		item, i;
+
+	// apply list of items
+	if ( config.data !== undefined ) {
+		// @ifdef DEBUG
+		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+		// @endif
+
+		this.data = config.data;
+	}
+
+	// custom render method
+	if ( config.render !== undefined ) {
+		// @ifdef DEBUG
+		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
+		// @endif
+
+		this.render = config.render;
+	}
+
+	// list items amount on page
+	if ( config.size !== undefined ) {
+		// @ifdef DEBUG
+		if ( Number(config.size) !== config.size ) { throw 'config.size must be a number'; }
+		if ( config.size <= 0 ) { throw 'config.size should be positive'; }
+		// @endif
+
+		this.size = config.size;
+	}
+
+	// geometry has changed or initial draw
+	if ( this.size !== currSize ) {
+		// non-empty list
+		if ( currSize > 0 ) {
+			// clear old items
+			this.$body.textContent = null;
+		}
+
+		// create new items
+		for ( i = 0; i < this.size; i++ ) {
+			//item = document.createElement('li');
+			item = document.createElement('div');
+			item.index = i;
+			item.className = 'item';
+			//item.innerHTML = this.data[i];
+			//if ( this.data[i] !== undefined ) {
+				//this.render(item, this.data[i]);
+
+				item.addEventListener('click', onClick);
+			//}
+			//this.items.push(this.$body.appendChild(item));
+			this.$body.appendChild(item);
+		}
+	}
+
+	this.renderPage();
+};
+
 List.prototype.moveNext = function () {
 
 };
@@ -270,8 +295,17 @@ List.prototype.movePrev = function () {
 
 
 List.prototype.renderPage = function () {
+	var $item, i;
 
+	for ( i = 0; i < this.size; i++ ) {
+		$item = this.$body.children[i];
+		if ( $item.index !== undefined && this.data[$item.index] !== undefined ) {
+			$item.data = this.data[$item.index];
+			this.render($item, this.data[$item.index]);
+		}
+	}
 };
+
 
 List.prototype.defaultRender = function ( $item, data ) {
 	$item.innerHTML = data;
@@ -289,7 +323,7 @@ List.prototype.defaultRender = function ( $item, data ) {
  * @fires List#focus:item
  */
 List.prototype.focusItem = function ( $item ) {
-	var $prev = this.activeItem;
+	var $prev = this.$focusItem;
 
 	// different element
 	if ( $item !== undefined && $prev !== $item ) {
@@ -299,18 +333,16 @@ List.prototype.focusItem = function ( $item ) {
 		// @endif
 
 		// some item is focused already
-		if ( $prev !== undefined ) {
-			// @ifdef DEBUG
-			if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
-			// @endif
-
+		if ( $prev !== null ) {
 			$prev.classList.remove('focus');
 
 			// notify
 			this.emit('blur:item', {$item: $prev});
 		}
 		// reassign
-		this.activeItem = $item;
+		this.$focusItem = $item;
+
+		this.$focusItem.data = this.data[this.$focusItem.index];
 
 		// correct CSS
 		$item.classList.add('focus');
@@ -336,15 +368,15 @@ List.prototype.focusItem = function ( $item ) {
 
 List.prototype.focusNext = function () {
 	//if ( this.activeIndex < this.size - 1 ) {
-	if ( this.activeItem !== this.$body.lastChild ) {
-		this.activeIndex++;
+	if ( this.$focusItem !== this.$body.lastChild ) {
+		//this.activeIndex++;
 		//console.log(this.activeIndex);
-		//this.activeItem.classList.remove('focus');
-		////this.activeItem = this.items[this.activeIndex];
-		//this.activeItem = this.activeItem.nextSibling;
-		//this.activeItem.classList.add('focus');
+		//this.$focusItem.classList.remove('focus');
+		////this.$focusItem = this.items[this.activeIndex];
+		//this.$focusItem = this.$focusItem.nextSibling;
+		//this.$focusItem.classList.add('focus');
 
-		return this.focusItem(this.activeItem.nextSibling);
+		return this.focusItem(this.$focusItem.nextSibling);
 	}
 	return false;
 };
@@ -352,32 +384,32 @@ List.prototype.focusNext = function () {
 
 List.prototype.focusPrev = function () {
 	//if ( this.activeIndex > 0 ) {
-	if ( this.activeItem !== this.$body.firstChild ) {
-		this.activeIndex--;
+	if ( this.$focusItem !== this.$body.firstChild ) {
+		//this.activeIndex--;
 		//console.log(this.activeIndex);
-		//this.activeItem.classList.remove('focus');
-		////this.activeItem = this.items[this.activeIndex];
-		//this.activeItem = this.activeItem.previousSibling;
-		//this.activeItem.classList.add('focus');
+		//this.$focusItem.classList.remove('focus');
+		////this.$focusItem = this.items[this.activeIndex];
+		//this.$focusItem = this.$focusItem.previousSibling;
+		//this.$focusItem.classList.add('focus');
 
-		return this.focusItem(this.activeItem.previousSibling);
+		return this.focusItem(this.$focusItem.previousSibling);
 	}
 	return false;
 };
 
 
 //List.prototype.focusFirst = function () {
-//	this.activeItem.classList.remove('focus');
-//	this.activeItem = this.$body.firstChild;
-//	this.activeItem.classList.add('focus');
-//	this.activeIndex = this.activeItem.index;
+//	this.$focusItem.classList.remove('focus');
+//	this.$focusItem = this.$body.firstChild;
+//	this.$focusItem.classList.add('focus');
+//	this.activeIndex = this.$focusItem.index;
 //};
 
 //List.prototype.focusLast = function () {
-//	this.activeItem.classList.remove('focus');
-//	this.activeItem = this.$body.lastChild;
-//	this.activeItem.classList.add('focus');
-//	this.activeIndex = this.activeItem.index;
+//	this.$focusItem.classList.remove('focus');
+//	this.$focusItem = this.$body.lastChild;
+//	this.$focusItem.classList.add('focus');
+//	this.activeIndex = this.$focusItem.index;
 //};
 
 
