@@ -7,6 +7,7 @@
 'use strict';
 
 var Emitter = require('./emitter'),
+	router  = require('./router'),
 	counter = 0;
 
 
@@ -80,13 +81,16 @@ function Component ( config ) {
 	 */
 	this.$body = null;
 
+	// @ifdef DEBUG
 	/**
 	 * Link to the page owner component.
 	 * It can differ from the direct parent.
+	 * Should be used only in debug.
 	 *
 	 * @type {Page}
 	 */
 	this.page = null;
+	// @endif
 
 	/**
 	 * Link to the parent component which has this component as a child.
@@ -113,7 +117,7 @@ function Component ( config ) {
 	Emitter.call(this, config.data);
 
 	// outer handle
-	if ( config.$node !== undefined ) {
+	if ( config.$node ) {
 		// @ifdef DEBUG
 		if ( !(config.$node instanceof Node) ) { throw 'wrong config.$node type'; }
 		// @endif
@@ -158,13 +162,13 @@ function Component ( config ) {
 	}
 
 	// set link to the page owner component
-	if ( config.page !== undefined ) {
-		// @ifdef DEBUG
-		if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
-		// @endif
-
-		this.page = config.page;
-	}
+	//if ( config.page !== undefined ) {
+	//	// @ifdef DEBUG
+	//	if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
+	//	// @endif
+    //
+	//	this.page = config.page;
+	//}
 
 	// apply given visibility
 	if ( config.visible === false ) {
@@ -199,6 +203,9 @@ function Component ( config ) {
 	this.$node.addEventListener('click', function ( event ) {
 		// left mouse button
 		if ( event.button === 0 ) {
+			// activate if possible
+			self.focus();
+
 			/**
 			 * Mouse click event.
 			 *
@@ -210,10 +217,10 @@ function Component ( config ) {
 			self.emit('click', {event: event});
 
 			// not prevented
-			if ( !event.stop ) {
-				// activate if possible
-				self.focus();
-			}
+			//if ( !event.stop ) {
+			//	// activate if possible
+			//	self.focus();
+			//}
 		}
 
 		// @ifdef DEBUG
@@ -267,7 +274,11 @@ Component.prototype.add = function ( child ) {
 		// apply
 		this.children.push(child);
 		child.parent = this;
-		child.page   = this.page;
+
+		// @ifdef DEBUG
+		// apply page for this and all children recursively
+		child.setPage(this.page);
+		// @endif
 
 		// correct DOM parent/child connection if necessary
 		if ( child.$node !== undefined && child.$node.parentNode === null ) {
@@ -291,12 +302,25 @@ Component.prototype.add = function ( child ) {
 };
 
 
+// @ifdef DEBUG
+Component.prototype.setPage = function ( page ) {
+	this.page = page;
+
+	this.children.forEach(function ( child ) {
+		child.setPage(page);
+	});
+};
+// @endif
+
+
 /**
  * Delete this component and clear all associated events.
  *
  * @fires Component#remove
  */
 Component.prototype.remove = function () {
+	var page = router.current;
+
 	// really inserted somewhere
 	if ( this.parent ) {
 		// @ifdef DEBUG
@@ -304,7 +328,7 @@ Component.prototype.remove = function () {
 		// @endif
 
 		// active at the moment
-		if ( this.page.activeComponent === this ) {
+		if ( page.activeComponent === this ) {
 			this.blur();
 			this.parent.focus();
 		}
@@ -343,24 +367,32 @@ Component.prototype.remove = function () {
  * @fires Component#focus
  */
 Component.prototype.focus = function () {
-	var current = this.page.activeComponent;
+	var activePage = router.current,
+		activeItem = activePage.activeComponent;
+
+	// @ifdef DEBUG
+	if ( this.page !== activePage ) {
+		console.log(this, this.page, activePage);
+		throw 'attempt to focus an invisible component';
+	}
+	// @endif
 
 	// this is a visual component on a page
 	// not already focused and can accept focus
-	if ( this.focusable && this.page && this !== current ) {
+	if ( this.focusable && this !== activeItem ) {
 		// notify the current active component
-		if ( current ) { current.blur(); }
+		if ( activeItem ) { activeItem.blur(); }
 
 		// apply
-		this.page.activeComponent = current = this;
-		current.$node.classList.add('focus');
+		activePage.activeComponent = activeItem = this;
+		activeItem.$node.classList.add('focus');
 
 		/**
 		 * Make this component focused.
 		 *
 		 * @event Component#focus
 		 */
-		current.emit('focus');
+		activeItem.emit('focus');
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' focus');
 
@@ -381,10 +413,13 @@ Component.prototype.focus = function () {
  * @fires Component#blur
  */
 Component.prototype.blur = function () {
+	var activePage = router.current,
+		activeItem = activePage.activeComponent;
+
 	// this is the active component
-	if ( this.page && this === this.page.activeComponent ) {
+	if ( this === activeItem ) {
 		this.$node.classList.remove('focus');
-		this.page.activeComponent = null;
+		activePage.activeComponent = null;
 
 		/**
 		 * Remove focus from this component.
