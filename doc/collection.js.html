@@ -93,7 +93,7 @@ Collection.prototype.constructor = Collection;
 /**
  * Remove all models from the collection event.
  *
- * @event Collection#clear
+ * @event module:stb/collection~Collection#clear
  *
  * @type {Object}
  * @property {Model[]} data old model list
@@ -105,7 +105,7 @@ Collection.prototype.constructor = Collection;
  *
  * @return {boolean} operation status
  *
- * @fires Collection#clear
+ * @fires module:stb/collection~Collection#clear
  */
 Collection.prototype.clear = function () {
 	var data, i;
@@ -137,7 +137,7 @@ Collection.prototype.clear = function () {
 /**
  * Set collection data event.
  *
- * @event Collection#init
+ * @event module:stb/collection~Collection#init
  *
  * @type {Object}
  * @property {Model[]} data new model list
@@ -150,8 +150,8 @@ Collection.prototype.clear = function () {
  * @param {Model[]} data model list
  * @return {boolean} operation status
  *
- * @fires Collection#clear
- * @fires Collection#init
+ * @fires module:stb/collection~Collection#clear
+ * @fires module:stb/collection~Collection#init
  */
 Collection.prototype.init = function ( data ) {
 	var i, model;
@@ -182,7 +182,7 @@ Collection.prototype.init = function ( data ) {
 /**
  * Append the given model to the collection event.
  *
- * @event Collection#add
+ * @event module:stb/collection~Collection#add
  *
  * @type {Object}
  * @property {Model} item new model object
@@ -193,9 +193,9 @@ Collection.prototype.init = function ( data ) {
 /**
  * Append the given model to the collection.
  *
- * @param {Model} model
+ * @param {Model} model object to add
  *
- * @fires Collection#add
+ * @fires module:stb/collection~Collection#add
  */
 Collection.prototype.add = function ( model ) {
 	// data
@@ -213,7 +213,7 @@ Collection.prototype.add = function ( model ) {
  * @param {Model} model
  * @param {number} index model position in the list
  *
- * @fires Collection#add
+ * @fires module:stb/collection~Collection#add
  */
 Collection.prototype.insert = function ( model, index ) {
 	// data
@@ -228,7 +228,7 @@ Collection.prototype.insert = function ( model, index ) {
 /**
  * Remove the given model from the collection event.
  *
- * @event Collection#remove
+ * @event module:stb/collection~Collection#remove
  *
  * @type {Object}
  * @property {Model} item removed model object
@@ -239,9 +239,9 @@ Collection.prototype.insert = function ( model, index ) {
 /**
  * Delete the given model from the collection.
  *
- * @param {Model} model
+ * @param {Model} model object to remove
  *
- * @fires Collection#remove
+ * @fires module:stb/collection~Collection#remove
  */
 Collection.prototype.remove = function ( model ) {
 	var index = this.data.indexOf(model);
@@ -299,16 +299,16 @@ Collection.prototype.get = function ( id ) {
 /**
  * Apply the custom sort method for all models in the collection event.
  *
- * @event Collection#sort
+ * @event module:stb/collection~Collection#sort
  */
 
 
 /**
  * Apply the custom sort method for all models in the collection.
  *
- * @param {function} comparator
+ * @param {function} comparator custom callback to provide sorting algorithm
  *
- * @fires Collection#sort
+ * @fires module:stb/collection~Collection#sort
  */
 Collection.prototype.sort = function ( comparator ) {
 	// valid method
@@ -391,13 +391,13 @@ module.exports = Collection;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 18 2014 19:21:40 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Mon Dec 22 2014 13:00:03 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

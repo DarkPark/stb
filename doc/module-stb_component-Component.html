@@ -146,7 +146,11 @@ Each component has a unique ID given either from $node.id or from data.id. If no
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -171,10 +175,24 @@ Each component has a unique ID given either from $node.id or from data.id. If no
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last"><p>component unique identifier</p></td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>component unique identifier (generated if not set)</p></td>
         </tr>
 
     
@@ -194,7 +212,21 @@ Each component has a unique ID given either from $node.id or from data.id. If no
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"><p>DOM element/fragment to be a component outer container</p></td>
@@ -217,7 +249,21 @@ Each component has a unique ID given either from $node.id or from data.id. If no
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"><p>DOM element/fragment to be a component inner container (by default is the same as $node)</p></td>
@@ -240,7 +286,21 @@ Each component has a unique ID given either from $node.id or from data.id. If no
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"><p>DOM element/fragment to be appended to the $body</p></td>
@@ -263,7 +323,21 @@ Each component has a unique ID given either from $node.id or from data.id. If no
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"><p>link to the parent component which has this component as a child</p></td>
@@ -286,7 +360,23 @@ Each component has a unique ID given either from $node.id or from data.id. If no
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
             
 
             <td class="description last"><p>list of components in this component</p></td>
@@ -309,7 +399,23 @@ Each component has a unique ID given either from $node.id or from data.id. If no
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
             
 
             <td class="description last"><p>list of event callbacks</p></td>
@@ -319,23 +425,78 @@ Each component has a unique ID given either from $node.id or from data.id. If no
 
         <tr>
             
-                <td class="name"><code>class</code></td>
+                <td class="name"><code>visible</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">boolean</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last"><p>CSS class name</p></td>
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>component initial visibility state flag</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>focusable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>component can accept focus or not</p></td>
         </tr>
 
     
@@ -381,7 +542,7 @@ Each component has a unique ID given either from $node.id or from data.id. If no
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line47">line 47</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line50">line 50</a>
     </li></ul></dd>
     
 
@@ -403,6 +564,11 @@ Each component has a unique ID given either from $node.id or from data.id. If no
     
 
     
+    <h5>Fires:</h5>
+    <ul>
+        <li><a href="module-stb_component-Component.html#event:click">module:stb/component~Component#event:click</a></li>
+    </ul>
+    
 
     
 
@@ -419,8 +585,7 @@ Each component has a unique ID given either from $node.id or from data.id. If no
     $node: document.getElementById(id),
     events: {
         click: function () { ... }
-    },
-    class: 'modern'
+    }
 });
 component.add( ... );
 component.focus();</code></pre>
@@ -514,7 +679,7 @@ In simple cases is the same as $node.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line64">line 64</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -589,7 +754,7 @@ In simple cases is the same as $node.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line56">line 56</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line74">line 74</a>
     </li></ul></dd>
     
 
@@ -609,7 +774,7 @@ In simple cases is the same as $node.</p>
         
             
 <dt>
-    <h4 class="name" id="children"><span class="type-signature"></span>children<span class="type-signature"> :<a href="Collection.html">Collection</a></span></h4>
+    <h4 class="name" id="children"><span class="type-signature"></span>children<span class="type-signature"> :Array.&lt;Component></span></h4>
 
     
 </dt>
@@ -625,7 +790,7 @@ In simple cases is the same as $node.</p>
         <ul>
             <li>
                 
-<span class="param-type"><a href="Collection.html">Collection</a></span>
+<span class="param-type">Array.&lt;Component></span>
 
 
             </li>
@@ -664,7 +829,82 @@ In simple cases is the same as $node.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line86">line 86</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line107">line 107</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="focusable"><span class="type-signature"></span>focusable<span class="type-signature"> :boolean</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Component can accept focus or not.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line67">line 67</a>
     </li></ul></dd>
     
 
@@ -692,7 +932,8 @@ In simple cases is the same as $node.</p>
     
     <div class="description">
         <p>Link to the page owner component.
-It can differ from the direct parent.</p>
+It can differ from the direct parent.
+Should be used only in debug.</p>
     </div>
     
 
@@ -740,7 +981,7 @@ It can differ from the direct parent.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line72">line 72</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line92">line 92</a>
     </li></ul></dd>
     
 
@@ -815,7 +1056,82 @@ It can differ from the direct parent.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line79">line 79</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line100">line 100</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="visible"><span class="type-signature">(readonly) </span>visible<span class="type-signature"> :boolean</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Component visibility state flag.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -959,7 +1275,7 @@ It can differ from the direct parent.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line224">line 224</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line263">line 263</a>
     </li></ul></dd>
     
 
@@ -1054,7 +1370,7 @@ Change page.activeComponent and notify subscribers.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line323">line 323</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line415">line 415</a>
     </li></ul></dd>
     
 
@@ -1068,6 +1384,11 @@ Change page.activeComponent and notify subscribers.</p>
 
     
 
+    
+    <h5>Fires:</h5>
+    <ul>
+        <li><a href="module-stb_component-Component.html#event:blur">module:stb/component~Component#event:blur</a></li>
+    </ul>
     
 
     
@@ -1163,7 +1484,7 @@ Notify the owner-page and apply CSS class.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line292">line 292</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line369">line 369</a>
     </li></ul></dd>
     
 
@@ -1177,6 +1498,124 @@ Notify the owner-page and apply CSS class.</p>
 
     
 
+    
+    <h5>Fires:</h5>
+    <ul>
+        <li><a href="module-stb_component-Component.html#event:focus">module:stb/component~Component#event:focus</a></li>
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>operation status</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+        
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="hide"><span class="type-signature"></span>hide<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Make the component hidden and notify subscribers.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line478">line 478</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+    <h5>Fires:</h5>
+    <ul>
+        <li><a href="module-stb_component-Component.html#event:hide">module:stb/component~Component#event:hide</a></li>
+    </ul>
     
 
     
@@ -1271,7 +1710,7 @@ Notify the owner-page and apply CSS class.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component.js.html">component.js</a>, <a href="component.js.html#line260">line 260</a>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line321">line 321</a>
     </li></ul></dd>
     
 
@@ -1280,12 +1719,857 @@ Notify the owner-page and apply CSS class.</p>
     
 
     
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>add recursive removal of all children</li>
-        </ul>
+</dl>
+
+
+    
+
+    
+    <h5>Fires:</h5>
+    <ul>
+        <li><a href="module-stb_component-Component.html#event:remove">module:stb/component~Component#event:remove</a></li>
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="show"><span class="type-signature"></span>show<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Make the component visible and notify subscribers.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line448">line 448</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+    <h5>Fires:</h5>
+    <ul>
+        <li><a href="module-stb_component-Component.html#event:show">module:stb/component~Component#event:show</a></li>
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>operation status</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
     </dd>
+</dl>
+
+        
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Events</h3>
+
+        <dl>
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="event:add">add</h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>A child component is added.</p>
+    </div>
+    
+
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+
+    
+
+    
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>child</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Component</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>new component added</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line288">line 288</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="event:blur">blur</h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Remove focus from this component.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line424">line 424</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="event:click">click</h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Mouse click event.</p>
+    </div>
+    
+
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+
+    
+
+    
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>click event data</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line209">line 209</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="event:focus">focus</h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Make this component focused.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line390">line 390</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="event:hide">hide</h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Make the component hidden.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line486">line 486</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="event:remove">remove</h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Delete this component.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line350">line 350</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        
+
+        <h4 class="name" id="event:show">show</h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Make the component visible.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="component.js.html">component.js</a>, <a href="component.js.html#line456">line 456</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
     
 </dl>
 
@@ -1307,10 +2591,6 @@ Notify the owner-page and apply CSS class.</p>
 
         </dl>
     
-
-    
-
-    
 </article>
 
 </section>
@@ -1321,13 +2601,13 @@ Notify the owner-page and apply CSS class.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 18 2014 19:21:40 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Mon Dec 22 2014 13:00:03 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

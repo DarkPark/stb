@@ -48,7 +48,7 @@ var Component = require('../component'),
  * @param {number} config.size amount of visible items on a page
  */
 function Grid ( config ) {
-	var self = this,
+	var self = this,  // current execution context
 		index = 0,
 		i, j, row, item;
 
@@ -64,20 +64,20 @@ function Grid ( config ) {
 	 *
 	 * @type {Node}
 	 */
-	this.activeItem = null;
+	this.$focusItem = null;
 
-	this.activeIndex = 0;
+	//this.activeIndex = 0;
 
 	this.data = [];
 
-	this.type = 0;
+	//this.type = 0;
 
 	/**
 	 * Amount of visible items on a page.
 	 *
 	 * @type {number}
 	 */
-	this.size = 5;
+	//this.size = 5;
 
 	this.render = this.defaultRender;
 
@@ -100,23 +100,7 @@ function Grid ( config ) {
 	// correct CSS class names
 	this.$node.classList.add('grid');
 
-	// apply hierarchy
-	if ( config.data !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
-		// @endif
 
-		this.data = config.data;
-	}
-
-	// custom render method
-	if ( config.render !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
-		// @endif
-
-		this.render = config.render;
-	}
 
 	//if ( this.type === this.TYPE_HORIZONTAL ) {
 	//	this.$node.classList.add('horizontal');
@@ -130,50 +114,14 @@ function Grid ( config ) {
 
 	this.$node.appendChild(this.$body);
 
-	debug.log(this.data);
+	//debug.log(this.data);
 
-	for ( i = 0; i &lt; this.data.length; i++ ) {
-		row = this.$body.insertRow();
-		for ( j = 0; j &lt; this.data[i].length; j++ ) {
-			item = row.insertCell(-1);
-			item.x = j;
-			item.y = i;
-			item.className = 'cell';
-			//console.log(i, j);
-			//console.log(this.data[i][j]);
-			var itemData = this.data[i][j];
-			if ( typeof itemData === 'object' ) {
-				item.innerHTML = itemData.value;
-				item.colSpan = itemData.colSpan || 1;
-				item.rowSpan = itemData.rowSpan || 1;
-			} else {
-				item.innerHTML = itemData;
-			}
-			//if ( this.data[i] !== undefined ) {
-			//	this.render(item, this.data[i]);
-			//
-			//	item.addEventListener('click', function () {
-			//		self.activeIndex = this.index;
-			//		self.activeItem.classList.remove('focus');
-			//		self.activeItem = this;
-			//		self.activeItem.classList.add('focus');
-			//	});
-			//}
-		}
-		this.$body.appendChild(row);
+	this.init(config);
 
-		//this.items.push(this.$body.appendChild(item));
-		//this.$body.appendChild(item);
-	}
-
-
-	this.activeItem = this.$body.rows[0].cells[0];
-	this.$body.rows[0].cells[0].classList.add('focus');
-
-	//if ( this.activeItem === null ) {
-	//	this.activeItem = this.$body.firstChild;
+	//if ( this.$focusItem === null ) {
+	//	this.$focusItem = this.$body.firstChild;
 	//	//this.activeIndex = 0;
-	//	this.activeItem.classList.add('focus');
+	//	this.$focusItem.classList.add('focus');
 	//}
 
 	this.addListener('keydown', function ( event ) {
@@ -187,10 +135,10 @@ function Grid ( config ) {
 
 				break;
 			case keys.right:
-				self.focusItem(self.activeItem.nextSibling);
+				self.focusItem(self.$focusItem.nextSibling);
 				break;
 			case keys.left:
-				self.focusItem(self.activeItem.previousSibling);
+				self.focusItem(self.$focusItem.previousSibling);
 				break;
 		}
 
@@ -207,7 +155,7 @@ function Grid ( config ) {
 					self.render(self.$body.firstChild, self.data[self.activeIndex-1]);
 					self.$body.firstChild.index = self.activeIndex-1;
 					//} else {
-					//	self.$body.firstChild.innerHTML = self.data[self.activeIndex-1];
+					//	self.$body.firstChild.innerText = self.data[self.activeIndex-1];
 					//}
 
 					//self.items.unshift(self.items.pop());
@@ -229,7 +177,7 @@ function Grid ( config ) {
 					self.render(self.$body.lastChild, self.data[self.activeIndex+1]);
 					self.$body.lastChild.index = self.activeIndex+1;
 					//} else {
-					//	self.$body.lastChild.innerHTML = self.data[self.activeIndex + 1];
+					//	self.$body.lastChild.innerText = self.data[self.activeIndex + 1];
 					//}
 
 					//self.items.push(self.items.shift());
@@ -243,14 +191,14 @@ function Grid ( config ) {
 			//self.activeIndex = self.activeIndex - self.size - 1;
 			//self.focusFirst();
 			self.focusItem(self.$body.firstChild);
-			self.activeIndex = self.activeItem.index;
+			//self.activeIndex = self.$focusItem.index;
 		}
 		if ( event.code === keys.pageDown ) {
 			//self.activeIndex = self.activeIndex + self.size - 1;
 
 			//self.focusLast();
 			self.focusItem(self.$body.lastChild);
-			self.activeIndex = self.activeItem.index;
+			//self.activeIndex = self.$focusItem.index;
 
 			//for ( i = 0; i &lt; self.size; i++ ) {
 			//self.render()
@@ -263,11 +211,11 @@ function Grid ( config ) {
 		//self.items[self.items.length-1] = tmp;
 
 		//for ( i = 0; i &lt; self.size; i++ ) {
-		//self.items[i].innerHTML = self.data[i+index];
+		//self.items[i].innerText = self.data[i+index];
 		//}
-		//self.activeItem.classList.remove('focus');
-		//self.activeItem = self.items[Math.abs(index % self.items.length)];
-		//self.activeItem.classList.add('focus');
+		//self.$focusItem.classList.remove('focus');
+		//self.$focusItem = self.items[Math.abs(index % self.items.length)];
+		//self.$focusItem.classList.add('focus');
 	});
 
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -284,9 +232,69 @@ function Grid ( config ) {
 Grid.prototype = Object.create(Component.prototype);
 Grid.prototype.constructor = Grid;
 
+//Grid.prototype.TYPE_VERTICAL   = 1;
+//Grid.prototype.TYPE_HORIZONTAL = 2;
 
-Grid.prototype.TYPE_VERTICAL   = 1;
-Grid.prototype.TYPE_HORIZONTAL = 2;
+
+Grid.prototype.init = function ( config ) {
+	var i, j, row, item;
+
+	// apply hierarchy
+	if ( config.data !== undefined ) {
+		// @ifdef DEBUG
+		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+		// @endif
+
+		this.data = config.data;
+	}
+
+	// custom render method
+	if ( config.render !== undefined ) {
+		// @ifdef DEBUG
+		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
+		// @endif
+
+		this.render = config.render;
+	}
+
+	for ( i = 0; i &lt; this.data.length; i++ ) {
+		row = this.$body.insertRow();
+		for ( j = 0; j &lt; this.data[i].length; j++ ) {
+			item = row.insertCell(-1);
+			item.x = j;
+			item.y = i;
+			item.className = 'cell';
+			//console.log(i, j);
+			//console.log(this.data[i][j]);
+			var itemData = this.data[i][j];
+			if ( typeof itemData === 'object' ) {
+				item.innerText = itemData.value;
+				item.colSpan = itemData.colSpan || 1;
+				item.rowSpan = itemData.rowSpan || 1;
+			} else {
+				item.innerText = itemData;
+			}
+			//if ( this.data[i] !== undefined ) {
+			//	this.render(item, this.data[i]);
+			//
+			//	item.addEventListener('click', function () {
+			//		self.activeIndex = this.index;
+			//		self.$focusItem.classList.remove('focus');
+			//		self.$focusItem = this;
+			//		self.$focusItem.classList.add('focus');
+			//	});
+			//}
+		}
+		this.$body.appendChild(row);
+
+		//this.items.push(this.$body.appendChild(item));
+		//this.$body.appendChild(item);
+	}
+
+
+	this.$focusItem = this.$body.rows[0].cells[0];
+	this.$body.rows[0].cells[0].classList.add('focus');
+};
 
 
 Grid.prototype.moveNext = function () {
@@ -304,7 +312,7 @@ Grid.prototype.renderPage = function () {
 };
 
 Grid.prototype.defaultRender = function ( $item, data ) {
-	$item.innerHTML = data;
+	$item.innerText = data;
 };
 
 
@@ -317,7 +325,7 @@ Grid.prototype.defaultRender = function ( $item, data ) {
  * @return {boolean} operation status
  */
 Grid.prototype.focusItem = function ( $item ) {
-	var $prev = this.activeItem;
+	var $prev = this.$focusItem;
 
 	// different element
 	if ( $item !== undefined &amp;&amp; $prev !== $item ) {
@@ -334,7 +342,7 @@ Grid.prototype.focusItem = function ( $item ) {
 			$prev.classList.remove('focus');
 		}
 		// reassign
-		this.activeItem = $item;
+		this.$focusItem = $item;
 
 		// correct CSS
 		$item.classList.add('focus');
@@ -352,15 +360,15 @@ Grid.prototype.focusItem = function ( $item ) {
 
 Grid.prototype.focusNext = function () {
 	//if ( this.activeIndex &lt; this.size - 1 ) {
-	if ( this.activeItem !== this.$body.lastChild ) {
-		this.activeIndex++;
+	if ( this.$focusItem !== this.$body.lastChild ) {
+		//this.activeIndex++;
 		//console.log(this.activeIndex);
-		//this.activeItem.classList.remove('focus');
-		////this.activeItem = this.items[this.activeIndex];
-		//this.activeItem = this.activeItem.nextSibling;
-		//this.activeItem.classList.add('focus');
+		//this.$focusItem.classList.remove('focus');
+		////this.$focusItem = this.items[this.activeIndex];
+		//this.$focusItem = this.$focusItem.nextSibling;
+		//this.$focusItem.classList.add('focus');
 
-		return this.focusItem(this.activeItem.nextSibling);
+		return this.focusItem(this.$focusItem.nextSibling);
 	}
 	return false;
 };
@@ -368,32 +376,32 @@ Grid.prototype.focusNext = function () {
 
 Grid.prototype.focusPrev = function () {
 	//if ( this.activeIndex > 0 ) {
-	if ( this.activeItem !== this.$body.firstChild ) {
-		this.activeIndex--;
+	if ( this.$focusItem !== this.$body.firstChild ) {
+		//this.activeIndex--;
 		//console.log(this.activeIndex);
-		//this.activeItem.classList.remove('focus');
-		////this.activeItem = this.items[this.activeIndex];
-		//this.activeItem = this.activeItem.previousSibling;
-		//this.activeItem.classList.add('focus');
+		//this.$focusItem.classList.remove('focus');
+		////this.$focusItem = this.items[this.activeIndex];
+		//this.$focusItem = this.$focusItem.previousSibling;
+		//this.$focusItem.classList.add('focus');
 
-		return this.focusItem(this.activeItem.previousSibling);
+		return this.focusItem(this.$focusItem.previousSibling);
 	}
 	return false;
 };
 
 
 //Grid.prototype.focusFirst = function () {
-//	this.activeItem.classList.remove('focus');
-//	this.activeItem = this.$body.firstChild;
-//	this.activeItem.classList.add('focus');
-//	this.activeIndex = this.activeItem.index;
+//	this.$focusItem.classList.remove('focus');
+//	this.$focusItem = this.$body.firstChild;
+//	this.$focusItem.classList.add('focus');
+//	this.activeIndex = this.$focusItem.index;
 //};
 
 //Grid.prototype.focusLast = function () {
-//	this.activeItem.classList.remove('focus');
-//	this.activeItem = this.$body.lastChild;
-//	this.activeItem.classList.add('focus');
-//	this.activeIndex = this.activeItem.index;
+//	this.$focusItem.classList.remove('focus');
+//	this.$focusItem = this.$body.lastChild;
+//	this.$focusItem.classList.add('focus');
+//	this.activeIndex = this.$focusItem.index;
 //};
 
 
@@ -409,13 +417,13 @@ module.exports = Grid;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="Collection.html#event:add">add</a></li><li><a href="Collection.html#event:clear">clear</a></li><li><a href="Collection.html#event:init">init</a></li><li><a href="Collection.html#event:remove">remove</a></li><li><a href="Collection.html#event:sort">sort</a></li><li><a href="Model.html#event:change">change</a></li><li><a href="Model.html#event:clear">clear</a></li><li><a href="Model.html#event:init">init</a></li><li><a href="router.html#event:init">init</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Thu Dec 18 2014 19:21:40 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Mon Dec 22 2014 13:00:03 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>
