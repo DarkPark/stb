@@ -530,7 +530,7 @@
 			/**
 			 * Remove all attributes from the model event.
 			 *
-			 * @event Model#clear
+			 * @event module:stb/model~Model#clear
 			 *
 			 * @type {Object}
 			 * @property {Object} data old model attributes
@@ -542,7 +542,7 @@
 			 *
 			 * @return {boolean} operation status
 			 *
-			 * @fires Model#clear
+			 * @fires module:stb/model~Model#clear
 			 */
 			Model.prototype.clear = function () {
 				var data = this.data;
@@ -569,7 +569,7 @@
 			/**
 			 * Set model data event.
 			 *
-			 * @event Model#init
+			 * @event module:stb/model~Model#init
 			 *
 			 * @type {Object}
 			 * @property {Object} data new model attributes
@@ -582,8 +582,8 @@
 			 * @param {Object} data attributes
 			 * @return {boolean} operation status
 			 *
-			 * @fires Model#clear
-			 * @fires Model#init
+			 * @fires module:stb/model~Model#clear
+			 * @fires module:stb/model~Model#init
 			 */
 			Model.prototype.init = function ( data ) {
 				// @ifdef DEBUG
@@ -644,7 +644,7 @@
 			/**
 			 * Update or create a model attribute event.
 			 *
-			 * @event Model#change
+			 * @event module:stb/model~Model#change
 			 *
 			 * @type {Object}
 			 * @property {string} name attribute name
@@ -660,7 +660,7 @@
 			 * @param {*} value associated value
 			 * @return {boolean} operation status (true - attribute value was changed/created)
 			 *
-			 * @fires Model#change
+			 * @fires module:stb/model~Model#change
 			 */
 			Model.prototype.set = function ( name, value ) {
 				var isAttrSet = name in this.data,
@@ -702,7 +702,7 @@
 			 * @param {string} name attribute
 			 * @return {boolean} operation status (true - attribute was deleted)
 			 *
-			 * @fires Model#change
+			 * @fires module:stb/model~Model#change
 			 */
 			Model.prototype.unset = function ( name ) {
 				var isAttrSet = name in this.data,
