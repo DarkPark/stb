@@ -9,7 +9,6 @@
 var Component = require('../component'),
 	keys      = require('../keys');
 
-//TODO: replace innerHTML with innerText or textContent (http://jsperf.com/innerhtml-vs-innertext/39)
 
 /**
  * Mouse click event.
@@ -128,7 +127,7 @@ function List ( config ) {
 					self.$body.firstChild.index = self.$focusItem.index - 1;
 					//self.$body.firstChild.data  = self.data[self.$focusItem.index];
 					//} else {
-					//	self.$body.firstChild.innerHTML = self.data[self.activeIndex-1];
+					//	self.$body.firstChild.innerText = self.data[self.activeIndex-1];
 					//}
 
 					//self.items.unshift(self.items.pop());
@@ -151,7 +150,7 @@ function List ( config ) {
 					self.$body.lastChild.index = self.$focusItem.index + 1;
 					//self.$body.firstChild.data  = self.data[self.$focusItem.index];
 					//} else {
-					//	self.$body.lastChild.innerHTML = self.data[self.activeIndex + 1];
+					//	self.$body.lastChild.innerText = self.data[self.activeIndex + 1];
 					//}
 
 					//self.items.push(self.items.shift());
@@ -185,7 +184,7 @@ function List ( config ) {
 		//self.items[self.items.length-1] = tmp;
 
 		//for ( i = 0; i < self.size; i++ ) {
-			//self.items[i].innerHTML = self.data[i+index];
+			//self.items[i].innerText = self.data[i+index];
 		//}
 		//self.$focusItem.classList.remove('focus');
 		//self.$focusItem = self.items[Math.abs(index % self.items.length)];
@@ -270,7 +269,7 @@ List.prototype.init = function ( config ) {
 			item = document.createElement('div');
 			item.index = i;
 			item.className = 'item';
-			//item.innerHTML = this.data[i];
+			//item.innerText = this.data[i];
 			//if ( this.data[i] !== undefined ) {
 				//this.render(item, this.data[i]);
 
@@ -308,7 +307,7 @@ List.prototype.renderPage = function () {
 
 
 List.prototype.defaultRender = function ( $item, data ) {
-	$item.innerHTML = data;
+	$item.innerText = data;
 };
 
 

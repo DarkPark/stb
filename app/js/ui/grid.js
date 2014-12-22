@@ -127,7 +127,7 @@ function Grid ( config ) {
 					self.render(self.$body.firstChild, self.data[self.activeIndex-1]);
 					self.$body.firstChild.index = self.activeIndex-1;
 					//} else {
-					//	self.$body.firstChild.innerHTML = self.data[self.activeIndex-1];
+					//	self.$body.firstChild.innerText = self.data[self.activeIndex-1];
 					//}
 
 					//self.items.unshift(self.items.pop());
@@ -149,7 +149,7 @@ function Grid ( config ) {
 					self.render(self.$body.lastChild, self.data[self.activeIndex+1]);
 					self.$body.lastChild.index = self.activeIndex+1;
 					//} else {
-					//	self.$body.lastChild.innerHTML = self.data[self.activeIndex + 1];
+					//	self.$body.lastChild.innerText = self.data[self.activeIndex + 1];
 					//}
 
 					//self.items.push(self.items.shift());
@@ -183,7 +183,7 @@ function Grid ( config ) {
 		//self.items[self.items.length-1] = tmp;
 
 		//for ( i = 0; i < self.size; i++ ) {
-		//self.items[i].innerHTML = self.data[i+index];
+		//self.items[i].innerText = self.data[i+index];
 		//}
 		//self.$focusItem.classList.remove('focus');
 		//self.$focusItem = self.items[Math.abs(index % self.items.length)];
@@ -240,11 +240,11 @@ Grid.prototype.init = function ( config ) {
 			//console.log(this.data[i][j]);
 			var itemData = this.data[i][j];
 			if ( typeof itemData === 'object' ) {
-				item.innerHTML = itemData.value;
+				item.innerText = itemData.value;
 				item.colSpan = itemData.colSpan || 1;
 				item.rowSpan = itemData.rowSpan || 1;
 			} else {
-				item.innerHTML = itemData;
+				item.innerText = itemData;
 			}
 			//if ( this.data[i] !== undefined ) {
 			//	this.render(item, this.data[i]);
@@ -284,7 +284,7 @@ Grid.prototype.renderPage = function () {
 };
 
 Grid.prototype.defaultRender = function ( $item, data ) {
-	$item.innerHTML = data;
+	$item.innerText = data;
 };
 
 

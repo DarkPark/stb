@@ -50,7 +50,7 @@ Model.prototype.idName = 'id';
 /**
  * Remove all attributes from the model event.
  *
- * @event Model#clear
+ * @event module:stb/model#clear
  *
  * @type {Object}
  * @property {Object} data old model attributes
@@ -62,7 +62,7 @@ Model.prototype.idName = 'id';
  *
  * @return {boolean} operation status
  *
- * @fires Model#clear
+ * @fires module:stb/model#clear
  */
 Model.prototype.clear = function () {
 	var data = this.data;

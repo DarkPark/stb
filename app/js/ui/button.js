@@ -40,9 +40,9 @@ function Button ( config ) {
 
 	// set title
 	if ( config.value !== undefined ) {
-		this.$body.innerHTML = config.value;
+		this.$body.innerText = config.value;
 	} else {
-		this.$body.innerHTML = this.constructor.name + '.' + this.id;
+		this.$body.innerText = this.constructor.name + '.' + this.id;
 	}
 
 	if ( config.icon ) {
