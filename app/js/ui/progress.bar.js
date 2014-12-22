@@ -66,25 +66,21 @@ function ProgressBar ( config ) {
 	 */
 	this.step = 1;
 
-	// create $body if not passed
-	if ( config.$body === undefined ) {
-		config.$body = document.createElement('div');
-	}
-
 	// can't accept focus
-	if ( config.focusable === undefined ) {
-		config.focusable = false;
-	}
+	if ( config.focusable === undefined ) { config.focusable = false; }
 
 	// parent init
 	Component.call(this, config);
 
+	// create $body if not provided
+	if ( this.$node === this.$body ) {
+		// insert bar line
+		this.$body = this.$node.appendChild(document.createElement('div'));
+	}
+
 	// correct CSS class names
 	this.$node.classList.add('progressBar');
 	this.$body.classList.add('value');
-
-	// insert bar line
-	this.$node.appendChild(this.$body);
 
 	// initiate values and progress line
 	this.init(config);
