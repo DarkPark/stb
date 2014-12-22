@@ -117,7 +117,7 @@ function Component ( config ) {
 	Emitter.call(this, config.data);
 
 	// outer handle
-	if ( config.$node ) {
+	if ( config.$node !== undefined ) {
 		// @ifdef DEBUG
 		if ( !(config.$node instanceof Node) ) { throw 'wrong config.$node type'; }
 		// @endif
