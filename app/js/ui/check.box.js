@@ -99,7 +99,7 @@ CheckBox.prototype.constructor = CheckBox;
  * @param {boolean} value new value to set
  * @return {boolean} operation status
  *
- * @fires CheckBox#change
+ * @fires module:stb/ui/check.box~CheckBox#change
  */
 CheckBox.prototype.set = function ( value ) {
 	var i, l;
@@ -122,7 +122,7 @@ CheckBox.prototype.set = function ( value ) {
 		/**
 		 * Update progress value.
 		 *
-		 * @event ProgressBar#change
+		 * @event module:stb/ui/check.box~CheckBox#change
 		 *
 		 * @type {Object}
 		 * @property {boolean} value current check state

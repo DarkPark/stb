@@ -13,7 +13,7 @@ var Component = require('../component'),
 /**
  * Mouse click event.
  *
- * @event List#click:item
+ * @event module:stb/ui/list~List#click:item
  *
  * @type {Object}
  * @property {Node} $item clicked HTML item
@@ -29,7 +29,7 @@ var Component = require('../component'),
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {number} config.size amount of visible items on a page
  *
- * @fires List#click:item
+ * @fires module:stb/ui/list~List#click:item
  */
 function List ( config ) {
 	var self = this,  // current execution context
@@ -319,7 +319,7 @@ List.prototype.defaultRender = function ( $item, data ) {
  *
  * @return {boolean} operation status
  *
- * @fires List#focus:item
+ * @fires module:stb/ui/list~List#focus:item
  */
 List.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
@@ -349,7 +349,7 @@ List.prototype.focusItem = function ( $item ) {
 		/**
 		 * Set focus to an element.
 		 *
-		 * @event List#focus:item
+		 * @event module:stb/ui/list~List#focus:item
 		 *
 		 * @type {Object}
 		 * @property {*} [$prev] old/previous focused HTML element

@@ -58,7 +58,7 @@ router.ids = {};
 /**
  * Set router data event.
  *
- * @event router#init
+ * @event module:stb/router#init
  *
  * @type {Object}
  * @property {Page[]} pages new page list
@@ -70,7 +70,7 @@ router.ids = {};
  * @param {Page[]} pages list of pages to add
  * @return {boolean} operation status
  *
- * @fires router#init
+ * @fires module:stb/router#init
  */
 router.init = function ( pages ) {
 	var i, l, item;

@@ -65,7 +65,7 @@ Collection.prototype.constructor = Collection;
 /**
  * Remove all models from the collection event.
  *
- * @event Collection#clear
+ * @event module:stb/collection~Collection#clear
  *
  * @type {Object}
  * @property {Model[]} data old model list
@@ -77,7 +77,7 @@ Collection.prototype.constructor = Collection;
  *
  * @return {boolean} operation status
  *
- * @fires Collection#clear
+ * @fires module:stb/collection~Collection#clear
  */
 Collection.prototype.clear = function () {
 	var data, i;
@@ -109,7 +109,7 @@ Collection.prototype.clear = function () {
 /**
  * Set collection data event.
  *
- * @event Collection#init
+ * @event module:stb/collection~Collection#init
  *
  * @type {Object}
  * @property {Model[]} data new model list
@@ -122,8 +122,8 @@ Collection.prototype.clear = function () {
  * @param {Model[]} data model list
  * @return {boolean} operation status
  *
- * @fires Collection#clear
- * @fires Collection#init
+ * @fires module:stb/collection~Collection#clear
+ * @fires module:stb/collection~Collection#init
  */
 Collection.prototype.init = function ( data ) {
 	var i, model;
@@ -154,7 +154,7 @@ Collection.prototype.init = function ( data ) {
 /**
  * Append the given model to the collection event.
  *
- * @event Collection#add
+ * @event module:stb/collection~Collection#add
  *
  * @type {Object}
  * @property {Model} item new model object
@@ -165,9 +165,9 @@ Collection.prototype.init = function ( data ) {
 /**
  * Append the given model to the collection.
  *
- * @param {Model} model
+ * @param {Model} model object to add
  *
- * @fires Collection#add
+ * @fires module:stb/collection~Collection#add
  */
 Collection.prototype.add = function ( model ) {
 	// data
@@ -185,7 +185,7 @@ Collection.prototype.add = function ( model ) {
  * @param {Model} model
  * @param {number} index model position in the list
  *
- * @fires Collection#add
+ * @fires module:stb/collection~Collection#add
  */
 Collection.prototype.insert = function ( model, index ) {
 	// data
@@ -200,7 +200,7 @@ Collection.prototype.insert = function ( model, index ) {
 /**
  * Remove the given model from the collection event.
  *
- * @event Collection#remove
+ * @event module:stb/collection~Collection#remove
  *
  * @type {Object}
  * @property {Model} item removed model object
@@ -211,9 +211,9 @@ Collection.prototype.insert = function ( model, index ) {
 /**
  * Delete the given model from the collection.
  *
- * @param {Model} model
+ * @param {Model} model object to remove
  *
- * @fires Collection#remove
+ * @fires module:stb/collection~Collection#remove
  */
 Collection.prototype.remove = function ( model ) {
 	var index = this.data.indexOf(model);
@@ -271,16 +271,16 @@ Collection.prototype.get = function ( id ) {
 /**
  * Apply the custom sort method for all models in the collection event.
  *
- * @event Collection#sort
+ * @event module:stb/collection~Collection#sort
  */
 
 
 /**
  * Apply the custom sort method for all models in the collection.
  *
- * @param {function} comparator
+ * @param {function} comparator custom callback to provide sorting algorithm
  *
- * @fires Collection#sort
+ * @fires module:stb/collection~Collection#sort
  */
 Collection.prototype.sort = function ( comparator ) {
 	// valid method

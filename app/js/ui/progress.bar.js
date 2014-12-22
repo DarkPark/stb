@@ -103,8 +103,8 @@ ProgressBar.prototype.constructor = ProgressBar;
  * @param {number} value new value to set
  * @return {boolean} operation result
  *
- * @fires ProgressBar#done
- * @fires ProgressBar#change
+ * @fires module:stb/ui/progress.bar~ProgressBar#done
+ * @fires module:stb/ui/progress.bar~ProgressBar#change
  */
 ProgressBar.prototype.set = function ( value ) {
 	var prevValue = this.value;
@@ -125,7 +125,7 @@ ProgressBar.prototype.set = function ( value ) {
 			/**
 			 * Set progress to its maximum value.
 			 *
-			 * @event ProgressBar#done
+			 * @event module:stb/ui/progress.bar~ProgressBar#done
 			 */
 			this.emit('done');
 		}
@@ -136,7 +136,7 @@ ProgressBar.prototype.set = function ( value ) {
 		/**
 		 * Update progress value.
 		 *
-		 * @event ProgressBar#change
+		 * @event module:stb/ui/progress.bar~ProgressBar#change
 		 *
 		 * @type {Object}
 		 * @property {number} prev old/previous progress value

@@ -55,7 +55,7 @@ function Button ( config ) {
 			/**
 			 * Mouse click event emulation.
 			 *
-			 * @event Button#click
+			 * @event module:stb/ui/button~Button#click
 			 *
 			 * @type {Object}
 			 * @property {Event} event click event data

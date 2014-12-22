@@ -33,7 +33,7 @@ var Emitter = require('./emitter'),
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
  *
- * @fires Component#click
+ * @fires module:stb/component~Component#click
  *
  * @example
  * var component = new Component({
@@ -209,7 +209,7 @@ function Component ( config ) {
 			/**
 			 * Mouse click event.
 			 *
-			 * @event Component#click
+			 * @event module:stb/component~Component#click
 			 *
 			 * @type {Object}
 			 * @property {Event} event click event data
@@ -288,7 +288,7 @@ Component.prototype.add = function ( child ) {
 		/**
 		 * A child component is added.
 		 *
-		 * @event Component#add
+		 * @event module:stb/component~Component#add
 		 *
 		 * @type {Object}
 		 * @property {Component} child new component added
@@ -316,7 +316,7 @@ Component.prototype.setPage = function ( page ) {
 /**
  * Delete this component and clear all associated events.
  *
- * @fires Component#remove
+ * @fires module:stb/component~Component#remove
  */
 Component.prototype.remove = function () {
 	var page = router.current;
@@ -350,7 +350,7 @@ Component.prototype.remove = function () {
 	/**
 	 * Delete this component.
 	 *
-	 * @event Component#remove
+	 * @event module:stb/component~Component#remove
 	 */
 	this.emit('remove');
 
@@ -364,7 +364,7 @@ Component.prototype.remove = function () {
  *
  * @return {boolean} operation status
  *
- * @fires Component#focus
+ * @fires module:stb/component~Component#focus
  */
 Component.prototype.focus = function () {
 	var activePage = router.current,
@@ -390,7 +390,7 @@ Component.prototype.focus = function () {
 		/**
 		 * Make this component focused.
 		 *
-		 * @event Component#focus
+		 * @event module:stb/component~Component#focus
 		 */
 		activeItem.emit('focus');
 
@@ -410,7 +410,7 @@ Component.prototype.focus = function () {
  *
  * @return {boolean} operation status
  *
- * @fires Component#blur
+ * @fires module:stb/component~Component#blur
  */
 Component.prototype.blur = function () {
 	var activePage = router.current,
@@ -424,7 +424,7 @@ Component.prototype.blur = function () {
 		/**
 		 * Remove focus from this component.
 		 *
-		 * @event Component#blur
+		 * @event module:stb/component~Component#blur
 		 */
 		this.emit('blur');
 
@@ -443,7 +443,7 @@ Component.prototype.blur = function () {
  *
  * @return {boolean} operation status
  *
- * @fires Component#show
+ * @fires module:stb/component~Component#show
  */
 Component.prototype.show = function () {
 	// is it hidden
@@ -456,7 +456,7 @@ Component.prototype.show = function () {
 		/**
 		 * Make the component visible.
 		 *
-		 * @event Component#show
+		 * @event module:stb/component~Component#show
 		 */
 		this.emit('show');
 
@@ -473,7 +473,7 @@ Component.prototype.show = function () {
  *
  * @return {boolean} operation status
  *
- * @fires Component#hide
+ * @fires module:stb/component~Component#hide
  */
 Component.prototype.hide = function () {
 	// is it visible
@@ -486,7 +486,7 @@ Component.prototype.hide = function () {
 		/**
 		 * Make the component hidden.
 		 *
-		 * @event Component#hide
+		 * @event module:stb/component~Component#hide
 		 */
 		this.emit('hide');
 
