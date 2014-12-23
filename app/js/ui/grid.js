@@ -152,9 +152,9 @@ Grid.prototype.defaultRender = function ( $cell, data ) {
  * @param {Object} [config={}] init parameters (subset of constructor config params)
  */
 Grid.prototype.init = function ( config ) {
-	var self     = this,
+	var self = this,
 		i, j,
-		$row, $cell, $table, $tbody,
+		$row, $cell, $table, $tbody, $focusItem,
 		cellData,
 		onClick = function ( event ) {
 			// visualize
@@ -249,6 +249,13 @@ Grid.prototype.init = function ( config ) {
 					$cell.rowSpan = cellData.rowSpan;
 					delete cellData.rowSpan;
 				}
+
+				// merge rows
+				if ( cellData.focus !== undefined ) {
+					// store and clean
+					$focusItem = $cell;
+					delete cellData.focus;
+				}
 			} else {
 				// wrap value
 				cellData = this.data[i][j] = {
@@ -273,6 +280,15 @@ Grid.prototype.init = function ( config ) {
 
 	// everything is ready
 	this.$body.appendChild($table);
+
+	// apply focus
+	if ( $focusItem !== undefined ) {
+		// focus item was given in data
+		this.focusItem($focusItem);
+	} else {
+		// just the first cell
+		this.focusItem(this.cells[0][0]);
+	}
 };
 
 
