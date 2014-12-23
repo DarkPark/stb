@@ -27,7 +27,8 @@ var Component = require('../component'),
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
- * @param {number} config.size amount of visible items on a page
+ * @param {Array}  [config.data=[]] component data to visualize
+ * @param {number} [config.size=5] amount of visible items on a page
  *
  * @fires module:stb/ui/list~List#click:item
  */
@@ -52,6 +53,11 @@ function List ( config ) {
 
 	//this.activeIndex = 0;
 
+	/**
+	 * Component data to visualize.
+	 *
+	 * @type {Array}
+	 */
 	this.data = [];
 
 	this.type = this.TYPE_VERTICAL;
@@ -97,6 +103,7 @@ function List ( config ) {
 	////this.$body.className = 'body';
 	//this.$node.appendChild(this.$body);
 
+	// component setup
 	this.init(config);
 
 	//if ( this.$focusItem === null ) {
@@ -210,6 +217,22 @@ List.prototype.TYPE_VERTICAL   = 1;
 List.prototype.TYPE_HORIZONTAL = 2;
 
 
+/**
+ * Fill the given cell with data.
+ *
+ * @param {Node} $item item DOM link
+ * @param {*} data associated with this item data
+ */
+List.prototype.defaultRender = function ( $item, data ) {
+	$item.innerText = data;
+};
+
+
+/**
+ * Init or re-init of the component inner structures and HTML.
+ *
+ * @param {Object} [config={}] init parameters (subset of constructor config params)
+ */
 List.prototype.init = function ( config ) {
 	var self     = this,
 		currSize = this.$body.children.length,
@@ -260,7 +283,7 @@ List.prototype.init = function ( config ) {
 		// non-empty list
 		if ( currSize > 0 ) {
 			// clear old items
-			this.$body.textContent = null;
+			this.$body.innerText = null;
 		}
 
 		// create new items
@@ -273,7 +296,7 @@ List.prototype.init = function ( config ) {
 			//if ( this.data[i] !== undefined ) {
 				//this.render(item, this.data[i]);
 
-				item.addEventListener('click', onClick);
+			item.addEventListener('click', onClick);
 			//}
 			//this.items.push(this.$body.appendChild(item));
 			this.$body.appendChild(item);
@@ -306,11 +329,6 @@ List.prototype.renderPage = function () {
 };
 
 
-List.prototype.defaultRender = function ( $item, data ) {
-	$item.innerText = data;
-};
-
-
 /**
  * Highlight the given DOM element as focused.
  * Remove focus from the previously focused item and generate associated event.
@@ -333,6 +351,11 @@ List.prototype.focusItem = function ( $item ) {
 
 		// some item is focused already
 		if ( $prev !== null ) {
+			// @ifdef DEBUG
+			if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
+			// @endif
+
+			// style
 			$prev.classList.remove('focus');
 
 			// notify

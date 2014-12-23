@@ -82,7 +82,7 @@ function ProgressBar ( config ) {
 	this.$node.classList.add('progressBar');
 	this.$body.classList.add('value');
 
-	// initiate values and progress line
+	// component setup
 	this.init(config);
 }
 
