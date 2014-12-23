@@ -18,6 +18,8 @@ var Component = require('../component'),
  *
  * @param {Object}   [config={}] init parameters (all inherited from the parent)
  * @param {Array[]}  [config.data=[]] component data to visualize
+ * @param {number}   [config.sizeX] amount of items in a row
+ * @param {number}   [config.sizeY] amount of rows
  * @param {function} [config.render] method to build each grid cell content
  * @param {boolean}  [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
  * @param {boolean}  [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
@@ -61,6 +63,20 @@ function Grid ( config ) {
 	 * @type {Array[]}
 	 */
 	this.data = [];
+
+	/**
+	 * Amount of items in a row.
+	 *
+	 * @type {number}
+	 */
+	this.sizeX = 5;
+
+	/**
+	 * Amount of rows.
+	 *
+	 * @type {number}
+	 */
+	this.sizeY = 5;
 
 	/**
 	 * Method to build each grid cell content.
@@ -153,7 +169,9 @@ Grid.prototype.defaultRender = function ( $item, data ) {
  */
 Grid.prototype.init = function ( config ) {
 	var self = this,
-		i, j,
+		posX = 0,
+		posy = 0,
+		i, j, k,
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
 		onClick = function ( event ) {
@@ -190,6 +208,26 @@ Grid.prototype.init = function ( config ) {
 		this.render = config.render;
 	}
 
+	// amount of items in a row
+	if ( config.sizeX !== undefined ) {
+		// @ifdef DEBUG
+		if ( Number(config.sizeX) !== config.sizeX ) { throw 'config.sizeX must be a number'; }
+		if ( config.sizeX <= 0 ) { throw 'config.sizeX should be positive'; }
+		// @endif
+
+		this.sizeX = config.sizeX;
+	}
+
+	// amount of rows
+	if ( config.sizeY !== undefined ) {
+		// @ifdef DEBUG
+		if ( Number(config.sizeY) !== config.sizeY ) { throw 'config.sizeY must be a number'; }
+		if ( config.sizeY <= 0 ) { throw 'config.sizeY should be positive'; }
+		// @endif
+
+		this.sizeY = config.sizeY;
+	}
+
 	// @ifdef DEBUG
 	if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
 	// @endif
@@ -201,8 +239,13 @@ Grid.prototype.init = function ( config ) {
 
 	// reset if necessary
 	if ( this.items.length > 0 ) {
-		this.items = [];
 		this.$body.innerText = '';
+	}
+
+	// navigation map init
+	this.items = new Array(this.sizeY);
+	for ( i = 0; i < this.sizeY; i++ ) {
+		this.items[i] = new Array(this.sizeX);
 	}
 
 	// rows
@@ -210,7 +253,7 @@ Grid.prototype.init = function ( config ) {
 		// dom
 		$row = $tbody.insertRow();
 		// navigation map filling
-		this.items.push([]);
+		//this.items.push([]);
 
 		// cols
 		for ( j = 0; j < this.data[i].length; j++ ) {
@@ -224,6 +267,9 @@ Grid.prototype.init = function ( config ) {
 			// shortcut
 			itemData = this.data[i][j];
 
+			// position
+			//posX = posX +
+
 			// cell data type
 			if ( typeof itemData === 'object' ) {
 				// merge columns
@@ -234,6 +280,9 @@ Grid.prototype.init = function ( config ) {
 					// @endif
 
 					// apply and clean
+					for ( k = 0; k < itemData.colSpan; k++ ) {
+
+					}
 					$item.colSpan = itemData.colSpan;
 					delete itemData.colSpan;
 				}

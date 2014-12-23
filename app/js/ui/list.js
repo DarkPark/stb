@@ -112,98 +112,36 @@ function List ( config ) {
 	//	this.$focusItem.classList.add('focus');
 	//}
 
+	// navigation by keyboard
 	this.addListener('keydown', function ( event ) {
-		//var tmp;
-
-		if ( event.code === keys.ok ) {
-			// notify
-			self.emit('click:item', {$item: self.$focusItem, event: event});
+		switch ( event.code ) {
+			case keys.up:
+			case keys.down:
+			case keys.right:
+			case keys.left:
+			case keys.pageUp:
+			case keys.pageDown:
+				// cursor move only on arrow keys
+				self.move(event.code);
+				break;
+			case keys.ok:
+				// notify
+				self.emit('click:item', {$item: self.$focusItem, event: event});
+				break;
 		}
-
-		if ( (event.code === keys.up && self.type === self.TYPE_VERTICAL) || (event.code === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
-			if ( self.$focusItem.index > 0 ) {
-				//index--;
-
-				if ( !self.focusPrev() ) {
-					// move the last item to the begging
-					//self.$body.insertBefore(self.items[self.items.length-1], self.items[0]);
-					self.$body.insertBefore(self.$body.lastChild, self.$body.firstChild);
-
-					//if ( config.render !== undefined ) {
-					self.render(self.$body.firstChild, self.data[self.$focusItem.index - 1]);
-					self.$body.firstChild.index = self.$focusItem.index - 1;
-					//self.$body.firstChild.data  = self.data[self.$focusItem.index];
-					//} else {
-					//	self.$body.firstChild.innerText = self.data[self.activeIndex-1];
-					//}
-
-					//self.items.unshift(self.items.pop());
-					//self.activeIndex++;
-					self.focusPrev();
-				}
-			}
-		}
-		if ( (event.code === keys.down && self.type === self.TYPE_VERTICAL) || (event.code === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
-			if ( self.$focusItem.index < self.data.length - 1 ) {
-				//index++;
-
-				if ( !self.focusNext() ) {
-					// move the first item to the end
-					//self.$body.appendChild(self.items[0]);
-					self.$body.appendChild(self.$body.firstChild);
-
-					//if ( config.render !== undefined ) {
-					self.render(self.$body.lastChild, self.data[self.$focusItem.index + 1]);
-					self.$body.lastChild.index = self.$focusItem.index + 1;
-					//self.$body.firstChild.data  = self.data[self.$focusItem.index];
-					//} else {
-					//	self.$body.lastChild.innerText = self.data[self.activeIndex + 1];
-					//}
-
-					//self.items.push(self.items.shift());
-					//self.activeIndex--;
-					self.focusNext();
-				}
-			}
-		}
-
-		if ( event.code === keys.pageUp ) {
-			//self.activeIndex = self.activeIndex - self.size - 1;
-			//self.focusFirst();
-			self.focusItem(self.$body.firstChild);
-			//self.$focusItem.index = self.$focusItem.index;
-		}
-		if ( event.code === keys.pageDown ) {
-			//self.activeIndex = self.activeIndex + self.size - 1;
-
-			//self.focusLast();
-			self.focusItem(self.$body.lastChild);
-			//self.$focusItem.index = self.$focusItem.index;
-
-			//for ( i = 0; i < self.size; i++ ) {
-				//self.render()
-			//}
-		}
-
-		// swap edge items
-		//tmp = self.items[0];
-		//self.items[0] = self.items[self.items.length-1];
-		//self.items[self.items.length-1] = tmp;
-
-		//for ( i = 0; i < self.size; i++ ) {
-			//self.items[i].innerText = self.data[i+index];
-		//}
-		//self.$focusItem.classList.remove('focus');
-		//self.$focusItem = self.items[Math.abs(index % self.items.length)];
-		//self.$focusItem.classList.add('focus');
 	});
 
+	// navigation by mouse
 	this.$body.addEventListener('mousewheel', function ( event ) {
-		var direction = event.wheelDeltaY > 0;
+		// scrolling by Y axis
+		if ( self.type === self.TYPE_VERTICAL && event.wheelDeltaY ) {
+			self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+		}
 
-		debug.event(event);
-
-		self.emit('keydown', {code: direction ? keys.up : keys.down});
+		// scrolling by X axis
+		if ( self.type === self.TYPE_HORIZONTAL && event.wheelDeltaX ) {
+			self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+		}
 	});
 }
 
@@ -325,6 +263,96 @@ List.prototype.renderPage = function () {
 			$item.data = this.data[$item.index];
 			this.render($item, this.data[$item.index]);
 		}
+	}
+};
+
+
+/**
+ * Move focus to the given direction.
+ *
+ * @param {number} direction arrow key code
+ */
+List.prototype.move = function ( direction ) {
+	switch ( direction ) {
+		case keys.up:
+
+			break;
+		case keys.down:
+
+			break;
+		case keys.right:
+
+			break;
+		case keys.left:
+
+			break;
+	}
+
+	return;
+
+	if ( (event.code === keys.up && self.type === self.TYPE_VERTICAL) || (event.code === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
+		if ( self.$focusItem.index > 0 ) {
+			//index--;
+
+			if ( !self.focusPrev() ) {
+				// move the last item to the begging
+				//self.$body.insertBefore(self.items[self.items.length-1], self.items[0]);
+				self.$body.insertBefore(self.$body.lastChild, self.$body.firstChild);
+
+				//if ( config.render !== undefined ) {
+				self.render(self.$body.firstChild, self.data[self.$focusItem.index - 1]);
+				self.$body.firstChild.index = self.$focusItem.index - 1;
+				//self.$body.firstChild.data  = self.data[self.$focusItem.index];
+				//} else {
+				//	self.$body.firstChild.innerText = self.data[self.activeIndex-1];
+				//}
+
+				//self.items.unshift(self.items.pop());
+				//self.activeIndex++;
+				self.focusPrev();
+			}
+		}
+	}
+	if ( (event.code === keys.down && self.type === self.TYPE_VERTICAL) || (event.code === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
+		if ( self.$focusItem.index < self.data.length - 1 ) {
+			//index++;
+
+			if ( !self.focusNext() ) {
+				// move the first item to the end
+				//self.$body.appendChild(self.items[0]);
+				self.$body.appendChild(self.$body.firstChild);
+
+				//if ( config.render !== undefined ) {
+				self.render(self.$body.lastChild, self.data[self.$focusItem.index + 1]);
+				self.$body.lastChild.index = self.$focusItem.index + 1;
+				//self.$body.firstChild.data  = self.data[self.$focusItem.index];
+				//} else {
+				//	self.$body.lastChild.innerText = self.data[self.activeIndex + 1];
+				//}
+
+				//self.items.push(self.items.shift());
+				//self.activeIndex--;
+				self.focusNext();
+			}
+		}
+	}
+
+	if ( event.code === keys.pageUp ) {
+		//self.activeIndex = self.activeIndex - self.size - 1;
+		//self.focusFirst();
+		self.focusItem(self.$body.firstChild);
+		//self.$focusItem.index = self.$focusItem.index;
+	}
+	if ( event.code === keys.pageDown ) {
+		//self.activeIndex = self.activeIndex + self.size - 1;
+
+		//self.focusLast();
+		self.focusItem(self.$body.lastChild);
+		//self.$focusItem.index = self.$focusItem.index;
+
+		//for ( i = 0; i < self.size; i++ ) {
+		//self.render()
+		//}
 	}
 };
 
