@@ -16,20 +16,22 @@ var Component = require('../component'),
  * @constructor
  * @extends Component
  *
- * @param {Object} [config={}] init parameters (all inherited from the parent)
- * @param {number} config.size amount of visible items on a page
+ * @param {Object}  [config={}] init parameters (all inherited from the parent)
+ * @param {Array[]} [config.data=[]] component data to visualize
+ * @param {boolean} [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
+ * @param {boolean} [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
  */
 function Grid ( config ) {
-	var self = this,  // current execution context
-		index = 0,
-		i, j, row, item;
+	// current execution context
+	var self = this;
 
 	/**
-	 * List of DOM elements representing the component lines.
+	 * List of DOM elements representing the component cells.
+	 * Necessary for navigation calculations.
 	 *
-	 * @type {Node[]}
+	 * @type {Node[][]}
 	 */
-	//this.items = [];
+	this.cells = [];
 
 	/**
 	 * Link to the currently focused DOM element.
@@ -38,33 +40,38 @@ function Grid ( config ) {
 	 */
 	this.$focusItem = null;
 
-	//this.activeIndex = 0;
-
+	/**
+	 * Component data to visualize.
+	 *
+	 * @type {Array[]}
+	 */
 	this.data = [];
 
-	//this.type = 0;
+	/**
+	 * Method the build each grid cell content.
+	 * Can be redefined to provide custom rendering.
+	 *
+	 * @type {function}
+	 */
+	this.render = this.defaultRender;
 
 	/**
-	 * Amount of visible items on a page.
+	 * Allow or not to jump to the opposite side of line when there is nowhere to go next.
 	 *
-	 * @type {number}
+	 * @type {boolean}
 	 */
-	//this.size = 5;
+	this.cycleX = true;
 
-	this.render = this.defaultRender;
+	/**
+	 * Allow or not to jump to the opposite side of column when there is nowhere to go next.
+	 *
+	 * @type {boolean}
+	 */
+	this.cycleY = true;
 
 
 	// sanitize
 	config = config || {};
-
-	//this.height = config.height || 3;
-
-	//this.width  = config.width  || 5;
-
-	// list items amount on page
-	//this.size = config.size || this.size;
-
-	//this.type = config.type || this.TYPE_VERTICAL;
 
 	// parent init
 	Component.call(this, config);
@@ -72,130 +79,37 @@ function Grid ( config ) {
 	// correct CSS class names
 	this.$node.classList.add('grid');
 
-
-
-	//if ( this.type === this.TYPE_HORIZONTAL ) {
-	//	this.$node.classList.add('horizontal');
-	//}
-
-	//this.$body = document.createElement('ul');
-	////this.$body.className = 'body';
-	//this.$node.appendChild(this.$body);
-
-	this.$body = document.createElement('table');
-
-	this.$node.appendChild(this.$body);
-
-	//debug.log(this.data);
-
+	// component setup
 	this.init(config);
 
-	//if ( this.$focusItem === null ) {
-	//	this.$focusItem = this.$body.firstChild;
-	//	//this.activeIndex = 0;
-	//	this.$focusItem.classList.add('focus');
-	//}
-
+	// navigation by keyboard
 	this.addListener('keydown', function ( event ) {
-		//var tmp;
-
 		switch ( event.code ) {
 			case keys.up:
-
-				break;
 			case keys.down:
-
-				break;
 			case keys.right:
-				self.focusItem(self.$focusItem.nextSibling);
-				break;
 			case keys.left:
-				self.focusItem(self.$focusItem.previousSibling);
+				// cursor move only on arrow keys
+				self.move(event.code);
+				break;
+			case keys.ok:
+				// notify
+				self.emit('click:item', {$item: self.$focusItem, event: event});
 				break;
 		}
-
-		/*if ( (event.code === keys.up && self.type === self.TYPE_VERTICAL) || (event.code === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
-			if ( self.activeIndex > 0 ) {
-				index--;
-
-				if ( !self.focusPrev() ) {
-					// move the last item to the begging
-					//self.$body.insertBefore(self.items[self.items.length-1], self.items[0]);
-					self.$body.insertBefore(self.$body.lastChild, self.$body.firstChild);
-
-					//if ( config.render !== undefined ) {
-					self.render(self.$body.firstChild, self.data[self.activeIndex-1]);
-					self.$body.firstChild.index = self.activeIndex-1;
-					//} else {
-					//	self.$body.firstChild.innerText = self.data[self.activeIndex-1];
-					//}
-
-					//self.items.unshift(self.items.pop());
-					//self.activeIndex++;
-					self.focusPrev();
-				}
-			}
-		}
-		if ( (event.code === keys.down && self.type === self.TYPE_VERTICAL) || (event.code === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
-			if ( self.activeIndex < self.data.length-1 ) {
-				index++;
-
-				if ( !self.focusNext() ) {
-					// move the first item to the end
-					//self.$body.appendChild(self.items[0]);
-					self.$body.appendChild(self.$body.firstChild);
-
-					//if ( config.render !== undefined ) {
-					self.render(self.$body.lastChild, self.data[self.activeIndex+1]);
-					self.$body.lastChild.index = self.activeIndex+1;
-					//} else {
-					//	self.$body.lastChild.innerText = self.data[self.activeIndex + 1];
-					//}
-
-					//self.items.push(self.items.shift());
-					//self.activeIndex--;
-					self.focusNext();
-				}
-			}
-		}*/
-
-		if ( event.code === keys.pageUp ) {
-			//self.activeIndex = self.activeIndex - self.size - 1;
-			//self.focusFirst();
-			self.focusItem(self.$body.firstChild);
-			//self.activeIndex = self.$focusItem.index;
-		}
-		if ( event.code === keys.pageDown ) {
-			//self.activeIndex = self.activeIndex + self.size - 1;
-
-			//self.focusLast();
-			self.focusItem(self.$body.lastChild);
-			//self.activeIndex = self.$focusItem.index;
-
-			//for ( i = 0; i < self.size; i++ ) {
-			//self.render()
-			//}
-		}
-
-		// swap edge items
-		//tmp = self.items[0];
-		//self.items[0] = self.items[self.items.length-1];
-		//self.items[self.items.length-1] = tmp;
-
-		//for ( i = 0; i < self.size; i++ ) {
-		//self.items[i].innerText = self.data[i+index];
-		//}
-		//self.$focusItem.classList.remove('focus');
-		//self.$focusItem = self.items[Math.abs(index % self.items.length)];
-		//self.$focusItem.classList.add('focus');
 	});
 
+	// navigation by mouse
 	this.$body.addEventListener('mousewheel', function ( event ) {
-		var direction = event.wheelDeltaY > 0;
+		// scrolling by Y axis
+		if ( event.wheelDeltaY ) {
+			self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+		}
 
-		debug.event(event);
-
-		self.emit('keydown', {code: direction ? keys.up : keys.down});
+		// scrolling by X axis
+		if ( event.wheelDeltaX ) {
+			self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+		}
 	});
 }
 
@@ -204,14 +118,46 @@ function Grid ( config ) {
 Grid.prototype = Object.create(Component.prototype);
 Grid.prototype.constructor = Grid;
 
-//Grid.prototype.TYPE_VERTICAL   = 1;
-//Grid.prototype.TYPE_HORIZONTAL = 2;
+
+/**
+ * Fill the given cell with data.
+ * $cell.data can contain the old data (from the previous render).
+ *
+ * @param {Node} $cell item DOM link
+ * @param {*} data associated with this item data
+ */
+Grid.prototype.defaultRender = function ( $cell, data ) {
+	$cell.innerText = data.value;
+};
 
 
+/**
+ * Init or re-init of the component inner structures and HTML.
+ *
+ * @param {Object} [config={}] init parameters (subset of constructor config params)
+ */
 Grid.prototype.init = function ( config ) {
-	var i, j, row, item;
+	var self     = this,
+		i, j,
+		$row, $cell, $table, $tbody,
+		cellData,
+		onClick = function ( event ) {
+			// visualize
+			self.focusItem(this);
 
-	// apply hierarchy
+			// notify
+			self.emit('click:item', {$item: this, event: event});
+		};
+
+	// @ifdef DEBUG
+	if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	// @endif
+
+	// apply cycle behaviour
+	if ( config.cycleX !== undefined ) { this.cycleX = config.cycleX; }
+	if ( config.cycleY !== undefined ) { this.cycleY = config.cycleY; }
+
+	// apply data
 	if ( config.data !== undefined ) {
 		// @ifdef DEBUG
 		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
@@ -229,62 +175,139 @@ Grid.prototype.init = function ( config ) {
 		this.render = config.render;
 	}
 
-	for ( i = 0; i < this.data.length; i++ ) {
-		row = this.$body.insertRow();
-		for ( j = 0; j < this.data[i].length; j++ ) {
-			item = row.insertCell(-1);
-			item.x = j;
-			item.y = i;
-			item.className = 'cell';
-			//console.log(i, j);
-			//console.log(this.data[i][j]);
-			var itemData = this.data[i][j];
-			if ( typeof itemData === 'object' ) {
-				item.innerText = itemData.value;
-				item.colSpan = itemData.colSpan || 1;
-				item.rowSpan = itemData.rowSpan || 1;
-			} else {
-				item.innerText = itemData;
-			}
-			//if ( this.data[i] !== undefined ) {
-			//	this.render(item, this.data[i]);
-			//
-			//	item.addEventListener('click', function () {
-			//		self.activeIndex = this.index;
-			//		self.$focusItem.classList.remove('focus');
-			//		self.$focusItem = this;
-			//		self.$focusItem.classList.add('focus');
-			//	});
-			//}
-		}
-		this.$body.appendChild(row);
+	// @ifdef DEBUG
+	if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
+	// @endif
 
-		//this.items.push(this.$body.appendChild(item));
-		//this.$body.appendChild(item);
+	$table = document.createElement('table');
+	$tbody = document.createElement('tbody');
+
+	$table.appendChild($tbody);
+
+	// reset if necessary
+	if ( this.cells.length > 0 ) {
+		this.cells = [];
+		this.$body.innerText = '';
 	}
 
+	// rows
+	for ( i = 0; i < this.data.length; i++ ) {
+		// dom
+		$row = $tbody.insertRow();
+		// navigation map filling
+		this.cells.push([]);
 
-	this.$focusItem = this.$body.rows[0].cells[0];
-	this.$body.rows[0].cells[0].classList.add('focus');
+		// cols
+		for ( j = 0; j < this.data[i].length; j++ ) {
+			// dom
+			$cell = $row.insertCell(-1);
+			// additional params
+			$cell.x = j;
+			$cell.y = i;
+			$cell.className = 'cell';
+
+			// shortcut
+			cellData = this.data[i][j];
+
+			// cell data type
+			if ( typeof cellData === 'object' ) {
+				// merge columns
+				if ( cellData.colSpan !== undefined ) {
+					// @ifdef DEBUG
+					if ( Number(cellData.colSpan) !== cellData.colSpan ) { throw 'cellData.colSpan must be a number'; }
+					if ( cellData.colSpan <= 0 ) { throw 'cellData.colSpan should be positive'; }
+					// @endif
+
+					// apply and clean
+					$cell.colSpan = cellData.colSpan;
+					delete cellData.colSpan;
+				}
+
+				// merge rows
+				if ( cellData.rowSpan !== undefined ) {
+					// @ifdef DEBUG
+					if ( Number(cellData.rowSpan) !== cellData.rowSpan ) { throw 'cellData.rowSpan must be a number'; }
+					if ( cellData.rowSpan <= 0 ) { throw 'cellData.rowSpan should be positive'; }
+					// @endif
+
+					// apply and clean
+					$cell.rowSpan = cellData.rowSpan;
+					delete cellData.rowSpan;
+				}
+			} else {
+				// wrap value
+				cellData = this.data[i][j] = {
+					value: this.data[i][j]
+				};
+			}
+
+			// visualize
+			this.render($cell, cellData);
+
+			// save data link
+			$cell.data = cellData;
+
+			// navigation map filling
+			this.cells[i][j] = $cell;
+
+			$cell.addEventListener('click', onClick);
+		}
+		// row is ready
+		$tbody.appendChild($row);
+	}
+
+	// everything is ready
+	this.$body.appendChild($table);
 };
 
 
-Grid.prototype.moveNext = function () {
+/**
+ * Move focus to the given direction.
+ *
+ * @param {number} direction arrow key code
+ */
+Grid.prototype.move = function ( direction ) {
+	var x = this.$focusItem.x,
+		y = this.$focusItem.y;
 
-};
-
-
-Grid.prototype.movePrev = function () {
-
-};
-
-
-Grid.prototype.renderPage = function () {
-
-};
-
-Grid.prototype.defaultRender = function ( $item, data ) {
-	$item.innerText = data;
+	switch ( direction ) {
+		case keys.up:
+			if ( this.cells[y - 1] ) {
+				// can go one step up
+				this.focusItem(this.cells[y - 1][x]);
+			} else if ( this.cycleY ) {
+				// jump to the last row
+				this.focusItem(this.cells[this.cells.length - 1][x]);
+			}
+			break;
+		case keys.down:
+			if ( this.cells[y + 1] ) {
+				// can go one step down
+				this.focusItem(this.cells[y + 1][x]);
+			} else if ( this.cycleY ) {
+				// jump to the first row
+				this.focusItem(this.cells[0][x]);
+			}
+			break;
+		case keys.right:
+			if ( this.cells[y][x + 1] ) {
+				// can go one step right
+				this.focusItem(this.cells[y][x + 1]);
+			} else if ( this.cycleX ) {
+				// jump to the first column
+				this.focusItem(this.cells[y][0]);
+			}
+			break;
+		case keys.left:
+			if ( this.cells[y][x - 1] ) {
+				// can go one step left
+				this.focusItem(this.cells[y][x - 1]);
+			} else if ( this.cycleX ) {
+				// jump to the last column
+				this.focusItem(this.cells[y][this.cells[y].length - 1]);
+			}
+			break;
+	}
 };
 
 
@@ -303,24 +326,39 @@ Grid.prototype.focusItem = function ( $item ) {
 	if ( $item !== undefined && $prev !== $item ) {
 		// @ifdef DEBUG
 		if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
+		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
 		// @endif
 
 		// some item is focused already
-		if ( $prev !== undefined ) {
+		if ( $prev !== null ) {
 			// @ifdef DEBUG
 			if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
 			// @endif
 
+			// style
 			$prev.classList.remove('focus');
+
+			// notify
+			this.emit('blur:item', {$item: $prev});
 		}
 		// reassign
 		this.$focusItem = $item;
 
+		this.$focusItem.data = this.data[$item.y][$item.x];
+
 		// correct CSS
 		$item.classList.add('focus');
 
-		// notify listeners
-		this.emit('move', {prev: $prev, curr: $item});
+		/**
+		 * Set focus to an element.
+		 *
+		 * @event module:stb/ui/grid~Grid#focus:item
+		 *
+		 * @type {Object}
+		 * @property {*} [$prev] old/previous focused HTML element
+		 * @property {*} [$curr] new/current focused HTML element
+		 */
+		this.emit('focus:item', {$prev: $prev, $curr: $item});
 
 		return true;
 	}
@@ -328,53 +366,6 @@ Grid.prototype.focusItem = function ( $item ) {
 	// nothing was done
 	return false;
 };
-
-
-Grid.prototype.focusNext = function () {
-	//if ( this.activeIndex < this.size - 1 ) {
-	if ( this.$focusItem !== this.$body.lastChild ) {
-		//this.activeIndex++;
-		//console.log(this.activeIndex);
-		//this.$focusItem.classList.remove('focus');
-		////this.$focusItem = this.items[this.activeIndex];
-		//this.$focusItem = this.$focusItem.nextSibling;
-		//this.$focusItem.classList.add('focus');
-
-		return this.focusItem(this.$focusItem.nextSibling);
-	}
-	return false;
-};
-
-
-Grid.prototype.focusPrev = function () {
-	//if ( this.activeIndex > 0 ) {
-	if ( this.$focusItem !== this.$body.firstChild ) {
-		//this.activeIndex--;
-		//console.log(this.activeIndex);
-		//this.$focusItem.classList.remove('focus');
-		////this.$focusItem = this.items[this.activeIndex];
-		//this.$focusItem = this.$focusItem.previousSibling;
-		//this.$focusItem.classList.add('focus');
-
-		return this.focusItem(this.$focusItem.previousSibling);
-	}
-	return false;
-};
-
-
-//Grid.prototype.focusFirst = function () {
-//	this.$focusItem.classList.remove('focus');
-//	this.$focusItem = this.$body.firstChild;
-//	this.$focusItem.classList.add('focus');
-//	this.activeIndex = this.$focusItem.index;
-//};
-
-//Grid.prototype.focusLast = function () {
-//	this.$focusItem.classList.remove('focus');
-//	this.$focusItem = this.$body.lastChild;
-//	this.$focusItem.classList.add('focus');
-//	this.activeIndex = this.$focusItem.index;
-//};
 
 
 // public export
