@@ -20,10 +20,11 @@ var Component = require('../component');
  * @param {string} [config.icon] button icon name
  *
  * @example
- * var btn1 = new Button({
- *     $node: document.getElementById(id),
- *     value: 'Apply changes'
- * });
+ * var Button = require('stb/ui/button'),
+ *     button = new Button({
+ *         $node: document.getElementById(id),
+ *         value: 'Apply changes'
+ *     });
  */
 function Button ( config ) {
 	// current execution context

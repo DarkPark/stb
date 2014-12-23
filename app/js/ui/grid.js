@@ -16,10 +16,25 @@ var Component = require('../component'),
  * @constructor
  * @extends Component
  *
- * @param {Object}  [config={}] init parameters (all inherited from the parent)
- * @param {Array[]} [config.data=[]] component data to visualize
- * @param {boolean} [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
- * @param {boolean} [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
+ * @param {Object}   [config={}] init parameters (all inherited from the parent)
+ * @param {Array[]}  [config.data=[]] component data to visualize
+ * @param {function} [config.render] method to build each grid cell content
+ * @param {boolean}  [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
+ * @param {boolean}  [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
+ *
+ * @example
+ * var Grid = require('stb/ui/grid'),
+ *     grid = new Grid({
+ *         data: [
+ *             [1,   2,  3,  4],
+ *             [5,   6,  7,  8],
+ *             [9,  10, 11, 12],
+ *             [13, 14, 15, 16]
+ *         ],
+ *         render: function ( $cell, data ) {
+ *             $cell.innerHTML = '<div>' + (data.value) + '</div>';
+ *         }
+ *     });
  */
 function Grid ( config ) {
 	// current execution context
@@ -48,7 +63,7 @@ function Grid ( config ) {
 	this.data = [];
 
 	/**
-	 * Method the build each grid cell content.
+	 * Method to build each grid cell content.
 	 * Can be redefined to provide custom rendering.
 	 *
 	 * @type {function}

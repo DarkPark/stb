@@ -21,18 +21,19 @@ var Component = require('../component');
  * @param {number} [config.min=0] min progress value
  *
  * @example
- * var pb = new ProgressBar({
- *     min: -100,
- *     max:  200,
- *     events: {
- *         done: function () {
- *             debug.log('ProgressBar: done');
- *         },
- *         change: function ( data ) {
- *             debug.log('ProgressBar: change to ' + data.curr + ' from ' + data.prev);
+ * var ProgressBar = require('stb/ui/progress.bar'),
+ *     progressBar = new ProgressBar({
+ *         min: -100,
+ *         max:  200,
+ *         events: {
+ *             done: function () {
+ *                 debug.log('ProgressBar: done');
+ *             },
+ *             change: function ( data ) {
+ *                 debug.log('ProgressBar: change to ' + data.curr + ' from ' + data.prev);
+ *             }
  *         }
- *     }
- * });
+ *     });
  */
 function ProgressBar ( config ) {
 	// sanitize

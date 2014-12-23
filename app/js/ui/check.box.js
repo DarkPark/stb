@@ -22,7 +22,11 @@ var Component = require('../component'),
  * @param {string} [config.group] group name to work synchronously with other checkboxes
  *
  * @example
- * var cb = new CheckBox({value:true});
+ * var CheckBox = require('stb/ui/check.box'),
+ *     checkBox = new CheckBox({
+ *         value: true,
+ *         group: 'lang'
+ *     });
  */
 function CheckBox ( config ) {
 	// current execution context

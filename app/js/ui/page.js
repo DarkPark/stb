@@ -21,8 +21,13 @@ var Component = require('../component');
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  *
  * @example
- * var page = new Page({
- *     $node: document.getElementById(id)
+ * var Page = require('stb/ui/page'),
+ *     page = new Page({
+ *         $node: document.getElementById(id)
+ *     });
+ *
+ * page.addListener('show', function show () {
+ *     // page is visible now
  * });
  */
 function Page ( config ) {

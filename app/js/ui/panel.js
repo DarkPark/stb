@@ -18,13 +18,23 @@ var Component = require('../component');
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  *
  * @example
- * var header = new Panel();
- * page.add(header);
- * header.add(
+ * var Panel = require('stb/ui/panel'),
+ *     panel = new Panel({
+ *         $node: document.getElementById('someId'),
+ *         children: [
+ *             new Panel({
+ *                 $node: document.getElementById('anotherId')
+ *             })
+ *         ]
+ *     });
+ *
+ * panel.add(
  *     new Button(),
  *     new Button(),
  *     new Button()
  * );
+ *
+ * page.add(panel);
  */
 function Panel ( config ) {
 	// sanitize
