@@ -14,8 +14,8 @@ var vars = require('./480');
 module.exports = {
 	fontSize: vars.fontSize,
 
-	panelPaddingX: vars.panelPaddingX * 1.2,
-	panelPaddingY: vars.panelPaddingY,
+	panelPaddingX: vars.panelPaddingX,
+	panelPaddingY: vars.panelPaddingY * 1.2,
 
 	buttonHeight:   vars.buttonHeight * 1.2,
 	buttonPaddingX: vars.buttonPaddingX,
