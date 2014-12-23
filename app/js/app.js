@@ -82,7 +82,7 @@ app.setScreen = function ( metrics ) {
 		window.resizeTo(metrics.width, metrics.height);
 
 		// already was initialized
-		if ( linkCSS ) {
+		if ( linkCSS && linkCSS instanceof Node ) {
 			// remove all current CSS styles
 			document.head.removeChild(linkCSS);
 		}
