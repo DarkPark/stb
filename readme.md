@@ -124,6 +124,9 @@ At runtime the development mode has a set of useful function available via keybo
  Numpad 8 | FireBug Lite console activation
 
 
+Illustrations of most approaches and components can be found in the [demo application](https://www.npmjs.org/package/stb-demo).
+
+
 ## Structure
 
  Path   | Description
