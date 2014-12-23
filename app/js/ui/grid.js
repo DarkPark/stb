@@ -31,8 +31,8 @@ var Component = require('../component'),
  *             [9,  10, 11, 12],
  *             [13, 14, 15, 16]
  *         ],
- *         render: function ( $cell, data ) {
- *             $cell.innerHTML = '<div>' + (data.value) + '</div>';
+ *         render: function ( $item, data ) {
+ *             $item.innerHTML = '<div>' + (data.value) + '</div>';
  *         }
  *     });
  */
@@ -46,7 +46,7 @@ function Grid ( config ) {
 	 *
 	 * @type {Node[][]}
 	 */
-	this.cells = [];
+	this.items = [];
 
 	/**
 	 * Link to the currently focused DOM element.
@@ -136,13 +136,13 @@ Grid.prototype.constructor = Grid;
 
 /**
  * Fill the given cell with data.
- * $cell.data can contain the old data (from the previous render).
+ * $item.data can contain the old data (from the previous render).
  *
- * @param {Node} $cell item DOM link
+ * @param {Node} $item item DOM link
  * @param {*} data associated with this item data
  */
-Grid.prototype.defaultRender = function ( $cell, data ) {
-	$cell.innerText = data.value;
+Grid.prototype.defaultRender = function ( $item, data ) {
+	$item.innerText = data.value;
 };
 
 
@@ -154,8 +154,8 @@ Grid.prototype.defaultRender = function ( $cell, data ) {
 Grid.prototype.init = function ( config ) {
 	var self = this,
 		i, j,
-		$row, $cell, $table, $tbody, $focusItem,
-		cellData,
+		$row, $item, $table, $tbody, $focusItem,
+		itemData,
 		onClick = function ( event ) {
 			// visualize
 			self.focusItem(this);
@@ -200,8 +200,8 @@ Grid.prototype.init = function ( config ) {
 	$table.appendChild($tbody);
 
 	// reset if necessary
-	if ( this.cells.length > 0 ) {
-		this.cells = [];
+	if ( this.items.length > 0 ) {
+		this.items = [];
 		this.$body.innerText = '';
 	}
 
@@ -210,69 +210,69 @@ Grid.prototype.init = function ( config ) {
 		// dom
 		$row = $tbody.insertRow();
 		// navigation map filling
-		this.cells.push([]);
+		this.items.push([]);
 
 		// cols
 		for ( j = 0; j < this.data[i].length; j++ ) {
 			// dom
-			$cell = $row.insertCell(-1);
+			$item = $row.insertCell(-1);
 			// additional params
-			$cell.x = j;
-			$cell.y = i;
-			$cell.className = 'cell';
+			$item.x = j;
+			$item.y = i;
+			$item.className = 'item';
 
 			// shortcut
-			cellData = this.data[i][j];
+			itemData = this.data[i][j];
 
 			// cell data type
-			if ( typeof cellData === 'object' ) {
+			if ( typeof itemData === 'object' ) {
 				// merge columns
-				if ( cellData.colSpan !== undefined ) {
+				if ( itemData.colSpan !== undefined ) {
 					// @ifdef DEBUG
-					if ( Number(cellData.colSpan) !== cellData.colSpan ) { throw 'cellData.colSpan must be a number'; }
-					if ( cellData.colSpan <= 0 ) { throw 'cellData.colSpan should be positive'; }
+					if ( Number(itemData.colSpan) !== itemData.colSpan ) { throw 'itemData.colSpan must be a number'; }
+					if ( itemData.colSpan <= 0 ) { throw 'itemData.colSpan should be positive'; }
 					// @endif
 
 					// apply and clean
-					$cell.colSpan = cellData.colSpan;
-					delete cellData.colSpan;
+					$item.colSpan = itemData.colSpan;
+					delete itemData.colSpan;
 				}
 
 				// merge rows
-				if ( cellData.rowSpan !== undefined ) {
+				if ( itemData.rowSpan !== undefined ) {
 					// @ifdef DEBUG
-					if ( Number(cellData.rowSpan) !== cellData.rowSpan ) { throw 'cellData.rowSpan must be a number'; }
-					if ( cellData.rowSpan <= 0 ) { throw 'cellData.rowSpan should be positive'; }
+					if ( Number(itemData.rowSpan) !== itemData.rowSpan ) { throw 'itemData.rowSpan must be a number'; }
+					if ( itemData.rowSpan <= 0 ) { throw 'itemData.rowSpan should be positive'; }
 					// @endif
 
 					// apply and clean
-					$cell.rowSpan = cellData.rowSpan;
-					delete cellData.rowSpan;
+					$item.rowSpan = itemData.rowSpan;
+					delete itemData.rowSpan;
 				}
 
 				// merge rows
-				if ( cellData.focus !== undefined ) {
+				if ( itemData.focus !== undefined ) {
 					// store and clean
-					$focusItem = $cell;
-					delete cellData.focus;
+					$focusItem = $item;
+					delete itemData.focus;
 				}
 			} else {
 				// wrap value
-				cellData = this.data[i][j] = {
+				itemData = this.data[i][j] = {
 					value: this.data[i][j]
 				};
 			}
 
 			// visualize
-			this.render($cell, cellData);
+			this.render($item, itemData);
 
 			// save data link
-			$cell.data = cellData;
+			$item.data = itemData;
 
 			// navigation map filling
-			this.cells[i][j] = $cell;
+			this.items[i][j] = $item;
 
-			$cell.addEventListener('click', onClick);
+			$item.addEventListener('click', onClick);
 		}
 		// row is ready
 		$tbody.appendChild($row);
@@ -287,7 +287,7 @@ Grid.prototype.init = function ( config ) {
 		this.focusItem($focusItem);
 	} else {
 		// just the first cell
-		this.focusItem(this.cells[0][0]);
+		this.focusItem(this.items[0][0]);
 	}
 };
 
@@ -303,39 +303,39 @@ Grid.prototype.move = function ( direction ) {
 
 	switch ( direction ) {
 		case keys.up:
-			if ( this.cells[y - 1] ) {
+			if ( this.items[y - 1] ) {
 				// can go one step up
-				this.focusItem(this.cells[y - 1][x]);
+				this.focusItem(this.items[y - 1][x]);
 			} else if ( this.cycleY ) {
 				// jump to the last row
-				this.focusItem(this.cells[this.cells.length - 1][x]);
+				this.focusItem(this.items[this.items.length - 1][x]);
 			}
 			break;
 		case keys.down:
-			if ( this.cells[y + 1] ) {
+			if ( this.items[y + 1] ) {
 				// can go one step down
-				this.focusItem(this.cells[y + 1][x]);
+				this.focusItem(this.items[y + 1][x]);
 			} else if ( this.cycleY ) {
 				// jump to the first row
-				this.focusItem(this.cells[0][x]);
+				this.focusItem(this.items[0][x]);
 			}
 			break;
 		case keys.right:
-			if ( this.cells[y][x + 1] ) {
+			if ( this.items[y][x + 1] ) {
 				// can go one step right
-				this.focusItem(this.cells[y][x + 1]);
+				this.focusItem(this.items[y][x + 1]);
 			} else if ( this.cycleX ) {
 				// jump to the first column
-				this.focusItem(this.cells[y][0]);
+				this.focusItem(this.items[y][0]);
 			}
 			break;
 		case keys.left:
-			if ( this.cells[y][x - 1] ) {
+			if ( this.items[y][x - 1] ) {
 				// can go one step left
-				this.focusItem(this.cells[y][x - 1]);
+				this.focusItem(this.items[y][x - 1]);
 			} else if ( this.cycleX ) {
 				// jump to the last column
-				this.focusItem(this.cells[y][this.cells[y].length - 1]);
+				this.focusItem(this.items[y][this.items[y].length - 1]);
 			}
 			break;
 	}
