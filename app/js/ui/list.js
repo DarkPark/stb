@@ -31,6 +31,8 @@ var Component = require('../component'),
  * @param {number} [config.size=5] amount of visible items on a page
  *
  * @fires module:stb/ui/list~List#click:item
+ *
+ * @todo add events of going out of range
  */
 function List ( config ) {
 	var self = this,  // current execution context

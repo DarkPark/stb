@@ -171,7 +171,8 @@ Grid.prototype.init = function ( config ) {
 	var self = this,
 		posX = 0,
 		posy = 0,
-		i, j, k,
+		rowSpan, colSpan,
+		i, j, m, n, shift,
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
 		onClick = function ( event ) {
@@ -237,23 +238,22 @@ Grid.prototype.init = function ( config ) {
 
 	$table.appendChild($tbody);
 
-	// reset if necessary
-	if ( this.items.length > 0 ) {
-		this.$body.innerText = '';
-	}
-
 	// navigation map init
 	this.items = new Array(this.sizeY);
 	for ( i = 0; i < this.sizeY; i++ ) {
 		this.items[i] = new Array(this.sizeX);
 	}
 
+	shift = 0;
+
+	this.items = [];
+
 	// rows
 	for ( i = 0; i < this.data.length; i++ ) {
 		// dom
 		$row = $tbody.insertRow();
 		// navigation map filling
-		//this.items.push([]);
+		this.items.push([]);
 
 		// cols
 		for ( j = 0; j < this.data[i].length; j++ ) {
@@ -279,11 +279,7 @@ Grid.prototype.init = function ( config ) {
 					if ( itemData.colSpan <= 0 ) { throw 'itemData.colSpan should be positive'; }
 					// @endif
 
-					// apply and clean
-					for ( k = 0; k < itemData.colSpan; k++ ) {
-
-					}
-					$item.colSpan = itemData.colSpan;
+					colSpan = $item.colSpan = itemData.colSpan;
 					delete itemData.colSpan;
 				}
 
@@ -295,17 +291,19 @@ Grid.prototype.init = function ( config ) {
 					// @endif
 
 					// apply and clean
-					$item.rowSpan = itemData.rowSpan;
+					rowSpan = $item.rowSpan = itemData.rowSpan;
 					delete itemData.rowSpan;
 				}
 
-				// merge rows
+				// active cell
 				if ( itemData.focus !== undefined ) {
 					// store and clean
 					$focusItem = $item;
 					delete itemData.focus;
 				}
 			} else {
+				colSpan = 1;
+				rowSpan = 1;
 				// wrap value
 				itemData = this.data[i][j] = {
 					value: this.data[i][j]
@@ -321,11 +319,27 @@ Grid.prototype.init = function ( config ) {
 			// navigation map filling
 			this.items[i][j] = $item;
 
+			console.log($item.getBoundingClientRect());
+
+			//for ( n = 0; n < this.data[i].length; n++ ) {
+			//	//if
+			//}
+			//
+			//// apply and clean
+			//for ( m = 0; m < rowSpan; m++ ) {
+			//	for ( n = 0; n < colSpan; n++ ) {
+			//		this.items[m][n] = $item;
+			//	}
+			//}
+
 			$item.addEventListener('click', onClick);
 		}
 		// row is ready
 		$tbody.appendChild($row);
 	}
+
+	// clear all table
+	this.$body.innerText = null;
 
 	// everything is ready
 	this.$body.appendChild($table);
@@ -341,6 +355,90 @@ Grid.prototype.init = function ( config ) {
 };
 
 
+function buildMap () {
+	var data = [
+		['a1', {colspan: 2, value: 'bc1'}, 'd1'],
+		['a1', 'b2', {rowspan: 2, value: 'c23'}, 'd2'],
+		[{colspan: 2, rowspan: 2, value: 'ab34'}, 'd3'],
+		['c4', 'd4']
+	];
+	var MAX_ROW = 10, MAX_COL = 10;						// oh the shame
+	var map = [];
+	var mapRow, mapCol, dataRow = 0, dataCol = 0;
+	var maxMapCol = null;
+
+	for ( mapRow = 0; mapRow < MAX_ROW; mapRow++ ) {
+		for ( mapCol = 0; mapCol < MAX_COL; mapCol++ ) {
+			if ( maxMapCol && mapCol >= maxMapCol ) {		// max column number already counted and reached
+				if ( dataCol ) {							// reset data line only if some data were added to map line
+					dataCol = 0;
+					dataRow += 1;
+				}
+				break;
+			}
+			if ( map[mapRow] && map[mapRow][mapCol] ) {	// already added value to map here (by colspan or rowspan)
+				continue;
+			}
+			if ( !data[dataRow] ) {						// no more data rows (end of processing)
+				return map;
+			}
+			if ( !data[dataRow][dataCol] ) {				// no more data column (end of data row)
+				if ( dataCol ) {							// reset data line only if some data were added to map line
+					dataCol = 0;
+					dataRow += 1;
+				}
+				if ( !maxMapCol ) {						// initialize max column number if not set
+					maxMapCol = mapCol;
+				}
+				break;
+			}
+			var cell = data[dataRow][dataCol];
+			if ( typeof cell === 'object' ) {
+				var colspan = cell.colspan || 1;
+				var rowspan = cell.rowspan || 1;
+				for ( var row = mapRow; row < mapRow + rowspan; row++ ) {
+					if ( !map[row] ) {
+						map[row] = [];
+					}
+					for ( var col = mapCol; col < mapCol + colspan; col++ ) {
+						map[row][col] = cell.value;
+					}
+				}
+			} else {
+				if ( !map[mapRow] ) {
+					map[mapRow] = [];
+				}
+				map[mapRow][mapCol] = cell;
+			}
+			dataCol += 1;
+		}
+	}
+
+	console.log(buildMap());
+}
+
+
+Grid.prototype.buildItem = function ( $item, x, y ) {
+	var link = stbUPnP;
+
+// clear
+	delete window.stbUPnP;
+
+// construct
+	window.stbUPnP = {
+		getServerListSync: link.getServerListSync,
+		getServerList: function ( callback ) {
+			link.onDeviceListChanged.connect(callback);
+			return link.getServerList();
+		},
+		getDataSync: link.getDataSync,
+		getData: function ( callback ) {
+			link.onGetDataReady.connect(callback);
+			return link.getData();
+		}
+	};
+};
+
 /**
  * Move focus to the given direction.
  *
@@ -348,7 +446,31 @@ Grid.prototype.init = function ( config ) {
  */
 Grid.prototype.move = function ( direction ) {
 	var x = this.$focusItem.x,
-		y = this.$focusItem.y;
+		y = this.$focusItem.y,
+		tbl, i, j, rect, coords, coordX, coordY;
+
+	if ( !this.coords ) {
+		this.coords = [];
+		tbl = this.$body.firstChild;
+
+		for ( i = 0; i < tbl.rows.length; i++ ) {
+			for ( j = 0; j < tbl.rows[i].cells.length; j++ ) {
+				rect = tbl.rows[i].cells[j].getBoundingClientRect();
+				coords = {
+					$cell: tbl.rows[i].cells[j]
+					//rect: rect
+				};
+				coords.x = rect.left + rect.width/2;
+				coords.y = rect.top + rect.height/2;
+				this.coords.push(coords);
+			}
+		}
+		console.log(this.coords);
+	}
+
+	rect = this.$focusItem.getBoundingClientRect();
+	coordX = rect.left + rect.width/2;
+	coordY = rect.top + rect.height/2;
 
 	switch ( direction ) {
 		case keys.up:
@@ -361,13 +483,16 @@ Grid.prototype.move = function ( direction ) {
 			}
 			break;
 		case keys.down:
-			if ( this.items[y + 1] ) {
-				// can go one step down
-				this.focusItem(this.items[y + 1][x]);
-			} else if ( this.cycleY ) {
-				// jump to the first row
-				this.focusItem(this.items[0][x]);
-			}
+			//if ( this.items[y + 1] ) {
+			//	// can go one step down
+			//	this.focusItem(this.items[y + 1][x]);
+			//} else if ( this.cycleY ) {
+			//	// jump to the first row
+			//	this.focusItem(this.items[0][x]);
+			//}
+			console.log(this.coords.filter(function ( item ) {
+				return item.y > coordY;
+			}));
 			break;
 		case keys.right:
 			if ( this.items[y][x + 1] ) {
