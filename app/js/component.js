@@ -227,6 +227,8 @@ function Component ( config ) {
 		// middle mouse button
 		if ( event.button === 1 ) {
 			debug.inspect(self);
+			debug.log('this component is now available by window.link');
+			window.link = self;
 		}
 		// @endif
 
