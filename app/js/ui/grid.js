@@ -18,8 +18,6 @@ var Component = require('../component'),
  *
  * @param {Object}   [config={}] init parameters (all inherited from the parent)
  * @param {Array[]}  [config.data=[]] component data to visualize
- * @param {number}   [config.sizeX] amount of items in a row
- * @param {number}   [config.sizeY] amount of rows
  * @param {function} [config.render] method to build each grid cell content
  * @param {boolean}  [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
  * @param {boolean}  [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
@@ -48,7 +46,7 @@ function Grid ( config ) {
 	 *
 	 * @type {Node[][]}
 	 */
-	this.items = [];
+	this.map = [];
 
 	/**
 	 * Link to the currently focused DOM element.
@@ -63,20 +61,6 @@ function Grid ( config ) {
 	 * @type {Array[]}
 	 */
 	this.data = [];
-
-	/**
-	 * Amount of items in a row.
-	 *
-	 * @type {number}
-	 */
-	this.sizeX = 5;
-
-	/**
-	 * Amount of rows.
-	 *
-	 * @type {number}
-	 */
-	this.sizeY = 5;
 
 	/**
 	 * Method to build each grid cell content.
@@ -99,6 +83,20 @@ function Grid ( config ) {
 	 * @type {boolean}
 	 */
 	this.cycleY = true;
+
+	/**
+	 * Current navigation map horizontal position.
+	 *
+	 * @type {number}
+	 */
+	this.focusX = 0;
+
+	/**
+	 * Current navigation map vertical position.
+	 *
+	 * @type {number}
+	 */
+	this.focusY = 0;
 
 
 	// sanitize
@@ -163,16 +161,119 @@ Grid.prototype.defaultRender = function ( $item, data ) {
 
 
 /**
+ * Make all the data items identical.
+ * Wrap to objects if necessary and add missing properties.
+ *
+ * @param {Array[]} data user 2-dimensional array
+ * @return {Array[]} reworked incoming data
+ */
+function normalize ( data ) {
+	var i, j, item;
+
+	// rows
+	for ( i = 0; i < data.length; i++ ) {
+		// cols
+		for ( j = 0; j < data[i].length; j++ ) {
+			// cell value
+			item = data[i][j];
+			// primitive value
+			if ( typeof item !== 'object' ) {
+				// wrap
+				item = data[i][j] = {
+					value: data[i][j]
+				};
+			}
+
+			// always at least one row/col
+			item.colSpan = item.colSpan || 1;
+			item.rowSpan = item.rowSpan || 1;
+
+			// @ifdef DEBUG
+			if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
+			if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
+			if ( item.colSpan <= 0 ) { throw 'item.colSpan should be positive'; }
+			if ( item.rowSpan <= 0 ) { throw 'item.rowSpan should be positive'; }
+			// @endif
+		}
+	}
+
+	return data;
+}
+
+
+/**
+ * Fill the given rectangle area with value.
+ *
+ * @param {Array[]} map link to navigation map
+ * @param {number} x current horizontal position
+ * @param {number} y current vertical position
+ * @param {number} dX amount of horizontal cell to fill
+ * @param {number} dY amount of vertical cell to fill
+ * @param {*} value filling data
+ *
+ * @ignore
+ */
+function fill ( map, x, y, dX, dY, value ) {
+	var i, j;
+
+	// rows
+	for ( i = y; i < y + dY; i++ ) {
+		// expand map rows
+		if ( map.length < i + 1 ) { map.push([]); }
+
+		// compensate long columns from previous rows
+		while ( map[i][x] !== undefined ) {
+			x++;
+		}
+
+		// cols
+		for ( j = x; j < x + dX; j++ ) {
+			// expand map row cols
+			if ( map[i].length < j + 1 ) { map[i].push(); }
+			// fill
+			map[i][j] = value;
+		}
+	}
+}
+
+
+/**
+ * Create a navigation map from incoming data.
+ *
+ * @param {Array[]} data user 2-dimensional array of objects
+ * @return {Array[]} navigation map
+ */
+function map ( data ) {
+	var result = [],
+		i, j, item;
+
+	// rows
+	for ( i = 0; i < data.length; i++ ) {
+		// cols
+		for ( j = 0; j < data[i].length; j++ ) {
+			// cell value
+			item = data[i][j];
+			// process a cell
+			fill(result, j, i, item.colSpan, item.rowSpan, item.$item);
+			// clean
+			delete item.colSpan;
+			delete item.rowSpan;
+			delete item.$item;
+		}
+	}
+
+	return result;
+}
+
+
+/**
  * Init or re-init of the component inner structures and HTML.
  *
  * @param {Object} [config={}] init parameters (subset of constructor config params)
  */
 Grid.prototype.init = function ( config ) {
 	var self = this,
-		posX = 0,
-		posy = 0,
-		rowSpan, colSpan,
-		i, j, m, n, shift,
+		i, j,
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
 		onClick = function ( event ) {
@@ -209,26 +310,6 @@ Grid.prototype.init = function ( config ) {
 		this.render = config.render;
 	}
 
-	// amount of items in a row
-	if ( config.sizeX !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.sizeX) !== config.sizeX ) { throw 'config.sizeX must be a number'; }
-		if ( config.sizeX <= 0 ) { throw 'config.sizeX should be positive'; }
-		// @endif
-
-		this.sizeX = config.sizeX;
-	}
-
-	// amount of rows
-	if ( config.sizeY !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.sizeY) !== config.sizeY ) { throw 'config.sizeY must be a number'; }
-		if ( config.sizeY <= 0 ) { throw 'config.sizeY should be positive'; }
-		// @endif
-
-		this.sizeY = config.sizeY;
-	}
-
 	// @ifdef DEBUG
 	if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
 	// @endif
@@ -238,22 +319,13 @@ Grid.prototype.init = function ( config ) {
 
 	$table.appendChild($tbody);
 
-	// navigation map init
-	this.items = new Array(this.sizeY);
-	for ( i = 0; i < this.sizeY; i++ ) {
-		this.items[i] = new Array(this.sizeX);
-	}
-
-	shift = 0;
-
-	this.items = [];
+	// prepare user data
+	this.data = normalize(this.data);
 
 	// rows
 	for ( i = 0; i < this.data.length; i++ ) {
 		// dom
 		$row = $tbody.insertRow();
-		// navigation map filling
-		this.items.push([]);
 
 		// cols
 		for ( j = 0; j < this.data[i].length; j++ ) {
@@ -267,47 +339,20 @@ Grid.prototype.init = function ( config ) {
 			// shortcut
 			itemData = this.data[i][j];
 
-			// position
-			//posX = posX +
+			// for map
+			itemData.$item = $item;
 
-			// cell data type
-			if ( typeof itemData === 'object' ) {
-				// merge columns
-				if ( itemData.colSpan !== undefined ) {
-					// @ifdef DEBUG
-					if ( Number(itemData.colSpan) !== itemData.colSpan ) { throw 'itemData.colSpan must be a number'; }
-					if ( itemData.colSpan <= 0 ) { throw 'itemData.colSpan should be positive'; }
-					// @endif
+			// merge columns
+			$item.colSpan = itemData.colSpan;
 
-					colSpan = $item.colSpan = itemData.colSpan;
-					delete itemData.colSpan;
-				}
+			// merge rows
+			$item.rowSpan = itemData.rowSpan;
 
-				// merge rows
-				if ( itemData.rowSpan !== undefined ) {
-					// @ifdef DEBUG
-					if ( Number(itemData.rowSpan) !== itemData.rowSpan ) { throw 'itemData.rowSpan must be a number'; }
-					if ( itemData.rowSpan <= 0 ) { throw 'itemData.rowSpan should be positive'; }
-					// @endif
-
-					// apply and clean
-					rowSpan = $item.rowSpan = itemData.rowSpan;
-					delete itemData.rowSpan;
-				}
-
-				// active cell
-				if ( itemData.focus !== undefined ) {
-					// store and clean
-					$focusItem = $item;
-					delete itemData.focus;
-				}
-			} else {
-				colSpan = 1;
-				rowSpan = 1;
-				// wrap value
-				itemData = this.data[i][j] = {
-					value: this.data[i][j]
-				};
+			// active cell
+			if ( itemData.focus !== undefined ) {
+				// store and clean
+				$focusItem = $item;
+				delete itemData.focus;
 			}
 
 			// visualize
@@ -316,27 +361,15 @@ Grid.prototype.init = function ( config ) {
 			// save data link
 			$item.data = itemData;
 
-			// navigation map filling
-			this.items[i][j] = $item;
-
-			console.log($item.getBoundingClientRect());
-
-			//for ( n = 0; n < this.data[i].length; n++ ) {
-			//	//if
-			//}
-			//
-			//// apply and clean
-			//for ( m = 0; m < rowSpan; m++ ) {
-			//	for ( n = 0; n < colSpan; n++ ) {
-			//		this.items[m][n] = $item;
-			//	}
-			//}
-
+			// manual focusing
 			$item.addEventListener('click', onClick);
 		}
 		// row is ready
 		$tbody.appendChild($row);
 	}
+
+	// navigation map filling
+	this.map = map(this.data);
 
 	// clear all table
 	this.$body.innerText = null;
@@ -350,94 +383,10 @@ Grid.prototype.init = function ( config ) {
 		this.focusItem($focusItem);
 	} else {
 		// just the first cell
-		this.focusItem(this.items[0][0]);
+		this.focusItem(this.map[0][0]);
 	}
 };
 
-
-function buildMap () {
-	var data = [
-		['a1', {colspan: 2, value: 'bc1'}, 'd1'],
-		['a1', 'b2', {rowspan: 2, value: 'c23'}, 'd2'],
-		[{colspan: 2, rowspan: 2, value: 'ab34'}, 'd3'],
-		['c4', 'd4']
-	];
-	var MAX_ROW = 10, MAX_COL = 10;						// oh the shame
-	var map = [];
-	var mapRow, mapCol, dataRow = 0, dataCol = 0;
-	var maxMapCol = null;
-
-	for ( mapRow = 0; mapRow < MAX_ROW; mapRow++ ) {
-		for ( mapCol = 0; mapCol < MAX_COL; mapCol++ ) {
-			if ( maxMapCol && mapCol >= maxMapCol ) {		// max column number already counted and reached
-				if ( dataCol ) {							// reset data line only if some data were added to map line
-					dataCol = 0;
-					dataRow += 1;
-				}
-				break;
-			}
-			if ( map[mapRow] && map[mapRow][mapCol] ) {	// already added value to map here (by colspan or rowspan)
-				continue;
-			}
-			if ( !data[dataRow] ) {						// no more data rows (end of processing)
-				return map;
-			}
-			if ( !data[dataRow][dataCol] ) {				// no more data column (end of data row)
-				if ( dataCol ) {							// reset data line only if some data were added to map line
-					dataCol = 0;
-					dataRow += 1;
-				}
-				if ( !maxMapCol ) {						// initialize max column number if not set
-					maxMapCol = mapCol;
-				}
-				break;
-			}
-			var cell = data[dataRow][dataCol];
-			if ( typeof cell === 'object' ) {
-				var colspan = cell.colspan || 1;
-				var rowspan = cell.rowspan || 1;
-				for ( var row = mapRow; row < mapRow + rowspan; row++ ) {
-					if ( !map[row] ) {
-						map[row] = [];
-					}
-					for ( var col = mapCol; col < mapCol + colspan; col++ ) {
-						map[row][col] = cell.value;
-					}
-				}
-			} else {
-				if ( !map[mapRow] ) {
-					map[mapRow] = [];
-				}
-				map[mapRow][mapCol] = cell;
-			}
-			dataCol += 1;
-		}
-	}
-
-	console.log(buildMap());
-}
-
-
-Grid.prototype.buildItem = function ( $item, x, y ) {
-	var link = stbUPnP;
-
-// clear
-	delete window.stbUPnP;
-
-// construct
-	window.stbUPnP = {
-		getServerListSync: link.getServerListSync,
-		getServerList: function ( callback ) {
-			link.onDeviceListChanged.connect(callback);
-			return link.getServerList();
-		},
-		getDataSync: link.getDataSync,
-		getData: function ( callback ) {
-			link.onGetDataReady.connect(callback);
-			return link.getData();
-		}
-	};
-};
 
 /**
  * Move focus to the given direction.
@@ -445,73 +394,65 @@ Grid.prototype.buildItem = function ( $item, x, y ) {
  * @param {number} direction arrow key code
  */
 Grid.prototype.move = function ( direction ) {
-	var x = this.$focusItem.x,
-		y = this.$focusItem.y,
-		tbl, i, j, rect, coords, coordX, coordY;
-
-	if ( !this.coords ) {
-		this.coords = [];
-		tbl = this.$body.firstChild;
-
-		for ( i = 0; i < tbl.rows.length; i++ ) {
-			for ( j = 0; j < tbl.rows[i].cells.length; j++ ) {
-				rect = tbl.rows[i].cells[j].getBoundingClientRect();
-				coords = {
-					$cell: tbl.rows[i].cells[j]
-					//rect: rect
-				};
-				coords.x = rect.left + rect.width/2;
-				coords.y = rect.top + rect.height/2;
-				this.coords.push(coords);
-			}
-		}
-		console.log(this.coords);
-	}
-
-	rect = this.$focusItem.getBoundingClientRect();
-	coordX = rect.left + rect.width/2;
-	coordY = rect.top + rect.height/2;
+	var x    = this.focusX,
+		y    = this.focusY,
+		slip = false;
 
 	switch ( direction ) {
 		case keys.up:
-			if ( this.items[y - 1] ) {
+			if ( this.focusY > 0 ) {
 				// can go one step up
-				this.focusItem(this.items[y - 1][x]);
+				this.focusY--;
 			} else if ( this.cycleY ) {
 				// jump to the last row
-				this.focusItem(this.items[this.items.length - 1][x]);
+				this.focusY = this.map.length - 1;
+				slip = true;
 			}
 			break;
+
 		case keys.down:
-			//if ( this.items[y + 1] ) {
-			//	// can go one step down
-			//	this.focusItem(this.items[y + 1][x]);
-			//} else if ( this.cycleY ) {
-			//	// jump to the first row
-			//	this.focusItem(this.items[0][x]);
-			//}
-			console.log(this.coords.filter(function ( item ) {
-				return item.y > coordY;
-			}));
+			if ( this.focusY < this.map.length - 1 ) {
+				// can go one step down
+				this.focusY++;
+			} else if ( this.cycleY ) {
+				// jump to the first row
+				this.focusY = 0;
+				slip = true;
+			}
 			break;
+
 		case keys.right:
-			if ( this.items[y][x + 1] ) {
+			if ( this.focusX < this.map[this.focusY].length - 1 ) {
 				// can go one step right
-				this.focusItem(this.items[y][x + 1]);
+				this.focusX++;
 			} else if ( this.cycleX ) {
 				// jump to the first column
-				this.focusItem(this.items[y][0]);
+				this.focusX = 0;
+				slip = true;
 			}
 			break;
+
 		case keys.left:
-			if ( this.items[y][x - 1] ) {
+			if ( this.focusX > 0 ) {
 				// can go one step left
-				this.focusItem(this.items[y][x - 1]);
+				this.focusX--;
 			} else if ( this.cycleX ) {
 				// jump to the last column
-				this.focusItem(this.items[y][this.items[y].length - 1]);
+				this.focusX = this.map[this.focusY].length - 1;
+				slip = true;
 			}
 			break;
+	}
+
+	// report
+	debug.info(x + ' : ' + this.focusX, 'X old/new');
+	debug.info(y + ' : ' + this.focusY, 'Y old/new');
+	debug.info(slip, 'slip');
+
+	if ( !this.focusItem(this.map[this.focusY][this.focusX]) ) {
+		if ( !slip ) {
+			this.move(direction);
+		}
 	}
 };
 
