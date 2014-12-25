@@ -368,6 +368,7 @@ List.prototype.move = function ( direction ) {
  * @return {boolean} operation status
  *
  * @fires module:stb/ui/list~List#focus:item
+ * @fires module:stb/ui/list~List#blur:item
  */
 List.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
@@ -388,7 +389,14 @@ List.prototype.focusItem = function ( $item ) {
 			// style
 			$prev.classList.remove('focus');
 
-			// notify
+			/**
+			 * Remove focus from an element.
+			 *
+			 * @event module:stb/ui/list~List#blur:item
+			 *
+			 * @type {Object}
+			 * @property {Node} $item previously focused HTML element
+			 */
 			this.emit('blur:item', {$item: $prev});
 		}
 		// reassign
@@ -405,8 +413,8 @@ List.prototype.focusItem = function ( $item ) {
 		 * @event module:stb/ui/list~List#focus:item
 		 *
 		 * @type {Object}
-		 * @property {*} [$prev] old/previous focused HTML element
-		 * @property {*} [$curr] new/current focused HTML element
+		 * @property {Node} $prev old/previous focused HTML element
+		 * @property {Node} $curr new/current focused HTML element
 		 */
 		this.emit('focus:item', {$prev: $prev, $curr: $item});
 
