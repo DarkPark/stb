@@ -11,7 +11,7 @@ var Component = require('../component'),
 
 
 /**
- * Base list implementation.
+ * Base grid/table implementation.
  *
  * @constructor
  * @extends Component
@@ -26,14 +26,15 @@ var Component = require('../component'),
  * var Grid = require('stb/ui/grid'),
  *     grid = new Grid({
  *         data: [
- *             [1,   2,  3,  4],
- *             [5,   6,  7,  8],
- *             [9,  10, 11, 12],
- *             [13, 14, 15, 16]
+ *             [1,   2,  3,  {value: '4;8;12;16', focus: true, rowSpan: 4}],
+ *             [5,   6,  7],
+ *             [9,  10, 11],
+ *             [13, 14, 15]
  *         ],
  *         render: function ( $item, data ) {
  *             $item.innerHTML = '<div>' + (data.value) + '</div>';
- *         }
+ *         },
+ *         cycleX: false
  *     });
  */
 function Grid ( config ) {
@@ -255,7 +256,7 @@ function map ( data ) {
 			item = data[i][j];
 			// process a cell
 			fill(result, j, i, item.colSpan, item.rowSpan, item.$item);
-			// clean
+			// clear redundant info
 			delete item.colSpan;
 			delete item.rowSpan;
 			delete item.$item;
@@ -264,6 +265,17 @@ function map ( data ) {
 
 	return result;
 }
+
+
+/**
+ * Mouse click event.
+ *
+ * @event module:stb/ui/grid~Grid#click:item
+ *
+ * @type {Object}
+ * @property {Node} $item clicked HTML item
+ * @property {Event} event click event data
+ */
 
 
 /**
@@ -392,21 +404,29 @@ Grid.prototype.init = function ( config ) {
  * Move focus to the given direction.
  *
  * @param {number} direction arrow key code
+ *
+ * @fires module:stb/ui/grid~Grid#cycle
+ * @fires module:stb/ui/grid~Grid#overflow
  */
 Grid.prototype.move = function ( direction ) {
-	var x    = this.focusX,
-		y    = this.focusY,
-		slip = false;
+	var x        = this.focusX,
+		y        = this.focusY,
+		overflow = false,
+		cycle    = false;
 
 	switch ( direction ) {
 		case keys.up:
 			if ( this.focusY > 0 ) {
 				// can go one step up
 				this.focusY--;
-			} else if ( this.cycleY ) {
-				// jump to the last row
-				this.focusY = this.map.length - 1;
-				slip = true;
+			} else {
+				if ( this.cycleY ) {
+					// jump to the last row
+					this.focusY = this.map.length - 1;
+					cycle = true;
+				} else {
+					overflow = true;
+				}
 			}
 			break;
 
@@ -414,10 +434,14 @@ Grid.prototype.move = function ( direction ) {
 			if ( this.focusY < this.map.length - 1 ) {
 				// can go one step down
 				this.focusY++;
-			} else if ( this.cycleY ) {
-				// jump to the first row
-				this.focusY = 0;
-				slip = true;
+			} else {
+				if ( this.cycleY ) {
+					// jump to the first row
+					this.focusY = 0;
+					cycle = true;
+				} else {
+					overflow = true;
+				}
 			}
 			break;
 
@@ -425,10 +449,14 @@ Grid.prototype.move = function ( direction ) {
 			if ( this.focusX < this.map[this.focusY].length - 1 ) {
 				// can go one step right
 				this.focusX++;
-			} else if ( this.cycleX ) {
-				// jump to the first column
-				this.focusX = 0;
-				slip = true;
+			} else {
+				if ( this.cycleX ) {
+					// jump to the first column
+					this.focusX = 0;
+					cycle = true;
+				} else {
+					overflow = true;
+				}
 			}
 			break;
 
@@ -436,21 +464,53 @@ Grid.prototype.move = function ( direction ) {
 			if ( this.focusX > 0 ) {
 				// can go one step left
 				this.focusX--;
-			} else if ( this.cycleX ) {
-				// jump to the last column
-				this.focusX = this.map[this.focusY].length - 1;
-				slip = true;
+			} else {
+				if ( this.cycleX ) {
+					// jump to the last column
+					this.focusX = this.map[this.focusY].length - 1;
+					cycle = true;
+				} else {
+					overflow = true;
+				}
 			}
 			break;
+	}
+
+	if ( cycle ) {
+		/**
+		 * Jump to the opposite side.
+		 *
+		 * @event module:stb/ui/grid~Grid#cycle
+		 *
+		 * @type {Object}
+		 * @property {*} direction key code initiator of movement
+		 */
+		this.emit('cycle', {direction: direction});
+	}
+
+	if ( overflow ) {
+		/**
+		 * Attempt to go beyond the edge of the grid.
+		 *
+		 * @event module:stb/ui/grid~Grid#overflow
+		 *
+		 * @type {Object}
+		 * @property {*} direction key code initiator of movement
+		 */
+		this.emit('overflow', {direction: direction});
 	}
 
 	// report
 	debug.info(x + ' : ' + this.focusX, 'X old/new');
 	debug.info(y + ' : ' + this.focusY, 'Y old/new');
-	debug.info(slip, 'slip');
+	debug.info(cycle,  'cycle');
+	debug.info(overflow, 'overflow');
 
+	// try to focus the next item
 	if ( !this.focusItem(this.map[this.focusY][this.focusX]) ) {
-		if ( !slip ) {
+		// seems it's a merged item
+		if ( !cycle && !overflow ) {
+			// need to move again
 			this.move(direction);
 		}
 	}
@@ -464,6 +524,9 @@ Grid.prototype.move = function ( direction ) {
  * @param {Node} $item element to focus
  *
  * @return {boolean} operation status
+ *
+ * @fires module:stb/ui/grid~Grid#focus:item
+ * @fires module:stb/ui/grid~Grid#blur:item
  */
 Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
@@ -484,12 +547,20 @@ Grid.prototype.focusItem = function ( $item ) {
 			// style
 			$prev.classList.remove('focus');
 
-			// notify
+			/**
+			 * Remove focus from an element.
+			 *
+			 * @event module:stb/ui/grid~Grid#blur:item
+			 *
+			 * @type {Object}
+			 * @property {Node} $item previously focused HTML element
+			 */
 			this.emit('blur:item', {$item: $prev});
 		}
 		// reassign
 		this.$focusItem = $item;
 
+		//TODO: check if necessary
 		this.$focusItem.data = this.data[$item.y][$item.x];
 
 		// correct CSS
@@ -501,8 +572,8 @@ Grid.prototype.focusItem = function ( $item ) {
 		 * @event module:stb/ui/grid~Grid#focus:item
 		 *
 		 * @type {Object}
-		 * @property {*} [$prev] old/previous focused HTML element
-		 * @property {*} [$curr] new/current focused HTML element
+		 * @property {Node} $prev old/previous focused HTML element
+		 * @property {Node} $curr new/current focused HTML element
 		 */
 		this.emit('focus:item', {$prev: $prev, $curr: $item});
 
