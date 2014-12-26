@@ -13,6 +13,8 @@ var Component = require('../component'),
 /**
  * Base grid/table implementation.
  *
+ * For navigation map implementation and tests see {@link https://gist.github.com/DarkPark/8c0c2926bfa234043ed1}.
+ *
  * @constructor
  * @extends Component
  *
@@ -211,8 +213,6 @@ function normalize ( data ) {
  * @param {number} dX amount of horizontal cell to fill
  * @param {number} dY amount of vertical cell to fill
  * @param {*} value filling data
- *
- * @ignore
  */
 function fill ( map, x, y, dX, dY, value ) {
 	var i, j;
