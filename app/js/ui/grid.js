@@ -260,8 +260,6 @@ function map ( data ) {
 			// process a cell
 			fill(result, j, i, item.colSpan, item.rowSpan, item.$item);
 			// clear redundant info
-			delete item.colSpan;
-			delete item.rowSpan;
 			delete item.$item;
 		}
 	}
@@ -389,7 +387,6 @@ Grid.prototype.init = function ( config ) {
 			if ( itemData.focus === true ) {
 				// store and clean
 				$focusItem = $item;
-				delete itemData.focus;
 			}
 
 			// disabled cell
@@ -442,69 +439,103 @@ Grid.prototype.init = function ( config ) {
 Grid.prototype.move = function ( direction ) {
 	var x        = this.focusX,
 		y        = this.focusY,
+		move     = true,
 		overflow = false,
-		cycle    = false;
+		cycle    = false,
+		counter  = 0;
 
-	switch ( direction ) {
-		case keys.up:
-			if ( y > 0 ) {
-				// can go one step up
-				y--;
-			} else {
-				if ( this.cycleY ) {
-					// jump to the last row
-					y = this.map.length - 1;
-					cycle = true;
-				} else {
-					overflow = true;
-				}
-			}
-			break;
+	while ( move ) {
+		counter++;
 
-		case keys.down:
-			if ( y < this.map.length - 1 ) {
-				// can go one step down
-				y++;
-			} else {
-				if ( this.cycleY ) {
-					// jump to the first row
-					y = 0;
-					cycle = true;
+		switch ( direction ) {
+			case keys.up:
+				if ( y > 0 ) {
+					// can go one step up
+					y--;
 				} else {
-					overflow = true;
+					if ( this.cycleY ) {
+						// jump to the last row
+						y = this.map.length - 1;
+						cycle = true;
+					} else {
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.right:
-			if ( x < this.map[y].length - 1 ) {
-				// can go one step right
-				x++;
-			} else {
-				if ( this.cycleX ) {
-					// jump to the first column
-					x = 0;
-					cycle = true;
+			case keys.down:
+				if ( y < this.map.length - 1 ) {
+					// can go one step down
+					y++;
 				} else {
-					overflow = true;
+					if ( this.cycleY ) {
+						// jump to the first row
+						y = 0;
+						cycle = true;
+					} else {
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.left:
-			if ( x > 0 ) {
-				// can go one step left
-				x--;
-			} else {
-				if ( this.cycleX ) {
-					// jump to the last column
-					x = this.map[y].length - 1;
-					cycle = true;
+			case keys.right:
+				if ( x < this.map[y].length - 1 ) {
+					// can go one step right
+					x++;
 				} else {
-					overflow = true;
+					if ( this.cycleX ) {
+						// jump to the first column
+						x = 0;
+						cycle = true;
+					} else {
+						overflow = true;
+					}
 				}
+
+
+				/*if ( x < this.map[y].length - 1 ) {
+					// can go one step right
+					x++;
+				} else {
+					if ( this.cycleX ) {
+						// jump to the first column
+						x = 0;
+						cycle = true;
+					} else {
+						overflow = true;
+					}
+				}*/
+				break;
+
+			case keys.left:
+				if ( x > 0 ) {
+					// can go one step left
+					x--;
+				} else {
+					if ( this.cycleX ) {
+						// jump to the last column
+						x = this.map[y].length - 1;
+						cycle = true;
+					} else {
+						overflow = true;
+					}
+				}
+				break;
+		}
+
+		if ( (this.map[y][x] !== this.map[this.focusY][this.focusX] && this.map[y][x].data.disable !== true) || overflow ) {
+			move = false;
+
+			if ( overflow && this.map[y][x].data.disable === true ) {
+				x = this.focusX;
+				y = this.focusY;
 			}
-			break;
+		}
+
+		if ( counter > 100 ) {
+			move = false;
+			console.log('FAIL');
+		}
 	}
 
 	if ( cycle ) {
@@ -537,8 +568,13 @@ Grid.prototype.move = function ( direction ) {
 	debug.info(cycle,  'cycle');
 	debug.info(overflow, 'overflow');
 
+	this.focusItem(this.map[y][x]);
+
+	this.focusX = x;
+	this.focusY = y;
+
 	// not the edge
-	if ( !overflow ) {
+	/*if ( !overflow ) {
 		// not disabled item
 		if ( this.map[y][x].data.disable !== true ) {
 			if ( this.focusItem(this.map[y][x]) ) {
@@ -552,7 +588,7 @@ Grid.prototype.move = function ( direction ) {
 				}
 			}
 		}
-	}
+	}*/
 
 	/*// try to focus the next item
 	if ( this.focusItem(this.map[y][x]) ) {
