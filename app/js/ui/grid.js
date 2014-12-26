@@ -292,16 +292,19 @@ Grid.prototype.init = function ( config ) {
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
 		onClick = function ( event ) {
-			// clicked item has the coordinates
-			// of the associated item in the map
-			self.focusX = this.x;
-			self.focusY = this.y;
+			// allow to accept focus
+			if ( this.data.disable !== true ) {
+				// clicked item has the coordinates
+				// of the associated item in the map
+				self.focusX = this.x;
+				self.focusY = this.y;
 
-			// visualize
-			self.focusItem(self.map[self.focusY][self.focusX]);
+				// visualize
+				self.focusItem(self.map[self.focusY][self.focusX]);
 
-			// notify
-			self.emit('click:item', {$item: this, event: event});
+				// notify
+				self.emit('click:item', {$item: this, event: event});
+			}
 		};
 
 	// @ifdef DEBUG
@@ -367,10 +370,16 @@ Grid.prototype.init = function ( config ) {
 			$item.rowSpan = itemData.rowSpan;
 
 			// active cell
-			if ( itemData.focus !== undefined ) {
+			if ( itemData.focus === true ) {
 				// store and clean
 				$focusItem = $item;
 				delete itemData.focus;
+			}
+
+			// disabled cell
+			if ( itemData.disable === true ) {
+				// apply CSS
+				$item.classList.add('disable');
 			}
 
 			// visualize
@@ -422,13 +431,13 @@ Grid.prototype.move = function ( direction ) {
 
 	switch ( direction ) {
 		case keys.up:
-			if ( this.focusY > 0 ) {
+			if ( y > 0 ) {
 				// can go one step up
-				this.focusY--;
+				y--;
 			} else {
 				if ( this.cycleY ) {
 					// jump to the last row
-					this.focusY = this.map.length - 1;
+					y = this.map.length - 1;
 					cycle = true;
 				} else {
 					overflow = true;
@@ -437,13 +446,13 @@ Grid.prototype.move = function ( direction ) {
 			break;
 
 		case keys.down:
-			if ( this.focusY < this.map.length - 1 ) {
+			if ( y < this.map.length - 1 ) {
 				// can go one step down
-				this.focusY++;
+				y++;
 			} else {
 				if ( this.cycleY ) {
 					// jump to the first row
-					this.focusY = 0;
+					y = 0;
 					cycle = true;
 				} else {
 					overflow = true;
@@ -452,13 +461,13 @@ Grid.prototype.move = function ( direction ) {
 			break;
 
 		case keys.right:
-			if ( this.focusX < this.map[this.focusY].length - 1 ) {
+			if ( x < this.map[y].length - 1 ) {
 				// can go one step right
-				this.focusX++;
+				x++;
 			} else {
 				if ( this.cycleX ) {
 					// jump to the first column
-					this.focusX = 0;
+					x = 0;
 					cycle = true;
 				} else {
 					overflow = true;
@@ -467,13 +476,13 @@ Grid.prototype.move = function ( direction ) {
 			break;
 
 		case keys.left:
-			if ( this.focusX > 0 ) {
+			if ( x > 0 ) {
 				// can go one step left
-				this.focusX--;
+				x--;
 			} else {
 				if ( this.cycleX ) {
 					// jump to the last column
-					this.focusX = this.map[this.focusY].length - 1;
+					x = this.map[y].length - 1;
 					cycle = true;
 				} else {
 					overflow = true;
@@ -507,19 +516,41 @@ Grid.prototype.move = function ( direction ) {
 	}
 
 	// report
-	debug.info(x + ' : ' + this.focusX, 'X old/new');
-	debug.info(y + ' : ' + this.focusY, 'Y old/new');
+	debug.info(this.focusX + ' : ' + x, 'X old/new');
+	debug.info(this.focusY + ' : ' + y, 'Y old/new');
 	debug.info(cycle,  'cycle');
 	debug.info(overflow, 'overflow');
 
-	// try to focus the next item
-	if ( !this.focusItem(this.map[this.focusY][this.focusX]) ) {
-		// seems it's a merged item
-		if ( !cycle && !overflow ) {
+	// not the edge
+	if ( !overflow ) {
+		// not disabled item
+		if ( this.map[y][x].data.disable !== true ) {
+			if ( this.focusItem(this.map[y][x]) ) {
+				// ok
+				this.focusX = x;
+				this.focusY = y;
+			} else {
+				if ( cycle ) {
+					// need to move again
+					this.move(direction);
+				}
+			}
+		}
+	}
+
+	/*// try to focus the next item
+	if ( this.focusItem(this.map[y][x]) ) {
+		// ok
+		this.focusX = x;
+		this.focusY = y;
+	} else {
+		// seems it's a merged or disabled item
+		// or edge of the grid
+		if ( !cycle && !overflow && this.map[y][x].data.disable ) {
 			// need to move again
 			this.move(direction);
 		}
-	}
+	}*/
 };
 
 
@@ -538,7 +569,7 @@ Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
 	// different element
-	if ( $item !== undefined && $prev !== $item ) {
+	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
 		// @ifdef DEBUG
 		if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
 		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
