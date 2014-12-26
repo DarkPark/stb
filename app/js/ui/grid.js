@@ -288,6 +288,7 @@ function map ( data ) {
  */
 Grid.prototype.init = function ( config ) {
 	var self = this,
+		draw = false,
 		i, j,
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
@@ -321,7 +322,12 @@ Grid.prototype.init = function ( config ) {
 		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
 		// @endif
 
-		this.data = config.data;
+		// new data is different
+		if ( this.data !== config.data ) {
+			this.data = config.data;
+			// need to redraw table
+			draw = true;
+		}
 	}
 
 	// custom render method
@@ -330,12 +336,22 @@ Grid.prototype.init = function ( config ) {
 		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
 		// @endif
 
-		this.render = config.render;
+		// new render is different
+		if ( this.render !== config.render ) {
+			this.render = config.render;
+			// need to redraw table
+			draw = true;
+		}
 	}
 
 	// @ifdef DEBUG
 	if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
 	// @endif
+
+	if ( !draw ) {
+		// do not redraw table
+		return;
+	}
 
 	$table = document.createElement('table');
 	$tbody = document.createElement('tbody');
