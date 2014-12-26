@@ -275,24 +275,24 @@ List.prototype.renderPage = function () {
  * @param {number} direction arrow key code
  */
 List.prototype.move = function ( direction ) {
-	switch ( direction ) {
-		case keys.up:
+	//switch ( direction ) {
+	//	case keys.up:
+	//
+	//		break;
+	//	case keys.down:
+	//
+	//		break;
+	//	case keys.right:
+	//
+	//		break;
+	//	case keys.left:
+	//
+	//		break;
+	//}
+	//
+	//return;
 
-			break;
-		case keys.down:
-
-			break;
-		case keys.right:
-
-			break;
-		case keys.left:
-
-			break;
-	}
-
-	return;
-
-	if ( (event.code === keys.up && self.type === self.TYPE_VERTICAL) || (event.code === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
+	if ( (direction === keys.up && self.type === self.TYPE_VERTICAL) || (direction === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
 		if ( self.$focusItem.index > 0 ) {
 			//index--;
 
@@ -315,7 +315,7 @@ List.prototype.move = function ( direction ) {
 			}
 		}
 	}
-	if ( (event.code === keys.down && self.type === self.TYPE_VERTICAL) || (event.code === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
+	if ( (direction === keys.down && self.type === self.TYPE_VERTICAL) || (direction === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
 		if ( self.$focusItem.index < self.data.length - 1 ) {
 			//index++;
 
@@ -339,13 +339,13 @@ List.prototype.move = function ( direction ) {
 		}
 	}
 
-	if ( event.code === keys.pageUp ) {
+	if ( direction === keys.pageUp ) {
 		//self.activeIndex = self.activeIndex - self.size - 1;
 		//self.focusFirst();
 		self.focusItem(self.$body.firstChild);
 		//self.$focusItem.index = self.$focusItem.index;
 	}
-	if ( event.code === keys.pageDown ) {
+	if ( direction === keys.pageDown ) {
 		//self.activeIndex = self.activeIndex + self.size - 1;
 
 		//self.focusLast();
