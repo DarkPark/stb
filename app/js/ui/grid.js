@@ -233,6 +233,9 @@ function fill ( map, x, y, dX, dY, value ) {
 			if ( map[i].length < j + 1 ) { map[i].push(); }
 			// fill
 			map[i][j] = value;
+			// apply coordinates for future mouse clicks
+			if ( value.x === undefined ) { value.x = j; }
+			if ( value.y === undefined ) { value.y = i; }
 		}
 	}
 }
@@ -289,8 +292,13 @@ Grid.prototype.init = function ( config ) {
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
 		onClick = function ( event ) {
+			// clicked item has the coordinates
+			// of the associated item in the map
+			self.focusX = this.x;
+			self.focusY = this.y;
+
 			// visualize
-			self.focusItem(this);
+			self.focusItem(self.map[self.focusY][self.focusX]);
 
 			// notify
 			self.emit('click:item', {$item: this, event: event});
@@ -344,8 +352,6 @@ Grid.prototype.init = function ( config ) {
 			// dom
 			$item = $row.insertCell(-1);
 			// additional params
-			$item.x = j;
-			$item.y = i;
 			$item.className = 'item';
 
 			// shortcut
@@ -559,9 +565,6 @@ Grid.prototype.focusItem = function ( $item ) {
 		}
 		// reassign
 		this.$focusItem = $item;
-
-		//TODO: check if necessary
-		this.$focusItem.data = this.data[$item.y][$item.x];
 
 		// correct CSS
 		$item.classList.add('focus');
