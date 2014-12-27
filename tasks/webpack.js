@@ -66,7 +66,11 @@ gulp.task('webpack:develop', function () {
 			//watchDelay: 300,
 			plugins: [
 				// fix compilation persistence
-				new webpack.webpack.optimize.OccurenceOrderPlugin(true)
+				new webpack.webpack.optimize.OccurenceOrderPlugin(true),
+				// global constants
+				new webpack.webpack.DefinePlugin({
+					DEBUG: true
+				})
 			]
 		}, null, report))
 		.pipe(gulp.dest('./build/develop/'));
@@ -94,6 +98,11 @@ gulp.task('webpack:release', function () {
 			plugins: [
 				// fix compilation persistence
 				new webpack.webpack.optimize.OccurenceOrderPlugin(true),
+				// global constants
+				new webpack.webpack.DefinePlugin({
+					DEBUG: false
+				}),
+				// obfuscation
 				new webpack.webpack.optimize.UglifyJsPlugin({
 					// this option prevents name changing
 					// use in case of strange errors
