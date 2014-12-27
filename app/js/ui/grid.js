@@ -15,6 +15,16 @@ var Component = require('../component'),
  *
  * For navigation map implementation and tests see {@link https://gist.github.com/DarkPark/8c0c2926bfa234043ed1}.
  *
+ * Each data cell value can be either a primitive value or an object with these fields:
+ *
+ *  Name    | Description
+ * ---------|-------------
+ *  value   | actual cell value to render
+ *  colSpan | amount of cells to merge horizontally
+ *  rowSpan | amount of cells to merge vertically
+ *  focus   | is it necessary or not to render this cell as focused
+ *  disable | is it necessary or not to set this cell as disabled
+ *
  * @constructor
  * @extends Component
  *
@@ -302,13 +312,7 @@ Grid.prototype.init = function ( config ) {
 		onItemClick = function ( event ) {
 			// allow to accept focus
 			if ( this.data.disable !== true ) {
-				// clicked item has the coordinates
-				// of the associated item in the map
-				//self.focusX = this.x;
-				//self.focusY = this.y;
-
 				// visualize
-				//self.focusItem(self.map[self.focusY][self.focusX]);
 				self.focusItem(this);
 
 				// notify
@@ -554,7 +558,7 @@ Grid.prototype.move = function ( direction ) {
 		 * @event module:stb/ui/grid~Grid#cycle
 		 *
 		 * @type {Object}
-		 * @property {*} direction key code initiator of movement
+		 * @property {number} direction key code initiator of movement
 		 */
 		this.emit('cycle', {direction: direction});
 	}
@@ -566,7 +570,7 @@ Grid.prototype.move = function ( direction ) {
 		 * @event module:stb/ui/grid~Grid#overflow
 		 *
 		 * @type {Object}
-		 * @property {*} direction key code initiator of movement
+		 * @property {number} direction key code initiator of movement
 		 */
 		this.emit('overflow', {direction: direction});
 	}
