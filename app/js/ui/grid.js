@@ -28,10 +28,10 @@ var Component = require('../component'),
  * var Grid = require('stb/ui/grid'),
  *     grid = new Grid({
  *         data: [
- *             [1,   2,  3,  {value: '4;8;12;16', focus: true, rowSpan: 4}],
+ *             [1,   2,  3, {value: '4;8;12;16', focus: true, rowSpan: 4}],
  *             [5,   6,  7],
  *             [9,  10, 11],
- *             [13, 14, 15]
+ *             [13, 14, {value: 15, disable: true}]
  *         ],
  *         render: function ( $item, data ) {
  *             $item.innerHTML = '<div>' + (data.value) + '</div>';
@@ -451,12 +451,10 @@ Grid.prototype.move = function ( direction ) {
 		y        = this.focusY,
 		move     = true,
 		overflow = false,
-		cycle    = false,
-		counter  = 0;
+		cycle    = false;
 
 	// shift till full stop
 	while ( move ) {
-		counter++;
 		// arrow keys
 		switch ( direction ) {
 			case keys.up:
@@ -524,7 +522,7 @@ Grid.prototype.move = function ( direction ) {
 				break;
 		}
 
-		// full cycle - come to the start point
+		// full cycle - has come to the start point
 		if ( x === this.focusX && y === this.focusY ) {
 			// full stop
 			move = false;
@@ -536,21 +534,17 @@ Grid.prototype.move = function ( direction ) {
 			move = false;
 		}
 
-		// the last cell in a row but it's disabled - go back
-		if ( overflow && this.map[y][x].data.disable === true ) {
+		// the last cell in a row/col
+		if ( overflow ) {
 			// full stop
 			move = false;
-			// return to the start point
-			x = this.focusX;
-			y = this.focusY;
+			// but it's disabled so need to go back
+			if ( this.map[y][x].data.disable === true ) {
+				// return to the start point
+				x = this.focusX;
+				y = this.focusY;
+			}
 		}
-
-		// @ifdef DEBUG
-		if ( counter > 100 ) {
-			move = false;
-			debug.log('FAIL', 'red');
-		}
-		// @endif
 	}
 
 	if ( cycle ) {
@@ -586,6 +580,7 @@ Grid.prototype.move = function ( direction ) {
 	this.focusItem(this.map[y][x]);
 
 	// correct coordinates
+	// focusItem set approximate values
 	this.focusX = x;
 	this.focusY = y;
 };
@@ -623,10 +618,6 @@ Grid.prototype.focusItem = function ( $item ) {
 			// style
 			$prev.classList.remove('focus');
 
-			// draft coordinates
-			this.focusX = $item.x;
-			this.focusY = $item.y;
-
 			/**
 			 * Remove focus from an element.
 			 *
@@ -637,6 +628,11 @@ Grid.prototype.focusItem = function ( $item ) {
 			 */
 			this.emit('blur:item', {$item: $prev});
 		}
+
+		// draft coordinates
+		this.focusX = $item.x;
+		this.focusY = $item.y;
+
 		// reassign
 		this.$focusItem = $item;
 
