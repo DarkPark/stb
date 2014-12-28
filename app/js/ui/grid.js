@@ -15,6 +15,16 @@ var Component = require('../component'),
  *
  * For navigation map implementation and tests see {@link https://gist.github.com/DarkPark/8c0c2926bfa234043ed1}.
  *
+ * Each data cell value can be either a primitive value or an object with these fields:
+ *
+ *  Name    | Description
+ * ---------|-------------
+ *  value   | actual cell value to render
+ *  colSpan | amount of cells to merge horizontally
+ *  rowSpan | amount of cells to merge vertically
+ *  focus   | is it necessary or not to render this cell as focused
+ *  disable | is it necessary or not to set this cell as disabled
+ *
  * @constructor
  * @extends Component
  *
@@ -28,10 +38,10 @@ var Component = require('../component'),
  * var Grid = require('stb/ui/grid'),
  *     grid = new Grid({
  *         data: [
- *             [1,   2,  3,  {value: '4;8;12;16', focus: true, rowSpan: 4}],
+ *             [1,   2,  3, {value: '4;8;12;16', focus: true, rowSpan: 4}],
  *             [5,   6,  7],
  *             [9,  10, 11],
- *             [13, 14, 15]
+ *             [13, 14, {value: 15, disable: true}]
  *         ],
  *         render: function ( $item, data ) {
  *             $item.innerHTML = '<div>' + (data.value) + '</div>';
@@ -260,8 +270,6 @@ function map ( data ) {
 			// process a cell
 			fill(result, j, i, item.colSpan, item.rowSpan, item.$item);
 			// clear redundant info
-			delete item.colSpan;
-			delete item.rowSpan;
 			delete item.$item;
 		}
 	}
@@ -288,20 +296,28 @@ function map ( data ) {
  */
 Grid.prototype.init = function ( config ) {
 	var self = this,
+		draw = false,
 		i, j,
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
-		onClick = function ( event ) {
-			// clicked item has the coordinates
-			// of the associated item in the map
-			self.focusX = this.x;
-			self.focusY = this.y;
+		/**
+		 * Cell mouse click handler.
+		 *
+		 * @param {Event} event click event data
+		 *
+		 * @this Node
+		 *
+		 * @fires module:stb/ui/grid~Grid#click:item
+		 */
+		onItemClick = function ( event ) {
+			// allow to accept focus
+			if ( this.data.disable !== true ) {
+				// visualize
+				self.focusItem(this);
 
-			// visualize
-			self.focusItem(self.map[self.focusY][self.focusX]);
-
-			// notify
-			self.emit('click:item', {$item: this, event: event});
+				// notify
+				self.emit('click:item', {$item: this, event: event});
+			}
 		};
 
 	// @ifdef DEBUG
@@ -318,7 +334,12 @@ Grid.prototype.init = function ( config ) {
 		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
 		// @endif
 
-		this.data = config.data;
+		// new data is different
+		if ( this.data !== config.data ) {
+			this.data = config.data;
+			// need to redraw table
+			draw = true;
+		}
 	}
 
 	// custom render method
@@ -327,12 +348,22 @@ Grid.prototype.init = function ( config ) {
 		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
 		// @endif
 
-		this.render = config.render;
+		// new render is different
+		if ( this.render !== config.render ) {
+			this.render = config.render;
+			// need to redraw table
+			draw = true;
+		}
 	}
 
 	// @ifdef DEBUG
 	if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
 	// @endif
+
+	if ( !draw ) {
+		// do not redraw table
+		return;
+	}
 
 	$table = document.createElement('table');
 	$tbody = document.createElement('tbody');
@@ -367,10 +398,15 @@ Grid.prototype.init = function ( config ) {
 			$item.rowSpan = itemData.rowSpan;
 
 			// active cell
-			if ( itemData.focus !== undefined ) {
+			if ( itemData.focus === true ) {
 				// store and clean
 				$focusItem = $item;
-				delete itemData.focus;
+			}
+
+			// disabled cell
+			if ( itemData.disable === true ) {
+				// apply CSS
+				$item.classList.add('disable');
 			}
 
 			// visualize
@@ -380,7 +416,7 @@ Grid.prototype.init = function ( config ) {
 			$item.data = itemData;
 
 			// manual focusing
-			$item.addEventListener('click', onClick);
+			$item.addEventListener('click', onItemClick);
 		}
 		// row is ready
 		$tbody.appendChild($row);
@@ -417,69 +453,102 @@ Grid.prototype.init = function ( config ) {
 Grid.prototype.move = function ( direction ) {
 	var x        = this.focusX,
 		y        = this.focusY,
+		move     = true,
 		overflow = false,
 		cycle    = false;
 
-	switch ( direction ) {
-		case keys.up:
-			if ( this.focusY > 0 ) {
-				// can go one step up
-				this.focusY--;
-			} else {
-				if ( this.cycleY ) {
-					// jump to the last row
-					this.focusY = this.map.length - 1;
-					cycle = true;
+	// shift till full stop
+	while ( move ) {
+		// arrow keys
+		switch ( direction ) {
+			case keys.up:
+				if ( y > 0 ) {
+					// can go one step up
+					y--;
 				} else {
-					overflow = true;
+					if ( this.cycleY ) {
+						// jump to the last row
+						y = this.map.length - 1;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.down:
-			if ( this.focusY < this.map.length - 1 ) {
-				// can go one step down
-				this.focusY++;
-			} else {
-				if ( this.cycleY ) {
-					// jump to the first row
-					this.focusY = 0;
-					cycle = true;
+			case keys.down:
+				if ( y < this.map.length - 1 ) {
+					// can go one step down
+					y++;
 				} else {
-					overflow = true;
+					if ( this.cycleY ) {
+						// jump to the first row
+						y = 0;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.right:
-			if ( this.focusX < this.map[this.focusY].length - 1 ) {
-				// can go one step right
-				this.focusX++;
-			} else {
-				if ( this.cycleX ) {
-					// jump to the first column
-					this.focusX = 0;
-					cycle = true;
+			case keys.right:
+				if ( x < this.map[y].length - 1 ) {
+					// can go one step right
+					x++;
 				} else {
-					overflow = true;
+					if ( this.cycleX ) {
+						// jump to the first column
+						x = 0;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.left:
-			if ( this.focusX > 0 ) {
-				// can go one step left
-				this.focusX--;
-			} else {
-				if ( this.cycleX ) {
-					// jump to the last column
-					this.focusX = this.map[this.focusY].length - 1;
-					cycle = true;
+			case keys.left:
+				if ( x > 0 ) {
+					// can go one step left
+					x--;
 				} else {
-					overflow = true;
+					if ( this.cycleX ) {
+						// jump to the last column
+						x = this.map[y].length - 1;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
+				break;
+		}
+
+		// full cycle - has come to the start point
+		if ( x === this.focusX && y === this.focusY ) {
+			// full stop
+			move = false;
+		}
+
+		// focus item has changed and it's not disabled
+		if ( this.map[y][x] !== this.map[this.focusY][this.focusX] && this.map[y][x].data.disable !== true ) {
+			// full stop
+			move = false;
+		}
+
+		// the last cell in a row/col
+		if ( overflow ) {
+			// full stop
+			move = false;
+			// but it's disabled so need to go back
+			if ( this.map[y][x].data.disable === true ) {
+				// return to the start point
+				x = this.focusX;
+				y = this.focusY;
 			}
-			break;
+		}
 	}
 
 	if ( cycle ) {
@@ -489,7 +558,7 @@ Grid.prototype.move = function ( direction ) {
 		 * @event module:stb/ui/grid~Grid#cycle
 		 *
 		 * @type {Object}
-		 * @property {*} direction key code initiator of movement
+		 * @property {number} direction key code initiator of movement
 		 */
 		this.emit('cycle', {direction: direction});
 	}
@@ -501,25 +570,23 @@ Grid.prototype.move = function ( direction ) {
 		 * @event module:stb/ui/grid~Grid#overflow
 		 *
 		 * @type {Object}
-		 * @property {*} direction key code initiator of movement
+		 * @property {number} direction key code initiator of movement
 		 */
 		this.emit('overflow', {direction: direction});
 	}
 
 	// report
-	debug.info(x + ' : ' + this.focusX, 'X old/new');
-	debug.info(y + ' : ' + this.focusY, 'Y old/new');
+	debug.info(this.focusX + ' : ' + x, 'X old/new');
+	debug.info(this.focusY + ' : ' + y, 'Y old/new');
 	debug.info(cycle,  'cycle');
 	debug.info(overflow, 'overflow');
 
-	// try to focus the next item
-	if ( !this.focusItem(this.map[this.focusY][this.focusX]) ) {
-		// seems it's a merged item
-		if ( !cycle && !overflow ) {
-			// need to move again
-			this.move(direction);
-		}
-	}
+	this.focusItem(this.map[y][x]);
+
+	// correct coordinates
+	// focusItem set approximate values
+	this.focusX = x;
+	this.focusY = y;
 };
 
 
@@ -528,6 +595,8 @@ Grid.prototype.move = function ( direction ) {
  * Remove focus from the previously focused item.
  *
  * @param {Node} $item element to focus
+ * @param {number} $item.x the item horizontal position
+ * @param {number} $item.y the item vertical position
  *
  * @return {boolean} operation status
  *
@@ -538,7 +607,7 @@ Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
 	// different element
-	if ( $item !== undefined && $prev !== $item ) {
+	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
 		// @ifdef DEBUG
 		if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
 		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
@@ -563,6 +632,11 @@ Grid.prototype.focusItem = function ( $item ) {
 			 */
 			this.emit('blur:item', {$item: $prev});
 		}
+
+		// draft coordinates
+		this.focusX = $item.x;
+		this.focusY = $item.y;
+
 		// reassign
 		this.$focusItem = $item;
 

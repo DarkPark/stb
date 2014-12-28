@@ -41,34 +41,31 @@
     <div class="container-overview">
     
         
-<dt>
-    
-        
-        <h2>Constructor</h2>
-        
-
-        <h4 class="name" id="CheckBox"><span class="type-signature"></span>new CheckBox<span class="signature">(config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
 
     
-    <div class="description">
-        <p>Base check box implementation.</p>
-    </div>
+    <h2>Constructor</h2>
     
+
+    <h4 class="name" id="CheckBox"><span class="type-signature"></span>new CheckBox<span class="signature">(config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
-    
 
-    
 
+<div class="description">
+    <p>Base check box implementation.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -239,9 +236,9 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
 
 
 <dl class="details">
@@ -285,29 +282,28 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>var CheckBox = require('stb/ui/check.box'),
     checkBox = new CheckBox({
         value: true,
         group: 'lang'
     });</code></pre>
 
-    
-</dd>
+
 
     
     </div>
@@ -336,33 +332,31 @@
     
         <h3 class="subsection-title">Members</h3>
 
-        <dl>
+        
             
-<dt>
-    <h4 class="name" id="group"><span class="type-signature"></span>group<span class="type-signature"> :string</span></h4>
+<h4 class="name" id="group"><span class="type-signature"></span>group<span class="type-signature"> :string</span></h4>
 
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Group name to work synchronously with other checkboxes.</p>
-    </div>
-    
 
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
+
+
+<div class="description">
+    <p>Group name to work synchronously with other checkboxes.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
 <span class="param-type">string</span>
 
 
-            </li>
-        </ul>
-    
+        </li>
+    </ul>
 
-    
+
+
 
 
 <dl class="details">
@@ -406,38 +400,35 @@
 </dl>
 
 
-    
 
-    
-</dd>
+
+
 
         
             
-<dt>
-    <h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :boolean</span></h4>
+<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :boolean</span></h4>
 
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Initial state.</p>
-    </div>
-    
 
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
+
+
+<div class="description">
+    <p>Initial state.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
 <span class="param-type">boolean</span>
 
 
-            </li>
-        </ul>
-    
+        </li>
+    </ul>
 
-    
+
+
 
 
 <dl class="details">
@@ -481,46 +472,42 @@
 </dl>
 
 
-    
 
-    
-</dd>
 
-        </dl>
+
+
+        
     
 
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
+        
             
-<dt>
-    
-        
-
-        <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">(value)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-        
-    
-</dt>
-<dd>
 
     
-    <div class="description">
-        <p>Set the given state.
+
+    <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">(value)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Set the given state.
 Does nothing in case the value is already as necessary.</p>
-    </div>
-    
+</div>
 
-    
 
-    
 
-    
 
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -566,9 +553,9 @@ Does nothing in case the value is already as necessary.</p>
     
     </tbody>
 </table>
-    
 
-    
+
+
 
 
 <dl class="details">
@@ -612,25 +599,25 @@ Does nothing in case the value is already as necessary.</p>
 </dl>
 
 
-    
 
-    
-    <h5>Fires:</h5>
-    <ul>
-        <li><a href="module-stb_ui_check.box-CheckBox.html#event:change">module:stb/ui/check.box~CheckBox#event:change</a></li>
-    </ul>
-    
 
-    
 
-    
+<h5>Fires:</h5>
+<ul>
+    <li><a href="module-stb_ui_check.box-CheckBox.html#event:change">module:stb/ui/check.box~CheckBox#event:change</a></li>
+</ul>
 
-    
 
-    
-    <h5>Returns:</h5>
-    
-            
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
 <div class="param-desc">
     <p>operation status</p>
 </div>
@@ -649,12 +636,11 @@ Does nothing in case the value is already as necessary.</p>
     </dd>
 </dl>
 
-        
-
     
-</dd>
 
-        </dl>
+
+
+        
     
 
     
@@ -670,13 +656,13 @@ Does nothing in case the value is already as necessary.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_info.module_panel.html">panel</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_info.module_panel-InfoPanel.html">InfoPanel</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha11</a> on Tue Dec 23 2014 16:30:32 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 12:11:31 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>
