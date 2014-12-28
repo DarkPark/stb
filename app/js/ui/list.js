@@ -26,9 +26,10 @@ var Component = require('../component'),
  * @constructor
  * @extends Component
  *
- * @param {Object} [config={}] init parameters (all inherited from the parent)
- * @param {Array}  [config.data=[]] component data to visualize
- * @param {number} [config.size=5] amount of visible items on a page
+ * @param {Object}  [config={}] init parameters (all inherited from the parent)
+ * @param {Array}   [config.data=[]] component data to visualize
+ * @param {number}  [config.size=5] amount of visible items on a page
+ * @param {boolean} [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
  *
  * @fires module:stb/ui/list~List#click:item
  *
@@ -78,6 +79,13 @@ function List ( config ) {
 	 * @type {function}
 	 */
 	this.render = this.defaultRender;
+
+	/**
+	 * Allow or not to jump to the opposite side of a list when there is nowhere to go next.
+	 *
+	 * @type {boolean}
+	 */
+	this.cycle = false;
 
 	// sanitize
 	config = config || {};
@@ -176,6 +184,15 @@ List.prototype.defaultRender = function ( $item, data ) {
 List.prototype.init = function ( config ) {
 	var self     = this,
 		currSize = this.$body.children.length,
+		/**
+		 * Item mouse click handler.
+		 *
+		 * @param {Event} event click event data
+		 *
+		 * @this Node
+		 *
+		 * @fires module:stb/ui/list~List#click:item
+		 */
 		onClick  = function ( event ) {
 			if ( this.data !== undefined ) {
 				self.focusItem(this);
@@ -189,6 +206,13 @@ List.prototype.init = function ( config ) {
 			//self.$focusItem.classList.add('focus');
 		},
 		item, i;
+
+	// @ifdef DEBUG
+	if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	// @endif
+
+	// apply cycle behaviour
+	if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
 
 	// apply list of items
 	if ( config.data !== undefined ) {
@@ -270,6 +294,25 @@ List.prototype.renderPage = function () {
 
 
 /**
+ * Jump to the opposite side.
+ *
+ * @event module:stb/ui/list~List#cycle
+ *
+ * @type {Object}
+ * @property {number} direction key code initiator of movement
+ */
+
+/**
+ * Attempt to go beyond the edge of the list.
+ *
+ * @event module:stb/ui/list~List#overflow
+ *
+ * @type {Object}
+ * @property {number} direction key code initiator of movement
+ */
+
+
+/**
  * Move focus to the given direction.
  *
  * @param {number} direction arrow key code
@@ -292,68 +335,90 @@ List.prototype.move = function ( direction ) {
 	//
 	//return;
 
-	if ( (direction === keys.up && self.type === self.TYPE_VERTICAL) || (direction === keys.left && self.type === self.TYPE_HORIZONTAL) ) {
-		if ( self.$focusItem.index > 0 ) {
+	if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
+		// still can go backward
+		if ( this.$focusItem.index > 0 ) {
 			//index--;
 
-			if ( !self.focusPrev() ) {
+			if ( !this.focusPrev() ) {
 				// move the last item to the begging
-				//self.$body.insertBefore(self.items[self.items.length-1], self.items[0]);
-				self.$body.insertBefore(self.$body.lastChild, self.$body.firstChild);
+				//this.$body.insertBefore(this.items[this.items.length-1], this.items[0]);
+				this.$body.insertBefore(this.$body.lastChild, this.$body.firstChild);
 
 				//if ( config.render !== undefined ) {
-				self.render(self.$body.firstChild, self.data[self.$focusItem.index - 1]);
-				self.$body.firstChild.index = self.$focusItem.index - 1;
-				//self.$body.firstChild.data  = self.data[self.$focusItem.index];
+				this.render(this.$body.firstChild, this.data[this.$focusItem.index - 1]);
+				this.$body.firstChild.index = this.$focusItem.index - 1;
+				//this.$body.firstChild.data  = this.data[this.$focusItem.index];
 				//} else {
-				//	self.$body.firstChild.innerText = self.data[self.activeIndex-1];
+				//	this.$body.firstChild.innerText = this.data[this.activeIndex-1];
 				//}
 
-				//self.items.unshift(self.items.pop());
-				//self.activeIndex++;
-				self.focusPrev();
+				//this.items.unshift(this.items.pop());
+				//this.activeIndex++;
+				this.focusPrev();
+			}
+		} else {
+			// already at the beginning
+			if ( this.cycle ) {
+				// notify
+				this.emit('cycle', {direction: direction});
+				//TODO: implement
+			} else {
+				// notify
+				this.emit('overflow', {direction: direction});
 			}
 		}
 	}
-	if ( (direction === keys.down && self.type === self.TYPE_VERTICAL) || (direction === keys.right && self.type === self.TYPE_HORIZONTAL) ) {
-		if ( self.$focusItem.index < self.data.length - 1 ) {
+	if ( (direction === keys.down && this.type === this.TYPE_VERTICAL) || (direction === keys.right && this.type === this.TYPE_HORIZONTAL) ) {
+		// still can go forward
+		if ( this.$focusItem.index < this.data.length - 1 ) {
 			//index++;
 
-			if ( !self.focusNext() ) {
+			if ( !this.focusNext() ) {
 				// move the first item to the end
-				//self.$body.appendChild(self.items[0]);
-				self.$body.appendChild(self.$body.firstChild);
+				//this.$body.appendChild(this.items[0]);
+				this.$body.appendChild(this.$body.firstChild);
 
 				//if ( config.render !== undefined ) {
-				self.render(self.$body.lastChild, self.data[self.$focusItem.index + 1]);
-				self.$body.lastChild.index = self.$focusItem.index + 1;
-				//self.$body.firstChild.data  = self.data[self.$focusItem.index];
+				this.render(this.$body.lastChild, this.data[this.$focusItem.index + 1]);
+				this.$body.lastChild.index = this.$focusItem.index + 1;
+				//this.$body.firstChild.data  = this.data[this.$focusItem.index];
 				//} else {
-				//	self.$body.lastChild.innerText = self.data[self.activeIndex + 1];
+				//	this.$body.lastChild.innerText = this.data[this.activeIndex + 1];
 				//}
 
-				//self.items.push(self.items.shift());
-				//self.activeIndex--;
-				self.focusNext();
+				//this.items.push(this.items.shift());
+				//this.activeIndex--;
+				this.focusNext();
+			}
+		} else {
+			// already at the beginning
+			if ( this.cycle ) {
+				// notify
+				this.emit('cycle', {direction: direction});
+				//TODO: implement
+			} else {
+				// notify
+				this.emit('overflow', {direction: direction});
 			}
 		}
 	}
 
 	if ( direction === keys.pageUp ) {
-		//self.activeIndex = self.activeIndex - self.size - 1;
-		//self.focusFirst();
-		self.focusItem(self.$body.firstChild);
-		//self.$focusItem.index = self.$focusItem.index;
+		//this.activeIndex = this.activeIndex - this.size - 1;
+		//this.focusFirst();
+		this.focusItem(this.$body.firstChild);
+		//this.$focusItem.index = this.$focusItem.index;
 	}
 	if ( direction === keys.pageDown ) {
-		//self.activeIndex = self.activeIndex + self.size - 1;
+		//this.activeIndex = this.activeIndex + this.size - 1;
 
-		//self.focusLast();
-		self.focusItem(self.$body.lastChild);
-		//self.$focusItem.index = self.$focusItem.index;
+		//this.focusLast();
+		this.focusItem(this.$body.lastChild);
+		//this.$focusItem.index = this.$focusItem.index;
 
-		//for ( i = 0; i < self.size; i++ ) {
-		//self.render()
+		//for ( i = 0; i < this.size; i++ ) {
+		//this.render()
 		//}
 	}
 };
