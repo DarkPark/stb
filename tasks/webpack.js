@@ -107,6 +107,9 @@ gulp.task('webpack:release', function () {
 					// this option prevents name changing
 					// use in case of strange errors
 					// mangle: false,
+					output: {
+						comments: false
+					},
 					compress: {
 						warnings: true,
 						unused: true,
