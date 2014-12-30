@@ -1,4 +1,12 @@
 /**
+ * Page is the main component to build user interface.
+ * Page is an area filling the whole screen.
+ * There can be only one active page visible at the same time.
+ *
+ * Active/visible state of a page is managed by the `router` module.
+ *
+ * A page can contain other components.
+ *
  * @module stb/ui/page
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3

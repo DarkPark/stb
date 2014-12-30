@@ -1,5 +1,55 @@
 /**
- * Page navigation with history.
+ * Singleton for page navigation with history.
+ *
+ * All page modules should be in the directory `app/js/pages`.
+ * Page module name and the corresponding file name should be the same.
+ *
+ * Include module to start working:
+ *
+ * ```js
+ * var router = require('stb/router');
+ * ```
+ *
+ * Init with page modules:
+ *
+ * ```js
+ * router.data([
+ *     require('./pages/init'),
+ *     require('./pages/main'),
+ *     require('./pages/help')
+ * ]);
+ * ```
+ *
+ * Each page has its ID. The same ID should be used in HTML.
+ *
+ * Make some page active/visible by its ID:
+ *
+ * ```js
+ * router.navigate('pageMain');
+ * ```
+ *
+ * This will hide the current page, activate the `pageMain` page and put it in the tail of the history list.
+ *
+ * All subscribers of the current and `pageMain` page will be notified with `show/hide` events.
+ *
+ * Also the router emits `navigate` event to all subscribers.
+ *
+ *
+ * To get to the previous active page use:
+ *
+ * ```js
+ * router.back();
+ * ```
+ *
+ * The module also has methods to parse location hash address and serialize it back:
+ *
+ * ```js
+ * router.parse('#pageMain/some/additional/data');
+ * router.stringify('pageMain', ['some', 'additional', 'data']);
+ * ```
+ *
+ * Direct modification of the URL address should be avoided.
+ * The methods `router.navigate` and `router.back` should be used instead.
  *
  * @module stb/router
  * @author Stanislav Kalashnik <sk@infomir.eu>
@@ -121,9 +171,9 @@ router.init = function ( pages ) {
  */
 router.parse = function ( hash ) {
 	var page = {
-		name : '',
-		data : []
-	};
+			name : '',
+			data : []
+		};
 
 	// get and decode all parts
 	page.data = hash.split('/').map(decodeURIComponent);
