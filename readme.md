@@ -55,6 +55,7 @@ stb serve
 
  Name                  | Description
 -----------------------|-------------
+ doc                   | open STB documentation in the default web browser
  init                  | initial creation of all necessary files and folders
  serve                 | main entry point - rebuild everything, start all watchers and servers
  develop               | run all development tasks
