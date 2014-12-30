@@ -115,6 +115,7 @@ gulp.task('webpack:release', function () {
 					output: {
 						comments: false
 					},
+					/*eslint camelcase:0 */
 					compress: {
 						warnings: true,
 						unused: true,
