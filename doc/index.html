@@ -42,6 +42,285 @@
 
 
 
+    <section>
+        <article><h1>STB single page application framework</h1><p><a href="https://gitter.im/DarkPark/stb?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join Chat.svg" alt="Gitter"></a></p>
+<p>Provides development environment and base components in a form of <a href="http://wiki.commonjs.org/wiki/CommonJS">CommonJS</a> modules
+for <a href="http://en.wikipedia.org/wiki/Set-top_box">set-top box</a> software production.</p>
+<p>This framework is targeted on the client side and requires a building stage with <a href="http://webpack.github.io/">Webpack</a> or <a href="http://browserify.org/">Browserify</a>.</p>
+<h2>Getting Started</h2><p><a href="http://nodejs.org/">Node.js</a> and <a href="https://www.npmjs.com/">NPM</a> should be installed beforehand.
+Please follow the official <a href="http://nodejs.org/download/">instruction</a>.</p>
+<p><code>stb</code> is available as an <a href="https://www.npmjs.org/package/stb">npm package</a> and should be installed globally:</p>
+<pre class="prettyprint source lang-bash"><code>npm install -g stb</code></pre><p>In Linux this can be done as a root:</p>
+<pre class="prettyprint source lang-bash"><code>sudo npm install -g stb</code></pre><h2>Usage</h2><p>Create a new folder for your project and move to it:</p>
+<pre class="prettyprint source lang-bash"><code>mkdir myapp
+cd myapp</code></pre><p>Run the generator from within the new folder:</p>
+<pre class="prettyprint source lang-bash"><code>stb init</code></pre><p>This will create all necessary files and folders (with smart conflict resolution mechanism
+in case there are already some files in the current directory) and install all necessary package dependencies.</p>
+<p>To start working with a project it's necessary to make initial build and start all servers:</p>
+<pre class="prettyprint source lang-bash"><code>stb serve</code></pre><p><strong>Full list of available commands:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> doc</td>
+<td>open STB documentation in the default web browser</td>
+</tr>
+<tr>
+<td> init</td>
+<td>initial creation of all necessary files and folders</td>
+</tr>
+<tr>
+<td> serve</td>
+<td>main entry point - rebuild everything, start all watchers and servers</td>
+</tr>
+<tr>
+<td> develop</td>
+<td>run all development tasks</td>
+</tr>
+<tr>
+<td> release</td>
+<td>run all production tasks</td>
+</tr>
+<tr>
+<td> lint</td>
+<td>analyse JavaScript code for potential errors and problems</td>
+</tr>
+<tr>
+<td> static</td>
+<td>serve files in the build directory</td>
+</tr>
+<tr>
+<td> proxy</td>
+<td>proxy js code execution from a desktop browser to STB</td>
+</tr>
+<tr>
+<td> logger</td>
+<td>WebSocket server to translate log messages from STB to a desktop console</td>
+</tr>
+<tr>
+<td> weinre</td>
+<td>WEb INspector REmote debugger server</td>
+</tr>
+<tr>
+<td> img</td>
+<td>execute all the tasks to remove and copy all images</td>
+</tr>
+<tr>
+<td> img:clean</td>
+<td>remove all images</td>
+</tr>
+<tr>
+<td> img:clean:develop</td>
+<td>remove develop images</td>
+</tr>
+<tr>
+<td> img:clean:release</td>
+<td>remove release images</td>
+</tr>
+<tr>
+<td> img:develop</td>
+<td>remove and copy develop images</td>
+</tr>
+<tr>
+<td> img:release</td>
+<td>remove and copy release images</td>
+</tr>
+<tr>
+<td> jade</td>
+<td>compile all HTML files from Jade sources</td>
+</tr>
+<tr>
+<td> jade:clean</td>
+<td>remove all HTML files</td>
+</tr>
+<tr>
+<td> jade:clean:develop</td>
+<td>remove develop HTML files</td>
+</tr>
+<tr>
+<td> jade:clean:release</td>
+<td>remove release HTML files</td>
+</tr>
+<tr>
+<td> jade:develop</td>
+<td>compile develop HTML files from Jade sources</td>
+</tr>
+<tr>
+<td> jade:release</td>
+<td>compile release HTML files from Jade sources</td>
+</tr>
+<tr>
+<td> less</td>
+<td>compile all Less files into a set of css files with maps</td>
+</tr>
+<tr>
+<td> less:clean</td>
+<td>remove all generated CSS and source-map files</td>
+</tr>
+<tr>
+<td> less:clean:develop</td>
+<td>remove develop generated CSS and source-map files</td>
+</tr>
+<tr>
+<td> less:clean:release</td>
+<td>remove release generated CSS and source-map files</td>
+</tr>
+<tr>
+<td> less:develop</td>
+<td>compile develop Less files into a set of css files with maps</td>
+</tr>
+<tr>
+<td> less:release</td>
+<td>compile release Less files into a set of css files with maps</td>
+</tr>
+<tr>
+<td> webpack</td>
+<td>compile all CommonJS modules into a single js file</td>
+</tr>
+<tr>
+<td> webpack:clean</td>
+<td>remove all JavaScript compiled files</td>
+</tr>
+<tr>
+<td> webpack:develop</td>
+<td>compile develop version of all CommonJS modules into a single js file</td>
+</tr>
+<tr>
+<td> webpack:release</td>
+<td>compile release version of all CommonJS modules into a single js file</td>
+</tr>
+<tr>
+<td> webpack:clean:develop</td>
+<td>remove develop JavaScript compiled files</td>
+</tr>
+<tr>
+<td> webpack:clean:release</td>
+<td>remove release JavaScript compiled files</td>
+</tr>
+</tbody>
+</table>
+<p>After the <code>stb serve</code> command the <a href="http://localhost:8000/">start page</a> should open in the default browser.
+This page should be accessible remotely on the STB device via <http://external_ip_address:8000/> address.</p>
+<p>It's possible to suppress a browser opening with</p>
+<pre class="prettyprint source lang-bash"><code>stb serve --noopen</code></pre><p>In case remote access to STB device is enabled and configured in application <code>./config/ssh.js</code> it's possible to activate one of the profiles:</p>
+<pre class="prettyprint source lang-bash"><code>stb serve --profile=develop</code></pre><p>This will build and serve as usual but also connect to the STB device by SSH protocol and starts there a web browser with the configured page.</p>
+<p>At runtime the development mode has a set of useful function available via keyboard shortcuts:</p>
+<table>
+<thead>
+<tr>
+<th>Keys</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> Numpad .</td>
+<td>reload the page CSS</td>
+</tr>
+<tr>
+<td> Numpad 0</td>
+<td>reload the page in the current resolution</td>
+</tr>
+<tr>
+<td> Numpad 1</td>
+<td>reload the page in NTSC</td>
+</tr>
+<tr>
+<td> Numpad 2</td>
+<td>reload the page in PAL</td>
+</tr>
+<tr>
+<td> Numpad 3</td>
+<td>reload the page in 720p</td>
+</tr>
+<tr>
+<td> Numpad 4</td>
+<td>reload the page in 1080p</td>
+</tr>
+<tr>
+<td> Numpad 5</td>
+<td>draw debug grid with indicators</td>
+</tr>
+<tr>
+<td> Numpad 6</td>
+<td>stress-testing based on gremlins.js for the emulation mode</td>
+</tr>
+<tr>
+<td> Numpad 7</td>
+<td>SpyJS tracing/debugging/profiling activation and deactivation</td>
+</tr>
+<tr>
+<td> Numpad 8</td>
+<td>FireBug Lite console activation</td>
+</tr>
+</tbody>
+</table>
+<p>Illustrations of most approaches and components can be found in the <a href="https://www.npmjs.org/package/stb-demo">demo application</a>.</p>
+<h2>Structure</h2><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> app</td>
+<td>contains all framework JavaScript modules and associated Less files</td>
+</tr>
+<tr>
+<td> bin</td>
+<td>main command-line script available globally</td>
+</tr>
+<tr>
+<td> config</td>
+<td>base config files for all servers</td>
+</tr>
+<tr>
+<td> doc</td>
+<td>help files generated from JSDocs comments in framework modules</td>
+</tr>
+<tr>
+<td> lib</td>
+<td>modules required to framework work</td>
+</tr>
+<tr>
+<td> tasks</td>
+<td>gulp tasks to provide all the functionality</td>
+</tr>
+<tr>
+<td> test</td>
+<td>QUnit tests files (units and static)</td>
+</tr>
+<tr>
+<td> tpl</td>
+<td>a new application directory structure and base files</td>
+</tr>
+</tbody>
+</table>
+<h2>Technologies</h2><ul>
+<li><a href="http://nodejs.org/">Node.js</a></li>
+<li><a href="http://gulpjs.com/">Gulp</a></li>
+<li><a href="http://webpack.github.io/">Webpack</a></li>
+<li><a href="http://lisperator.net/uglifyjs/">UglifyJs</a></li>
+<li><a href="http://jade-lang.com/">Jade</a></li>
+<li><a href="http://qunitjs.com/">Qunit</a></li>
+<li><a href="http://lesscss.org/">Less</a></li>
+<li><a href="http://www.jshint.com/">JSHint</a></li>
+<li><a href="https://www.npmjs.org/package/weinre/">weinre</a></li>
+<li><a href="https://github.com/DarkPark/code-proxy/">code-proxy</a></li>
+<li><a href="https://github.com/marmelab/gremlins.js">gremlins.js</a></li>
+</ul>
+<h2>Contribution</h2><p>If you have any problem or suggestion please open an issue <a href="https://github.com/DarkPark/stb/issues">here</a>.
+Pull requests are welcomed with respect to the <a href="https://github.com/DarkPark/jscs">JavaScript Code Style</a> and included <a href="http://eslint.org/">ESLint</a> rules.</p>
+<h2>License</h2><p><code>stb</code> is released under the <a href="http://opensource.org/licenses/GPL-3.0">GPL-3.0 License</a>.</p></article>
+    </section>
+
 
 
 
@@ -50,13 +329,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 12:11:31 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Dec 30 2014 16:40:04 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

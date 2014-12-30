@@ -43,6 +43,16 @@ var Component = require('../component'),
  *
  * For navigation map implementation and tests see {@link https://gist.github.com/DarkPark/8c0c2926bfa234043ed1}.
  *
+ * Each data cell value can be either a primitive value or an object with these fields:
+ *
+ *  Name    | Description
+ * ---------|-------------
+ *  value   | actual cell value to render
+ *  colSpan | amount of cells to merge horizontally
+ *  rowSpan | amount of cells to merge vertically
+ *  focus   | is it necessary or not to render this cell as focused
+ *  disable | is it necessary or not to set this cell as disabled
+ *
  * @constructor
  * @extends Component
  *
@@ -56,10 +66,10 @@ var Component = require('../component'),
  * var Grid = require('stb/ui/grid'),
  *     grid = new Grid({
  *         data: [
- *             [1,   2,  3,  {value: '4;8;12;16', focus: true, rowSpan: 4}],
+ *             [1,   2,  3, {value: '4;8;12;16', focus: true, rowSpan: 4}],
  *             [5,   6,  7],
  *             [9,  10, 11],
- *             [13, 14, 15]
+ *             [13, 14, {value: 15, disable: true}]
  *         ],
  *         render: function ( $item, data ) {
  *             $item.innerHTML = '&lt;div>' + (data.value) + '&lt;/div>';
@@ -219,12 +229,12 @@ function normalize ( data ) {
 			item.colSpan = item.colSpan || 1;
 			item.rowSpan = item.rowSpan || 1;
 
-			// @ifdef DEBUG
-			if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
-			if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
-			if ( item.colSpan &lt;= 0 ) { throw 'item.colSpan should be positive'; }
-			if ( item.rowSpan &lt;= 0 ) { throw 'item.rowSpan should be positive'; }
-			// @endif
+			if ( DEBUG ) {
+				if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
+				if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
+				if ( item.colSpan &lt;= 0 ) { throw 'item.colSpan should be positive'; }
+				if ( item.rowSpan &lt;= 0 ) { throw 'item.rowSpan should be positive'; }
+			}
 		}
 	}
 
@@ -288,8 +298,6 @@ function map ( data ) {
 			// process a cell
 			fill(result, j, i, item.colSpan, item.rowSpan, item.$item);
 			// clear redundant info
-			delete item.colSpan;
-			delete item.rowSpan;
 			delete item.$item;
 		}
 	}
@@ -316,25 +324,33 @@ function map ( data ) {
  */
 Grid.prototype.init = function ( config ) {
 	var self = this,
+		draw = false,
 		i, j,
 		$row, $item, $table, $tbody, $focusItem,
 		itemData,
-		onClick = function ( event ) {
-			// clicked item has the coordinates
-			// of the associated item in the map
-			self.focusX = this.x;
-			self.focusY = this.y;
+		/**
+		 * Cell mouse click handler.
+		 *
+		 * @param {Event} event click event data
+		 *
+		 * @this Node
+		 *
+		 * @fires module:stb/ui/grid~Grid#click:item
+		 */
+		onItemClick = function ( event ) {
+			// allow to accept focus
+			if ( this.data.disable !== true ) {
+				// visualize
+				self.focusItem(this);
 
-			// visualize
-			self.focusItem(self.map[self.focusY][self.focusX]);
-
-			// notify
-			self.emit('click:item', {$item: this, event: event});
+				// notify
+				self.emit('click:item', {$item: this, event: event});
+			}
 		};
 
-	// @ifdef DEBUG
-	if ( typeof config !== 'object' ) { throw 'wrong config type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	}
 
 	// apply cycle behaviour
 	if ( config.cycleX !== undefined ) { this.cycleX = config.cycleX; }
@@ -342,25 +358,40 @@ Grid.prototype.init = function ( config ) {
 
 	// apply data
 	if ( config.data !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+		}
 
-		this.data = config.data;
+		// new data is different
+		if ( this.data !== config.data ) {
+			this.data = config.data;
+			// need to redraw table
+			draw = true;
+		}
 	}
 
 	// custom render method
 	if ( config.render !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
+		}
 
-		this.render = config.render;
+		// new render is different
+		if ( this.render !== config.render ) {
+			this.render = config.render;
+			// need to redraw table
+			draw = true;
+		}
 	}
 
-	// @ifdef DEBUG
-	if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
+	}
+
+	if ( !draw ) {
+		// do not redraw table
+		return;
+	}
 
 	$table = document.createElement('table');
 	$tbody = document.createElement('tbody');
@@ -395,10 +426,15 @@ Grid.prototype.init = function ( config ) {
 			$item.rowSpan = itemData.rowSpan;
 
 			// active cell
-			if ( itemData.focus !== undefined ) {
+			if ( itemData.focus === true ) {
 				// store and clean
 				$focusItem = $item;
-				delete itemData.focus;
+			}
+
+			// disabled cell
+			if ( itemData.disable === true ) {
+				// apply CSS
+				$item.classList.add('disable');
 			}
 
 			// visualize
@@ -408,7 +444,7 @@ Grid.prototype.init = function ( config ) {
 			$item.data = itemData;
 
 			// manual focusing
-			$item.addEventListener('click', onClick);
+			$item.addEventListener('click', onItemClick);
 		}
 		// row is ready
 		$tbody.appendChild($row);
@@ -445,69 +481,102 @@ Grid.prototype.init = function ( config ) {
 Grid.prototype.move = function ( direction ) {
 	var x        = this.focusX,
 		y        = this.focusY,
+		move     = true,
 		overflow = false,
 		cycle    = false;
 
-	switch ( direction ) {
-		case keys.up:
-			if ( this.focusY > 0 ) {
-				// can go one step up
-				this.focusY--;
-			} else {
-				if ( this.cycleY ) {
-					// jump to the last row
-					this.focusY = this.map.length - 1;
-					cycle = true;
+	// shift till full stop
+	while ( move ) {
+		// arrow keys
+		switch ( direction ) {
+			case keys.up:
+				if ( y > 0 ) {
+					// can go one step up
+					y--;
 				} else {
-					overflow = true;
+					if ( this.cycleY ) {
+						// jump to the last row
+						y = this.map.length - 1;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.down:
-			if ( this.focusY &lt; this.map.length - 1 ) {
-				// can go one step down
-				this.focusY++;
-			} else {
-				if ( this.cycleY ) {
-					// jump to the first row
-					this.focusY = 0;
-					cycle = true;
+			case keys.down:
+				if ( y &lt; this.map.length - 1 ) {
+					// can go one step down
+					y++;
 				} else {
-					overflow = true;
+					if ( this.cycleY ) {
+						// jump to the first row
+						y = 0;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.right:
-			if ( this.focusX &lt; this.map[this.focusY].length - 1 ) {
-				// can go one step right
-				this.focusX++;
-			} else {
-				if ( this.cycleX ) {
-					// jump to the first column
-					this.focusX = 0;
-					cycle = true;
+			case keys.right:
+				if ( x &lt; this.map[y].length - 1 ) {
+					// can go one step right
+					x++;
 				} else {
-					overflow = true;
+					if ( this.cycleX ) {
+						// jump to the first column
+						x = 0;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
-			}
-			break;
+				break;
 
-		case keys.left:
-			if ( this.focusX > 0 ) {
-				// can go one step left
-				this.focusX--;
-			} else {
-				if ( this.cycleX ) {
-					// jump to the last column
-					this.focusX = this.map[this.focusY].length - 1;
-					cycle = true;
+			case keys.left:
+				if ( x > 0 ) {
+					// can go one step left
+					x--;
 				} else {
-					overflow = true;
+					if ( this.cycleX ) {
+						// jump to the last column
+						x = this.map[y].length - 1;
+						cycle = true;
+					} else {
+						// grid edge
+						overflow = true;
+					}
 				}
+				break;
+		}
+
+		// full cycle - has come to the start point
+		if ( x === this.focusX &amp;&amp; y === this.focusY ) {
+			// full stop
+			move = false;
+		}
+
+		// focus item has changed and it's not disabled
+		if ( this.map[y][x] !== this.map[this.focusY][this.focusX] &amp;&amp; this.map[y][x].data.disable !== true ) {
+			// full stop
+			move = false;
+		}
+
+		// the last cell in a row/col
+		if ( overflow ) {
+			// full stop
+			move = false;
+			// but it's disabled so need to go back
+			if ( this.map[y][x].data.disable === true ) {
+				// return to the start point
+				x = this.focusX;
+				y = this.focusY;
 			}
-			break;
+		}
 	}
 
 	if ( cycle ) {
@@ -517,7 +586,7 @@ Grid.prototype.move = function ( direction ) {
 		 * @event module:stb/ui/grid~Grid#cycle
 		 *
 		 * @type {Object}
-		 * @property {*} direction key code initiator of movement
+		 * @property {number} direction key code initiator of movement
 		 */
 		this.emit('cycle', {direction: direction});
 	}
@@ -529,25 +598,23 @@ Grid.prototype.move = function ( direction ) {
 		 * @event module:stb/ui/grid~Grid#overflow
 		 *
 		 * @type {Object}
-		 * @property {*} direction key code initiator of movement
+		 * @property {number} direction key code initiator of movement
 		 */
 		this.emit('overflow', {direction: direction});
 	}
 
 	// report
-	debug.info(x + ' : ' + this.focusX, 'X old/new');
-	debug.info(y + ' : ' + this.focusY, 'Y old/new');
+	debug.info(this.focusX + ' : ' + x, 'X old/new');
+	debug.info(this.focusY + ' : ' + y, 'Y old/new');
 	debug.info(cycle,  'cycle');
 	debug.info(overflow, 'overflow');
 
-	// try to focus the next item
-	if ( !this.focusItem(this.map[this.focusY][this.focusX]) ) {
-		// seems it's a merged item
-		if ( !cycle &amp;&amp; !overflow ) {
-			// need to move again
-			this.move(direction);
-		}
-	}
+	this.focusItem(this.map[y][x]);
+
+	// correct coordinates
+	// focusItem set approximate values
+	this.focusX = x;
+	this.focusY = y;
 };
 
 
@@ -556,6 +623,8 @@ Grid.prototype.move = function ( direction ) {
  * Remove focus from the previously focused item.
  *
  * @param {Node} $item element to focus
+ * @param {number} $item.x the item horizontal position
+ * @param {number} $item.y the item vertical position
  *
  * @return {boolean} operation status
  *
@@ -566,17 +635,17 @@ Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
 	// different element
-	if ( $item !== undefined &amp;&amp; $prev !== $item ) {
-		// @ifdef DEBUG
-		if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
-		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
-		// @endif
+	if ( $item !== undefined &amp;&amp; $prev !== $item &amp;&amp; $item.data.disable !== true ) {
+		if ( DEBUG ) {
+			if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
+			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
-			// @ifdef DEBUG
-			if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
-			// @endif
+			if ( DEBUG ) {
+				if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
+			}
 
 			// style
 			$prev.classList.remove('focus');
@@ -591,6 +660,11 @@ Grid.prototype.focusItem = function ( $item ) {
 			 */
 			this.emit('blur:item', {$item: $prev});
 		}
+
+		// draft coordinates
+		this.focusX = $item.x;
+		this.focusY = $item.y;
+
 		// reassign
 		this.$focusItem = $item;
 
@@ -628,13 +702,13 @@ module.exports = Grid;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Dec 26 2014 12:11:31 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Dec 30 2014 16:40:04 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>
