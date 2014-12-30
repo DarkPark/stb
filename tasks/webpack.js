@@ -8,6 +8,7 @@
 'use strict';
 
 var fs      = require('fs'),
+	util    = require('util'),
 	gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
 	webpack = require('gulp-webpack'),
@@ -78,6 +79,10 @@ gulp.task('webpack:develop', function () {
 
 
 gulp.task('webpack:release', function () {
+	var appInfo = require(process.env.CWD + '/package.json'),
+		stbInfo = require(process.env.STB + '/package.json'),
+		wpkInfo = require(process.env.STB + '/node_modules/gulp-webpack/node_modules/webpack/package.json');
+
 	return gulp
 		.src('./app/js/main.js')
 		.pipe(plumber())
@@ -118,7 +123,12 @@ gulp.task('webpack:release', function () {
 						drop_debugger: true,
 						pure_funcs: ['debug.assert', 'debug.log', 'debug.info', 'debug.inspect', 'debug.event', 'debug.stab']
 					}
-				})
+				}),
+				// add comment to the top of app.js
+				new webpack.webpack.BannerPlugin(util.format(
+					'%s: v%s (stb: v%s, webpack: v%s)',
+					appInfo.name, appInfo.version, stbInfo.version, wpkInfo.version
+				))
 			]
 		}, null, report))
 		.pipe(gulp.dest('./build/release/'));
