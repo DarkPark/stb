@@ -12,7 +12,6 @@ var path       = require('path'),
 	plumber    = require('gulp-plumber'),
 	eslint     = require('gulp-eslint'),
 	webpack    = require('gulp-webpack'),
-	preprocess = require('gulp-preprocess'),
 	report     = require('./lib/report').webpack;
 
 
@@ -35,16 +34,6 @@ gulp.task('lint', function () {
 });
 
 
-//// pre-processing
-//gulp.task('dist', function () {
-//	return gulp
-//		.src('src/**/*.js')
-//		.pipe(plumber())
-//		.pipe(preprocess())
-//		.pipe(gulp.dest('dist'));
-//});
-
-
 // build source files
 gulp.task('webpack', function () {
 	return gulp
@@ -62,7 +51,11 @@ gulp.task('webpack', function () {
 			devtool: 'source-map',
 			plugins: [
 				// fix compilation persistence
-				new webpack.webpack.optimize.OccurenceOrderPlugin(true)
+				new webpack.webpack.optimize.OccurenceOrderPlugin(true),
+				// global constants
+				new webpack.webpack.DefinePlugin({
+					DEBUG: false
+				})
 			]
 		}, null, report))
 		.pipe(gulp.dest('tests'));

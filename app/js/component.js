@@ -81,16 +81,16 @@ function Component ( config ) {
 	 */
 	this.$body = null;
 
-	// @ifdef DEBUG
-	/**
-	 * Link to the page owner component.
-	 * It can differ from the direct parent.
-	 * Should be used only in debug.
-	 *
-	 * @type {Page}
-	 */
-	this.page = null;
-	// @endif
+	if ( DEBUG ) {
+		/**
+		 * Link to the page owner component.
+		 * It can differ from the direct parent.
+		 * Should be used only in debug.
+		 *
+		 * @type {Page}
+		 */
+		this.page = null;
+	}
 
 	/**
 	 * Link to the parent component which has this component as a child.
@@ -109,18 +109,20 @@ function Component ( config ) {
 
 	// sanitize
 	config = config || {};
-	// @ifdef DEBUG
-	if ( typeof config !== 'object' ) { throw 'wrong config type'; }
-	// @endif
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	}
 
 	// parent init
 	Emitter.call(this, config.data);
 
 	// outer handle
 	if ( config.$node !== undefined ) {
-		// @ifdef DEBUG
-		if ( !(config.$node instanceof Node) ) { throw 'wrong config.$node type'; }
-		// @endif
+
+		if ( DEBUG ) {
+			if ( !(config.$node instanceof Node) ) { throw 'wrong config.$node type'; }
+		}
 
 		this.$node = config.$node;
 	} else {
@@ -130,9 +132,9 @@ function Component ( config ) {
 
 	// inner handle
 	if ( config.$body !== undefined ) {
-		// @ifdef DEBUG
-		if ( !(config.$body instanceof Node) ) { throw 'wrong config.$body type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !(config.$body instanceof Node) ) { throw 'wrong config.$body type'; }
+		}
 
 		this.$body = config.$body;
 	} else {
@@ -142,9 +144,9 @@ function Component ( config ) {
 
 	// inject given content into inner component part
 	if ( config.$content !== undefined ) {
-		// @ifdef DEBUG
-		if ( !(config.$content instanceof Node) ) { throw 'wrong config.$content type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !(config.$content instanceof Node) ) { throw 'wrong config.$content type'; }
+		}
 
 		this.$body.appendChild(config.$content);
 	}
@@ -154,18 +156,18 @@ function Component ( config ) {
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {
-		// @ifdef DEBUG
-		if ( !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
+		}
 
 		config.parent.add(this);
 	}
 
 	// set link to the page owner component
 	//if ( config.page !== undefined ) {
-	//	// @ifdef DEBUG
-	//	if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
-	//	// @endif
+	//	if ( DEBUG ) {
+	//		if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
+	//	}
     //
 	//	this.page = config.page;
 	//}
@@ -192,9 +194,9 @@ function Component ( config ) {
 
 	// apply the given children components
 	if ( config.children ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
+		}
 
 		this.add.apply(this, config.children);
 	}
@@ -223,24 +225,24 @@ function Component ( config ) {
 			//}
 		}
 
-		// @ifdef DEBUG
-		// middle mouse button
-		if ( event.button === 1 ) {
-			debug.inspect(self);
-			debug.log('this component is now available by window.link');
-			window.link = self;
+		if ( DEBUG ) {
+			// middle mouse button
+			if ( event.button === 1 ) {
+				debug.inspect(self);
+				debug.log('this component is now available by window.link');
+				window.link = self;
+			}
 		}
-		// @endif
 
 		event.stopPropagation();
 	});
 
-	// @ifdef DEBUG
-	// expose a link
-	this.$node.component = this.$body.component = this;
-	this.$node.title = 'component ' + this.constructor.name + '.' + this.id + ' (outer)';
-	this.$body.title = 'component ' + this.constructor.name + '.' + this.id + ' (inner)';
-	// @endif
+	if ( DEBUG ) {
+		// expose a link
+		this.$node.component = this.$body.component = this;
+		this.$node.title = 'component ' + this.constructor.name + '.' + this.id + ' (outer)';
+		this.$body.title = 'component ' + this.constructor.name + '.' + this.id + ' (inner)';
+	}
 }
 
 
@@ -269,18 +271,18 @@ Component.prototype.add = function ( child ) {
 	for ( i = 0; i < arguments.length; i++ ) {
 		child = arguments[i];
 
-		// @ifdef DEBUG
-		if ( !(child instanceof Component) ) { throw 'wrong child type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+		}
 
 		// apply
 		this.children.push(child);
 		child.parent = this;
 
-		// @ifdef DEBUG
-		// apply page for this and all children recursively
-		child.setPage(this.page);
-		// @endif
+		if ( DEBUG ) {
+			// apply page for this and all children recursively
+			child.setPage(this.page);
+		}
 
 		// correct DOM parent/child connection if necessary
 		if ( child.$node !== undefined && child.$node.parentNode === null ) {
@@ -297,22 +299,20 @@ Component.prototype.add = function ( child ) {
 		 */
 		this.emit('add', {item: child});
 
-		// @ifdef DEBUG
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' new child: ' + child.constructor.name + '.' + child.id);
-		// @endif
 	}
 };
 
 
-// @ifdef DEBUG
-Component.prototype.setPage = function ( page ) {
-	this.page = page;
+if ( DEBUG ) {
+	Component.prototype.setPage = function ( page ) {
+		this.page = page;
 
-	this.children.forEach(function ( child ) {
-		child.setPage(page);
-	});
-};
-// @endif
+		this.children.forEach(function ( child ) {
+			child.setPage(page);
+		});
+	};
+}
 
 
 /**
@@ -325,9 +325,9 @@ Component.prototype.remove = function () {
 
 	// really inserted somewhere
 	if ( this.parent ) {
-		// @ifdef DEBUG
-		if ( !(this.parent instanceof Component) ) { throw 'wrong this.parent type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !(this.parent instanceof Component) ) { throw 'wrong this.parent type'; }
+		}
 
 		// active at the moment
 		if ( page.activeComponent === this ) {
@@ -339,9 +339,9 @@ Component.prototype.remove = function () {
 
 	// remove all children
 	this.children.forEach(function ( child ) {
-		// @ifdef DEBUG
-		if ( !(child instanceof Component) ) { throw 'wrong child type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+		}
 
 		child.remove();
 	});
@@ -372,12 +372,12 @@ Component.prototype.focus = function () {
 	var activePage = router.current,
 		activeItem = activePage.activeComponent;
 
-	// @ifdef DEBUG
-	if ( this.page !== activePage ) {
-		console.log(this, this.page, activePage);
-		throw 'attempt to focus an invisible component';
+	if ( DEBUG ) {
+		if ( this.page !== activePage ) {
+			console.log(this, this.page, activePage);
+			throw 'attempt to focus an invisible component';
+		}
 	}
-	// @endif
 
 	// this is a visual component on a page
 	// not already focused and can accept focus

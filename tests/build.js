@@ -111,11 +111,11 @@
 				 * obj.addListener('click', function ( data ) { ... });
 				 */
 				addListener: function ( name, callback ) {
-					// @ifdef DEBUG
-					if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
-					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
-					if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
-					// @endif
+					if ( false ) {
+						if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+						if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+						if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+					}
 			
 					// valid input
 					if ( name && typeof callback === 'function' ) {
@@ -138,11 +138,11 @@
 					// current execution context
 					var self = this;
 			
-					// @ifdef DEBUG
-					if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
-					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
-					if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
-					// @endif
+					if ( false ) {
+						if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+						if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+						if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+					}
 			
 					// valid input
 					if ( name && typeof callback === 'function' ) {
@@ -169,11 +169,11 @@
 				addListeners: function ( callbacks ) {
 					var name;
 			
-					// @ifdef DEBUG
-					if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-					if ( typeof callbacks !== 'object' ) { throw 'wrong callbacks type'; }
-					if ( Object.keys(callbacks).length === 0 ) { throw 'no callbacks given'; }
-					// @endif
+					if ( false ) {
+						if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+						if ( typeof callbacks !== 'object' ) { throw 'wrong callbacks type'; }
+						if ( Object.keys(callbacks).length === 0 ) { throw 'no callbacks given'; }
+					}
 			
 					// valid input
 					if ( typeof callbacks === 'object' ) {
@@ -196,11 +196,11 @@
 				 * obj.removeListener('click', func1);
 				 */
 				removeListener: function ( name, callback ) {
-					// @ifdef DEBUG
-					if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
-					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
-					if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
-					// @endif
+					if ( false ) {
+						if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+						if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+						if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+					}
 			
 					// the event exists and should have some callbacks
 					if ( Array.isArray(this.events[name]) ) {
@@ -225,18 +225,18 @@
 				 * obj.removeAllListeners();
 				 */
 				removeAllListeners: function ( name ) {
-					// @ifdef DEBUG
-					if ( arguments.length !== 0 && (typeof name !== 'string' || name.length === 0) ) { throw 'wrong or empty name'; }
-					// @endif
+					if ( false ) {
+						if ( arguments.length !== 0 && (typeof name !== 'string' || name.length === 0) ) { throw 'wrong or empty name'; }
+					}
 			
 					// check input
 					if ( arguments.length === 0 ) {
 						// no arguments so remove everything
 						this.events = {};
 					} else if ( name ) {
-						// @ifdef DEBUG
-						if ( this.events[name] !== undefined ) { throw 'event is not removed'; }
-						// @endif
+						if ( false ) {
+							if ( this.events[name] !== undefined ) { throw 'event is not removed'; }
+						}
 			
 						// only name is given so remove all callbacks for the given event
 						delete this.events[name];
@@ -258,21 +258,21 @@
 					var event = this.events[name],
 						i;
 			
-					// @ifdef DEBUG
-					if ( arguments.length < 1 ) { throw 'wrong arguments number'; }
-					if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
-					// @endif
+					if ( false ) {
+						if ( arguments.length < 1 ) { throw 'wrong arguments number'; }
+						if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
+					}
 			
 					// the event exists and should have some callbacks
 					if ( event !== undefined ) {
-						// @ifdef DEBUG
-						if ( !Array.isArray(event) ) { throw 'wrong event type'; }
-						// @endif
+						if ( false ) {
+							if ( !Array.isArray(event) ) { throw 'wrong event type'; }
+						}
 			
 						for ( i = 0; i < event.length; i++ ) {
-							// @ifdef DEBUG
-							if ( typeof event[i] !== 'function' ) { throw 'wrong event callback type'; }
-							// @endif
+							if ( false ) {
+								if ( typeof event[i] !== 'function' ) { throw 'wrong event callback type'; }
+							}
 			
 							// invoke the callback with parameters
 							event[i](data);
@@ -502,9 +502,9 @@
 			 * @param {Object} [data={}] init attributes
 			 */
 			function Model ( data ) {
-				// @ifdef DEBUG
-				if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
-				// @endif
+				if ( false ) {
+					if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
+				}
 			
 				// parent init
 				Emitter.call(this);
@@ -547,9 +547,9 @@
 			Model.prototype.clear = function () {
 				var data = this.data;
 			
-				// @ifdef DEBUG
-				if ( typeof data !== 'object' ) { throw 'wrong data type'; }
-				// @endif
+				if ( false ) {
+					if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+				}
 			
 				// is there any data?
 				if ( Object.keys(data).length > 0 ) {
@@ -586,9 +586,9 @@
 			 * @fires module:stb/model~Model#init
 			 */
 			Model.prototype.init = function ( data ) {
-				// @ifdef DEBUG
-				if ( typeof data !== 'object' ) { throw 'wrong data type'; }
-				// @endif
+				if ( false ) {
+					if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+				}
 			
 				// valid input
 				if ( data ) {
@@ -616,9 +616,9 @@
 			 * @return {boolean} attribute exists or not
 			 */
 			Model.prototype.has = function ( name ) {
-				// @ifdef DEBUG
-				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-				// @endif
+				if ( false ) {
+					if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				}
 			
 				// hasOwnProperty method is not available directly in case of Object.create(null)
 				//return Object.hasOwnProperty.call(this.data, name);
@@ -633,9 +633,9 @@
 			 * @return {*} associated value
 			 */
 			Model.prototype.get = function ( name ) {
-				// @ifdef DEBUG
-				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-				// @endif
+				if ( false ) {
+					if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				}
 			
 				return this.data[name];
 			};
@@ -666,9 +666,9 @@
 				var isAttrSet = name in this.data,
 					emitData  = {name: name, curr: value};
 			
-				// @ifdef DEBUG
-				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-				// @endif
+				if ( false ) {
+					if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				}
 			
 				if ( isAttrSet ) {
 					// update
@@ -708,9 +708,9 @@
 				var isAttrSet = name in this.data,
 					emitData;
 			
-				// @ifdef DEBUG
-				if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-				// @endif
+				if ( false ) {
+					if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+				}
 			
 				if ( isAttrSet ) {
 					emitData = {name: name, prev: this.data[name]};

@@ -126,9 +126,9 @@ router.init = function ( pages ) {
 	var i, l, item;
 
 	if ( pages !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(pages) ) { throw 'wrong pages type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !Array.isArray(pages) ) { throw 'wrong pages type'; }
+		}
 
 		// reset page list
 		this.pages = [];
@@ -284,10 +284,10 @@ router.navigate = function ( name, data ) {
 	var pageFrom = this.current,
 		pageTo   = this.ids[name];
 
-	// @ifdef DEBUG
-	if ( !pageTo || typeof pageTo !== 'object' ) { throw 'wrong pageTo type'; }
-	if ( !('active' in pageTo) ) { throw 'missing field "active" in pageTo'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( !pageTo || typeof pageTo !== 'object' ) { throw 'wrong pageTo type'; }
+		if ( !('active' in pageTo) ) { throw 'missing field "active" in pageTo'; }
+	}
 
 	// valid not already active page
 	if ( pageTo && !pageTo.active ) {

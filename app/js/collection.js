@@ -42,9 +42,9 @@ function Collection ( data ) {
 
 	// apply list of items
 	if ( data !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+		}
 
 		this.data = data;
 	}
@@ -175,14 +175,14 @@ Collection.prototype.add = function ( model ) {
 	this.data.push(model);
 
 	// notify listeners
-	this.emit('add', {item: model, index: this.data.length-1});
+	this.emit('add', {item: model, index: this.data.length - 1});
 };
 
 
 /**
  * Insert the given model to some place in the collection
  *
- * @param {Model} model
+ * @param {Model} model model object
  * @param {number} index model position in the list
  *
  * @fires module:stb/collection~Collection#add
@@ -252,7 +252,7 @@ Collection.prototype.at = function ( index ) {
 /**
  * Get a model by its id.
  *
- * @param {String|Number} id
+ * @param {String|Number} id unique identifier
  * @return {Model|null} model or null if fail to find
  */
 Collection.prototype.get = function ( id ) {

@@ -62,9 +62,9 @@ function CheckBox ( config ) {
 
 	// apply hierarchy
 	if ( config.group !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config.group !== 'string' || config.group.length === 0 ) { throw 'wrong or empty config.group'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( typeof config.group !== 'string' || config.group.length === 0 ) { throw 'wrong or empty config.group'; }
+		}
 
 		// save
 		this.group = config.group;

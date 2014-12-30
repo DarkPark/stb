@@ -201,12 +201,12 @@ function normalize ( data ) {
 			item.colSpan = item.colSpan || 1;
 			item.rowSpan = item.rowSpan || 1;
 
-			// @ifdef DEBUG
-			if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
-			if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
-			if ( item.colSpan <= 0 ) { throw 'item.colSpan should be positive'; }
-			if ( item.rowSpan <= 0 ) { throw 'item.rowSpan should be positive'; }
-			// @endif
+			if ( DEBUG ) {
+				if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
+				if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
+				if ( item.colSpan <= 0 ) { throw 'item.colSpan should be positive'; }
+				if ( item.rowSpan <= 0 ) { throw 'item.rowSpan should be positive'; }
+			}
 		}
 	}
 
@@ -320,9 +320,9 @@ Grid.prototype.init = function ( config ) {
 			}
 		};
 
-	// @ifdef DEBUG
-	if ( typeof config !== 'object' ) { throw 'wrong config type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	}
 
 	// apply cycle behaviour
 	if ( config.cycleX !== undefined ) { this.cycleX = config.cycleX; }
@@ -330,9 +330,9 @@ Grid.prototype.init = function ( config ) {
 
 	// apply data
 	if ( config.data !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+		}
 
 		// new data is different
 		if ( this.data !== config.data ) {
@@ -344,9 +344,9 @@ Grid.prototype.init = function ( config ) {
 
 	// custom render method
 	if ( config.render !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
+		}
 
 		// new render is different
 		if ( this.render !== config.render ) {
@@ -356,9 +356,9 @@ Grid.prototype.init = function ( config ) {
 		}
 	}
 
-	// @ifdef DEBUG
-	if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
+	}
 
 	if ( !draw ) {
 		// do not redraw table
@@ -608,16 +608,16 @@ Grid.prototype.focusItem = function ( $item ) {
 
 	// different element
 	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
-		// @ifdef DEBUG
-		if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
-		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
+			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
-			// @ifdef DEBUG
-			if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
-			// @endif
+			if ( DEBUG ) {
+				if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
+			}
 
 			// style
 			$prev.classList.remove('focus');

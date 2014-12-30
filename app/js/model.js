@@ -22,9 +22,9 @@ var Emitter = require('./emitter');
  * @param {Object} [data={}] init attributes
  */
 function Model ( data ) {
-	// @ifdef DEBUG
-	if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
+	}
 
 	// parent init
 	Emitter.call(this);
@@ -67,9 +67,9 @@ Model.prototype.idName = 'id';
 Model.prototype.clear = function () {
 	var data = this.data;
 
-	// @ifdef DEBUG
-	if ( typeof data !== 'object' ) { throw 'wrong data type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+	}
 
 	// is there any data?
 	if ( Object.keys(data).length > 0 ) {
@@ -106,9 +106,9 @@ Model.prototype.clear = function () {
  * @fires module:stb/model~Model#init
  */
 Model.prototype.init = function ( data ) {
-	// @ifdef DEBUG
-	if ( typeof data !== 'object' ) { throw 'wrong data type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+	}
 
 	// valid input
 	if ( data ) {
@@ -136,9 +136,9 @@ Model.prototype.init = function ( data ) {
  * @return {boolean} attribute exists or not
  */
 Model.prototype.has = function ( name ) {
-	// @ifdef DEBUG
-	if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+	}
 
 	// hasOwnProperty method is not available directly in case of Object.create(null)
 	//return Object.hasOwnProperty.call(this.data, name);
@@ -153,9 +153,9 @@ Model.prototype.has = function ( name ) {
  * @return {*} associated value
  */
 Model.prototype.get = function ( name ) {
-	// @ifdef DEBUG
-	if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+	}
 
 	return this.data[name];
 };
@@ -186,9 +186,9 @@ Model.prototype.set = function ( name, value ) {
 	var isAttrSet = name in this.data,
 		emitData  = {name: name, curr: value};
 
-	// @ifdef DEBUG
-	if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+	}
 
 	if ( isAttrSet ) {
 		// update
@@ -228,9 +228,9 @@ Model.prototype.unset = function ( name ) {
 	var isAttrSet = name in this.data,
 		emitData;
 
-	// @ifdef DEBUG
-	if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+	}
 
 	if ( isAttrSet ) {
 		emitData = {name: name, prev: this.data[name]};

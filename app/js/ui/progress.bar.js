@@ -108,9 +108,9 @@ ProgressBar.prototype.set = function ( value ) {
 
 	// value changed but in the given range
 	if ( this.value !== value && value <= this.max && value >= this.min ) {
-		// @ifdef DEBUG
-		if ( Number(value) !== value ) { throw 'value must be a number'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( Number(value) !== value ) { throw 'value must be a number'; }
+		}
 
 		// set new value
 		this.value = value;
@@ -159,27 +159,27 @@ ProgressBar.prototype.set = function ( value ) {
 ProgressBar.prototype.init = function ( config ) {
 	// assignment of configuration parameters if they were transferred
 	if ( config.max !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.max) !== config.max ) { throw 'config.max value must be a number'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( Number(config.max) !== config.max ) { throw 'config.max value must be a number'; }
+		}
 
 		this.max = config.max;
 	}
 
 	if ( config.min !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.min) !== config.min ) { throw 'config.min value must be a number'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( Number(config.min) !== config.min ) { throw 'config.min value must be a number'; }
+		}
 
 		this.min = config.min;
 	}
 
 	if ( config.value !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.value) !== config.value ) { throw 'config.value must be a number'; }
-		if ( config.value > this.max ) { throw 'config.value more than config.maximum'; }
-		if ( config.value < this.min ) { throw 'config.value less than config.minimum'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( Number(config.value) !== config.value ) { throw 'config.value must be a number'; }
+			if ( config.value > this.max ) { throw 'config.value more than config.maximum'; }
+			if ( config.value < this.min ) { throw 'config.value less than config.minimum'; }
+		}
 
 		this.value = config.value;
 	}

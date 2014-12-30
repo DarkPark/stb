@@ -4,6 +4,7 @@
 		"node": true
 	},
 	"globals": {
+		"DEBUG": false,
 		"debug": false,
 		"dvbManager": false,
 		"gSTB": false,

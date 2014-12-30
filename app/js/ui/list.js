@@ -95,9 +95,9 @@ function List ( config ) {
 
 	// horizontal or vertical
 	if ( config.type !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
+		}
 
 		this.type = config.type;
 	}
@@ -207,37 +207,37 @@ List.prototype.init = function ( config ) {
 		},
 		item, i;
 
-	// @ifdef DEBUG
-	if ( typeof config !== 'object' ) { throw 'wrong config type'; }
-	// @endif
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	}
 
 	// apply cycle behaviour
 	if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
 
 	// apply list of items
 	if ( config.data !== undefined ) {
-		// @ifdef DEBUG
-		if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+		}
 
 		this.data = config.data;
 	}
 
 	// custom render method
 	if ( config.render !== undefined ) {
-		// @ifdef DEBUG
-		if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
+		}
 
 		this.render = config.render;
 	}
 
 	// list items amount on page
 	if ( config.size !== undefined ) {
-		// @ifdef DEBUG
-		if ( Number(config.size) !== config.size ) { throw 'config.size must be a number'; }
-		if ( config.size <= 0 ) { throw 'config.size should be positive'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( Number(config.size) !== config.size ) { throw 'config.size must be a number'; }
+			if ( config.size <= 0 ) { throw 'config.size should be positive'; }
+		}
 
 		this.size = config.size;
 	}
@@ -440,16 +440,16 @@ List.prototype.focusItem = function ( $item ) {
 
 	// different element
 	if ( $item !== undefined && $prev !== $item ) {
-		// @ifdef DEBUG
-		if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
-		if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
-		// @endif
+		if ( DEBUG ) {
+			if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
+			if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
-			// @ifdef DEBUG
-			if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
-			// @endif
+			if ( DEBUG ) {
+				if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
+			}
 
 			// style
 			$prev.classList.remove('focus');
