@@ -10,7 +10,9 @@
 //TODO: fix source maps
 //TODO: rework metrics processing
 
-var gulp     = require('gulp'),
+var path     = require('path'),
+	util     = require('util'),
+	gulp     = require('gulp'),
 	fs       = require('fs'),
 	log      = require('../lib/log'),
 	requirem = require('requirem'),
@@ -24,10 +26,13 @@ var gulp     = require('gulp'),
 	defaults = {
 		develop: {
 			relativeUrls     : true,
+			//paths            : [process.env.STB + '/app/less', process.env.CWD + '/app/less'],
 			paths            : ['.'],
 			rootpath         : './build/develop/',
 			outpath          : './build/develop/css/',
+			//filename         : process.env.STB + '/app/less/entry.develop.less',
 			filename         : process.env.STB + '/app/less/develop.less',
+			//filename         : [process.env.STB + '/app/less/develop.less', process.env.CWD + '/app/less/main.less'],
 			compress         : false,
 			cleancss         : false,
 			ieCompat         : false,
@@ -38,6 +43,7 @@ var gulp     = require('gulp'),
 		},
 		release: {
 			relativeUrls: true,
+			//paths       : [/*process.env.STB, process.env.CWD + '/app/less'*/],
 			paths       : ['.'],
 			rootpath    : './build/release/',
 			outpath     : './build/release/css/',
@@ -69,16 +75,18 @@ function prepare () {
 			vars.availHeight = vars.height - vars.availTop  - vars.availBottom;
 			vars.availWidth  = vars.width  - vars.availLeft - vars.availRight;
 
+			vars.pathApp = '"' + path.relative(process.env.STB + '/app/less', process.env.CWD + '/app/less') + '"';
+
 			conf.cssFile = conf.outpath + height + '.css';
 
 			if ( conf.sourceMap ) {
 				// more preparations
 				conf.sourceMapFile  = conf.outpath + height + '.map';
 				conf.sourceMapURL   = height + '.map';
-				conf.writeSourceMap = function ( map ) {
-					fs.writeFileSync(conf.sourceMapFile, map, {encoding:'utf8'});
-					log(title, '\t' + map.length + '\t' + conf.sourceMapFile.replace(/\//g, '/'.grey));
-				};
+				//conf.writeSourceMap = function ( map ) {
+				//	fs.writeFileSync(conf.sourceMapFile, map, {encoding:'utf8'});
+				//	log(title, '\t' + map.length + '\t' + conf.sourceMapFile.replace(/\//g, '/'.grey));
+				//};
 			}
 		});
 	});
@@ -94,8 +102,9 @@ function prepare () {
 function build ( mode, done ) {
 	var less = require('less'),
 		dataBase = fs.readFileSync(defaults[mode].filename, {encoding:'utf8'}),
-		dataUser = fs.readFileSync(process.env.CWD + '/app/less/main.less', {encoding:'utf8'}),
-		data     = dataBase + dataUser,
+		//dataUser = fs.readFileSync(process.env.CWD + '/app/less/main.less', {encoding:'utf8'}),
+		//data     = dataBase + dataUser,
+		//data     = util.format('@import "%s";\n@import "%s";', process.env.STB + '/app/less/main.less', process.env.CWD + '/app/less/main.less'),
 		keys = Object.keys(options[mode]),
 		tick = 0;
 
@@ -127,14 +136,22 @@ function build ( mode, done ) {
 			}
 		}
 
-		less.render(data, options[mode][height], function ( error, data ) {
-			var file = options[mode][height].cssFile;
+		less.render(dataBase, options[mode][height], function ( error, data ) {
+			var cssFile = options[mode][height].cssFile,
+				mapFile = options[mode][height].sourceMapFile;
+
+			//console.log(error);
+			//console.log(data);
 
 			if ( error ) {
-				log(title, '\t0\t' + file.red + '\t(' + error.message + ' in ' + error.filename + ' ' + error.line + ':' + error.column + ')');
+				log(title, '\t0\t' + cssFile.red + '\t(' + error.message + ' in ' + error.filename + ' ' + error.line + ':' + error.column + ')');
 			} else {
-				fs.writeFileSync(file, data.css, {encoding:'utf8'});
-				log(title, '\t' + data.css.length + '\t' + file.replace(/\//g, '/'.grey));
+				if ( options[mode][height].sourceMap ) {
+					data.css += util.format('\n/*# sourceMappingURL=%s */\n', options[mode][height].sourceMapURL);
+					fs.writeFileSync(mapFile, data.map, {encoding:'utf8'});
+				}
+				fs.writeFileSync(cssFile, data.css, {encoding:'utf8'});
+				log(title, '\t' + data.css.length + '\t' + cssFile.replace(/\//g, '/'.grey));
 			}
 
 			tick++;

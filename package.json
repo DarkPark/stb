@@ -31,7 +31,7 @@
 		"minimist": "^1.1.0",
 		"node-static": "^0.7.6",
 		"open": "^0.0.5",
-		"pretty-hrtime": "^0.2.2",
+		"pretty-hrtime": "^1.0.0",
 		"requirem": "^0.7.5",
 		"ssh2": "^0.3.6",
 		"tty-colors": "^0.0.4",
