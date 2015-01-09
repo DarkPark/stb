@@ -114,6 +114,7 @@
 		"quote-props": [1, "as-needed"],
 		"quotes": [1, "single", "avoid-escape"],
 		"semi": [1, "always"],
+		"space-after-function-name": [1, "always"],
 		"space-after-keywords": [1, "always"],
 		"space-before-blocks": [1, "always"],
 		"space-in-brackets": [1, "never"],
