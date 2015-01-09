@@ -54,7 +54,8 @@ function List ( config ) {
 	 */
 	this.$focusItem = null;
 
-	//this.activeIndex = 0;
+	this.indexItem = 0;
+	this.indexView = 0;
 
 	/**
 	 * Component data to visualize.
@@ -131,6 +132,8 @@ function List ( config ) {
 			case keys.left:
 			case keys.pageUp:
 			case keys.pageDown:
+			case keys.home:
+			case keys.end:
 				// cursor move only on arrow keys
 				self.move(event.code);
 				break;
@@ -267,7 +270,7 @@ List.prototype.init = function ( config ) {
 		}
 	}
 
-	this.renderPage();
+	this.renderView();
 };
 
 List.prototype.moveNext = function () {
@@ -280,17 +283,37 @@ List.prototype.movePrev = function () {
 };
 
 
-List.prototype.renderPage = function () {
-	var $item, i;
+List.prototype.renderView = function () {
+	var index, $item, i, data;
 
 	for ( i = 0; i < this.size; i++ ) {
+		index = this.indexView + i;
 		$item = this.$body.children[i];
-		if ( $item.index !== undefined && this.data[$item.index] !== undefined ) {
-			$item.data = this.data[$item.index];
-			this.render($item, this.data[$item.index]);
+		data  = this.data[index];
+
+		if ( data !== undefined ) {
+			$item.data = data;
+			$item.index = index;
+			this.render($item, data);
+		} else {
+			$item.data = $item.index = undefined;
+			$item.innerHTML = '.';
 		}
 	}
 };
+
+
+//List.prototype.renderPage = function () {
+//	var $item, i;
+//
+//	for ( i = 0; i < this.size; i++ ) {
+//		$item = this.$body.children[i];
+//		if ( $item.index !== undefined && this.data[$item.index] !== undefined ) {
+//			$item.data = this.data[$item.index];
+//			this.render($item, this.data[$item.index]);
+//		}
+//	}
+//};
 
 
 /**
@@ -337,10 +360,17 @@ List.prototype.move = function ( direction ) {
 
 	if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
 		// still can go backward
-		if ( this.$focusItem.index > 0 ) {
+		if ( this.$focusItem && this.$focusItem.index > 0 ) {
 			//index--;
 
-			if ( !this.focusPrev() ) {
+			if ( this.$focusItem === this.$body.firstChild ) {
+				this.indexView -= 1;
+				this.renderView();
+			} else {
+				this.focusItem(this.$focusItem.previousSibling);
+			}
+
+			/*if ( !this.focusPrev() ) {
 				// move the last item to the begging
 				//this.$body.insertBefore(this.items[this.items.length-1], this.items[0]);
 				this.$body.insertBefore(this.$body.lastChild, this.$body.firstChild);
@@ -356,13 +386,14 @@ List.prototype.move = function ( direction ) {
 				//this.items.unshift(this.items.pop());
 				//this.activeIndex++;
 				this.focusPrev();
-			}
+			}*/
 		} else {
 			// already at the beginning
 			if ( this.cycle ) {
+				// jump to the end of the list
+				this.move(keys.end);
 				// notify
 				this.emit('cycle', {direction: direction});
-				//TODO: implement
 			} else {
 				// notify
 				this.emit('overflow', {direction: direction});
@@ -371,10 +402,17 @@ List.prototype.move = function ( direction ) {
 	}
 	if ( (direction === keys.down && this.type === this.TYPE_VERTICAL) || (direction === keys.right && this.type === this.TYPE_HORIZONTAL) ) {
 		// still can go forward
-		if ( this.$focusItem.index < this.data.length - 1 ) {
+		if ( this.$focusItem && this.$focusItem.index < this.data.length - 1 ) {
 			//index++;
 
-			if ( !this.focusNext() ) {
+			if ( this.$focusItem === this.$body.lastChild ) {
+				this.indexView += 1;
+				this.renderView();
+			} else {
+				this.focusItem(this.$focusItem.nextSibling);
+			}
+
+			/*if ( !this.focusNext() ) {
 				// move the first item to the end
 				//this.$body.appendChild(this.items[0]);
 				this.$body.appendChild(this.$body.firstChild);
@@ -390,13 +428,14 @@ List.prototype.move = function ( direction ) {
 				//this.items.push(this.items.shift());
 				//this.activeIndex--;
 				this.focusNext();
-			}
+			}*/
 		} else {
 			// already at the beginning
 			if ( this.cycle ) {
+				// jump to the beginning of the list
+				this.move(keys.home);
 				// notify
 				this.emit('cycle', {direction: direction});
-				//TODO: implement
 			} else {
 				// notify
 				this.emit('overflow', {direction: direction});
@@ -407,6 +446,13 @@ List.prototype.move = function ( direction ) {
 	if ( direction === keys.pageUp ) {
 		//this.activeIndex = this.activeIndex - this.size - 1;
 		//this.focusFirst();
+
+		//if ( this.indexView > this.size ) {
+			this.indexView -= this.size - 1;
+			this.renderView();
+		//}
+
+
 		this.focusItem(this.$body.firstChild);
 		//this.$focusItem.index = this.$focusItem.index;
 	}
@@ -414,12 +460,29 @@ List.prototype.move = function ( direction ) {
 		//this.activeIndex = this.activeIndex + this.size - 1;
 
 		//this.focusLast();
+
+		//if ( this.indexView < data.length - this.size ) {
+			this.indexView += this.size - 1;
+			this.renderView();
+		//}
+
 		this.focusItem(this.$body.lastChild);
 		//this.$focusItem.index = this.$focusItem.index;
 
 		//for ( i = 0; i < this.size; i++ ) {
 		//this.render()
 		//}
+	}
+
+	if ( direction === keys.home ) {
+		this.indexView = 0;
+		this.renderView();
+		this.focusItem(this.$body.firstChild);
+	}
+	if ( direction === keys.end ) {
+		this.indexView = this.data.length - this.size;
+		this.renderView();
+		this.focusItem(this.$body.lastChild);
 	}
 };
 
