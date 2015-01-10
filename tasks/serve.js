@@ -8,9 +8,8 @@
 
 'use strict';
 
-var gulp      = require('gulp'),
-	log       = require('../lib/log'),
-	cliParams = require('minimist')(process.argv.slice(2));
+var gulp = require('gulp'),
+	log  = require('../lib/log');
 
 
 gulp.task('develop', [
@@ -32,6 +31,8 @@ gulp.task('release', ['lint', 'img:release', 'jade:release', 'less:release', 'we
 
 // build everything and open main entry page
 gulp.task('serve', ['develop', 'release'], function () {
+	var command = require('../lib/cli/program').currCommnand;
+
 	// manage gulp from command line
 	//var runtime = require('gulp-runtime');
 	//runtime.setPrompt('');
@@ -43,12 +44,11 @@ gulp.task('serve', ['develop', 'release'], function () {
 	//	log('runtime:', gutil.colors.green('reloaded ') + file.path);
 	//});
 
+	console.log(command);
+
 	// popup browser if not prevented
-	if ( !cliParams.noopen ) {
+	if ( command.open !== false ) {
 		require('open')('http://localhost:8000/');
-		// report
-		log('runtime '.inverse,
-			'Root page was opened in the default browser. Use "' + 'gulp --noopen'.green + '" to prevent this.');
 	}
 
 	// connect to STB
