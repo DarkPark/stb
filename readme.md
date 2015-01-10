@@ -51,7 +51,7 @@ To start working with a project it's necessary to make initial build and start a
 stb serve
 ```
 
-**Full list of available commands:**
+**Full list of available tasks:**
 
  Name                  | Description
 -----------------------|-------------
@@ -72,7 +72,7 @@ stb serve
  img:develop           | remove and copy develop images
  img:release           | remove and copy release images
  jade                  | compile all HTML files from Jade sources
- jade:clean            | remove all HTML files
+ jade:clean            | remove all generated HTML files
  jade:clean:develop    | remove develop HTML files
  jade:clean:release    | remove release HTML files
  jade:develop          | compile develop HTML files from Jade sources
