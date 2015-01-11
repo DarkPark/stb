@@ -44,8 +44,6 @@ gulp.task('serve', ['develop', 'release'], function () {
 	//	log('runtime:', gutil.colors.green('reloaded ') + file.path);
 	//});
 
-	console.log(command);
-
 	// popup browser if not prevented
 	if ( command.open !== false ) {
 		require('open')('http://localhost:8000/');
