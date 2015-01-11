@@ -54,8 +54,7 @@ function List ( config ) {
 	 */
 	this.$focusItem = null;
 
-	this.indexItem = 0;
-	this.indexView = 0;
+	this.indexView = null;
 
 	/**
 	 * Component data to visualize.
@@ -270,7 +269,7 @@ List.prototype.init = function ( config ) {
 		}
 	}
 
-	this.renderView();
+	this.renderView(0);
 };
 
 List.prototype.moveNext = function () {
@@ -283,23 +282,61 @@ List.prototype.movePrev = function () {
 };
 
 
-List.prototype.renderView = function () {
-	var index, $item, i, data;
+List.prototype.renderView = function ( index ) {
+	var $item, i, itemData;
 
-	for ( i = 0; i < this.size; i++ ) {
+	if ( DEBUG ) {
+		if ( Number(index) !== index ) { throw 'index must be a number'; }
+	}
+
+	// has the view window position changed
+	if ( this.indexView !== index ) {
+		// sync global pointer
+		this.indexView = index;
+
+		// rebuild all visible items
+		for ( i = 0; i < this.size; i++ ) {
+			// shortcuts
+			$item    = this.$body.children[i];
+			itemData = this.data[index];
+
+			// real item or stub
+			if ( itemData !== undefined ) {
+				// correct inner data/index and render
+				$item.data  = itemData;
+				$item.index = index;
+				this.render($item, itemData);
+			} else {
+				// nothing to render
+				$item.data = $item.index = undefined;
+				$item.innerHTML = '&nbsp;';
+			}
+			index++;
+		}
+
+		// full rebuild
+		return true;
+	}
+
+	// nothing was done
+	return false;
+
+	/*for ( i = 0; i < this.size; i++ ) {
 		index = this.indexView + i;
 		$item = this.$body.children[i];
 		data  = this.data[index];
 
 		if ( data !== undefined ) {
+			// correct inner data/index and render
 			$item.data = data;
 			$item.index = index;
 			this.render($item, data);
 		} else {
+			// nothing to render
 			$item.data = $item.index = undefined;
-			$item.innerHTML = '.';
+			$item.innerHTML = '&nbsp;';
 		}
-	}
+	}*/
 };
 
 
@@ -341,6 +378,8 @@ List.prototype.renderView = function () {
  * @param {number} direction arrow key code
  */
 List.prototype.move = function ( direction ) {
+	var step;
+
 	//switch ( direction ) {
 	//	case keys.up:
 	//
@@ -364,8 +403,7 @@ List.prototype.move = function ( direction ) {
 			//index--;
 
 			if ( this.$focusItem === this.$body.firstChild ) {
-				this.indexView -= 1;
-				this.renderView();
+				this.renderView(this.indexView - 1);
 			} else {
 				this.focusItem(this.$focusItem.previousSibling);
 			}
@@ -406,8 +444,7 @@ List.prototype.move = function ( direction ) {
 			//index++;
 
 			if ( this.$focusItem === this.$body.lastChild ) {
-				this.indexView += 1;
-				this.renderView();
+				this.renderView(this.indexView + 1);
 			} else {
 				this.focusItem(this.$focusItem.nextSibling);
 			}
@@ -447,11 +484,14 @@ List.prototype.move = function ( direction ) {
 		//this.activeIndex = this.activeIndex - this.size - 1;
 		//this.focusFirst();
 
-		//if ( this.indexView > this.size ) {
-			this.indexView -= this.size - 1;
-			this.renderView();
-		//}
-
+		// determine jump size
+		if ( this.indexView < this.size ) {
+			// first page
+			this.renderView(0);
+		} else {
+			// second page and further
+			this.renderView(this.indexView - this.size + 1);
+		}
 
 		this.focusItem(this.$body.firstChild);
 		//this.$focusItem.index = this.$focusItem.index;
@@ -461,10 +501,14 @@ List.prototype.move = function ( direction ) {
 
 		//this.focusLast();
 
-		//if ( this.indexView < data.length - this.size ) {
-			this.indexView += this.size - 1;
-			this.renderView();
-		//}
+		// determine jump size
+		if ( this.indexView > this.data.length - this.size * 2 ) {
+			// last page
+			this.renderView(this.data.length - this.size);
+		} else {
+			// before the last page
+			this.renderView(this.indexView + this.size - 1);
+		}
 
 		this.focusItem(this.$body.lastChild);
 		//this.$focusItem.index = this.$focusItem.index;
@@ -475,13 +519,11 @@ List.prototype.move = function ( direction ) {
 	}
 
 	if ( direction === keys.home ) {
-		this.indexView = 0;
-		this.renderView();
+		this.renderView(0);
 		this.focusItem(this.$body.firstChild);
 	}
 	if ( direction === keys.end ) {
-		this.indexView = this.data.length - this.size;
-		this.renderView();
+		this.renderView(this.data.length - this.size);
 		this.focusItem(this.$body.lastChild);
 	}
 };
