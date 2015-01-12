@@ -23,10 +23,10 @@ var Emitter = require('./emitter'),
  * @extends Emitter
  *
  * @param {Object} [config={}] init parameters
- * @param {Node} [config.id] component unique identifier (generated if not set)
- * @param {Node} [config.$node] DOM element/fragment to be a component outer container
- * @param {Node} [config.$body] DOM element/fragment to be a component inner container (by default is the same as $node)
- * @param {Node} [config.$content] DOM element/fragment to be appended to the $body
+ * @param {Element} [config.id] component unique identifier (generated if not set)
+ * @param {Element} [config.$node] DOM element/fragment to be a component outer container
+ * @param {Element} [config.$body] DOM element/fragment to be a component inner container (by default is the same as $node)
+ * @param {Element} [config.$content] DOM element/fragment to be appended to the $body
  * @param {Component} [config.parent] link to the parent component which has this component as a child
  * @param {Array.<Component>} [config.children=[]] list of components in this component
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
@@ -69,7 +69,7 @@ function Component ( config ) {
 	/**
 	 * DOM outer handle.
 	 *
-	 * @type {Node}
+	 * @type {Element}
 	 */
 	this.$node = null;
 
@@ -77,7 +77,7 @@ function Component ( config ) {
 	 * DOM inner handle.
 	 * In simple cases is the same as $node.
 	 *
-	 * @type {Node}
+	 * @type {Element}
 	 */
 	this.$body = null;
 
@@ -121,7 +121,7 @@ function Component ( config ) {
 	if ( config.$node !== undefined ) {
 
 		if ( DEBUG ) {
-			if ( !(config.$node instanceof Node) ) { throw 'wrong config.$node type'; }
+			if ( !(config.$node instanceof Element) ) { throw 'wrong config.$node type'; }
 		}
 
 		this.$node = config.$node;
@@ -133,7 +133,7 @@ function Component ( config ) {
 	// inner handle
 	if ( config.$body !== undefined ) {
 		if ( DEBUG ) {
-			if ( !(config.$body instanceof Node) ) { throw 'wrong config.$body type'; }
+			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
 		}
 
 		this.$body = config.$body;
@@ -145,7 +145,7 @@ function Component ( config ) {
 	// inject given content into inner component part
 	if ( config.$content !== undefined ) {
 		if ( DEBUG ) {
-			if ( !(config.$content instanceof Node) ) { throw 'wrong config.$content type'; }
+			if ( !(config.$content instanceof Element) ) { throw 'wrong config.$content type'; }
 		}
 
 		this.$body.appendChild(config.$content);

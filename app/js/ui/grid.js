@@ -57,14 +57,14 @@ function Grid ( config ) {
 	 * List of DOM elements representing the component cells.
 	 * Necessary for navigation calculations.
 	 *
-	 * @type {Node[][]}
+	 * @type {Element[][]}
 	 */
 	this.map = [];
 
 	/**
 	 * Link to the currently focused DOM element.
 	 *
-	 * @type {Node}
+	 * @type {Element}
 	 */
 	this.$focusItem = null;
 
@@ -74,14 +74,6 @@ function Grid ( config ) {
 	 * @type {Array[]}
 	 */
 	this.data = [];
-
-	/**
-	 * Method to build each grid cell content.
-	 * Can be redefined to provide custom rendering.
-	 *
-	 * @type {function}
-	 */
-	this.render = this.defaultRender;
 
 	/**
 	 * Allow or not to jump to the opposite side of line when there is nowhere to go next.
@@ -165,12 +157,21 @@ Grid.prototype.constructor = Grid;
  * Fill the given cell with data.
  * $item.data can contain the old data (from the previous render).
  *
- * @param {Node} $item item DOM link
+ * @param {Element} $item item DOM link
  * @param {*} data associated with this item data
  */
-Grid.prototype.defaultRender = function ( $item, data ) {
+Grid.prototype.renderItemDefault = function ( $item, data ) {
 	$item.innerText = data.value;
 };
+
+
+/**
+ * Method to build each grid cell content.
+ * Can be redefined to provide custom rendering.
+ *
+ * @type {function}
+ */
+Grid.prototype.renderItem = Grid.prototype.renderItemDefault;
 
 
 /**
@@ -284,7 +285,7 @@ function map ( data ) {
  * @event module:stb/ui/grid~Grid#click:item
  *
  * @type {Object}
- * @property {Node} $item clicked HTML item
+ * @property {Element} $item clicked HTML item
  * @property {Event} event click event data
  */
 
@@ -305,7 +306,7 @@ Grid.prototype.init = function ( config ) {
 		 *
 		 * @param {Event} event click event data
 		 *
-		 * @this Node
+		 * @this Element
 		 *
 		 * @fires module:stb/ui/grid~Grid#click:item
 		 */
@@ -349,8 +350,8 @@ Grid.prototype.init = function ( config ) {
 		}
 
 		// new render is different
-		if ( this.render !== config.render ) {
-			this.render = config.render;
+		if ( this.renderItem !== config.render ) {
+			this.renderItem = config.render;
 			// need to redraw table
 			draw = true;
 		}
@@ -410,7 +411,7 @@ Grid.prototype.init = function ( config ) {
 			}
 
 			// visualize
-			this.render($item, itemData);
+			this.renderItem($item, itemData);
 
 			// save data link
 			$item.data = itemData;
@@ -594,7 +595,7 @@ Grid.prototype.move = function ( direction ) {
  * Highlight the given DOM element as focused.
  * Remove focus from the previously focused item.
  *
- * @param {Node} $item element to focus
+ * @param {Element} $item element to focus
  * @param {number} $item.x the item horizontal position
  * @param {number} $item.y the item vertical position
  *
@@ -609,14 +610,14 @@ Grid.prototype.focusItem = function ( $item ) {
 	// different element
 	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
 		if ( DEBUG ) {
-			if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
+			if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
 			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
 		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
 			if ( DEBUG ) {
-				if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
+				if ( !($prev instanceof Element) ) { throw 'wrong $prev type'; }
 			}
 
 			// style
@@ -628,7 +629,7 @@ Grid.prototype.focusItem = function ( $item ) {
 			 * @event module:stb/ui/grid~Grid#blur:item
 			 *
 			 * @type {Object}
-			 * @property {Node} $item previously focused HTML element
+			 * @property {Element} $item previously focused HTML element
 			 */
 			this.emit('blur:item', {$item: $prev});
 		}
@@ -649,8 +650,8 @@ Grid.prototype.focusItem = function ( $item ) {
 		 * @event module:stb/ui/grid~Grid#focus:item
 		 *
 		 * @type {Object}
-		 * @property {Node} $prev old/previous focused HTML element
-		 * @property {Node} $curr new/current focused HTML element
+		 * @property {Element} $prev old/previous focused HTML element
+		 * @property {Element} $curr new/current focused HTML element
 		 */
 		this.emit('focus:item', {$prev: $prev, $curr: $item});
 
