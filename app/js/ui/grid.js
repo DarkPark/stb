@@ -203,6 +203,7 @@ function normalize ( data ) {
 			item.rowSpan = item.rowSpan || 1;
 
 			if ( DEBUG ) {
+				if ( !('value' in item) ) { throw 'field "value" is missing'; }
 				if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
 				if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
 				if ( item.colSpan <= 0 ) { throw 'item.colSpan should be positive'; }
@@ -595,7 +596,7 @@ Grid.prototype.move = function ( direction ) {
  * Highlight the given DOM element as focused.
  * Remove focus from the previously focused item.
  *
- * @param {Element} $item element to focus
+ * @param {Node|Element} $item element to focus
  * @param {number} $item.x the item horizontal position
  * @param {number} $item.y the item vertical position
  *
