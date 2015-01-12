@@ -82,6 +82,7 @@
 
 		"no-delete-var": 1,
 		"no-label-var": 1,
+		"no-shadow": 0,
 		"no-shadow-restricted-names": 1,
 		"no-undef": 1,
 		"no-undefined": 0,
