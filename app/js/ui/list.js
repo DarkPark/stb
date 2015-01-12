@@ -32,8 +32,6 @@ var Component = require('../component'),
  * @param {boolean} [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
  *
  * @fires module:stb/ui/list~List#click:item
- *
- * @todo add events of going out of range
  */
 function List ( config ) {
 	// current execution context
@@ -153,7 +151,7 @@ List.prototype.TYPE_HORIZONTAL = 2;
  * @param {*} data associated with this item data
  */
 List.prototype.renderItemDefault = function ( $item, data ) {
-	$item.innerText = data;
+	$item.innerText = data.value;
 };
 
 
@@ -164,6 +162,37 @@ List.prototype.renderItemDefault = function ( $item, data ) {
  * @type {function}
  */
 List.prototype.renderItem = List.prototype.renderItemDefault;
+
+
+/**
+ * Make all the data items identical.
+ * Wrap to objects if necessary.
+ *
+ * @param {Array} data incoming array
+ * @return {Array} reworked incoming data
+ */
+function normalize ( data ) {
+	var i, item;
+
+	// rows
+	for ( i = 0; i < data.length; i++ ) {
+		// cell value
+		item = data[i];
+		// primitive value
+		if ( typeof item !== 'object' ) {
+			// wrap
+			item = data[i] = {
+				value: data[i]
+			};
+		}
+
+		if ( DEBUG ) {
+			if ( !('value' in item) ) { throw 'field "value" is missing'; }
+		}
+	}
+
+	return data;
+}
 
 
 /**
@@ -205,7 +234,8 @@ List.prototype.init = function ( config ) {
 			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
 		}
 
-		this.data = config.data;
+		// prepare user data
+		this.data = normalize(config.data);
 	}
 
 	// custom render method
@@ -262,6 +292,8 @@ List.prototype.renderView = function ( index ) {
 
 	if ( DEBUG ) {
 		if ( Number(index) !== index ) { throw 'index must be a number'; }
+		if ( index < 0 ) { throw 'index should be more than zero'; }
+		if ( index >= this.data.length ) { throw 'index should be less than data size'; }
 	}
 
 	// has the view window position changed
@@ -436,7 +468,7 @@ List.prototype.move = function ( direction ) {
  * Highlight the given DOM element as focused.
  * Remove focus from the previously focused item and generate associated event.
  *
- * @param {Element} $item element to focus
+ * @param {Node|Element} $item element to focus
  *
  * @return {boolean} operation status
  *
