@@ -44,7 +44,7 @@ var Component = require('../component'),
  * @event module:stb/ui/list~List#click:item
  *
  * @type {Object}
- * @property {Node} $item clicked HTML item
+ * @property {Element} $item clicked HTML item
  * @property {Event} event click event data
  */
 
@@ -60,29 +60,24 @@ var Component = require('../component'),
  * @param {boolean} [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
  *
  * @fires module:stb/ui/list~List#click:item
- *
- * @todo add events of going out of range
  */
 function List ( config ) {
-	var self = this,  // current execution context
-		//index = 0,
-		i, item;
-
-	/**
-	 * List of DOM elements representing the component lines.
-	 *
-	 * @type {Node[]}
-	 */
-	//this.items = [];
+	// current execution context
+	var self = this;
 
 	/**
 	 * Link to the currently focused DOM element.
 	 *
-	 * @type {Node}
+	 * @type {Element}
 	 */
 	this.$focusItem = null;
 
-	//this.activeIndex = 0;
+	/**
+	 * Position of the visible window to render.
+	 *
+	 * @type {number}
+	 */
+	this.indexView = null;
 
 	/**
 	 * Component data to visualize.
@@ -99,14 +94,6 @@ function List ( config ) {
 	 * @type {number}
 	 */
 	this.size = 5;
-
-	/**
-	 * Method the build each list item content.
-	 * Can be redefined to provide custom rendering.
-	 *
-	 * @type {function}
-	 */
-	this.render = this.defaultRender;
 
 	/**
 	 * Allow or not to jump to the opposite side of a list when there is nowhere to go next.
@@ -137,18 +124,8 @@ function List ( config ) {
 		this.$node.classList.add('horizontal');
 	}
 
-	//this.$body = document.createElement('ul');
-	////this.$body.className = 'body';
-	//this.$node.appendChild(this.$body);
-
 	// component setup
 	this.init(config);
-
-	//if ( this.$focusItem === null ) {
-	//	this.$focusItem = this.$body.firstChild;
-	//	//this.activeIndex = 0;
-	//	this.$focusItem.classList.add('focus');
-	//}
 
 	// navigation by keyboard
 	this.addListener('keydown', function ( event ) {
@@ -159,6 +136,8 @@ function List ( config ) {
 			case keys.left:
 			case keys.pageUp:
 			case keys.pageDown:
+			case keys.home:
+			case keys.end:
 				// cursor move only on arrow keys
 				self.move(event.code);
 				break;
@@ -194,14 +173,54 @@ List.prototype.TYPE_HORIZONTAL = 2;
 
 
 /**
- * Fill the given cell with data.
+ * Fill the given item with data.
  *
- * @param {Node} $item item DOM link
+ * @param {Element} $item item DOM link
  * @param {*} data associated with this item data
  */
-List.prototype.defaultRender = function ( $item, data ) {
-	$item.innerText = data;
+List.prototype.renderItemDefault = function ( $item, data ) {
+	$item.innerText = data.value;
 };
+
+
+/**
+ * Method to build each list item content.
+ * Can be redefined to provide custom rendering.
+ *
+ * @type {function}
+ */
+List.prototype.renderItem = List.prototype.renderItemDefault;
+
+
+/**
+ * Make all the data items identical.
+ * Wrap to objects if necessary.
+ *
+ * @param {Array} data incoming array
+ * @return {Array} reworked incoming data
+ */
+function normalize ( data ) {
+	var i, item;
+
+	// rows
+	for ( i = 0; i &lt; data.length; i++ ) {
+		// cell value
+		item = data[i];
+		// primitive value
+		if ( typeof item !== 'object' ) {
+			// wrap
+			item = data[i] = {
+				value: data[i]
+			};
+		}
+
+		if ( DEBUG ) {
+			if ( !('value' in item) ) { throw 'field "value" is missing'; }
+		}
+	}
+
+	return data;
+}
 
 
 /**
@@ -217,7 +236,7 @@ List.prototype.init = function ( config ) {
 		 *
 		 * @param {Event} event click event data
 		 *
-		 * @this Node
+		 * @this Element
 		 *
 		 * @fires module:stb/ui/list~List#click:item
 		 */
@@ -227,11 +246,6 @@ List.prototype.init = function ( config ) {
 				// notify
 				self.emit('click:item', {$item: this, event: event});
 			}
-			//self.$focusItem.index = this.index;
-			//event.stopPropagation();
-			//self.$focusItem.classList.remove('focus');
-			//self.$focusItem = this;
-			//self.$focusItem.classList.add('focus');
 		},
 		item, i;
 
@@ -248,7 +262,8 @@ List.prototype.init = function ( config ) {
 			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
 		}
 
-		this.data = config.data;
+		// prepare user data
+		this.data = normalize(config.data);
 	}
 
 	// custom render method
@@ -257,7 +272,7 @@ List.prototype.init = function ( config ) {
 			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
 		}
 
-		this.render = config.render;
+		this.renderItem = config.render;
 	}
 
 	// list items amount on page
@@ -280,44 +295,66 @@ List.prototype.init = function ( config ) {
 
 		// create new items
 		for ( i = 0; i &lt; this.size; i++ ) {
-			//item = document.createElement('li');
 			item = document.createElement('div');
 			item.index = i;
 			item.className = 'item';
-			//item.innerText = this.data[i];
-			//if ( this.data[i] !== undefined ) {
-				//this.render(item, this.data[i]);
 
 			item.addEventListener('click', onClick);
-			//}
-			//this.items.push(this.$body.appendChild(item));
 			this.$body.appendChild(item);
 		}
 	}
 
-	this.renderPage();
-};
-
-List.prototype.moveNext = function () {
-
+	this.renderView(0);
 };
 
 
-List.prototype.movePrev = function () {
+/**
+ * Draw the visible window.
+ *
+ * @param {number} index start position to render
+ *
+ * @return {boolean} operation status
+ */
+List.prototype.renderView = function ( index ) {
+	var $item, i, itemData;
 
-};
-
-
-List.prototype.renderPage = function () {
-	var $item, i;
-
-	for ( i = 0; i &lt; this.size; i++ ) {
-		$item = this.$body.children[i];
-		if ( $item.index !== undefined &amp;&amp; this.data[$item.index] !== undefined ) {
-			$item.data = this.data[$item.index];
-			this.render($item, this.data[$item.index]);
-		}
+	if ( DEBUG ) {
+		if ( Number(index) !== index ) { throw 'index must be a number'; }
+		if ( index &lt; 0 ) { throw 'index should be more than zero'; }
+		if ( index >= this.data.length ) { throw 'index should be less than data size'; }
 	}
+
+	// has the view window position changed
+	if ( this.indexView !== index ) {
+		// sync global pointer
+		this.indexView = index;
+
+		// rebuild all visible items
+		for ( i = 0; i &lt; this.size; i++ ) {
+			// shortcuts
+			$item    = this.$body.children[i];
+			itemData = this.data[index];
+
+			// real item or stub
+			if ( itemData !== undefined ) {
+				// correct inner data/index and render
+				$item.data  = itemData;
+				$item.index = index;
+				this.renderItem($item, itemData);
+			} else {
+				// nothing to render
+				$item.data = $item.index = undefined;
+				$item.innerHTML = '&amp;nbsp;';
+			}
+			index++;
+		}
+
+		// full rebuild
+		return true;
+	}
+
+	// nothing was done
+	return false;
 };
 
 
@@ -365,32 +402,19 @@ List.prototype.move = function ( direction ) {
 
 	if ( (direction === keys.up &amp;&amp; this.type === this.TYPE_VERTICAL) || (direction === keys.left &amp;&amp; this.type === this.TYPE_HORIZONTAL) ) {
 		// still can go backward
-		if ( this.$focusItem.index > 0 ) {
-			//index--;
-
-			if ( !this.focusPrev() ) {
-				// move the last item to the begging
-				//this.$body.insertBefore(this.items[this.items.length-1], this.items[0]);
-				this.$body.insertBefore(this.$body.lastChild, this.$body.firstChild);
-
-				//if ( config.render !== undefined ) {
-				this.render(this.$body.firstChild, this.data[this.$focusItem.index - 1]);
-				this.$body.firstChild.index = this.$focusItem.index - 1;
-				//this.$body.firstChild.data  = this.data[this.$focusItem.index];
-				//} else {
-				//	this.$body.firstChild.innerText = this.data[this.activeIndex-1];
-				//}
-
-				//this.items.unshift(this.items.pop());
-				//this.activeIndex++;
-				this.focusPrev();
+		if ( this.$focusItem &amp;&amp; this.$focusItem.index > 0 ) {
+			if ( this.$focusItem === this.$body.firstChild ) {
+				this.renderView(this.indexView - 1);
+			} else {
+				this.focusItem(this.$focusItem.previousSibling);
 			}
 		} else {
 			// already at the beginning
 			if ( this.cycle ) {
+				// jump to the end of the list
+				this.move(keys.end);
 				// notify
 				this.emit('cycle', {direction: direction});
-				//TODO: implement
 			} else {
 				// notify
 				this.emit('overflow', {direction: direction});
@@ -399,32 +423,19 @@ List.prototype.move = function ( direction ) {
 	}
 	if ( (direction === keys.down &amp;&amp; this.type === this.TYPE_VERTICAL) || (direction === keys.right &amp;&amp; this.type === this.TYPE_HORIZONTAL) ) {
 		// still can go forward
-		if ( this.$focusItem.index &lt; this.data.length - 1 ) {
-			//index++;
-
-			if ( !this.focusNext() ) {
-				// move the first item to the end
-				//this.$body.appendChild(this.items[0]);
-				this.$body.appendChild(this.$body.firstChild);
-
-				//if ( config.render !== undefined ) {
-				this.render(this.$body.lastChild, this.data[this.$focusItem.index + 1]);
-				this.$body.lastChild.index = this.$focusItem.index + 1;
-				//this.$body.firstChild.data  = this.data[this.$focusItem.index];
-				//} else {
-				//	this.$body.lastChild.innerText = this.data[this.activeIndex + 1];
-				//}
-
-				//this.items.push(this.items.shift());
-				//this.activeIndex--;
-				this.focusNext();
+		if ( this.$focusItem &amp;&amp; this.$focusItem.index &lt; this.data.length - 1 ) {
+			if ( this.$focusItem === this.$body.lastChild ) {
+				this.renderView(this.indexView + 1);
+			} else {
+				this.focusItem(this.$focusItem.nextSibling);
 			}
 		} else {
 			// already at the beginning
 			if ( this.cycle ) {
+				// jump to the beginning of the list
+				this.move(keys.home);
 				// notify
 				this.emit('cycle', {direction: direction});
-				//TODO: implement
 			} else {
 				// notify
 				this.emit('overflow', {direction: direction});
@@ -433,21 +444,50 @@ List.prototype.move = function ( direction ) {
 	}
 
 	if ( direction === keys.pageUp ) {
-		//this.activeIndex = this.activeIndex - this.size - 1;
-		//this.focusFirst();
+		// determine jump size
+		if ( this.indexView &lt; this.size ) {
+			// first page
+			this.renderView(0);
+		} else {
+			// second page and further
+			this.renderView(this.indexView - this.size + 1);
+		}
+
 		this.focusItem(this.$body.firstChild);
-		//this.$focusItem.index = this.$focusItem.index;
 	}
+
 	if ( direction === keys.pageDown ) {
-		//this.activeIndex = this.activeIndex + this.size - 1;
+		// data is bigger then one page
+		if ( this.data.length > this.size ) {
+			// determine jump size
+			if ( this.indexView > this.data.length - this.size * 2 ) {
+				// last page
+				this.renderView(this.data.length - this.size);
+			} else {
+				// before the last page
+				this.renderView(this.indexView + this.size - 1);
+			}
+			this.focusItem(this.$body.lastChild);
+		} else {
+			// not the last item on the page
+			this.focusItem(this.$body.children[this.data.length - 1]);
+		}
+	}
 
-		//this.focusLast();
-		this.focusItem(this.$body.lastChild);
-		//this.$focusItem.index = this.$focusItem.index;
+	if ( direction === keys.home ) {
+		this.renderView(0);
+		this.focusItem(this.$body.firstChild);
+	}
 
-		//for ( i = 0; i &lt; this.size; i++ ) {
-		//this.render()
-		//}
+	if ( direction === keys.end ) {
+		// data is bigger then one page
+		if ( this.data.length > this.size ) {
+			this.renderView(this.data.length - this.size);
+			this.focusItem(this.$body.lastChild);
+		} else {
+			// not the last item on the page
+			this.focusItem(this.$body.children[this.data.length - 1]);
+		}
 	}
 };
 
@@ -456,7 +496,7 @@ List.prototype.move = function ( direction ) {
  * Highlight the given DOM element as focused.
  * Remove focus from the previously focused item and generate associated event.
  *
- * @param {Node} $item element to focus
+ * @param {Node|Element} $item element to focus
  *
  * @return {boolean} operation status
  *
@@ -469,14 +509,14 @@ List.prototype.focusItem = function ( $item ) {
 	// different element
 	if ( $item !== undefined &amp;&amp; $prev !== $item ) {
 		if ( DEBUG ) {
-			if ( !($item instanceof Node) ) { throw 'wrong $item type'; }
+			if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
 			if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
 		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
 			if ( DEBUG ) {
-				if ( !($prev instanceof Node) ) { throw 'wrong $prev type'; }
+				if ( !($prev instanceof Element) ) { throw 'wrong $prev type'; }
 			}
 
 			// style
@@ -488,7 +528,7 @@ List.prototype.focusItem = function ( $item ) {
 			 * @event module:stb/ui/list~List#blur:item
 			 *
 			 * @type {Object}
-			 * @property {Node} $item previously focused HTML element
+			 * @property {Element} $item previously focused HTML element
 			 */
 			this.emit('blur:item', {$item: $prev});
 		}
@@ -506,8 +546,8 @@ List.prototype.focusItem = function ( $item ) {
 		 * @event module:stb/ui/list~List#focus:item
 		 *
 		 * @type {Object}
-		 * @property {Node} $prev old/previous focused HTML element
-		 * @property {Node} $curr new/current focused HTML element
+		 * @property {Element} $prev old/previous focused HTML element
+		 * @property {Element} $curr new/current focused HTML element
 		 */
 		this.emit('focus:item', {$prev: $prev, $curr: $item});
 
@@ -517,53 +557,6 @@ List.prototype.focusItem = function ( $item ) {
 	// nothing was done
 	return false;
 };
-
-
-List.prototype.focusNext = function () {
-	//if ( this.activeIndex &lt; this.size - 1 ) {
-	if ( this.$focusItem !== this.$body.lastChild ) {
-		//this.activeIndex++;
-		//console.log(this.activeIndex);
-		//this.$focusItem.classList.remove('focus');
-		////this.$focusItem = this.items[this.activeIndex];
-		//this.$focusItem = this.$focusItem.nextSibling;
-		//this.$focusItem.classList.add('focus');
-
-		return this.focusItem(this.$focusItem.nextSibling);
-	}
-	return false;
-};
-
-
-List.prototype.focusPrev = function () {
-	//if ( this.activeIndex > 0 ) {
-	if ( this.$focusItem !== this.$body.firstChild ) {
-		//this.activeIndex--;
-		//console.log(this.activeIndex);
-		//this.$focusItem.classList.remove('focus');
-		////this.$focusItem = this.items[this.activeIndex];
-		//this.$focusItem = this.$focusItem.previousSibling;
-		//this.$focusItem.classList.add('focus');
-
-		return this.focusItem(this.$focusItem.previousSibling);
-	}
-	return false;
-};
-
-
-//List.prototype.focusFirst = function () {
-//	this.$focusItem.classList.remove('focus');
-//	this.$focusItem = this.$body.firstChild;
-//	this.$focusItem.classList.add('focus');
-//	this.activeIndex = this.$focusItem.index;
-//};
-
-//List.prototype.focusLast = function () {
-//	this.$focusItem.classList.remove('focus');
-//	this.$focusItem = this.$body.lastChild;
-//	this.$focusItem.classList.add('focus');
-//	this.activeIndex = this.$focusItem.index;
-//};
 
 
 // public export
@@ -584,7 +577,7 @@ module.exports = List;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Dec 30 2014 16:40:04 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Jan 13 2015 11:09:56 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

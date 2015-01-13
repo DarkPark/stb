@@ -452,7 +452,7 @@
 
         
             
-<h4 class="name" id="$focusItem"><span class="type-signature"></span>$focusItem<span class="type-signature"> :Node</span></h4>
+<h4 class="name" id="$focusItem"><span class="type-signature"></span>$focusItem<span class="type-signature"> :Element</span></h4>
 
 
 
@@ -467,7 +467,7 @@
     <ul>
         <li>
             
-<span class="param-type">Node</span>
+<span class="param-type">Element</span>
 
 
         </li>
@@ -578,7 +578,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line91">line 91</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line83">line 83</a>
     </li></ul></dd>
     
 
@@ -650,7 +650,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line98">line 98</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line90">line 90</a>
     </li></ul></dd>
     
 
@@ -794,7 +794,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line105">line 105</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -866,7 +866,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line112">line 112</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line104">line 104</a>
     </li></ul></dd>
     
 
@@ -884,7 +884,7 @@
 
         
             
-<h4 class="name" id="map"><span class="type-signature"></span>map<span class="type-signature"> :Array.&lt;Array.&lt;Node>></span></h4>
+<h4 class="name" id="map"><span class="type-signature"></span>map<span class="type-signature"> :Array.&lt;Array.&lt;Element>></span></h4>
 
 
 
@@ -900,7 +900,7 @@ Necessary for navigation calculations.</p>
     <ul>
         <li>
             
-<span class="param-type">Array.&lt;Array.&lt;Node>></span>
+<span class="param-type">Array.&lt;Array.&lt;Element>></span>
 
 
         </li>
@@ -957,7 +957,7 @@ Necessary for navigation calculations.</p>
 
         
             
-<h4 class="name" id="render"><span class="type-signature"></span>render<span class="type-signature"> :function</span></h4>
+<h4 class="name" id="renderItem"><span class="type-signature"></span>renderItem<span class="type-signature"> :function</span></h4>
 
 
 
@@ -1012,7 +1012,7 @@ Can be redefined to provide custom rendering.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line84">line 84</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line174">line 174</a>
     </li></ul></dd>
     
 
@@ -1033,160 +1033,6 @@ Can be redefined to provide custom rendering.</p>
 
     
         <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="defaultRender"><span class="type-signature"></span>defaultRender<span class="signature">($item, data)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Fill the given cell with data.
-$item.data can contain the old data (from the previous render).</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>$item</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Node</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>item DOM link</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>associated with this item data</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line171">line 171</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         
             
@@ -1244,6 +1090,9 @@ Remove focus from the previously focused item.</p>
             
                 
 <span class="param-type">Node</span>
+|
+
+<span class="param-type">Element</span>
 
 
             
@@ -1364,7 +1213,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line606">line 606</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line608">line 608</a>
     </li></ul></dd>
     
 
@@ -1543,7 +1392,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line297">line 297</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line299">line 299</a>
     </li></ul></dd>
     
 
@@ -1673,7 +1522,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line453">line 453</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line455">line 455</a>
     </li></ul></dd>
     
 
@@ -1694,6 +1543,160 @@ Remove focus from the previously focused item.</p>
 
     <li><a href="module-stb_ui_grid-Grid.html#event:overflow">module:stb/ui/grid~Grid#event:overflow</a></li>
 </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="renderItemDefault"><span class="type-signature"></span>renderItemDefault<span class="signature">($item, data)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Fill the given cell with data.
+$item.data can contain the old data (from the previous render).</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>$item</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>item DOM link</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>associated with this item data</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line163">line 163</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
 
 
 
@@ -1783,7 +1786,7 @@ Remove focus from the previously focused item.</p>
             <td class="type">
             
                 
-<span class="param-type">Node</span>
+<span class="param-type">Element</span>
 
 
             
@@ -1832,7 +1835,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line625">line 625</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line627">line 627</a>
     </li></ul></dd>
     
 
@@ -1927,7 +1930,7 @@ Remove focus from the previously focused item.</p>
             <td class="type">
             
                 
-<span class="param-type">Node</span>
+<span class="param-type">Element</span>
 
 
             
@@ -1999,7 +2002,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line281">line 281</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line283">line 283</a>
     </li></ul></dd>
     
 
@@ -2143,7 +2146,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line555">line 555</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line557">line 557</a>
     </li></ul></dd>
     
 
@@ -2287,7 +2290,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line567">line 567</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line569">line 569</a>
     </li></ul></dd>
     
 
@@ -2382,7 +2385,7 @@ Remove focus from the previously focused item.</p>
             <td class="type">
             
                 
-<span class="param-type">Node</span>
+<span class="param-type">Element</span>
 
 
             
@@ -2405,7 +2408,7 @@ Remove focus from the previously focused item.</p>
             <td class="type">
             
                 
-<span class="param-type">Node</span>
+<span class="param-type">Element</span>
 
 
             
@@ -2454,7 +2457,7 @@ Remove focus from the previously focused item.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line646">line 646</a>
+        <a href="ui_grid.js.html">ui/grid.js</a>, <a href="ui_grid.js.html#line648">line 648</a>
     </li></ul></dd>
     
 
@@ -2498,7 +2501,7 @@ Remove focus from the previously focused item.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Dec 30 2014 16:40:04 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Jan 13 2015 11:09:56 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>
