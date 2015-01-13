@@ -333,7 +333,7 @@ Grid.prototype.init = function ( config ) {
 	// apply data
 	if ( config.data !== undefined ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+			if ( !Array.isArray(config.data) || !Array.isArray(config.data[0]) ) { throw 'wrong config.data type'; }
 		}
 
 		// new data is different
@@ -356,10 +356,6 @@ Grid.prototype.init = function ( config ) {
 			// need to redraw table
 			draw = true;
 		}
-	}
-
-	if ( DEBUG ) {
-		if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
 	}
 
 	if ( !draw ) {
