@@ -114,7 +114,7 @@ function List ( config ) {
 				self.move(event.code);
 				break;
 			case keys.ok:
-				// notify
+				// notify listeners
 				self.emit('click:item', {$item: self.$focusItem, event: event});
 				break;
 		}
@@ -215,7 +215,7 @@ List.prototype.init = function ( config ) {
 		onClick  = function ( event ) {
 			if ( this.data !== undefined ) {
 				self.focusItem(this);
-				// notify
+				// notify listeners
 				self.emit('click:item', {$item: this, event: event});
 			}
 		},
@@ -281,14 +281,26 @@ List.prototype.init = function ( config ) {
 
 
 /**
+ * Shift the visible view window event.
+ *
+ * @event module:stb/ui/list~List#move:view
+ *
+ * @type {Object}
+ * @property {number} prevIndex previous view window position
+ * @property {number} currIndex current view window position
+ */
+
+/**
  * Draw the visible window.
  *
  * @param {number} index start position to render
  *
  * @return {boolean} operation status
+ *
+ * @fires module:stb/ui/list~List#move:view
  */
 List.prototype.renderView = function ( index ) {
-	var $item, i, itemData;
+	var $item, i, itemData, prevIndex, currIndex;
 
 	if ( DEBUG ) {
 		if ( Number(index) !== index ) { throw 'index must be a number'; }
@@ -298,8 +310,10 @@ List.prototype.renderView = function ( index ) {
 
 	// has the view window position changed
 	if ( this.indexView !== index ) {
+		// save for emit
+		prevIndex = this.indexView;
 		// sync global pointer
-		this.indexView = index;
+		this.indexView = currIndex = index;
 
 		// rebuild all visible items
 		for ( i = 0; i < this.size; i++ ) {
@@ -320,6 +334,9 @@ List.prototype.renderView = function ( index ) {
 			}
 			index++;
 		}
+
+		// notify listeners
+		this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
 
 		// full rebuild
 		return true;
@@ -353,6 +370,9 @@ List.prototype.renderView = function ( index ) {
  * Move focus to the given direction.
  *
  * @param {number} direction arrow key code
+ *
+ * @fires module:stb/ui/list~List#cycle
+ * @fires module:stb/ui/list~List#overflow
  */
 List.prototype.move = function ( direction ) {
 	//switch ( direction ) {
@@ -385,10 +405,10 @@ List.prototype.move = function ( direction ) {
 			if ( this.cycle ) {
 				// jump to the end of the list
 				this.move(keys.end);
-				// notify
+				// notify listeners
 				this.emit('cycle', {direction: direction});
 			} else {
-				// notify
+				// notify listeners
 				this.emit('overflow', {direction: direction});
 			}
 		}
@@ -406,10 +426,10 @@ List.prototype.move = function ( direction ) {
 			if ( this.cycle ) {
 				// jump to the beginning of the list
 				this.move(keys.home);
-				// notify
+				// notify listeners
 				this.emit('cycle', {direction: direction});
 			} else {
-				// notify
+				// notify listeners
 				this.emit('overflow', {direction: direction});
 			}
 		}
