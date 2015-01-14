@@ -300,7 +300,7 @@ router.navigate = function ( name, data ) {
 		this.hide(this.current);
 		this.show(pageTo, data);
 
-		// notify
+		// notify listeners
 		this.emit('navigate', {from: pageFrom, to: pageTo});
 
 		// store
@@ -344,7 +344,7 @@ router.back = function () {
 			this.hide(this.current);
 			this.show(pageTo);
 
-			// notify
+			// notify listeners
 			this.emit('navigate', {from: pageFrom, to: pageTo});
 
 			return true;

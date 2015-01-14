@@ -34,6 +34,8 @@ var Component = require('../component'),
  * @param {boolean}  [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
  * @param {boolean}  [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
  *
+ * @fires module:stb/ui/grid~Grid#click:item
+ *
  * @example
  * var Grid = require('stb/ui/grid'),
  *     grid = new Grid({
@@ -127,7 +129,7 @@ function Grid ( config ) {
 				self.move(event.code);
 				break;
 			case keys.ok:
-				// notify
+				// notify listeners
 				self.emit('click:item', {$item: self.$focusItem, event: event});
 				break;
 		}
@@ -317,7 +319,7 @@ Grid.prototype.init = function ( config ) {
 				// visualize
 				self.focusItem(this);
 
-				// notify
+				// notify listeners
 				self.emit('click:item', {$item: this, event: event});
 			}
 		};

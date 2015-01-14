@@ -119,7 +119,7 @@ Stack.prototype.pop = function () {
 		// set top element
 		this.current = this.data.length > 0 ? this.data[this.data.length - 1] : null;
 
-		// notify
+		// notify listeners
 		this.emit('pop', {prev: prev, curr: this.current});
 	}
 
