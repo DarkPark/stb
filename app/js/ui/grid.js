@@ -11,11 +11,22 @@ var Component = require('../component'),
 
 
 /**
+ * Mouse click event.
+ *
+ * @event module:stb/ui/grid~Grid#click:item
+ *
+ * @type {Object}
+ * @property {Element} $item clicked HTML item
+ * @property {Event} event click event data
+ */
+
+
+/**
  * Base grid/table implementation.
  *
  * For navigation map implementation and tests see {@link https://gist.github.com/DarkPark/8c0c2926bfa234043ed1}.
  *
- * Each data cell value can be either a primitive value or an object with these fields:
+ * Each data cell can be either a primitive value or an object with these fields:
  *
  *  Name    | Description
  * ---------|-------------
@@ -194,15 +205,17 @@ function normalize ( data ) {
 			item = data[i][j];
 			// primitive value
 			if ( typeof item !== 'object' ) {
-				// wrap
+				// wrap with defaults
 				item = data[i][j] = {
-					value: data[i][j]
+					value: data[i][j],
+					colSpan: 1,
+					rowSpan: 1
 				};
+			} else {
+				// always at least one row/col
+				item.colSpan = item.colSpan || 1;
+				item.rowSpan = item.rowSpan || 1;
 			}
-
-			// always at least one row/col
-			item.colSpan = item.colSpan || 1;
-			item.rowSpan = item.rowSpan || 1;
 
 			if ( DEBUG ) {
 				if ( !('value' in item) ) { throw 'field "value" is missing'; }
@@ -210,6 +223,8 @@ function normalize ( data ) {
 				if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
 				if ( item.colSpan <= 0 ) { throw 'item.colSpan should be positive'; }
 				if ( item.rowSpan <= 0 ) { throw 'item.rowSpan should be positive'; }
+				if ( ('focus' in item) && Boolean(item.focus) !== item.focus ) { throw 'item.focus must be boolean'; }
+				if ( ('disable' in item) && Boolean(item.disable) !== item.disable ) { throw 'item.disable must be boolean'; }
 			}
 		}
 	}
@@ -280,17 +295,6 @@ function map ( data ) {
 
 	return result;
 }
-
-
-/**
- * Mouse click event.
- *
- * @event module:stb/ui/grid~Grid#click:item
- *
- * @type {Object}
- * @property {Element} $item clicked HTML item
- * @property {Event} event click event data
- */
 
 
 /**
