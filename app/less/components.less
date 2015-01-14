@@ -150,9 +150,17 @@
 				vertical-align: middle;
 				text-align: center;
 			}
+			td.item.mark {
+				color: black;
+				background-color: white;
+			}
 			td.item.focus {
 				color: black;
 				background-color: orange;
+			}
+			td.item.focus.mark {
+				color: black;
+				background-color: #AE7200;
 			}
 			td.item.disable {
 				color: grey;
@@ -179,8 +187,18 @@
 			line-height: unit(@listItemHeight, px);
 			//display: table-row;
 
+			&.mark {
+				background-color: white;
+				color: black;
+			}
+
 			&.focus {
 				background-color: orange;
+				color: black;
+			}
+
+			&.focus.mark {
+				background-color: #AE7200;
 				color: black;
 			}
 		}

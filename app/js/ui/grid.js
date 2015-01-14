@@ -33,6 +33,7 @@ var Component = require('../component'),
  *  value   | actual cell value to render
  *  colSpan | amount of cells to merge horizontally
  *  rowSpan | amount of cells to merge vertically
+ *  mark    | is it necessary or not to render this cell as marked
  *  focus   | is it necessary or not to render this cell as focused
  *  disable | is it necessary or not to set this cell as disabled
  *
@@ -402,15 +403,21 @@ Grid.prototype.init = function ( config ) {
 			$item.rowSpan = itemData.rowSpan;
 
 			// active cell
-			if ( itemData.focus === true ) {
+			if ( itemData.focus ) {
 				// store and clean
 				$focusItem = $item;
 			}
 
 			// disabled cell
-			if ( itemData.disable === true ) {
+			if ( itemData.disable ) {
 				// apply CSS
 				$item.classList.add('disable');
+			}
+
+			// marked cell
+			if ( itemData.mark ) {
+				// apply CSS
+				$item.classList.add('mark');
 			}
 
 			// visualize
