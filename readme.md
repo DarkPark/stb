@@ -53,7 +53,7 @@ stb serve
 
 General way of usage:
 
-```
+```bash
 stb <command> [options]
 ```
 
@@ -92,7 +92,7 @@ In case remote access to STB device is enabled and configured in application `./
 stb serve --ssh [profile_name]
 ```
 
-where profile_name is one of the following:
+where `profile_name` is one of the following:
 
  Name              | Description
 -------------------|-------------
@@ -101,6 +101,14 @@ where profile_name is one of the following:
  release           | open final release build
 
 For example command `stb serve --ssh` will build and serve as usual but also connect to the STB device by SSH protocol and starts there a web browser with the debug version of application.
+
+It's also possible to customize some commands execution with additional flags e.g. `--clean`, `--develop`, `--release` and so on.
+Full list of available options can be provided by the `stb` application:
+
+```bash
+stb --help
+stb <command> --help
+```
 
 
 At runtime the development mode has a set of useful function available via keyboard shortcuts:
