@@ -39,7 +39,7 @@ function Stack ( data ) {
 	this.data = data || [];
 
 	if ( DEBUG ) {
-		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+		if ( !Array.isArray(this.data) ) { throw 'wrong data type'; }
 	}
 
 	// parent init
