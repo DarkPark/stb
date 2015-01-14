@@ -673,5 +673,30 @@ Grid.prototype.focusItem = function ( $item ) {
 };
 
 
+/**
+ * Set item state and appearance as marked.
+ *
+ * @param {Node|Element} $item element to focus
+ * @param {boolean} state true - marked, false - not marked
+ */
+Grid.prototype.markItem = function ( $item, state ) {
+	if ( DEBUG ) {
+		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
+		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+		if ( Boolean(state) !== state ) { throw 'state must be boolean'; }
+	}
+
+	// correct CSS
+	if ( state ) {
+		$item.classList.add('mark');
+	} else {
+		$item.classList.remove('mark');
+	}
+
+	// apply flag
+	$item.data.mark = state;
+};
+
+
 // public export
 module.exports = Grid;
