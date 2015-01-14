@@ -51,44 +51,30 @@ To start working with a project it's necessary to make initial build and start a
 stb serve
 ```
 
-**Full list of available tasks:**
+General way of usage:
 
- Name                  | Description
------------------------|-------------
- doc                   | open STB documentation in the default web browser
- init                  | initial creation of all necessary files and folders
- serve                 | main entry point - rebuild everything, start all watchers and servers
- develop               | run all development tasks
- release               | run all production tasks
- lint                  | analyse JavaScript code for potential errors and problems
- static                | serve files in the build directory
- proxy                 | proxy js code execution from a desktop browser to STB
- logger                | WebSocket server to translate log messages from STB to a desktop console
- weinre                | WEb INspector REmote debugger server
- img                   | execute all the tasks to remove and copy all images
- img:clean             | remove all images
- img:clean:develop     | remove develop images
- img:clean:release     | remove release images
- img:develop           | remove and copy develop images
- img:release           | remove and copy release images
- jade                  | compile all HTML files from Jade sources
- jade:clean            | remove all generated HTML files
- jade:clean:develop    | remove develop HTML files
- jade:clean:release    | remove release HTML files
- jade:develop          | compile develop HTML files from Jade sources
- jade:release          | compile release HTML files from Jade sources
- less                  | compile all Less files into a set of css files with maps
- less:clean            | remove all generated CSS and source-map files
- less:clean:develop    | remove develop generated CSS and source-map files
- less:clean:release    | remove release generated CSS and source-map files
- less:develop          | compile develop Less files into a set of css files with maps
- less:release          | compile release Less files into a set of css files with maps
- webpack               | compile all CommonJS modules into a single js file
- webpack:clean         | remove all JavaScript compiled files
- webpack:develop       | compile develop version of all CommonJS modules into a single js file
- webpack:release       | compile release version of all CommonJS modules into a single js file
- webpack:clean:develop | remove develop JavaScript compiled files
- webpack:clean:release | remove release JavaScript compiled files
+```bash
+stb <command> [options]
+```
+
+**Full list of available commands:**
+
+ Name    | Description
+---------|-------------
+ doc     | open STB documentation in the default web browser
+ init    | initial creation of all necessary files and folders
+ serve   | main entry point - rebuild everything, start all watchers and servers
+ develop | run all development tasks
+ release | run all production tasks
+ lint    | analyse JavaScript code for potential errors and problems
+ static  | serve files in the build directory
+ proxy   | proxy js code execution from a desktop browser to STB
+ logger  | WebSocket server to translate log messages from STB to a desktop console
+ weinre  | WEb INspector REmote debugger server
+ img     | execute all the tasks to remove and copy all images
+ jade    | compile all HTML files from Jade sources
+ less    | compile all Less files into a set of css files with maps
+ webpack | compile all CommonJS modules into a single js file
 
 
 After the `stb serve` command the [start page](http://localhost:8000/) should open in the default browser.
@@ -97,16 +83,32 @@ This page should be accessible remotely on the STB device via <http://external_i
 It's possible to suppress a browser opening with
 
 ```bash
-stb serve --noopen
+stb serve --no-open
 ```
 
 In case remote access to STB device is enabled and configured in application `./config/ssh.js` it's possible to activate one of the profiles:
 
 ```bash
-stb serve --profile=develop
+stb serve --ssh [profile_name]
 ```
 
-This will build and serve as usual but also connect to the STB device by SSH protocol and starts there a web browser with the configured page.
+where `profile_name` is one of the following:
+
+ Name              | Description
+-------------------|-------------
+ root              | open index file in the root of the started HTTP server
+ develop (default) | open debug develop build
+ release           | open final release build
+
+For example command `stb serve --ssh` will build and serve as usual but also connect to the STB device by SSH protocol and starts there a web browser with the debug version of application.
+
+It's also possible to customize some commands execution with additional flags e.g. `--clean`, `--develop`, `--release` and so on.
+Full list of available options can be provided by the `stb` application:
+
+```bash
+stb --help
+stb <command> --help
+```
 
 
 At runtime the development mode has a set of useful function available via keyboard shortcuts:
