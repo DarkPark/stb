@@ -23,6 +23,13 @@ var Component = require('../component'),
 /**
  * Base list implementation.
  *
+ * Each data item can be either a primitive value or an object with these fields:
+ *
+ *  Name    | Description
+ * ---------|-------------
+ *  value   | actual cell value to render
+ *  mark    | is it necessary or not to render this cell as marked
+ *
  * @constructor
  * @extends Component
  *
@@ -180,7 +187,7 @@ function normalize ( data ) {
 		item = data[i];
 		// primitive value
 		if ( typeof item !== 'object' ) {
-			// wrap
+			// wrap with defaults
 			item = data[i] = {
 				value: data[i]
 			};
@@ -188,6 +195,7 @@ function normalize ( data ) {
 
 		if ( DEBUG ) {
 			if ( !('value' in item) ) { throw 'field "value" is missing'; }
+			if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw 'item.mark must be boolean'; }
 		}
 	}
 
@@ -327,6 +335,13 @@ List.prototype.renderView = function ( index ) {
 				$item.data  = itemData;
 				$item.index = index;
 				this.renderItem($item, itemData);
+
+				// apply CSS
+				if ( itemData.mark ) {
+					$item.classList.add('mark');
+				} else {
+					$item.classList.remove('mark');
+				}
 			} else {
 				// nothing to render
 				$item.data = $item.index = undefined;
