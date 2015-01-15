@@ -1,6 +1,6 @@
 {
 	"name": "stb",
-	"version": "0.4.5",
+	"version": "0.4.6",
 	"description": "STB single page application framework.",
 	"author": {
 		"name": "Stanislav Kalashnik",
@@ -41,6 +41,7 @@
 		"stb",
 		"device",
 		"tv",
+		"devkit",
 		"framework"
 	],
 	"license": "GPL-3.0"
