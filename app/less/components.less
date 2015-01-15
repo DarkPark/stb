@@ -230,4 +230,24 @@
 			background-color: orange;
 		}
 	}
+
+	&.scrollBar {
+		background-color: grey;
+		position:relative;
+
+		&.horizontal {
+			height: 8px;
+			width: 100%;
+		}
+		&.vertical {
+			height: 100%;
+			width: 8px;
+		}
+
+		> .value {
+			background-color: orange;
+			height: 8px;
+			width: 8px;
+		}
+	}
 }
