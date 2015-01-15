@@ -200,17 +200,20 @@ ScrollBar.prototype.init = function ( config ) {
 		}
 
 		this.value = config.value;
+	} else {
+		// set value to min
+		this.value = this.value === 0 ? this.min : this.value;
 	}
 
 	// init bar size, classes, setup distance from start
 	if ( this.type === ScrollBar.TYPE_VERTICAL ) {
 		this.$node.classList.add('vertical');
 		this.$body.style.height = (this.$node.offsetHeight * this.ratio) + 'px';
-		this.$body.style.top = this.value + 'px';
+		this.$body.style.top = ((this.value - this.min) * this.ratio) + 'px';
 	} else {
 		this.$node.classList.add('horizontal');
 		this.$body.style.width = (this.$node.offsetWidth * this.ratio) + 'px';
-		this.$body.style.left = this.value + 'px';
+		this.$body.style.left = ((this.value - this.min) * this.ratio) + 'px';
 	}
 };
 
