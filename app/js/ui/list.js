@@ -181,6 +181,11 @@ List.prototype.renderItem = List.prototype.renderItemDefault;
 function normalize ( data ) {
 	var i, item;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+	}
+
 	// rows
 	for ( i = 0; i < data.length; i++ ) {
 		// cell value
@@ -206,7 +211,7 @@ function normalize ( data ) {
 /**
  * Init or re-init of the component inner structures and HTML.
  *
- * @param {Object} [config={}] init parameters (subset of constructor config params)
+ * @param {Object} config init parameters (subset of constructor config params)
  */
 List.prototype.init = function ( config ) {
 	var self     = this,
@@ -230,6 +235,7 @@ List.prototype.init = function ( config ) {
 		item, i;
 
 	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
 	}
 
@@ -311,6 +317,7 @@ List.prototype.renderView = function ( index ) {
 	var $item, i, itemData, prevIndex, currIndex;
 
 	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 		if ( Number(index) !== index ) { throw 'index must be a number'; }
 		if ( index < 0 ) { throw 'index should be more than zero'; }
 		if ( index >= this.data.length ) { throw 'index should be less than data size'; }
@@ -406,6 +413,11 @@ List.prototype.move = function ( direction ) {
 	//}
 	//
 	//return;
+
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( Number(direction) !== direction ) { throw 'direction must be a number'; }
+	}
 
 	if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
 		// still can go backward
@@ -513,6 +525,10 @@ List.prototype.move = function ( direction ) {
 List.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	// different element
 	if ( $item !== undefined && $prev !== $item ) {
 		if ( DEBUG ) {
@@ -574,6 +590,7 @@ List.prototype.focusItem = function ( $item ) {
  */
 List.prototype.markItem = function ( $item, state ) {
 	if ( DEBUG ) {
+		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
 		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
 		if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
 		if ( Boolean(state) !== state ) { throw 'state must be boolean'; }
