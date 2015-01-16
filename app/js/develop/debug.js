@@ -26,17 +26,7 @@ require('tty-colors');
 
 	socket = new WebSocket('ws://' + location.hostname + ':' + config.port);
 
-	socket.onopen = function () {
-		//console.log('ws: connection established');
-		/*if ( buffer.length > 0 ) {
-			socket.send(JSON.stringify(buffer));
-			buffer = [];
-		}*/
-	};
-
 	socket.onclose = function () {
-		//console.log('ws: connection closed');
-
 		setTimeout(function () {
 			connect();
 		}, 5000);
