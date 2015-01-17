@@ -14,46 +14,46 @@
 
 	&.page {
 		// hidden by default
-		width      : unit(@width,  px);
-		height     : unit(@height, px);
+		width:      unit(@width, px);
+		height:     unit(@height, px);
 		//padding    : unit(@availTop, px) unit(@availRight, px) unit(@availBottom, px) unit(@availLeft, px);
-		padding    : 0;
-		position   : absolute;
-		visibility : hidden;
-		overflow   : hidden;
+		padding:    0;
+		position:   absolute;
+		visibility: hidden;
+		overflow:   hidden;
 
 		// only one active page is visible
 		&.active {
-			visibility : visible
+			visibility: visible
 		}
 	}
 
 	&.modal {
-		width            : unit(@width, px);
-		height           : unit(@height, px);
-		top              : 0;
-		left             : 0;
-		position         : absolute;
-		background-color : black;
-		opacity          : 0.6;
+		width:            unit(@width, px);
+		height:           unit(@height, px);
+		top:              0;
+		left:             0;
+		position:         absolute;
+		background-color: black;
+		opacity:          0.6;
 	}
 
 	&.modalBox {
 		// inheritance
 		.component.modal();
 
-		display : table;
+		display: table;
 
 		> div.cell {
-			display        : table-cell;
-			vertical-align : middle;
-			text-align     : center;
+			display:        table-cell;
+			vertical-align: middle;
+			text-align:     center;
 
 			> div.content {
-				display          : inline-block;
-				background-color : #333;
-				min-width        : 20%;
-				min-height       : 10%;
+				display:          inline-block;
+				background-color: #333;
+				min-width:        20%;
+				min-height:       10%;
 			}
 		}
 	}
@@ -70,63 +70,62 @@
 	}
 
 	&.panel {
-		padding : unit(@panelPaddingY, px) unit(@panelPaddingX, px);
+		padding:          unit(@panelPaddingY, px) unit(@panelPaddingX, px);
 		background-color: #222;
 	}
 
-//	&.infoPanel {
-//		.head {
-//			background-color: #333;
-//			padding : unit(@panelPaddingY, px) unit(@panelPaddingX, px);
-//		}
-//		.body {
-//			background-color: #222;
-//			padding : unit(@panelPaddingY, px) unit(@panelPaddingX, px);
-//		}
-//	}
-
+	//	&.infoPanel {
+	//		.head {
+	//			background-color: #333;
+	//			padding : unit(@panelPaddingY, px) unit(@panelPaddingX, px);
+	//		}
+	//		.body {
+	//			background-color: #222;
+	//			padding : unit(@panelPaddingY, px) unit(@panelPaddingX, px);
+	//		}
+	//	}
 
 	&.button {
-		background-color : #002042;
+		background-color: #002042;
 		//outline          : 2px solid grey;
 		//outline-offset   : -2px;
-		display          : inline-block;
-		padding          : unit(@buttonPaddingY, px) unit(@buttonPaddingX, px);
-		height           : unit(@buttonHeight, px);
-		line-height      : unit(@buttonHeight, px);
-		vertical-align   : middle;
-		cursor           : pointer;
+		display:          inline-block;
+		padding:          unit(@buttonPaddingY, px) unit(@buttonPaddingX, px);
+		height:           unit(@buttonHeight, px);
+		line-height:      unit(@buttonHeight, px);
+		vertical-align:   middle;
+		cursor:           pointer;
 
 		&.icon {
-			padding-left: unit(@buttonHeight + @buttonPaddingX, px);
-			background-repeat: no-repeat;
+			padding-left:        unit(@buttonHeight + @buttonPaddingX, px);
+			background-repeat:   no-repeat;
 			background-position: unit(@buttonPaddingX, px) center;
 		}
 
 		&:hover {
-			background-color : #005b9c;
+			background-color: #005b9c;
 		}
 
 		&.focus {
-			background-color : #005b9c;
+			background-color: #005b9c;
 			//outline : 2px solid red;
 		}
 
 		&.click {
-			background-color : #0073c4;
+			background-color: #0073c4;
 		}
 	}
 
 	&.checkBox {
-		cursor: pointer;
-		display: inline-block;
-		width: unit(@checkBoxWidth, px);
-		height: unit(@checkBoxHeight, px);
-		line-height: unit(@checkBoxHeight, px);
+		cursor:           pointer;
+		display:          inline-block;
+		width:            unit(@checkBoxWidth, px);
+		height:           unit(@checkBoxHeight, px);
+		line-height:      unit(@checkBoxHeight, px);
 		//border: 3px solid #005b9c;
 		background-color: #333;
 		// hack to get rid of gap
-		vertical-align: bottom;
+		vertical-align:   bottom;
 
 		&.checked {
 			background-color: orange;
@@ -141,29 +140,29 @@
 		background-color: #333;
 
 		table {
-			width: 100%;
+			width:        100%;
 			table-layout: fixed;
 
 			td.item {
-				cursor: pointer;
-				padding: unit(@gridItemPaddingY, px) unit(@gridItemPaddingX, px);
+				cursor:         pointer;
+				padding:        unit(@gridItemPaddingY, px) unit(@gridItemPaddingX, px);
 				vertical-align: middle;
-				text-align: center;
+				text-align:     center;
 			}
 			td.item.mark {
-				color: black;
+				color:            black;
 				background-color: green;
 			}
 			td.item.focus {
-				color: black;
+				color:            black;
 				background-color: orange;
 			}
 			td.item.focus.mark {
-				color: white;
+				color:            white;
 				background-color: #AE7200;
 			}
 			td.item.disable {
-				color: grey;
+				color:            grey;
 				background-color: #111;
 			}
 		}
@@ -173,107 +172,110 @@
 		background-color: #333;
 		//display: table;
 		//table-layout: fixed;
-		width: 100%;
+		width:            100%;
 		//min-height: 250px;
 
 		//> .body {
 		//display : table-column;
 
 		> .item {
-			cursor: pointer;
-			padding: unit(@listItemPaddingY, px) unit(@listItemPaddingX, px);
+			cursor:         pointer;
+			padding:        unit(@listItemPaddingY, px) unit(@listItemPaddingX, px);
 			vertical-align: middle;
-			height: unit(@listItemHeight, px);
-			line-height: unit(@listItemHeight, px);
+			height:         unit(@listItemHeight, px);
+			line-height:    unit(@listItemHeight, px);
 			//display: table-row;
 
 			&.mark {
 				background-color: green;
-				color: black;
+				color:            black;
 			}
 
 			&.focus {
 				background-color: orange;
-				color: black;
+				color:            black;
 			}
 
 			&.focus.mark {
 				background-color: #AE7200;
-				color: white;
+				color:            white;
 			}
 		}
 		//}
 	}
 	&.list.horizontal {
-		display: table;
+		display:      table;
 		table-layout: fixed;
-		width: 100%;
+		width:        100%;
 		//min-height: 50px;
 
 		//> .body {
 		//display : table-row;
 
 		> .item {
-			display        : table-cell;
-			text-align     : center;
-			vertical-align : middle;
+			display:        table-cell;
+			text-align:     center;
+			vertical-align: middle;
 		}
 		//}
 	}
 
 	&.progressBar {
-		height: unit(@progressBarHeight, px);
+		height:           unit(@progressBarHeight, px);
 		background-color: grey;
 
 		> .value {
-			height: unit(@progressBarHeight, px);
+			height:           unit(@progressBarHeight, px);
 			background-color: orange;
 		}
 	}
 
 	&.scrollBar {
 		background-color: grey;
-		position:relative;
+		position:         relative;
 
 		&.horizontal {
 			height: 8px;
-			width: 100%;
+			width:  100%;
 		}
 		&.vertical {
 			height: 100%;
-			width: 8px;
+			width:  8px;
 		}
 
 		> .value {
 			background-color: orange;
-			height: 8px;
-			width: 8px;
+			height:           8px;
+			width:            8px;
 		}
 	}
 
-
 	&.input {
-		width: 200px;
-		height: 40px;
-		border: 1px solid rgb(204, 204, 204);
-		cursor: text;
-		overflow: hidden;
+		width:     200px;
+		height:    40px;
+		border:    1px solid rgb(204, 204, 204);
+		cursor:    text;
+		overflow:  hidden;
 		font-size: 37px;
-		color: #888;
+		color:     #888;
 		.caret {
 			margin-top: 2px;
-			height: 36px;
-			width: 1px;
-			border: none;
+			height:     36px;
+			width:      1px;
+			border:     none;
 			background: #ccc;
-			display: block;
-			float:left;
+			display:    block;
+			float:      left;
 		}
 		.char {
-			color: #000;
+			color:      #000;
 			margin-top: 0;
-			display: block;
-			float:left;
+			display:    block;
+			float:      left;
 		}
+	}
+
+	&.widget {
+		position: absolute;
 	}
 }
