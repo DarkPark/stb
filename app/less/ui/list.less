@@ -1,0 +1,57 @@
+// component styles
+//
+// @author Stanislav Kalashnik <sk@infomir.eu>
+// @license GNU GENERAL PUBLIC LICENSE Version 3
+
+.component.list {
+	background-color: #333;
+	//display: table;
+	//table-layout: fixed;
+	width:            100%;
+	//min-height: 250px;
+
+	//> .body {
+	//display : table-column;
+
+	> .item {
+		cursor:         pointer;
+		padding:        unit(@listItemPaddingY, px) unit(@listItemPaddingX, px);
+		vertical-align: middle;
+		height:         unit(@listItemHeight, px);
+		line-height:    unit(@listItemHeight, px);
+		//display: table-row;
+
+		&.mark {
+			background-color: green;
+			color:            black;
+		}
+
+		&.focus {
+			background-color: orange;
+			color:            black;
+		}
+
+		&.focus.mark {
+			background-color: #AE7200;
+			color:            white;
+		}
+	}
+	//}
+}
+
+.component.list.horizontal {
+	display:      table;
+	table-layout: fixed;
+	width:        100%;
+	//min-height: 50px;
+
+	//> .body {
+	//display : table-row;
+
+	> .item {
+		display:        table-cell;
+		text-align:     center;
+		vertical-align: middle;
+	}
+	//}
+}

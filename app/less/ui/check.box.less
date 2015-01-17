@@ -1,0 +1,20 @@
+// component styles
+//
+// @author Stanislav Kalashnik <sk@infomir.eu>
+// @license GNU GENERAL PUBLIC LICENSE Version 3
+
+.component.checkBox {
+	cursor:           pointer;
+	display:          inline-block;
+	width:            unit(@checkBoxWidth, px);
+	height:           unit(@checkBoxHeight, px);
+	line-height:      unit(@checkBoxHeight, px);
+	//border: 3px solid #005b9c;
+	background-color: #333;
+	// hack to get rid of gap
+	vertical-align:   bottom;
+
+	&.checked {
+		background-color: orange;
+	}
+}
