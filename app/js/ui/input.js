@@ -34,7 +34,7 @@ var Component = require('stb/component'),
  *     });
  */
 function Input ( config ) {
-	var self = this, i;
+	var self = this;
 	// sanitize
 	config = config || {};
 
@@ -100,8 +100,7 @@ function Input ( config ) {
 
 	this.addListener('keydown', function ( event ) {
 		var char;
-		event.preventDefault();
-		event.stop = true;
+
 		if ( event.code >= 1000 ) {
 
 		} else if ( event.code === keys.delete ) {
@@ -117,7 +116,7 @@ function Input ( config ) {
 		} else if ( event.code === keys.home ) {
 			self.moveCaret(0);
 		} else {
-			char = String.fromCharCode(event.code);
+			char = String.fromCharCode(event.code).toLowerCase();
 			if ( char !== '' ) {
 				self.addChar(char, self.$caret.index);
 			}
@@ -231,8 +230,16 @@ Input.prototype.setValue = function ( value ) {
 	if ( DEBUG ) {
 		if ( typeof value !== 'string' ) { throw 'value must be a string'; }
 	}
+	if ( len > 0 ) {
+		this.length = 0;
+		this.$caret.index = 0;
+		this.value = '';
+		while ( this.$body.firstChild ) {
+			this.$body.removeChild(this.$body.firstChild);
+		}
+	}
 	for( i = 0; i < len; ++i ) {
-		this.addChar(value[i]);
+		this.addChar(value[i], this.length);
 	}
 };
 
