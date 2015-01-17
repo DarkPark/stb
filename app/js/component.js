@@ -44,8 +44,6 @@ var Emitter = require('./emitter'),
  * });
  * component.add( ... );
  * component.focus();
- *
- * @todo find a solution to solve missing page link
  */
 function Component ( config ) {
 	// current execution context

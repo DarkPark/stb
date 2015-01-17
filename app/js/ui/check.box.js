@@ -108,6 +108,10 @@ CheckBox.prototype.constructor = CheckBox;
 CheckBox.prototype.set = function ( value ) {
 	var i, l;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	if ( this.value !== value ) {
 		// going to be turned on and assigned to some group
 		if ( !this.value && this.group !== null ) {

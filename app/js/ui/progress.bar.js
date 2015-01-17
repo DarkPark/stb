@@ -106,6 +106,10 @@ ProgressBar.prototype.constructor = ProgressBar;
 ProgressBar.prototype.set = function ( value ) {
 	var prevValue = this.value;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	// value changed but in the given range
 	if ( this.value !== value && value <= this.max && value >= this.min ) {
 		if ( DEBUG ) {
@@ -151,12 +155,17 @@ ProgressBar.prototype.set = function ( value ) {
 /**
  * Init or re-init current max or/and min or/and value.
  *
- * @param {Object} [config={}] init parameters
+ * @param {Object} config init parameters
  * @param {number} [config.value=0] initial value
  * @param {number} [config.max=100] max progress value
  * @param {number} [config.min=0] min progress value
  */
 ProgressBar.prototype.init = function ( config ) {
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	}
+
 	// assignment of configuration parameters if they were transferred
 	if ( config.max !== undefined ) {
 		if ( DEBUG ) {

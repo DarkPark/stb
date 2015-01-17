@@ -175,6 +175,11 @@ Grid.prototype.constructor = Grid;
  * @param {*} data associated with this item data
  */
 Grid.prototype.renderItemDefault = function ( $item, data ) {
+	if ( DEBUG ) {
+		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
+	}
+
 	$item.innerText = data.value;
 };
 
@@ -197,6 +202,11 @@ Grid.prototype.renderItem = Grid.prototype.renderItemDefault;
  */
 function normalize ( data ) {
 	var i, j, item;
+
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+	}
 
 	// rows
 	for ( i = 0; i < data.length; i++ ) {
@@ -247,6 +257,11 @@ function normalize ( data ) {
 function fill ( map, x, y, dX, dY, value ) {
 	var i, j;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 6 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(map) ) { throw 'wrong map type'; }
+	}
+
 	// rows
 	for ( i = y; i < y + dY; i++ ) {
 		// expand map rows
@@ -281,6 +296,11 @@ function map ( data ) {
 	var result = [],
 		i, j, item;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+	}
+
 	// rows
 	for ( i = 0; i < data.length; i++ ) {
 		// cols
@@ -301,7 +321,7 @@ function map ( data ) {
 /**
  * Init or re-init of the component inner structures and HTML.
  *
- * @param {Object} [config={}] init parameters (subset of constructor config params)
+ * @param {Object} config init parameters (subset of constructor config params)
  */
 Grid.prototype.init = function ( config ) {
 	var self = this,
@@ -330,6 +350,7 @@ Grid.prototype.init = function ( config ) {
 		};
 
 	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
 	}
 
@@ -467,6 +488,11 @@ Grid.prototype.move = function ( direction ) {
 		move     = true,
 		overflow = false,
 		cycle    = false;
+
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( Number(direction) !== direction ) { throw 'direction must be a number'; }
+	}
 
 	// shift till full stop
 	while ( move ) {
@@ -617,6 +643,10 @@ Grid.prototype.move = function ( direction ) {
 Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	// different element
 	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
 		if ( DEBUG ) {
@@ -681,6 +711,7 @@ Grid.prototype.focusItem = function ( $item ) {
  */
 Grid.prototype.markItem = function ( $item, state ) {
 	if ( DEBUG ) {
+		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
 		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
 		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
 		if ( Boolean(state) !== state ) { throw 'state must be boolean'; }

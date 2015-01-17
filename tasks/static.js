@@ -61,7 +61,7 @@ gulp.task('static', function () {
 		});
 
 		if ( config.livereload ) {
-			glr.listen({silent: true});
+			glr.listen({quiet: true});
 
 			// reload
 			gulp.watch(['./build/**/*.{html,js,css}']).on('change', function ( file ) {

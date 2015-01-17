@@ -1,6 +1,6 @@
 {
 	"name": "stb",
-	"version": "0.4.5",
+	"version": "0.4.6",
 	"description": "STB single page application framework.",
 	"author": {
 		"name": "Stanislav Kalashnik",
@@ -20,7 +20,7 @@
 		"gulp-conflict": "^0.3.0",
 		"gulp-eslint": "^0.2.0",
 		"gulp-jade": "^0.10.0",
-		"gulp-livereload": "^3.0.2",
+		"gulp-livereload": "^3.4.0",
 		"gulp-plumber": "^0.6.6",
 		"gulp-rename": "^1.2.0",
 		"gulp-runtime": "^0.5.3",
@@ -41,6 +41,7 @@
 		"stb",
 		"device",
 		"tv",
+		"devkit",
 		"framework"
 	],
 	"license": "GPL-3.0"
