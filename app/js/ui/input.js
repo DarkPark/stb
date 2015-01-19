@@ -58,19 +58,31 @@ function Input ( config ) {
 	this.placeholder = '';
 
 	/**
+	 * Caret element, which shows current cursor position.
 	 *
 	 * @type {HTMLElement}
 	 */
 	this.$caret = document.createElement('span');
 
-	this.type = Input.TYPE_NORMAL;
+	/**
+	 * Input type, now available only text and password.
+	 * Different logic with different types.
+	 * TYPE_TEXT - normal input.
+	 * TYPE_PASSWORD - hidden input, all chars replaced with '*', but real value is located in 'this.value'.
+	 *
+	 * @type {number}
+	 */
+	this.type = this.TYPE_TEXT;
 
-	// can't accept focus
-	if ( config.type === Input.TYPE_PASSWORD ) {
-		this.type = Input.TYPE_PASSWORD;
+	// parent init
+	Component.call(this, config);
+
+	// type passed
+	if ( config.type !== undefined ) {
+		this.type = config.type;
 	}
 
-	// can't accept focus
+	// default value passed
 	if ( config.value !== undefined ) {
 		this.setValue(config.value);
 	}
@@ -78,9 +90,6 @@ function Input ( config ) {
 	if ( config.placeholder !== undefined ) {
 		this.placeholder = config.placeholder;
 	}
-
-	// parent init
-	Component.call(this, config);
 
 	// correct CSS class names
 	this.$node.classList.add('input');
@@ -99,28 +108,37 @@ function Input ( config ) {
 	}
 
 	this.addListener('keydown', function ( event ) {
-		var char;
+		switch ( event.code ) {
+			case 46: // keys.delete
+				self.removeChar(self.$caret.index + 1);
+				break;
 
-		if ( event.code >= 1000 ) {
+			case keys.back:
+				self.removeChar(self.$caret.index - 1);
+				break;
 
-		} else if ( event.code === keys.delete ) {
-			self.removeChar(self.$caret.index + 1);
-		} else if ( event.code === keys.back ) {
-			self.removeChar(self.$caret.index - 1);
-		} else if ( event.code === keys.left ) {
-			self.moveCaret(self.$caret.index - 1);
-		} else if ( event.code === keys.right ) {
-			self.moveCaret(self.$caret.index + 1);
-		} else if ( event.code === keys.end ) {
-			self.moveCaret(self.length);
-		} else if ( event.code === keys.home ) {
-			self.moveCaret(0);
-		} else {
-			char = String.fromCharCode(event.code).toLowerCase();
-			if ( char !== '' ) {
-				self.addChar(char, self.$caret.index);
-			}
+			case keys.left:
+				self.moveCaret(self.$caret.index - 1);
+				break;
+
+			case keys.right:
+				self.moveCaret(self.$caret.index + 1);
+				break;
+
+			case keys.end:
+				self.moveCaret(self.length);
+				break;
+
+			case keys.home:
+				self.moveCaret(0);
+				break;
+
+			default: break;
 		}
+	});
+
+	this.addListener('keypress', function ( event ) {
+		self.addChar(String.fromCharCode(event.code), self.$caret.index);
 	});
 }
 
@@ -130,8 +148,8 @@ Input.prototype = Object.create(Component.prototype);
 Input.prototype.constructor = Input;
 
 // input types
-Input.TYPE_NORMAL   = 0;
-Input.TYPE_PASSWORD = 1;
+Input.prototype.TYPE_TEXT     = 0;
+Input.prototype.TYPE_PASSWORD = 1;
 
 
 /**
@@ -155,9 +173,9 @@ Input.prototype.addChar = function ( char, index ) {
 		span = document.createElement('span');
 		span.className = 'char';
 		this.value += char;
-		if ( this.type === Input.TYPE_NORMAL ) {
+		if ( this.type === Input.TYPE_TEXT ) {
 			span.innerText = char;
-		} else {
+		} else { // input type is TYPE_PASSWORD
 			span.innerText = '*';
 		}
 		if ( index >= this.length ) {
