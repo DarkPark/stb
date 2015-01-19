@@ -121,8 +121,11 @@ function List ( config ) {
 				self.move(event.code);
 				break;
 			case keys.ok:
-				// notify listeners
-				self.emit('click:item', {$item: self.$focusItem, event: event});
+				// there are some listeners
+				if ( self.events['click:item'] !== undefined ) {
+					// notify listeners
+					self.emit('click:item', {$item: self.$focusItem, event: event});
+				}
 				break;
 		}
 	});
@@ -228,8 +231,12 @@ List.prototype.init = function ( config ) {
 		onClick  = function ( event ) {
 			if ( this.data !== undefined ) {
 				self.focusItem(this);
-				// notify listeners
-				self.emit('click:item', {$item: this, event: event});
+
+				// there are some listeners
+				if ( self.events['click:item'] !== undefined ) {
+					// notify listeners
+					self.emit('click:item', {$item: this, event: event});
+				}
 			}
 		},
 		item, i;
@@ -357,8 +364,11 @@ List.prototype.renderView = function ( index ) {
 			index++;
 		}
 
-		// notify listeners
-		this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
+		// there are some listeners
+		if ( this.events['move:view'] !== undefined ) {
+			// notify listeners
+			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
+		}
 
 		// full rebuild
 		return true;
@@ -432,11 +442,18 @@ List.prototype.move = function ( direction ) {
 			if ( this.cycle ) {
 				// jump to the end of the list
 				this.move(keys.end);
-				// notify listeners
-				this.emit('cycle', {direction: direction});
+
+				// there are some listeners
+				if ( this.events['cycle'] !== undefined ) {
+					// notify listeners
+					this.emit('cycle', {direction: direction});
+				}
 			} else {
-				// notify listeners
-				this.emit('overflow', {direction: direction});
+				// there are some listeners
+				if ( this.events['overflow'] !== undefined ) {
+					// notify listeners
+					this.emit('overflow', {direction: direction});
+				}
 			}
 		}
 	}
@@ -453,11 +470,18 @@ List.prototype.move = function ( direction ) {
 			if ( this.cycle ) {
 				// jump to the beginning of the list
 				this.move(keys.home);
-				// notify listeners
-				this.emit('cycle', {direction: direction});
+
+				// there are some listeners
+				if ( this.events['cycle'] !== undefined ) {
+					// notify listeners
+					this.emit('cycle', {direction: direction});
+				}
 			} else {
-				// notify listeners
-				this.emit('overflow', {direction: direction});
+				// there are some listeners
+				if ( this.events['overflow'] !== undefined ) {
+					// notify listeners
+					this.emit('overflow', {direction: direction});
+				}
 			}
 		}
 	}
@@ -545,15 +569,18 @@ List.prototype.focusItem = function ( $item ) {
 			// style
 			$prev.classList.remove('focus');
 
-			/**
-			 * Remove focus from an element.
-			 *
-			 * @event module:stb/ui/list~List#blur:item
-			 *
-			 * @type {Object}
-			 * @property {Element} $item previously focused HTML element
-			 */
-			this.emit('blur:item', {$item: $prev});
+			// there are some listeners
+			if ( this.events['blur:item'] !== undefined ) {
+				/**
+				 * Remove focus from an element.
+				 *
+				 * @event module:stb/ui/list~List#blur:item
+				 *
+				 * @type {Object}
+				 * @property {Element} $item previously focused HTML element
+				 */
+				this.emit('blur:item', {$item: $prev});
+			}
 		}
 		// reassign
 		this.$focusItem = $item;
@@ -563,16 +590,19 @@ List.prototype.focusItem = function ( $item ) {
 		// correct CSS
 		$item.classList.add('focus');
 
-		/**
-		 * Set focus to an element.
-		 *
-		 * @event module:stb/ui/list~List#focus:item
-		 *
-		 * @type {Object}
-		 * @property {Element} $prev old/previous focused HTML element
-		 * @property {Element} $curr new/current focused HTML element
-		 */
-		this.emit('focus:item', {$prev: $prev, $curr: $item});
+		// there are some listeners
+		if ( this.events['focus:item'] !== undefined ) {
+			/**
+			 * Set focus to an element.
+			 *
+			 * @event module:stb/ui/list~List#focus:item
+			 *
+			 * @type {Object}
+			 * @property {Element} $prev old/previous focused HTML element
+			 * @property {Element} $curr new/current focused HTML element
+			 */
+			this.emit('focus:item', {$prev: $prev, $curr: $item});
+		}
 
 		return true;
 	}

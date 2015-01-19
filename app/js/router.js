@@ -147,8 +147,11 @@ router.init = function ( pages ) {
 			}
 		}
 
-		// notify listeners
-		this.emit('init', {pages: pages});
+		// there are some listeners
+		if ( this.events['init'] !== undefined ) {
+			// notify listeners
+			this.emit('init', {pages: pages});
+		}
 
 		return true;
 	}
@@ -230,8 +233,11 @@ router.show = function ( page, data ) {
 		page.active  = true;
 		this.current = page;
 
-		// notify listeners
-		page.emit('show', {page: page, data: data});
+		// there are some listeners
+		if ( page.events['show'] !== undefined ) {
+			// notify listeners
+			page.emit('show', {page: page, data: data});
+		}
 
 		debug.log('component ' + page.constructor.name + '.' + page.id + ' show', 'green');
 
@@ -258,8 +264,11 @@ router.hide = function ( page ) {
 		page.active  = false;
 		this.current = null;
 
-		// notify listeners
-		page.emit('hide', {page: page});
+		// there are some listeners
+		if ( page.events['hide'] !== undefined ) {
+			// notify listeners
+			page.emit('hide', {page: page});
+		}
 
 		debug.log('component ' + page.constructor.name + '.' + page.id + ' hide', 'grey');
 
@@ -300,8 +309,11 @@ router.navigate = function ( name, data ) {
 		this.hide(this.current);
 		this.show(pageTo, data);
 
-		// notify listeners
-		this.emit('navigate', {from: pageFrom, to: pageTo});
+		// there are some listeners
+		if ( this.events['navigate'] !== undefined ) {
+			// notify listeners
+			this.emit('navigate', {from: pageFrom, to: pageTo});
+		}
 
 		// store
 		this.history.push(pageTo);
@@ -344,8 +356,11 @@ router.back = function () {
 			this.hide(this.current);
 			this.show(pageTo);
 
-			// notify listeners
-			this.emit('navigate', {from: pageFrom, to: pageTo});
+			// there are some listeners
+			if ( this.events['navigate'] !== undefined ) {
+				// notify listeners
+				this.emit('navigate', {from: pageFrom, to: pageTo});
+			}
 
 			return true;
 		}

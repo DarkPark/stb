@@ -206,15 +206,18 @@ function Component ( config ) {
 			// activate if possible
 			self.focus();
 
-			/**
-			 * Mouse click event.
-			 *
-			 * @event module:stb/component~Component#click
-			 *
-			 * @type {Object}
-			 * @property {Event} event click event data
-			 */
-			self.emit('click', {event: event});
+			// there are some listeners
+			if ( self.events['click'] !== undefined ) {
+				/**
+				 * Mouse click event.
+				 *
+				 * @event module:stb/component~Component#click
+				 *
+				 * @type {Object}
+				 * @property {Event} event click event data
+				 */
+				self.emit('click', {event: event});
+			}
 
 			// not prevented
 			//if ( !event.stop ) {
@@ -287,15 +290,18 @@ Component.prototype.add = function ( child ) {
 			this.$body.appendChild(child.$node);
 		}
 
-		/**
-		 * A child component is added.
-		 *
-		 * @event module:stb/component~Component#add
-		 *
-		 * @type {Object}
-		 * @property {Component} child new component added
-		 */
-		this.emit('add', {item: child});
+		// there are some listeners
+		if ( this.events['add'] !== undefined ) {
+			/**
+			 * A child component is added.
+			 *
+			 * @event module:stb/component~Component#add
+			 *
+			 * @type {Object}
+			 * @property {Component} child new component added
+			 */
+			this.emit('add', {item: child});
+		}
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' new child: ' + child.constructor.name + '.' + child.id);
 	}
@@ -347,12 +353,15 @@ Component.prototype.remove = function () {
 	this.removeAllListeners();
 	this.$node.parentNode.removeChild(this.$node);
 
-	/**
-	 * Delete this component.
-	 *
-	 * @event module:stb/component~Component#remove
-	 */
-	this.emit('remove');
+	// there are some listeners
+	if ( this.events['remove'] !== undefined ) {
+		/**
+		 * Delete this component.
+		 *
+		 * @event module:stb/component~Component#remove
+		 */
+		this.emit('remove');
+	}
 
 	debug.log('component ' + this.constructor.name + '.' + this.id + ' remove', 'red');
 };
@@ -387,12 +396,15 @@ Component.prototype.focus = function () {
 		activePage.activeComponent = activeItem = this;
 		activeItem.$node.classList.add('focus');
 
-		/**
-		 * Make this component focused.
-		 *
-		 * @event module:stb/component~Component#focus
-		 */
-		activeItem.emit('focus');
+		// there are some listeners
+		if ( activeItem.events['focus'] !== undefined ) {
+			/**
+			 * Make this component focused.
+			 *
+			 * @event module:stb/component~Component#focus
+			 */
+			activeItem.emit('focus');
+		}
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' focus');
 
@@ -421,12 +433,15 @@ Component.prototype.blur = function () {
 		this.$node.classList.remove('focus');
 		activePage.activeComponent = null;
 
-		/**
-		 * Remove focus from this component.
-		 *
-		 * @event module:stb/component~Component#blur
-		 */
-		this.emit('blur');
+		// there are some listeners
+		if ( this.events['blur'] !== undefined ) {
+			/**
+			 * Remove focus from this component.
+			 *
+			 * @event module:stb/component~Component#blur
+			 */
+			this.emit('blur');
+		}
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' blur', 'grey');
 
@@ -453,12 +468,15 @@ Component.prototype.show = function () {
 		// flag
 		this.visible = true;
 
-		/**
-		 * Make the component visible.
-		 *
-		 * @event module:stb/component~Component#show
-		 */
-		this.emit('show');
+		// there are some listeners
+		if ( this.events['show'] !== undefined ) {
+			/**
+			 * Make the component visible.
+			 *
+			 * @event module:stb/component~Component#show
+			 */
+			this.emit('show');
+		}
 
 		return true;
 	}
@@ -483,12 +501,15 @@ Component.prototype.hide = function () {
 		// flag
 		this.visible = false;
 
-		/**
-		 * Make the component hidden.
-		 *
-		 * @event module:stb/component~Component#hide
-		 */
-		this.emit('hide');
+		// there are some listeners
+		if ( this.events['hide'] !== undefined ) {
+			/**
+			 * Make the component hidden.
+			 *
+			 * @event module:stb/component~Component#hide
+			 */
+			this.emit('hide');
+		}
 
 		return true;
 	}

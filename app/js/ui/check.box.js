@@ -127,15 +127,18 @@ CheckBox.prototype.set = function ( value ) {
 		// set visible changes
 		this.$node.classList.toggle('checked');
 
-		/**
-		 * Update progress value.
-		 *
-		 * @event module:stb/ui/check.box~CheckBox#change
-		 *
-		 * @type {Object}
-		 * @property {boolean} value current check state
-		 */
-		this.emit('change', {value: this.value});
+		// there are some listeners
+		if ( this.events['change'] !== undefined ) {
+			/**
+			 * Update progress value.
+			 *
+			 * @event module:stb/ui/check.box~CheckBox#change
+			 *
+			 * @type {Object}
+			 * @property {boolean} value current check state
+			 */
+			this.emit('change', {value: this.value});
+		}
 
 		return true;
 	}
