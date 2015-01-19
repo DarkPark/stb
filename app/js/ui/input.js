@@ -197,7 +197,12 @@ Input.prototype.addChar = function ( char, index ) {
 		span.index = index;
 		++this.$caret.index;
 		++this.length;
-		this.emit('char:add', {char: char, index: index, length: this.length})
+
+		// there are some listeners
+		if ( this.events['char:add'] !== undefined ) {
+			// notify listeners
+			this.emit('char:add', {char: char, index: index, length: this.length});
+		}
 	}
 };
 
@@ -221,7 +226,12 @@ Input.prototype.removeChar = function ( index ) {
 		--this.length;
 		this.value = this.value.substr(0, this.length);
 		this.$body.removeChild(this.$body.children.item(this.length));
-		this.emit('char:remove', {char: char, index: index, length: this.length})
+
+		// there are some listeners
+		if ( this.events['char:remove'] !== undefined ) {
+			// notify listeners
+			this.emit('char:remove', {char: char, index: index, length: this.length});
+		}
 	}
 	if ( this.length === 0 && this.placeholder.length > 0 ) {
 		this.$body.removeChild(this.$caret);

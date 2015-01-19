@@ -123,27 +123,33 @@ ProgressBar.prototype.set = function ( value ) {
 		value = Math.abs(this.value - this.min) / this.step;
 
 		if ( value === 100 ) {
-			/**
-			 * Set progress to its maximum value.
-			 *
-			 * @event module:stb/ui/progress.bar~ProgressBar#done
-			 */
-			this.emit('done');
+			// there are some listeners
+			if ( this.events['done'] !== undefined ) {
+				/**
+				 * Set progress to its maximum value.
+				 *
+				 * @event module:stb/ui/progress.bar~ProgressBar#done
+				 */
+				this.emit('done');
+			}
 		}
 
 		// set progress bar width
 		this.$body.style.width = value + '%';
 
-		/**
-		 * Update progress value.
-		 *
-		 * @event module:stb/ui/progress.bar~ProgressBar#change
-		 *
-		 * @type {Object}
-		 * @property {number} prev old/previous progress value
-		 * @property {number} curr new/current progress value
-		 */
-		this.emit('change', {curr: this.value, prev: prevValue});
+		// there are some listeners
+		if ( this.events['change'] !== undefined ) {
+			/**
+			 * Update progress value.
+			 *
+			 * @event module:stb/ui/progress.bar~ProgressBar#change
+			 *
+			 * @type {Object}
+			 * @property {number} prev old/previous progress value
+			 * @property {number} curr new/current progress value
+			 */
+			this.emit('change', {curr: this.value, prev: prevValue});
+		}
 
 		return true;
 	}

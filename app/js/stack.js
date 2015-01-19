@@ -83,8 +83,11 @@ Stack.prototype.push = function ( data ) {
 	// link
 	this.current = data;
 
-	// notify listeners
-	this.emit('push', {prev: prev, curr: this.current});
+	// there are some listeners
+	if ( this.events['push'] !== undefined ) {
+		// notify listeners
+		this.emit('push', {prev: prev, curr: this.current});
+	}
 };
 
 
@@ -119,8 +122,11 @@ Stack.prototype.pop = function () {
 		// set top element
 		this.current = this.data.length > 0 ? this.data[this.data.length - 1] : null;
 
-		// notify listeners
-		this.emit('pop', {prev: prev, curr: this.current});
+		// there are some listeners
+		if ( this.events['pop'] !== undefined ) {
+			// notify listeners
+			this.emit('pop', {prev: prev, curr: this.current});
+		}
 	}
 
 	return prev;

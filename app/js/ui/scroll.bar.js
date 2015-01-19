@@ -43,7 +43,7 @@ function ScrollBar ( config ) {
 	 *
 	 * @type {number}
 	 */
-	this.max = 100;
+	this.max = 0;
 
 	/**
 	 * Min scroll value.
@@ -58,8 +58,6 @@ function ScrollBar ( config ) {
 	 * @type {number}
 	 */
 	this.value = 0;
-
-	//this.
 
 	this.type = ScrollBar.TYPE_VERTICAL;
 
@@ -95,8 +93,8 @@ function ScrollBar ( config ) {
 ScrollBar.prototype = Object.create(Component.prototype);
 ScrollBar.prototype.constructor = ScrollBar;
 
-ScrollBar.TYPE_VERTICAL = 1;
-ScrollBar.TYPE_HORIZONTAL = 2;
+ScrollBar.prototype.TYPE_VERTICAL   = 1;
+ScrollBar.prototype.TYPE_HORIZONTAL = 2;
 
 
 /**
@@ -180,7 +178,7 @@ ScrollBar.prototype.init = function ( config ) {
  */
 ScrollBar.prototype.scrollTo = function ( value ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 	}
 
 	// value changed but in the given range
@@ -192,12 +190,16 @@ ScrollBar.prototype.scrollTo = function ( value ) {
 
 		if ( value >= this.max ) {
 			value = this.max;
-			/**
-			 * Set scroll to its maximum value.
-			 *
-			 * @event module:stb/ui/scroll.bar~ScrollBar#done
-			 */
-			this.emit('done');
+
+			// there are some listeners
+			if ( this.events['done'] !== undefined ) {
+				/**
+				 * Set scroll to its maximum value.
+				 *
+				 * @event module:stb/ui/scroll.bar~ScrollBar#done
+				 */
+				this.emit('done');
+			}
 		}
 
 		// set scroll bar width
@@ -207,16 +209,20 @@ ScrollBar.prototype.scrollTo = function ( value ) {
 			this.$body.style.left = ((value - this.min) * this.ratio) + 'px';
 		}
 
-		/**
-		 * Update scroll value.
-		 *
-		 * @event module:stb/ui/scroll.bar~ScrollBar#change
-		 *
-		 * @type {Object}
-		 * @property {number} prev old/previous scroll value
-		 * @property {number} curr new/current scroll value
-		 */
-		this.emit('change', {curr: value, prev: this.value});
+		// there are some listeners
+		if ( this.events['change'] !== undefined ) {
+			/**
+			 * Update scroll value.
+			 *
+			 * @event module:stb/ui/scroll.bar~ScrollBar#change
+			 *
+			 * @type {Object}
+			 * @property {number} prev old/previous scroll value
+			 * @property {number} curr new/current scroll value
+			 */
+			this.emit('change', {curr: value, prev: this.value});
+		}
+
 		// set new value
 		this.value = value;
 

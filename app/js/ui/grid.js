@@ -141,8 +141,11 @@ function Grid ( config ) {
 				self.move(event.code);
 				break;
 			case keys.ok:
-				// notify listeners
-				self.emit('click:item', {$item: self.$focusItem, event: event});
+				// there are some listeners
+				if ( self.events['click:item'] !== undefined ) {
+					// notify listeners
+					self.emit('click:item', {$item: self.$focusItem, event: event});
+				}
 				break;
 		}
 	});
@@ -344,8 +347,11 @@ Grid.prototype.init = function ( config ) {
 				// visualize
 				self.focusItem(this);
 
-				// notify listeners
-				self.emit('click:item', {$item: this, event: event});
+				// there are some listeners
+				if ( self.events['click:item'] !== undefined ) {
+					// notify listeners
+					self.emit('click:item', {$item: this, event: event});
+				}
 			}
 		};
 
@@ -589,27 +595,33 @@ Grid.prototype.move = function ( direction ) {
 	}
 
 	if ( cycle ) {
-		/**
-		 * Jump to the opposite side.
-		 *
-		 * @event module:stb/ui/grid~Grid#cycle
-		 *
-		 * @type {Object}
-		 * @property {number} direction key code initiator of movement
-		 */
-		this.emit('cycle', {direction: direction});
+		// there are some listeners
+		if ( this.events['cycle'] !== undefined ) {
+			/**
+			 * Jump to the opposite side.
+			 *
+			 * @event module:stb/ui/grid~Grid#cycle
+			 *
+			 * @type {Object}
+			 * @property {number} direction key code initiator of movement
+			 */
+			this.emit('cycle', {direction: direction});
+		}
 	}
 
 	if ( overflow ) {
-		/**
-		 * Attempt to go beyond the edge of the grid.
-		 *
-		 * @event module:stb/ui/grid~Grid#overflow
-		 *
-		 * @type {Object}
-		 * @property {number} direction key code initiator of movement
-		 */
-		this.emit('overflow', {direction: direction});
+		// there are some listeners
+		if ( this.events['overflow'] !== undefined ) {
+			/**
+			 * Attempt to go beyond the edge of the grid.
+			 *
+			 * @event module:stb/ui/grid~Grid#overflow
+			 *
+			 * @type {Object}
+			 * @property {number} direction key code initiator of movement
+			 */
+			this.emit('overflow', {direction: direction});
+		}
 	}
 
 	// report
@@ -663,15 +675,18 @@ Grid.prototype.focusItem = function ( $item ) {
 			// style
 			$prev.classList.remove('focus');
 
-			/**
-			 * Remove focus from an element.
-			 *
-			 * @event module:stb/ui/grid~Grid#blur:item
-			 *
-			 * @type {Object}
-			 * @property {Element} $item previously focused HTML element
-			 */
-			this.emit('blur:item', {$item: $prev});
+			// there are some listeners
+			if ( this.events['blur:item'] !== undefined ) {
+				/**
+				 * Remove focus from an element.
+				 *
+				 * @event module:stb/ui/grid~Grid#blur:item
+				 *
+				 * @type {Object}
+				 * @property {Element} $item previously focused HTML element
+				 */
+				this.emit('blur:item', {$item: $prev});
+			}
 		}
 
 		// draft coordinates
@@ -684,16 +699,19 @@ Grid.prototype.focusItem = function ( $item ) {
 		// correct CSS
 		$item.classList.add('focus');
 
-		/**
-		 * Set focus to an element.
-		 *
-		 * @event module:stb/ui/grid~Grid#focus:item
-		 *
-		 * @type {Object}
-		 * @property {Element} $prev old/previous focused HTML element
-		 * @property {Element} $curr new/current focused HTML element
-		 */
-		this.emit('focus:item', {$prev: $prev, $curr: $item});
+		// there are some listeners
+		if ( this.events['focus:item'] !== undefined ) {
+			/**
+			 * Set focus to an element.
+			 *
+			 * @event module:stb/ui/grid~Grid#focus:item
+			 *
+			 * @type {Object}
+			 * @property {Element} $prev old/previous focused HTML element
+			 * @property {Element} $curr new/current focused HTML element
+			 */
+			this.emit('focus:item', {$prev: $prev, $curr: $item});
+		}
 
 		return true;
 	}

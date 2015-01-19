@@ -76,8 +76,11 @@ Model.prototype.clear = function () {
 		// reset
 		this.data = {};
 
-		// notify listeners
-		this.emit('clear', {data: data});
+		// there are some listeners
+		if ( this.events['clear'] !== undefined ) {
+			// notify listeners
+			this.emit('clear', {data: data});
+		}
 
 		return true;
 	}
@@ -118,8 +121,11 @@ Model.prototype.init = function ( data ) {
 		// init with given data
 		this.data = data;
 
-		// notify listeners
-		this.emit('init', {data: data});
+		// there are some listeners
+		if ( this.events['init'] !== undefined ) {
+			// notify listeners
+			this.emit('init', {data: data});
+		}
 
 		return true;
 	}
@@ -197,8 +203,11 @@ Model.prototype.set = function ( name, value ) {
 		if ( value !== emitData.prev ) {
 			this.data[name] = value;
 
-			// notify listeners
-			this.emit('change', emitData);
+			// there are some listeners
+			if ( this.events['change'] !== undefined ) {
+				// notify listeners
+				this.emit('change', emitData);
+			}
 
 			return true;
 		}
@@ -206,8 +215,11 @@ Model.prototype.set = function ( name, value ) {
 		// create
 		this.data[name] = value;
 
-		// notify listeners
-		this.emit('change', emitData);
+		// there are some listeners
+		if ( this.events['change'] !== undefined ) {
+			// notify listeners
+			this.emit('change', emitData);
+		}
 
 		return true;
 	}
@@ -236,8 +248,11 @@ Model.prototype.unset = function ( name ) {
 		emitData = {name: name, prev: this.data[name]};
 		delete this.data[name];
 
-		// notify listeners
-		this.emit('change', emitData);
+		// there are some listeners
+		if ( this.events['change'] !== undefined ) {
+			// notify listeners
+			this.emit('change', emitData);
+		}
 
 		return true;
 	}

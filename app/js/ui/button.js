@@ -53,15 +53,18 @@ function Button ( config ) {
 
 	this.addListener('keydown', function ( event ) {
 		if ( event.code === 13 ) {
-			/**
-			 * Mouse click event emulation.
-			 *
-			 * @event module:stb/ui/button~Button#click
-			 *
-			 * @type {Object}
-			 * @property {Event} event click event data
-			 */
-			self.emit('click', {event: event});
+			// there are some listeners
+			if ( self.events['click'] !== undefined ) {
+				/**
+				 * Mouse click event emulation.
+				 *
+				 * @event module:stb/ui/button~Button#click
+				 *
+				 * @type {Object}
+				 * @property {Event} event click event data
+				 */
+				self.emit('click', {event: event});
+			}
 		}
 	});
 
