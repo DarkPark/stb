@@ -275,6 +275,31 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 
 
 /**
+ * The keypress event is fired when press a printable character.
+ * Delivers the event only to activeComponent at active page.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keypress
+ *
+ * @param {Event} event generated object with event data
+ * @param {string} event.char entered character
+ */
+window.addEventListener('keypress', function ( event ) {
+	var page = router.current;
+
+	debug.event(event);
+
+	// current component handler
+	if ( page.activeComponent && page.activeComponent !== page ) {
+		// component is available and not page itself
+		if ( page.activeComponent.events[event.type] !== undefined ) {
+			// there are some listeners
+			page.activeComponent.emit(event.type, event);
+		}
+	}
+});
+
+
+/**
  * The click event is fired when a pointing device button (usually a mouse button) is pressed and released on a single element.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/click
@@ -327,37 +352,6 @@ window.addEventListener('contextmenu', function globalEventListenerContextmenu (
 //		}
 //	}
 //});
-
-
-/**
- * The keypress event is fired when press a printable character.
- * Delivers the event only to activeComponent at active page.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keypress
- *
- * @param {Event} event generated object with event data
- * @param {string} event.char entered character
- */
-window.addEventListener('keypress', function ( event ) {
-	var page = router.current;
-
-	// filter phantoms
-	if ( event.keyCode === 0 ) { return; }
-
-	// getting char from char code
-	event.char = String.fromCharCode(event.keyCode);
-
-	debug.event(event);
-
-	// current component handler
-	if ( page.activeComponent && page.activeComponent !== page ) {
-		// component is available and not page itself
-		if ( page.activeComponent.events[event.type] !== undefined ) {
-			// there are some listeners
-			page.activeComponent.emit(event.type, event);
-		}
-	}
-});
 
 
 // public export
