@@ -218,8 +218,8 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
  * Set event.stop to true in order to prevent bubbling.
  *
  * Control flow:
- *   1. Current active component.
- *   2. Current active page.
+ *   1. Current active component on the active page.
+ *   2. Current active page itself.
  *   3. Application.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
@@ -228,6 +228,10 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
  */
 window.addEventListener('keydown', function globalEventListenerKeydown ( event ) {
 	var page = router.current;
+
+	if ( DEBUG ) {
+		if ( page === null || page === undefined ) { throw 'app should have at least one page'; }
+	}
 
 	// filter phantoms
 	if ( event.keyCode === 0 ) { return; }
@@ -241,24 +245,31 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 
 	debug.event(event);
 
-	//page = data.pages.current;
-
-	// local handler
-	if ( page ) {
-		if ( page.activeComponent && page.activeComponent !== page ) {
+	// current component handler
+	if ( page.activeComponent && page.activeComponent !== page ) {
+		// component is available and not page itself
+		if ( page.activeComponent.events[event.type] !== undefined ) {
+			// there are some listeners
 			page.activeComponent.emit(event.type, event);
 		}
+	}
 
-		if ( !event.stop ) {
-			// not prevented
+	// page handler
+	if ( !event.stop ) {
+		// not prevented
+		if ( page.events[event.type] !== undefined ) {
+			// there are some listeners
 			page.emit(event.type, event);
 		}
 	}
 
-	// global handler
+	// global app handler
 	if ( !event.stop ) {
 		// not prevented
-		app.emit(event.type, event);
+		if ( app.events[event.type] !== undefined ) {
+			// there are some listeners
+			app.emit(event.type, event);
+		}
 	}
 });
 
