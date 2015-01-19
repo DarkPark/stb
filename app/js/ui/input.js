@@ -6,8 +6,7 @@
 'use strict';
 
 var Component = require('stb/component'),
-	keys      = require('stb/keys'),
-	router    = require('stb/router');
+	keys      = require('stb/keys');
 
 
 /**
@@ -275,28 +274,6 @@ Input.prototype.setValue = function ( value ) {
 	}
 };
 
-
-// add listener to window, because app emit only 'keydown' event
-window.addEventListener('keypress', function ( event ) {
-	var page = router.current;
-
-	// filter phantoms
-	if ( event.keyCode === 0 ) { return; }
-
-	// combined key code
-	event.char = String.fromCharCode(event.keyCode);
-
-	debug.event(event);
-
-	// current component handler
-	if ( page.activeComponent && page.activeComponent !== page ) {
-		// component is available and not page itself
-		if ( page.activeComponent.events[event.type] !== undefined ) {
-			// there are some listeners
-			page.activeComponent.emit(event.type, event);
-		}
-	}
-});
 
 // public export
 module.exports = Input;
