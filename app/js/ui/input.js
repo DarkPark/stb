@@ -6,7 +6,8 @@
 'use strict';
 
 var Component = require('stb/component'),
-	keys      = require('stb/keys');
+	keys      = require('stb/keys'),
+	router    = require('stb/router');
 
 
 /**
@@ -79,6 +80,10 @@ function Input ( config ) {
 
 	// type passed
 	if ( config.type !== undefined ) {
+		if ( DEBUG ) {
+			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
+			if ( config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw 'config.type must be one of the TYPE_* constant'; }
+		}
 		this.type = config.type;
 	}
 
@@ -88,6 +93,10 @@ function Input ( config ) {
 	}
 
 	if ( config.placeholder !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.placeholder !== 'string' ) { throw 'placeholder must be a string'; }
+			if ( typeof config.placeholder.length === 0 ) { throw 'placeholder must be not an empty string'; }
+		}
 		this.placeholder = config.placeholder;
 	}
 
@@ -138,7 +147,7 @@ function Input ( config ) {
 	});
 
 	this.addListener('keypress', function ( event ) {
-		self.addChar(String.fromCharCode(event.code), self.$caret.index);
+		self.addChar(event.char, self.$caret.index);
 	});
 }
 
@@ -156,8 +165,8 @@ Input.prototype.TYPE_PASSWORD = 1;
  * Add given char to given position.
  * Do nothing if position is < 0, or if index more or equals to length add char to the end.
  *
- * @param char symbol to add
- * @param index given position
+ * @param {string} char symbol to add
+ * @param {number} [index=this.length] given position
  */
 Input.prototype.addChar = function ( char, index ) {
 	var span;
@@ -173,7 +182,7 @@ Input.prototype.addChar = function ( char, index ) {
 		span = document.createElement('span');
 		span.className = 'char';
 		this.value += char;
-		if ( this.type === Input.TYPE_TEXT ) {
+		if ( this.type === this.TYPE_TEXT ) {
 			span.innerText = char;
 		} else { // input type is TYPE_PASSWORD
 			span.innerText = '*';
@@ -197,14 +206,15 @@ Input.prototype.addChar = function ( char, index ) {
  * Remove char from given index.
  * Do nothing if index is out of the range (0, length).
  *
- * @param index given position
+ * @param {number} [index=this.length] given position
  */
 Input.prototype.removeChar = function ( index ) {
 	var char = this.value.charAt(index);
 
 	index = index || this.length;
 
-	if ( index >= 0 && index <= this.length ) {
+	// remove char if exists
+	if ( index >= 0 && index <= this.length && this.length > 0 ) {
 		if ( this.$caret.index === this.length ) {
 			--this.$caret.index;
 		}
@@ -224,7 +234,7 @@ Input.prototype.removeChar = function ( index ) {
  * Move caret to the given index
  * Do nothing if index is out of the range (0, length).
  *
- * @param index given position
+ * @param {number} index given position
  */
 Input.prototype.moveCaret = function ( index ) {
 	if ( index >= 0 && index <= this.length ) {
@@ -240,7 +250,11 @@ Input.prototype.moveCaret = function ( index ) {
 };
 
 
-
+/**
+ * Setting new text value of the input field.
+ *
+ * @param value given string value
+ */
 Input.prototype.setValue = function ( value ) {
 	var len = value.length,
 		i;
@@ -260,6 +274,29 @@ Input.prototype.setValue = function ( value ) {
 		this.addChar(value[i], this.length);
 	}
 };
+
+
+// add listener to window, because app emit only 'keydown' event
+window.addEventListener('keypress', function ( event ) {
+	var page = router.current;
+
+	// filter phantoms
+	if ( event.keyCode === 0 ) { return; }
+
+	// combined key code
+	event.char = String.fromCharCode(event.keyCode);
+
+	debug.event(event);
+
+	// current component handler
+	if ( page.activeComponent && page.activeComponent !== page ) {
+		// component is available and not page itself
+		if ( page.activeComponent.events[event.type] !== undefined ) {
+			// there are some listeners
+			page.activeComponent.emit(event.type, event);
+		}
+	}
+});
 
 // public export
 module.exports = Input;
