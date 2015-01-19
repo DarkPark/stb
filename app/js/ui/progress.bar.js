@@ -68,7 +68,7 @@ function ProgressBar ( config ) {
 	this.step = 1;
 
 	// can't accept focus
-	if ( config.focusable === undefined ) { config.focusable = false; }
+	this.focusable = false;
 
 	// parent init
 	Component.call(this, config);

@@ -1,0 +1,40 @@
+// component styles
+//
+// @author Stanislav Kalashnik <sk@infomir.eu>
+// @license GNU GENERAL PUBLIC LICENSE Version 3
+
+.component.grid {
+	//display: inline-block;
+	//width: unit(@checkBoxWidth, px);
+	//height: unit(@checkBoxHeight, px);
+	//border: 3px solid #005b9c;
+	background-color: #333;
+
+	table {
+		width:        100%;
+		table-layout: fixed;
+
+		td.item {
+			cursor:         pointer;
+			padding:        unit(@gridItemPaddingY, px) unit(@gridItemPaddingX, px);
+			vertical-align: middle;
+			text-align:     center;
+		}
+		td.item.mark {
+			color:            black;
+			background-color: green;
+		}
+		td.item.focus {
+			color:            black;
+			background-color: orange;
+		}
+		td.item.focus.mark {
+			color:            white;
+			background-color: #AE7200;
+		}
+		td.item.disable {
+			color:            grey;
+			background-color: #111;
+		}
+	}
+}
