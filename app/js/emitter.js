@@ -56,13 +56,10 @@ Emitter.prototype = {
 			if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
 		}
 
-		// valid input
-		if ( name && typeof callback === 'function' ) {
-			// initialization may be required
-			this.events[name] = this.events[name] || [];
-			// append this new event to the list
-			this.events[name].push(callback);
-		}
+		// initialization may be required
+		this.events[name] = this.events[name] || [];
+		// append this new event to the list
+		this.events[name].push(callback);
 	},
 
 
@@ -83,16 +80,13 @@ Emitter.prototype = {
 			if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
 		}
 
-		// valid input
-		if ( name && typeof callback === 'function' ) {
-			// initialization may be required
-			this.events[name] = this.events[name] || [];
-			// append this new event to the list
-			this.events[name].push(function onceWrapper ( data ) {
-				callback(data);
-				self.removeListener(name, onceWrapper);
-			});
-		}
+		// initialization may be required
+		this.events[name] = this.events[name] || [];
+		// append this new event to the list
+		this.events[name].push(function onceWrapper ( data ) {
+			callback(data);
+			self.removeListener(name, onceWrapper);
+		});
 	},
 
 
@@ -139,15 +133,17 @@ Emitter.prototype = {
 			if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
 			if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
 			if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+			if ( this.events[name] && !Array.isArray(this.events[name]) ) { throw 'corrupted inner data'; }
 		}
 
 		// the event exists and should have some callbacks
-		if ( Array.isArray(this.events[name]) ) {
+		if ( this.events[name] !== undefined ) {
 			// rework the callback list to exclude the given one
 			this.events[name] = this.events[name].filter(function callbacksFilter ( fn ) { return fn !== callback; });
 			// event has no more callbacks so clean it
 			if ( this.events[name].length === 0 ) {
-				delete this.events[name];
+				// as if there were no listeners at all
+				this.events[name] = undefined;
 			}
 		}
 	},
@@ -178,7 +174,8 @@ Emitter.prototype = {
 			}
 
 			// only name is given so remove all callbacks for the given event
-			delete this.events[name];
+			// but object structure modification should be avoided
+			this.events[name] = undefined;
 		}
 	},
 
