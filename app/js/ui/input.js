@@ -6,7 +6,8 @@
 'use strict';
 
 var Component = require('stb/component'),
-	keys      = require('stb/keys');
+	keys      = require('stb/keys'),
+	key;
 
 
 /**
@@ -47,12 +48,6 @@ function Input ( config ) {
 
 	/**
 	 *
-	 * @type {number}
-	 */
-	this.length = 0;
-
-	/**
-	 *
 	 * @type {string}
 	 */
 	this.placeholder = '';
@@ -76,6 +71,8 @@ function Input ( config ) {
 
 	// parent init
 	Component.call(this, config);
+
+	this.$caret.index = 0;
 
 	// type passed
 	if ( config.type !== undefined ) {
@@ -103,22 +100,17 @@ function Input ( config ) {
 	this.$node.classList.add('input');
 	this.$caret.classList.add('caret');
 
-	if ( this.value.length === 0 && this.placeholder.length > 0 ) {
-		this.$body.innerText = this.placeholder;
+	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // set placeholder
+		//this.$body.innerText = this.placeholder;
 	} else {
 		// appends caret to input
-		this.$body.appendChild(this.$caret);
-	}
-
-	// init first index
-	if ( !this.$caret.index ) {
-		this.$caret.index = 0;
+		//this.$body.appendChild(this.$caret);
 	}
 
 	this.addListener('keydown', function ( event ) {
 		switch ( event.code ) {
-			case 46: // keys.delete
-				self.removeChar(self.$caret.index + 1);
+			case keys['delete']:
+				self.removeChar(self.$caret.index);
 				break;
 
 			case keys.back:
@@ -134,10 +126,12 @@ function Input ( config ) {
 				break;
 
 			case keys.end:
-				self.moveCaret(self.length);
+			case keys.down:
+				self.moveCaret(self.value.length);
 				break;
 
 			case keys.home:
+			case keys.up:
 				self.moveCaret(0);
 				break;
 
@@ -146,7 +140,7 @@ function Input ( config ) {
 	});
 
 	this.addListener('keypress', function ( event ) {
-		self.addChar(event.char, self.$caret.index);
+		self.addChar(String.fromCharCode(event.keyCode), self.$caret.index);
 	});
 }
 
@@ -165,43 +159,48 @@ Input.prototype.TYPE_PASSWORD = 1;
  * Do nothing if position is < 0, or if index more or equals to length add char to the end.
  *
  * @param {string} char symbol to add
- * @param {number} [index=this.length] given position
+ * @param {number} [index=this.value.length] given position
  */
 Input.prototype.addChar = function ( char, index ) {
 	var span;
 
-	index = index || this.length;
+	index = (index === undefined) ? this.value.length : index;
 
-	if ( this.length === 0 && this.placeholder.length > 0 ) {
+	if ( DEBUG ) {
+		if ( index < 0 ) { throw 'index must be more than 0 or equal to 0'}
+		if ( typeof char !== 'string' ) { throw 'char must be a string'}
+	}
+
+	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // remove placeholder
 		this.$body.innerText = '';
 		this.$body.appendChild(this.$caret);
 	}
 
-	if ( index >= 0 ) {
-		span = document.createElement('span');
-		span.className = 'char';
-		this.value += char;
-		if ( this.type === this.TYPE_TEXT ) {
-			span.innerText = char;
-		} else { // input type is TYPE_PASSWORD
-			span.innerText = '*';
-		}
-		if ( index >= this.length ) {
-			this.$body.appendChild(span);
-			this.$body.appendChild(this.$caret);
+	span = document.createElement('span');
+	span.className = 'char';
+	if ( this.type === this.TYPE_TEXT ) {
+		if ( char === ' ') {
+			span.innerHTML = '&nbsp;';
 		} else {
-			this.$body.insertBefore(this.$caret, this.$body.children.item(index));
-			this.$body.insertBefore(span, this.$caret);
+			span.innerText = char;
 		}
-		span.index = index;
-		++this.$caret.index;
-		++this.length;
+	} else { // input type is TYPE_PASSWORD
+		span.innerText = '*';
+	}
+	if ( index >= this.value.length ) {
+		this.$body.appendChild(span);
+		this.$body.appendChild(this.$caret);
+	} else {
+		this.$body.insertBefore(this.$caret, this.$body.children.item(index));
+		this.$body.insertBefore(span, this.$caret);
+	}
+	++this.$caret.index;
+	this.value = this.value.substring(0, index) + char + this.value.substring(index, this.value.length);
 
-		// there are some listeners
-		if ( this.events['char:add'] !== undefined ) {
-			// notify listeners
-			this.emit('char:add', {char: char, index: index, length: this.length});
-		}
+	// there are some listeners
+	if ( this.events['change'] !== undefined ) {
+		// notify listeners
+		this.emit('change', {value: this.value});
 	}
 };
 
@@ -210,30 +209,31 @@ Input.prototype.addChar = function ( char, index ) {
  * Remove char from given index.
  * Do nothing if index is out of the range (0, length).
  *
- * @param {number} [index=this.length] given position
+ * @param {number} [index=this.value.length] given position
  */
 Input.prototype.removeChar = function ( index ) {
-	var char = this.value.charAt(index);
-
-	index = index || this.length;
+	index = (index === undefined) ? this.value.length : index;
 
 	// remove char if exists
-	if ( index >= 0 && index <= this.length && this.length > 0 ) {
-		if ( this.$caret.index === this.length ) {
+	if ( index >= 0 && index <= this.value.length && this.value.length > 0 ) {
+		if ( this.$caret.index === index && index < this.value.length ) {
+			this.$body.removeChild(this.$body.children.item(index + 1));
+		} else if ( this.$caret.index > index ) {
 			--this.$caret.index;
+			this.$body.removeChild(this.$body.children.item(index));
 		}
-		--this.length;
-		this.value = this.value.substr(0, this.length);
-		this.$body.removeChild(this.$body.children.item(this.length));
+		this.value = this.value.substring(0, index) + this.value.substring(index + 1, this.value.length);
 
 		// there are some listeners
-		if ( this.events['char:remove'] !== undefined ) {
+		if ( this.events['change'] !== undefined ) {
 			// notify listeners
-			this.emit('char:remove', {char: char, index: index, length: this.length});
+			this.emit('change', {value: this.value});
 		}
 	}
-	if ( this.length === 0 && this.placeholder.length > 0 ) {
-		this.$body.removeChild(this.$caret);
+	if ( this.value.length === 0 && this.placeholder.length > 0 ) {
+		if ( this.$caret.parentNode !== null ) {
+			this.$body.removeChild(this.$caret);
+		}
 		this.$body.innerText = this.placeholder;
 	}
 };
@@ -246,12 +246,12 @@ Input.prototype.removeChar = function ( index ) {
  * @param {number} index given position
  */
 Input.prototype.moveCaret = function ( index ) {
-	if ( index >= 0 && index <= this.length ) {
-		if ( index === this.length ) {
+	if ( index >= 0 && index <= this.value.length ) {
+		if ( index === this.value.length ) { // add to the end
 			this.$body.appendChild(this.$caret);
-		} else if ( this.$caret.index < index ) {
+		} else if ( this.$caret.index < index ) { // move right
 			this.$body.insertBefore(this.$caret, this.$body.children.item(index + 1));
-		} else {
+		} else { // move left
 			this.$body.insertBefore(this.$caret, this.$body.children.item(index));
 		}
 		this.$caret.index = index;
@@ -272,15 +272,14 @@ Input.prototype.setValue = function ( value ) {
 		if ( typeof value !== 'string' ) { throw 'value must be a string'; }
 	}
 	if ( len > 0 ) {
-		this.length = 0;
 		this.$caret.index = 0;
-		this.value = '';
 		while ( this.$body.firstChild ) {
 			this.$body.removeChild(this.$body.firstChild);
 		}
+		this.value = '';
 	}
 	for( i = 0; i < len; ++i ) {
-		this.addChar(value[i], this.length);
+		this.addChar(value[i], this.value.length);
 	}
 };
 
