@@ -10,24 +10,24 @@
 
 // public export
 module.exports = {
-	fontSize: 22,
-
-	panelPaddingX: 10,
-	panelPaddingY: 10,
-
-	buttonHeight: 36,
+	buttonHeight:   36,
 	buttonPaddingX: 12,
 	buttonPaddingY: 6,
 
-	listItemHeight: 48,
-	listItemPaddingX: 8,
-	listItemPaddingY: 4,
+	checkBoxWidth:  28,
+	checkBoxHeight: 28,
+
+	fontSize: 22,
 
 	gridItemPaddingX: 8,
 	gridItemPaddingY: 4,
 
-	progressBarHeight: 24,
+	listItemHeight:   48,
+	listItemPaddingX: 8,
+	listItemPaddingY: 4,
 
-	checkBoxWidth:  28,
-	checkBoxHeight: 28
+	panelPaddingX: 10,
+	panelPaddingY: 10,
+
+	progressBarHeight: 24
 };
