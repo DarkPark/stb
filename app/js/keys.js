@@ -1,6 +1,10 @@
 /**
  * Global list of key codes.
  *
+ * WARNING!!! All codes in this file (exclude 'volumeUp', 'volumeDown')
+ * uses in window 'keydown' handler to prevent wrong 'keypress' firings.
+ * If u add code into this file, 'keypress' event with this code will never fires.
+ *
  *  Value | Description
  * -------|-------------
  *  +1000 | shift key pressed
@@ -17,16 +21,6 @@
 // public export
 module.exports = {
 	back         : 8,  // Backspace
-	num1         : 49,
-	num2         : 50,
-	num3         : 51,
-	num4         : 52,
-	num5         : 53,
-	num6         : 54,
-	num7         : 55,
-	num8         : 56,
-	num9         : 57,
-	num0         : 48,
 	'delete'     : 46,
 	channelPrev  : 1009, // Shift+Tab
 	channelNext  : 9,    // Tab
