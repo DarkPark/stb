@@ -316,8 +316,8 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 		}
 	}
 
-	// suppress non-printable keys
-	if ( keyCodes[event.code] ) {
+	// suppress non-printable keys in host mode
+	if ( app.host && keyCodes[event.code] ) {
 		event.preventDefault();
 	}
 });
