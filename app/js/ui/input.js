@@ -6,8 +6,7 @@
 'use strict';
 
 var Component = require('stb/component'),
-	keys      = require('stb/keys'),
-	key;
+	keys      = require('stb/keys');
 
 
 /**
@@ -25,11 +24,8 @@ var Component = require('stb/component'),
  *     input = new Input({
  *         placeholder: 'input password'
  *         events: {
- *             'char:add': function ( event ) {
- *                 debug.log( event.char, event.index, event.length );
- *             },
- *             'char:remove': function ( event ) {
- *                 debug.log( event.char, event.index, event.length );
+ *             change: function ( event ) {
+ *                 debug.log(event.value);
  *             }
  *         }
  *     });
@@ -91,7 +87,7 @@ function Input ( config ) {
 	if ( config.placeholder !== undefined ) {
 		if ( DEBUG ) {
 			if ( typeof config.placeholder !== 'string' ) { throw 'placeholder must be a string'; }
-			if ( typeof config.placeholder.length === 0 ) { throw 'placeholder must be not an empty string'; }
+			if ( config.placeholder.length === 0 ) { throw 'placeholder must be not an empty string'; }
 		}
 		this.placeholder = config.placeholder;
 	}
@@ -100,12 +96,12 @@ function Input ( config ) {
 	this.$node.classList.add('input');
 	this.$caret.classList.add('caret');
 
-	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // set placeholder
-		//this.$body.innerText = this.placeholder;
-	} else {
-		// appends caret to input
-		//this.$body.appendChild(this.$caret);
-	}
+	//if ( this.value.length === 0 && this.placeholder.length > 0 ) { // set placeholder
+	//	//this.$body.innerText = this.placeholder;
+	//} else {
+	//	// appends caret to input
+	//	//this.$body.appendChild(this.$caret);
+	//}
 
 	this.addListener('keydown', function ( event ) {
 		switch ( event.code ) {
@@ -135,7 +131,8 @@ function Input ( config ) {
 				self.moveCaret(0);
 				break;
 
-			default: break;
+			default:
+				break;
 		}
 	});
 
@@ -179,7 +176,7 @@ Input.prototype.addChar = function ( char, index ) {
 	span = document.createElement('span');
 	span.className = 'char';
 	if ( this.type === this.TYPE_TEXT ) {
-		if ( char === ' ') {
+		if ( char === ' ' ) {
 			span.innerHTML = '&nbsp;';
 		} else {
 			span.innerText = char;
@@ -262,7 +259,7 @@ Input.prototype.moveCaret = function ( index ) {
 /**
  * Setting new text value of the input field.
  *
- * @param value given string value
+ * @param {string} value given string value
  */
 Input.prototype.setValue = function ( value ) {
 	var len = value.length,
@@ -278,7 +275,7 @@ Input.prototype.setValue = function ( value ) {
 		}
 		this.value = '';
 	}
-	for( i = 0; i < len; ++i ) {
+	for ( i = 0; i < len; ++i ) {
 		this.addChar(value[i], this.value.length);
 	}
 };

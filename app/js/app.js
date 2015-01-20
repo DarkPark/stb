@@ -6,10 +6,10 @@
 
 'use strict';
 
-var Model  = require('./model'),
-	router = require('./router'),
-	keys   = require('./keys'),
-	filteredKeyCodes = {},
+var Model    = require('./model'),
+	router   = require('./router'),
+	keys     = require('./keys'),
+	keyCodes = {},
 	app, linkCSS, key;
 
 
@@ -117,12 +117,15 @@ app.setScreen = function ( metrics ) {
 // apply screen size, position and margins
 app.setScreen(require('metrics')[screen.height]);
 
-for( key in keys ) {
+// extract key codes
+for ( key in keys ) {
 	if ( key === 'volumeUp' || key === 'volumeDown' ) {
 		continue;
 	}
-	filteredKeyCodes[keys[key]] = key;
+	// no need to save key names
+	keyCodes[keys[key]] = true;
 }
+
 /**
  * The load event is fired when a resource and its dependent resources have finished loading.
  *
@@ -313,7 +316,8 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 		}
 	}
 
-	if ( filteredKeyCodes[event.code] ) {
+	// suppress non-printable keys
+	if ( keyCodes[event.code] ) {
 		event.preventDefault();
 	}
 });

@@ -1,5 +1,5 @@
 /**
- * Global list of key codes.
+ * Global list of non-printable control key codes.
  *
  * WARNING!!! All codes in this file (exclude 'volumeUp', 'volumeDown')
  * uses in window 'keydown' handler to prevent wrong 'keypress' firings.
@@ -20,7 +20,7 @@
 
 // public export
 module.exports = {
-	back         : 8,  // Backspace
+	back         : 8,    // Backspace
 	'delete'     : 46,
 	channelPrev  : 1009, // Shift+Tab
 	channelNext  : 9,    // Tab
