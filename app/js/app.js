@@ -74,17 +74,25 @@ app = new Model({
  * @return {boolean} operation status
  */
 app.setScreen = function ( metrics ) {
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	if ( metrics ) {
+		if ( DEBUG ) {
+			if ( typeof metrics !== 'object' ) { throw 'wrong metrics type'; }
+		}
+
 		// calculate and extend
-		metrics.availHeight = metrics.height - (metrics.availTop  + metrics.availBottom);
-		metrics.availWidth  = metrics.width  - (metrics.availLeft + metrics.availRight);
+		metrics.availHeight = metrics.height - (metrics.availTop + metrics.availBottom);
+		metrics.availWidth  = metrics.width - (metrics.availLeft + metrics.availRight);
 
 		// set max browser window size
 		window.moveTo(0, 0);
 		window.resizeTo(metrics.width, metrics.height);
 
 		// already was initialized
-		if ( linkCSS && linkCSS instanceof Node ) {
+		if ( linkCSS && linkCSS instanceof HTMLLinkElement ) {
 			// remove all current CSS styles
 			document.head.removeChild(linkCSS);
 		}
@@ -118,6 +126,11 @@ for( key in keys ) {
 /**
  * The load event is fired when a resource and its dependent resources have finished loading.
  *
+ * Control flow:
+ *   1. Global handler.
+ *   2. Each page handler.
+ *   3. Application DONE event.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/load
  *
  * @param {Event} event generated object with event data
@@ -131,20 +144,22 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	app.data.time.load = event.timeStamp;
 
 	// global handler
-	debug.log('load APP', 'green');
-	app.emit(event.type, event);
+	// there are some listeners
+	if ( app.events[event.type] !== undefined ) {
+		// notify listeners
+		app.emit(event.type, event);
+	}
 
 	// local handler on each page
 	router.pages.forEach(function forEachPages ( page ) {
-		//debug.log('load page ' + page.get('id').toUpperCase(), 'green');
 		debug.log('component ' + page.constructor.name + '.' + page.id + ' load', 'green');
-		page.emit(event.type, event);
-	});
 
-	// show main page
-	//pages.get(app.get('page')).show();
-	//window.dispatchEvent(new Event('hashchange'));
-	//app.parseHash();
+		// there are some listeners
+		if ( page.events[event.type] !== undefined ) {
+			// notify listeners
+			page.emit(event.type, event);
+		}
+	});
 
 	// go to the given page if set
 	if ( location.hash ) {
@@ -156,12 +171,20 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	app.data.time.done = +new Date();
 
 	// everything is ready
-	app.emit('done', event);
+	// and there are some listeners
+	if ( app.events['done'] !== undefined ) {
+		// notify listeners
+		app.emit('done', event);
+	}
 });
 
 
 /**
  * The unload event is fired when the document or a child resource is being unloaded.
+ *
+ * Control flow:
+ *   1. Each page handler.
+ *   2. Global handler.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/unload
  *
@@ -170,9 +193,20 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 	debug.event(event);
 
+	// global handler
+	// there are some listeners
+	if ( app.events[event.type] !== undefined ) {
+		// notify listeners
+		app.emit(event.type, event);
+	}
+
 	// local handler on each page
 	router.pages.forEach(function forEachPages ( page ) {
-		page.emit(event.type, event);
+		// there are some listeners
+		if ( page.events[event.type] !== undefined ) {
+			// notify listeners
+			page.emit(event.type, event);
+		}
 	});
 });
 
@@ -297,7 +331,11 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 window.addEventListener('keypress', function ( event ) {
 	var page = router.current;
 
-	debug.event(event);
+	if ( DEBUG ) {
+		if ( page === null || page === undefined ) { throw 'app should have at least one page'; }
+	}
+
+	//debug.event(event);
 
 	// current component handler
 	if ( page.activeComponent && page.activeComponent !== page ) {
@@ -334,8 +372,10 @@ window.addEventListener('click', function globalEventListenerClick ( event ) {
 window.addEventListener('contextmenu', function globalEventListenerContextmenu ( event ) {
 	debug.event(event);
 
-	// disable right click in release mode
-	if ( !app.data.debug ) { event.preventDefault(); }
+	if ( !DEBUG ) {
+		// disable right click in release mode
+		event.preventDefault();
+	}
 });
 
 

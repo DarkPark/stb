@@ -152,28 +152,35 @@ module.exports = window.debug = {
 			switch ( type ) {
 				case 'KEYDOWN':
 					text = text +
-					' ctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
 					' alt'  [data.altKey   ? 'green' : 'grey'] +
 					' shift'[data.shiftKey ? 'green' : 'grey'] +
-					' ' + data.keyCode + '\t' + data.code + '\t' + (data.keyIdentifier || '').green;
+					'\t' + data.keyCode + '\t' + data.code + '\t' + (data.keyIdentifier || '').green;
+					break;
+				case 'KEYPRESS':
+					text = text +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					' alt'  [data.altKey   ? 'green' : 'grey'] +
+					' shift'[data.shiftKey ? 'green' : 'grey'] +
+					'\t' + data.keyCode + '\t' + (data.keyIdentifier || '').green + '\t' + String.fromCharCode(data.keyCode);
 					break;
 				case 'MOUSEMOVE':
 					text = text +
-					' ctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
 					' alt'  [data.altKey   ? 'green' : 'grey'] +
 					' shift'[data.shiftKey ? 'green' : 'grey'] +
-					' ' + data.x + ':' + data.y;
+					'\t' + data.x + ':' + data.y;
 					break;
 				case 'CLICK':
 					text = text +
-					' ctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
 					' alt'  [data.altKey   ? 'green' : 'grey'] +
 					' shift'[data.shiftKey ? 'green' : 'grey'] +
-					' ' + data.x + ':' + data.y;
+					'\t' + data.x + ':' + data.y;
 					break;
 				case 'ERROR':
 					text = text +
-						' ' + data.filename +
+						'\t' + data.filename +
 						' (' + data.lineno + ':' + data.colno + ')' +
 						' ' + data.message;
 					break;
@@ -182,11 +189,12 @@ module.exports = window.debug = {
 		} else {
 			switch ( type ) {
 				case 'KEYDOWN':
+				case 'KEYPRESS':
 					console.log('%o\t%c%s %c%s %c%s %c%s %c%s\t%s\t%c%s', data, 'color:' + color + ';font-weight:bold', type,
 						'color:' + (data.ctrlKey  ? 'green' : 'lightgrey'), 'ctrl',
 						'color:' + (data.altKey   ? 'green' : 'lightgrey'), 'alt',
 						'color:' + (data.shiftKey ? 'green' : 'lightgrey'), 'shift',
-						'color:black', data.keyCode, data.code, 'color:green', data.keyIdentifier
+						'color:black', data.keyCode, data.code || '', 'color:green', data.keyIdentifier
 					);
 					break;
 				default:
