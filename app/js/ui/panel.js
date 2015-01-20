@@ -41,7 +41,7 @@ function Panel ( config ) {
 	config = config || {};
 
 	// can't accept focus
-	this.focusable = false;
+	config.focusable = config.focusable || false;
 
 	// parent init
 	Component.call(this, config);
