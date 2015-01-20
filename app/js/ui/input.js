@@ -96,12 +96,12 @@ function Input ( config ) {
 	this.$node.classList.add('input');
 	this.$caret.classList.add('caret');
 
-	//if ( this.value.length === 0 && this.placeholder.length > 0 ) { // set placeholder
-	//	//this.$body.innerText = this.placeholder;
-	//} else {
-	//	// appends caret to input
-	//	//this.$body.appendChild(this.$caret);
-	//}
+	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // set placeholder
+		this.$body.innerText = this.placeholder;
+	} else {
+		// appends caret to input
+		this.$body.appendChild(this.$caret);
+	}
 
 	this.addListener('keydown', function ( event ) {
 		switch ( event.code ) {
