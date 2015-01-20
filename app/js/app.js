@@ -8,7 +8,9 @@
 
 var Model  = require('./model'),
 	router = require('./router'),
-	app, linkCSS;
+	keys   = require('./keys'),
+	filteredKeyCodes = {},
+	app, linkCSS, key;
 
 
 require('stb/shims');
@@ -107,7 +109,12 @@ app.setScreen = function ( metrics ) {
 // apply screen size, position and margins
 app.setScreen(require('metrics')[screen.height]);
 
-
+for( key in keys ) {
+	if ( key === 'volumeUp' || key === 'volumeDown' ) {
+		continue;
+	}
+	filteredKeyCodes[keys[key]] = key;
+}
 /**
  * The load event is fired when a resource and its dependent resources have finished loading.
  *
@@ -270,6 +277,10 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 			// there are some listeners
 			app.emit(event.type, event);
 		}
+	}
+
+	if ( filteredKeyCodes[event.code] ) {
+		event.preventDefault();
 	}
 });
 
