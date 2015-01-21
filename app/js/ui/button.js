@@ -23,6 +23,7 @@ var Component = require('../component');
  * var Button = require('stb/ui/button'),
  *     button = new Button({
  *         $node: document.getElementById(id),
+ *         icon: 'menu'
  *         value: 'Apply changes'
  *     });
  */
@@ -44,12 +45,20 @@ function Button ( config ) {
 		// so everything should be prepared here
 
 		if ( config.icon ) {
+			if ( DEBUG ) {
+				if ( typeof config.icon !== 'string' || config.icon.length === 0 ) { throw 'wrong or empty config.icon'; }
+			}
+
 			// insert icon
 			this.$icon = this.$node.appendChild(document.createElement('div'));
 			this.$icon.className = 'icon ' + config.icon;
 		}
 
 		if ( config.value !== undefined ) {
+			if ( DEBUG ) {
+				if ( typeof config.value !== 'string' || config.value.length === 0 ) { throw 'wrong or empty config.value'; }
+			}
+
 			// insert caption placeholder
 			this.$body = this.$node.appendChild(document.createElement('div'));
 			this.$body.classList.add('text');
