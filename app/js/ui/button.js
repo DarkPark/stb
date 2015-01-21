@@ -17,7 +17,7 @@ var Component = require('../component');
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {string} [config.value] button caption text (generated if not set)
- * @param {string} [config.icon] button icon name
+ * @param {string} [config.icon=false] button icon name
  *
  * @example
  * var Button = require('stb/ui/button'),
@@ -39,16 +39,23 @@ function Button ( config ) {
 	// correct CSS class names
 	this.$node.classList.add('button');
 
-	// set title
-	if ( config.value !== undefined ) {
-		this.$body.innerText = config.value;
-	} else {
-		this.$body.innerText = this.constructor.name + '.' + this.id;
-	}
+	// not a custom content
+	if ( this.$node === this.$body ) {
+		// so everything should be prepared here
 
-	if ( config.icon ) {
-		self.$node.classList.add('icon');
-		self.$node.classList.add('icon-' + config.icon);
+		if ( config.icon ) {
+			// insert icon
+			this.$icon = this.$node.appendChild(document.createElement('div'));
+			this.$icon.className = 'icon ' + config.icon;
+		}
+
+		if ( config.value !== undefined ) {
+			// insert caption placeholder
+			this.$body = this.$node.appendChild(document.createElement('div'));
+			this.$body.classList.add('text');
+			// fill it
+			this.$body.innerText = config.value;
+		}
 	}
 
 	this.addListener('keydown', function ( event ) {

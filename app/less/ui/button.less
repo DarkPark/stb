@@ -5,20 +5,11 @@
 
 .component.button {
 	background-color: #002042;
-	//outline          : 2px solid grey;
-	//outline-offset   : -2px;
 	display:          inline-block;
-	padding:          unit(@buttonPaddingY, px) unit(@buttonPaddingX, px);
 	height:           unit(@buttonHeight, px);
 	line-height:      unit(@buttonHeight, px);
 	vertical-align:   middle;
 	cursor:           pointer;
-
-	&.icon {
-		padding-left:        unit(@buttonHeight + @buttonPaddingX, px);
-		background-repeat:   no-repeat;
-		background-position: unit(@buttonPaddingX, px) center;
-	}
 
 	&:hover {
 		background-color: #005b9c;
@@ -26,10 +17,25 @@
 
 	&.focus {
 		background-color: #005b9c;
-		//outline : 2px solid red;
 	}
 
 	&.click {
 		background-color: #0073c4;
+	}
+
+	.icon {
+		height:     unit(@buttonHeight, px);
+		width:      unit(@buttonHeight, px);
+		display:    inline-block;
+		background: no-repeat center center;
+	}
+
+	.text {
+		display:        inline-block;
+		padding:        0 unit(@buttonPaddingX, px);
+		vertical-align: top;
+	}
+	.text:not(:only-child) {
+		padding-left: 0;
 	}
 }
