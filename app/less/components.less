@@ -10,6 +10,12 @@
 		// as some components apply "display" later
 		display: none !important;
 	}
+
+	div {
+		// The width and height (also including min-width, max-width, min-height and max-height properties) of an element
+		// are calculated as the width/height of the content plus the padding and border.
+		-webkit-box-sizing: border-box;
+	}
 }
 
 @import "./ui/button.less";
