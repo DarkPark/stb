@@ -4,19 +4,18 @@
 // @author Stanislav Kalashnik <sk@infomir.eu>
 // @license GNU GENERAL PUBLIC LICENSE Version 3
 
-
 // release rules
 @import "main";
 
 
 html {
-	background-color : transparent;
-	overflow         : auto;
+	background-color: transparent;
+	overflow:         auto;
 }
 
 body {
-	outline        : 1px solid #333;
-	outline-offset : -1px;
+	outline:        1px solid #333;
+	outline-offset: -1px;
 }
 
 // outline all divs
@@ -27,47 +26,46 @@ div.page div {
 
 div.develop {
 	canvas {
-		cursor     : none;
-		visibility : hidden;
-		position   : absolute;
-		width      : unit(@width, px);
-		height     : unit(@height, px);
+		cursor:     none;
+		visibility: hidden;
+		position:   absolute;
+		width:      unit(@width, px);
+		height:     unit(@height, px);
 		&.active {
-			visibility : visible;
-			z-index: 1000;
+			visibility: visible;
+			z-index:    1000;
 		}
 	}
 }
 
-
 .component {
-	outline        : 1px dashed #005000;
-	outline-offset : -1px;
+	outline:        1px dashed #005000;
+	outline-offset: -1px;
 
 	&.focus {
-		outline : 1px dashed red;
+		outline: 1px dashed red;
 	}
 
 	&.list {
 		> .item {
-			outline : 1px dashed #000000;
-			outline-offset : -1px;
+			outline:        1px dashed #000000;
+			outline-offset: -1px;
 
 			&.focus {
-				outline : 1px dashed orange;
-				outline-offset : -1px;
+				outline:        1px dashed orange;
+				outline-offset: -1px;
 			}
 		}
 	}
 
 	&.grid {
 		td.item {
-			outline : 1px dashed #000000;
-			outline-offset : -1px;
+			outline:        1px dashed #000000;
+			outline-offset: -1px;
 
 			&.focus {
-				outline : 1px dashed orange;
-				outline-offset : -1px;
+				outline:        1px dashed orange;
+				outline-offset: -1px;
 			}
 		}
 	}
