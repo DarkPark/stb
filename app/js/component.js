@@ -87,7 +87,7 @@ function Component ( config ) {
 		 *
 		 * @type {Page}
 		 */
-		this.page = null;
+		//this.page = null;
 	}
 
 	/**
@@ -280,10 +280,10 @@ Component.prototype.add = function ( child ) {
 		this.children.push(child);
 		child.parent = this;
 
-		if ( DEBUG ) {
-			// apply page for this and all children recursively
-			child.setPage(this.page);
-		}
+		//if ( DEBUG ) {
+		//	// apply page for this and all children recursively
+		//	child.setPage(this.page);
+		//}
 
 		// correct DOM parent/child connection if necessary
 		if ( child.$node !== undefined && child.$node.parentNode === null ) {
@@ -308,15 +308,15 @@ Component.prototype.add = function ( child ) {
 };
 
 
-if ( DEBUG ) {
-	Component.prototype.setPage = function ( page ) {
-		this.page = page;
-
-		this.children.forEach(function ( child ) {
-			child.setPage(page);
-		});
-	};
-}
+//if ( DEBUG ) {
+//	Component.prototype.setPage = function ( page ) {
+//		this.page = page;
+//
+//		this.children.forEach(function ( child ) {
+//			child.setPage(page);
+//		});
+//	};
+//}
 
 
 /**
@@ -379,12 +379,12 @@ Component.prototype.focus = function () {
 	var activePage = router.current,
 		activeItem = activePage.activeComponent;
 
-	if ( DEBUG ) {
-		if ( this.page !== activePage ) {
-			console.log(this, this.page, activePage);
-			throw 'attempt to focus an invisible component';
-		}
-	}
+	//if ( DEBUG ) {
+	//	if ( this.page !== activePage ) {
+	//		console.log(this, this.page, activePage);
+	//		throw 'attempt to focus an invisible component';
+	//	}
+	//}
 
 	// this is a visual component on a page
 	// not already focused and can accept focus
