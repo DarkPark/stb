@@ -19,7 +19,7 @@
 		"gulp": "^3.8.0",
 		"gulp-conflict": "^0.3.0",
 		"gulp-eslint": "^0.2.0",
-		"gulp-jade": "^0.10.0",
+		"gulp-jade": "^0.11.0",
 		"gulp-livereload": "^3.4.0",
 		"gulp-plumber": "^0.6.6",
 		"gulp-rename": "^1.2.0",
