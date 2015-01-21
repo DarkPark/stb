@@ -75,7 +75,7 @@ function prepare () {
 			vars.availHeight = vars.height - vars.availTop  - vars.availBottom;
 			vars.availWidth  = vars.width  - vars.availLeft - vars.availRight;
 
-			vars.pathApp = '"' + path.relative(process.env.STB + '/app/less', process.env.CWD + '/app/less') + '"';
+			vars.pathApp = '"' + path.relative(process.env.STB + '/app/less', process.env.CWD + '/app/') + '"';
 
 			conf.cssFile = conf.outpath + height + '.css';
 
