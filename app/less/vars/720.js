@@ -10,7 +10,7 @@
 
 // public export
 module.exports = {
-	buttonHeight:   36,
+	buttonHeight:   46,
 	buttonPaddingX: 12,
 	buttonPaddingY: 6,
 
@@ -21,6 +21,13 @@ module.exports = {
 
 	gridItemPaddingX: 8,
 	gridItemPaddingY: 4,
+
+	inputFontSize: 24,
+	inputHeight:   38,
+	inputWidth:    250,
+	inputBorder:   2,
+	inputPaddingX: 4,
+	inputPaddingY: 2,
 
 	listItemHeight:   48,
 	listItemPaddingX: 8,

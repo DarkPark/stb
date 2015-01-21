@@ -4,28 +4,32 @@
 // @license GNU GENERAL PUBLIC LICENSE Version 3
 
 .component.input {
-	width:            200px;
-	height:           40px;
-	border:           1px solid rgb(204, 204, 204);
+	width:            unit(@inputWidth, px);
+	height:           unit(@inputHeight, px);
+	padding:          0 unit(@inputPaddingX, px);
+	border:           unit(@inputBorder, px) solid green;
 	cursor:           text;
 	overflow:         hidden;
-	font-size:        37px;
-	color:            #888;
+	font-size:        unit(@inputFontSize, px);
+	color:            #000;
 	text-align:       left;
 	background-color: #fff;
-	.caret {
-		margin-top: 2px;
-		height:     36px;
-		width:      1px;
-		border:     none;
-		background: #000;
-		display:    block;
-		float:      left;
+
+	> .caret {
+		height:         unit(@inputHeight - @inputBorder*2 - @inputPaddingY*2, px);
+		margin:         unit(@inputPaddingY, px);
+		width:          1px;
+		border:         none;
+		background:     #000;
+		display:        inline-block;
+		vertical-align: top;
 	}
-	.char {
-		color:      #000;
-		margin-top: 0;
-		display:    block;
-		float:      left;
+
+	> .char {
+		color:          #000;
+		display:        inline-block;
+		vertical-align: top;
+		height:         unit(@inputHeight - @inputBorder*2, px);
+		line-height:    unit(@inputHeight - @inputBorder*2, px);
 	}
 }

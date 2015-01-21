@@ -24,6 +24,13 @@ module.exports = {
 	gridItemPaddingX: vars.gridItemPaddingX,
 	gridItemPaddingY: vars.gridItemPaddingY * 1.2,
 
+	inputFontSize: vars.inputFontSize,
+	inputHeight:   vars.inputHeight * 1.2,
+	inputWidth:    vars.inputWidth,
+	inputBorder:   vars.inputBorder,
+	inputPaddingX: vars.inputPaddingX,
+	inputPaddingY: vars.inputPaddingY * 1.2,
+
 	listItemHeight:   vars.listItemHeight * 1.2,
 	listItemPaddingX: vars.listItemPaddingX,
 	listItemPaddingY: vars.listItemPaddingY * 1.2,
