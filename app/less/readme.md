@@ -4,6 +4,10 @@ Compiles to a set of css files in the application directory `./build/develop/css
 
 Global variables:
 
+	// global absolute paths
+	@pathApp
+	@pathImg
+
 	// window dimension
 	@height
 	@width
