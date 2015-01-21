@@ -10,7 +10,9 @@ var Component = require('stb/component'),
 
 
 /**
- * Base input implementation.
+ * Base input field implementation.
+ * Has two types: text and password.
+ * Password - replace real text with '*', but real text presents in the own property 'value'.
  *
  * @constructor
  * @extends Component
@@ -32,6 +34,7 @@ var Component = require('stb/component'),
  */
 function Input ( config ) {
 	var self = this;
+
 	// sanitize
 	config = config || {};
 
@@ -43,6 +46,7 @@ function Input ( config ) {
 	this.value = '';
 
 	/**
+	 * Placeholder for input, sets when no text in input and if placeholder not empty.
 	 *
 	 * @type {string}
 	 */
@@ -153,51 +157,59 @@ Input.prototype.TYPE_PASSWORD = 1;
 
 /**
  * Add given char to given position.
+ * Also moving caret in every action.
  * Do nothing if position is < 0, or if index more or equals to length add char to the end.
  *
  * @param {string} char symbol to add
  * @param {number} [index=this.value.length] given position
+ *
+ * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.addChar = function ( char, index ) {
-	var span;
+	var span = document.createElement('span');
 
-	index = (index === undefined) ? this.value.length : index;
+	index = (index === undefined) ? this.$caret.index : index;
 
 	if ( DEBUG ) {
 		if ( index < 0 ) { throw 'index must be more than 0 or equal to 0'}
 		if ( typeof char !== 'string' ) { throw 'char must be a string'}
+		if ( char.length !== 1 ) { throw 'char must be a string with length = 1'}
 	}
 
-	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // remove placeholder
+	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // remove placeholder, add caret
 		this.$body.innerText = '';
 		this.$body.appendChild(this.$caret);
 	}
 
-	span = document.createElement('span');
+	// settings class name for span which presents one symbol in virtual input
 	span.className = 'char';
-	if ( this.type === this.TYPE_TEXT ) {
-		if ( char === ' ' ) {
-			span.innerHTML = '&nbsp;';
-		} else {
-			span.innerText = char;
-		}
-	} else { // input type is TYPE_PASSWORD
+
+	// insert char into value
+	this.value = this.value.substring(0, index) + char + this.value.substring(index, this.value.length);
+
+	// move caret
+	++this.$caret.index;
+
+	if ( this.type === this.TYPE_PASSWORD ) {
 		span.innerText = '*';
+	} else if ( char === ' ' ) {
+		span.innerHTML = '&nbsp;';
+	} else {
+		span.innerText = char;
 	}
-	if ( index >= this.value.length ) {
+
+	if ( index >= this.value.length ) { // add char to the end, move caret to the end
 		this.$body.appendChild(span);
 		this.$body.appendChild(this.$caret);
-	} else {
+	} else { // move caret before index, append span before caret
 		this.$body.insertBefore(this.$caret, this.$body.children.item(index));
 		this.$body.insertBefore(span, this.$caret);
 	}
-	++this.$caret.index;
-	this.value = this.value.substring(0, index) + char + this.value.substring(index, this.value.length);
 
 	// there are some listeners
-	if ( this.events['change'] !== undefined ) {
+	if ( this.events['input'] !== undefined ) {
 		// notify listeners
-		this.emit('change', {value: this.value});
+		this.emit('input', {value: this.value});
 	}
 };
 
@@ -207,28 +219,37 @@ Input.prototype.addChar = function ( char, index ) {
  * Do nothing if index is out of the range (0, length).
  *
  * @param {number} [index=this.value.length] given position
+ *
+ * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.removeChar = function ( index ) {
-	index = (index === undefined) ? this.value.length : index;
+	index = (index === undefined) ? (this.$caret.index - 1) : index;
 
-	// remove char if exists
-	if ( index >= 0 && index <= this.value.length && this.value.length > 0 ) {
-		if ( this.$caret.index === index && index < this.value.length ) {
+	if ( DEBUG ) {
+		if ( index < 0 ) { throw 'index must be a positive value'; }
+		if ( index > this.value.length ) { throw 'index must be a less than or equal to total length'; }
+	}
+
+	if ( this.value.length > 0 ) {
+		if ( this.$caret.index === index && index < this.value.length ) { // remove char after caret
 			this.$body.removeChild(this.$body.children.item(index + 1));
-		} else if ( this.$caret.index > index ) {
+		} else if ( this.$caret.index > index ) { // remove char before caret
 			--this.$caret.index;
 			this.$body.removeChild(this.$body.children.item(index));
 		}
+
+		// cut one char from the value
 		this.value = this.value.substring(0, index) + this.value.substring(index + 1, this.value.length);
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['input'] !== undefined ) {
 			// notify listeners
-			this.emit('change', {value: this.value});
+			this.emit('input', {value: this.value});
 		}
 	}
+
 	if ( this.value.length === 0 && this.placeholder.length > 0 ) {
-		if ( this.$caret.parentNode !== null ) {
+		if ( this.$caret.parentNode !== null ) { // check if caret is in the input
 			this.$body.removeChild(this.$caret);
 		}
 		this.$body.innerText = this.placeholder;
@@ -274,6 +295,7 @@ Input.prototype.setValue = function ( value ) {
 			this.$body.removeChild(this.$body.firstChild);
 		}
 		this.value = '';
+		this.$body.appendChild(this.$caret);
 	}
 	for ( i = 0; i < len; ++i ) {
 		this.addChar(value[i], this.value.length);
