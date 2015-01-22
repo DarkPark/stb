@@ -330,6 +330,7 @@ Input.prototype.setValue = function ( value ) {
 
 		while ( i < value.length ) { // append child
 			span = document.createElement('span');
+			span.className = 'char';
 			df.appendChild(span);
 			if ( this.type === this.TYPE_PASSWORD ) {
 				span.innerText = '*';
