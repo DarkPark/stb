@@ -20,13 +20,13 @@ module.exports = {
 	fontSize: 18,
 
 	gridItemPaddingX: 5,
-	gridItemPaddingY: 3,
+	gridItemPaddingY: 2,
 
 	inputFontSize: 20,
 	inputHeight:   26,
 	inputWidth:    200,
 	inputBorder:   1,
-	inputPaddingX: 2,
+	inputPaddingX: 3,
 	inputPaddingY: 1,
 
 	listItemHeight:   32,
