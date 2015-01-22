@@ -317,7 +317,7 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 	}
 
 	// suppress non-printable keys in stb device (not in your browser)
-	if ( app.host && keyCodes[event.code] ) {
+	if ( app.data.host && keyCodes[event.code] ) {
 		event.preventDefault();
 	}
 });
