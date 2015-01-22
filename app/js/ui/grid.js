@@ -330,7 +330,7 @@ Grid.prototype.init = function ( config ) {
 	var self = this,
 		draw = false,
 		i, j,
-		$row, $item, $table, $tbody, $focusItem,
+		$row, $item, $tbody, $focusItem,
 		itemData,
 		/**
 		 * Cell mouse click handler.
@@ -397,10 +397,9 @@ Grid.prototype.init = function ( config ) {
 		return;
 	}
 
-	$table = document.createElement('table');
-	$tbody = document.createElement('tbody');
-
-	$table.appendChild($tbody);
+	// export pointer to inner table
+	this.$table = document.createElement('table');
+	$tbody      = document.createElement('tbody');
 
 	// prepare user data
 	this.data = normalize(this.data);
@@ -467,7 +466,8 @@ Grid.prototype.init = function ( config ) {
 	this.$body.innerText = null;
 
 	// everything is ready
-	this.$body.appendChild($table);
+	this.$table.appendChild($tbody);
+	this.$body.appendChild(this.$table);
 
 	// apply focus
 	if ( $focusItem !== undefined ) {
