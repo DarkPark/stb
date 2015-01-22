@@ -10,7 +10,7 @@ var Model    = require('./model'),
 	router   = require('./router'),
 	keys     = require('./keys'),
 	keyCodes = {},
-	app, linkCSS, key;
+	app, key;
 
 
 require('stb/shims');
@@ -74,6 +74,8 @@ app = new Model({
  * @return {boolean} operation status
  */
 app.setScreen = function ( metrics ) {
+	var linkCSS;
+
 	if ( DEBUG ) {
 		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 	}
@@ -90,6 +92,9 @@ app.setScreen = function ( metrics ) {
 		// set max browser window size
 		window.moveTo(0, 0);
 		window.resizeTo(metrics.width, metrics.height);
+
+		// get the link tag
+		linkCSS = document.querySelector('link[rel=stylesheet]');
 
 		// already was initialized
 		if ( linkCSS && linkCSS instanceof HTMLLinkElement ) {
