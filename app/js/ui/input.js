@@ -55,7 +55,7 @@ function Input ( config ) {
 	/**
 	 * Caret element, which shows current cursor position.
 	 *
-	 * @type {HTMLElement}
+	 * @type {Element}
 	 */
 	this.$caret = document.createElement('span');
 
@@ -118,21 +118,18 @@ function Input ( config ) {
 				break;
 
 			case keys.left:
-				self.moveCaret(self.$caret.index - 1);
-				break;
-
 			case keys.right:
-				self.moveCaret(self.$caret.index + 1);
+				self.moveCaret(event.code);
 				break;
 
 			case keys.end:
 			case keys.down:
-				self.moveCaret(self.value.length);
+				self.moveCaret(0, self.value.length);
 				break;
 
 			case keys.home:
 			case keys.up:
-				self.moveCaret(0);
+				self.moveCaret(0, 0);
 				break;
 
 			default:
@@ -225,12 +222,13 @@ Input.prototype.addChar = function ( char, index ) {
 Input.prototype.removeChar = function ( index ) {
 	index = (index === undefined) ? (this.$caret.index - 1) : index;
 
-	if ( DEBUG ) {
-		if ( index < 0 ) { throw 'index must be a positive value'; }
-		if ( index > this.value.length ) { throw 'index must be a less than or equal to total length'; }
-	}
-
 	if ( this.value.length > 0 ) {
+
+		if ( DEBUG ) {
+			if ( index < 0 ) { throw 'index must be a positive value'; }
+			if ( index > this.value.length ) { throw 'index must be a less than or equal to total length'; }
+		}
+
 		if ( this.$caret.index === index && index < this.value.length ) { // remove char after caret
 			this.$body.removeChild(this.$body.children.item(index + 1));
 		} else if ( this.$caret.index > index ) { // remove char before caret
@@ -259,11 +257,21 @@ Input.prototype.removeChar = function ( index ) {
 
 /**
  * Move caret to the given index
- * Do nothing if index is out of the range (0, length).
+ * Do nothing if index is out of the range (0, this.value.length).
  *
- * @param {number} index given position
+ * @param {number} direction given keyCode, keys.left or keys.right
+ * @param {number} [index=this.$caret.index] given position, if not passed sets to caret index +/- 1 (depends on the direction)
  */
-Input.prototype.moveCaret = function ( index ) {
+Input.prototype.moveCaret = function ( direction, index ) {
+	if ( index === undefined ) {
+		index = this.$caret.index;
+		if ( direction === keys.right ) {
+			 ++index;
+		} else {
+			--index;
+		}
+	}
+
 	if ( index >= 0 && index <= this.value.length ) {
 		if ( index === this.value.length ) { // add to the end
 			this.$body.appendChild(this.$caret);
@@ -284,21 +292,70 @@ Input.prototype.moveCaret = function ( index ) {
  */
 Input.prototype.setValue = function ( value ) {
 	var len = value.length,
-		i;
+		i = 0,
+		df = document.createDocumentFragment(),
+		span;
 
 	if ( DEBUG ) {
 		if ( typeof value !== 'string' ) { throw 'value must be a string'; }
 	}
 	if ( len > 0 ) {
+		if ( this.value.length === 0 && this.placeholder.length > 0 ) { // remove placeholder
+			this.$body.innerText = '';
+		}
+
+		if ( this.$caret.parentNode !== null ) { // remove caret
+			this.$body.removeChild(this.$caret);
+		}
+
 		this.$caret.index = 0;
-		while ( this.$body.firstChild ) {
-			this.$body.removeChild(this.$body.firstChild);
+
+		while ( i < this.value.length ) {
+			span = this.$body.children.item(i);
+			if ( this.type === this.TYPE_PASSWORD ) {
+			} else if ( value[i] === ' ' ) {
+				span.innerHTML = '&nbsp;';
+			} else {
+				span.innerText = value[i];
+			}
+			++i;
+		}
+
+		if ( len < this.value.length ) { // remove unused elements
+			while ( this.value.length !== len ) {
+				this.$body.removeChild(this.$body.lastChild);
+				this.value = this.value.substring(0, this.value.length - 1);
+			}
+		}
+
+		while ( i < value.length ) { // append child
+			span = document.createElement('span');
+			df.appendChild(span);
+			if ( this.type === this.TYPE_PASSWORD ) {
+				span.innerText = '*';
+			} else if ( value[i] === ' ' ) {
+				span.innerHTML = '&nbsp;';
+			} else {
+				span.innerText = value[i];
+			}
+			++i;
+		}
+
+		this.$body.appendChild(df);
+		this.value = value;
+		this.$caret.index = i;
+		this.$body.appendChild(this.$caret);
+	} else if ( this.placeholder.length > 0 ) {
+		if ( this.$caret.parentNode !== null ) { // remove caret
+			this.$body.removeChild(this.$caret);
 		}
 		this.value = '';
-		this.$body.appendChild(this.$caret);
+		this.$body.innerText = this.placeholder;
 	}
-	for ( i = 0; i < len; ++i ) {
-		this.addChar(value[i], this.value.length);
+	// there are some listeners
+	if ( this.events['input'] !== undefined ) {
+		// notify listeners
+		this.emit('input', {value: this.value});
 	}
 };
 
