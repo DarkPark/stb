@@ -218,7 +218,8 @@ Emitter.prototype = {
 				}
 
 				// invoke the callback with parameters
-				event[i](data);
+				// http://jsperf.com/function-calls-direct-vs-apply-vs-call-vs-bind/6
+				event[i].call(this, data);
 			}
 		}
 	}
