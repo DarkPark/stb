@@ -181,14 +181,21 @@ Emitter.prototype = {
 
 
 	/**
-	 * Execute each of the listeners in order with the supplied arguments.
+	 * Execute each of the listeners in the given order with the supplied arguments.
 	 *
 	 * @param {string} name event identifier
 	 * @param {Object} [data] options to send
 	 *
+	 * @todo consider use context
+	 *
 	 * @example
 	 * obj.emit('init');
 	 * obj.emit('click', {src:panel1, dst:panel2});
+	 *
+	 * // it's a good idea to emit event only when there are some listeners
+	 * if ( this.events['click'] !== undefined ) {
+	 *     this.emit('click', {event: event});
+	 * }
 	 */
 	emit: function ( name, data ) {
 		var event = this.events[name],
