@@ -207,7 +207,7 @@ Grid.prototype.navigateDefault = function ( event ) {
 			// there are some listeners
 			if ( this.events['click:item'] !== undefined ) {
 				// notify listeners
-				this.emit('click:item', {$item: self.$focusItem, event: event});
+				this.emit('click:item', {$item: this.$focusItem, event: event});
 			}
 			break;
 	}
