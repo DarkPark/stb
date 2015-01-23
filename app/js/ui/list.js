@@ -20,6 +20,7 @@ var Component = require('../component'),
  * @property {Event} event click event data
  */
 
+
 /**
  * Base list implementation.
  *
@@ -33,10 +34,12 @@ var Component = require('../component'),
  * @constructor
  * @extends Component
  *
- * @param {Object}  [config={}] init parameters (all inherited from the parent)
- * @param {Array}   [config.data=[]] component data to visualize
- * @param {number}  [config.size=5] amount of visible items on a page
- * @param {boolean} [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
+ * @param {Object}   [config={}] init parameters (all inherited from the parent)
+ * @param {Array}    [config.data=[]] component data to visualize
+ * @param {function} [config.render] method to build each grid cell content
+ * @param {function} [config.navigate] method to move focus according to pressed keys
+ * @param {number}   [config.size=5] amount of visible items on a page
+ * @param {boolean}  [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
  *
  * @fires module:stb/ui/list~List#click:item
  */
@@ -106,29 +109,17 @@ function List ( config ) {
 	// component setup
 	this.init(config);
 
-	// navigation by keyboard
-	this.addListener('keydown', function ( event ) {
-		switch ( event.code ) {
-			case keys.up:
-			case keys.down:
-			case keys.right:
-			case keys.left:
-			case keys.pageUp:
-			case keys.pageDown:
-			case keys.home:
-			case keys.end:
-				// cursor move only on arrow keys
-				self.move(event.code);
-				break;
-			case keys.ok:
-				// there are some listeners
-				if ( self.events['click:item'] !== undefined ) {
-					// notify listeners
-					self.emit('click:item', {$item: self.$focusItem, event: event});
-				}
-				break;
+	// custom navigation method
+	if ( config.navigate !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-	});
+
+		this.navigateDefault = config.navigate;
+	}
+
+	// navigation by keyboard
+	this.addListener('keydown', this.navigateDefault);
 
 	// navigation by mouse
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -172,6 +163,44 @@ List.prototype.renderItemDefault = function ( $item, data ) {
  * @type {function}
  */
 List.prototype.renderItem = List.prototype.renderItemDefault;
+
+
+/**
+ * Default method to move focus according to pressed keys.
+ *
+ * @param {Event} event generated event source of movement
+ */
+List.prototype.navigateDefault = function ( event ) {
+	switch ( event.code ) {
+		case keys.up:
+		case keys.down:
+		case keys.right:
+		case keys.left:
+		case keys.pageUp:
+		case keys.pageDown:
+		case keys.home:
+		case keys.end:
+			// cursor move only on arrow keys
+			this.move(event.code);
+			break;
+		case keys.ok:
+			// there are some listeners
+			if ( this.events['click:item'] !== undefined ) {
+				// notify listeners
+				this.emit('click:item', {$item: this.$focusItem, event: event});
+			}
+			break;
+	}
+};
+
+
+/**
+ * Method to move focus according to pressed keys.
+ * Can be redefined to provide custom navigation.
+ *
+ * @type {function}
+ */
+List.prototype.navigate = List.prototype.navigateDefault;
 
 
 /**
@@ -311,6 +340,7 @@ List.prototype.init = function ( config ) {
  * @property {number} currIndex current view window position
  */
 
+
 /**
  * Draw the visible window.
  *
@@ -387,6 +417,7 @@ List.prototype.renderView = function ( index ) {
  * @type {Object}
  * @property {number} direction key code initiator of movement
  */
+
 
 /**
  * Attempt to go beyond the edge of the list.
