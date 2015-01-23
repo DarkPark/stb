@@ -17,10 +17,9 @@
 
 	> .caret {
 		height:         unit(@inputHeight - @inputBorder*2 - @inputPaddingY*2, px);
-		margin:         unit(@inputPaddingY, px);
-		width:          1px;
-		border:         none;
-		background:     #000;
+		margin:         unit(@inputPaddingY, px) 0 unit(@inputPaddingY, px) -1px;
+		width:          0;
+		border-right:   1px solid #000000;
 		display:        inline-block;
 		vertical-align: top;
 	}
