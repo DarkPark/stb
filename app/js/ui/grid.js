@@ -43,6 +43,7 @@ var Component = require('../component'),
  * @param {Object}   [config={}] init parameters (all inherited from the parent)
  * @param {Array[]}  [config.data=[]] component data to visualize
  * @param {function} [config.render] method to build each grid cell content
+ * @param {function} [config.navigate] method to move focus according to pressed keys
  * @param {boolean}  [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
  * @param {boolean}  [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
  *
@@ -130,25 +131,17 @@ function Grid ( config ) {
 	// component setup
 	this.init(config);
 
-	// navigation by keyboard
-	this.addListener('keydown', function ( event ) {
-		switch ( event.code ) {
-			case keys.up:
-			case keys.down:
-			case keys.right:
-			case keys.left:
-				// cursor move only on arrow keys
-				self.move(event.code);
-				break;
-			case keys.ok:
-				// there are some listeners
-				if ( self.events['click:item'] !== undefined ) {
-					// notify listeners
-					self.emit('click:item', {$item: self.$focusItem, event: event});
-				}
-				break;
+	// custom navigation method
+	if ( config.navigate !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-	});
+
+		this.navigateDefault = config.navigate;
+	}
+
+	// navigation by keyboard
+	this.addListener('keydown', this.navigateDefault);
 
 	// navigation by mouse
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -194,6 +187,40 @@ Grid.prototype.renderItemDefault = function ( $item, data ) {
  * @type {function}
  */
 Grid.prototype.renderItem = Grid.prototype.renderItemDefault;
+
+
+/**
+ * Default method to move focus according to pressed keys.
+ *
+ * @param {Event} event generated event source of movement
+ */
+Grid.prototype.navigateDefault = function ( event ) {
+	switch ( event.code ) {
+		case keys.up:
+		case keys.down:
+		case keys.right:
+		case keys.left:
+			// cursor move only on arrow keys
+			this.move(event.code);
+			break;
+		case keys.ok:
+			// there are some listeners
+			if ( this.events['click:item'] !== undefined ) {
+				// notify listeners
+				this.emit('click:item', {$item: self.$focusItem, event: event});
+			}
+			break;
+	}
+};
+
+
+/**
+ * Method to move focus according to pressed keys.
+ * Can be redefined to provide custom navigation.
+ *
+ * @type {function}
+ */
+Grid.prototype.navigate = Grid.prototype.navigateDefault;
 
 
 /**
