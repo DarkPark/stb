@@ -48,16 +48,26 @@ var Component = require('../component'),
  * @property {Event} event click event data
  */
 
+
 /**
  * Base list implementation.
+ *
+ * Each data item can be either a primitive value or an object with these fields:
+ *
+ *  Name    | Description
+ * ---------|-------------
+ *  value   | actual cell value to render
+ *  mark    | is it necessary or not to render this cell as marked
  *
  * @constructor
  * @extends Component
  *
- * @param {Object}  [config={}] init parameters (all inherited from the parent)
- * @param {Array}   [config.data=[]] component data to visualize
- * @param {number}  [config.size=5] amount of visible items on a page
- * @param {boolean} [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
+ * @param {Object}   [config={}] init parameters (all inherited from the parent)
+ * @param {Array}    [config.data=[]] component data to visualize
+ * @param {function} [config.render] method to build each grid cell content
+ * @param {function} [config.navigate] method to move focus according to pressed keys
+ * @param {number}   [config.size=5] amount of visible items on a page
+ * @param {boolean}  [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
  *
  * @fires module:stb/ui/list~List#click:item
  */
@@ -127,26 +137,17 @@ function List ( config ) {
 	// component setup
 	this.init(config);
 
-	// navigation by keyboard
-	this.addListener('keydown', function ( event ) {
-		switch ( event.code ) {
-			case keys.up:
-			case keys.down:
-			case keys.right:
-			case keys.left:
-			case keys.pageUp:
-			case keys.pageDown:
-			case keys.home:
-			case keys.end:
-				// cursor move only on arrow keys
-				self.move(event.code);
-				break;
-			case keys.ok:
-				// notify
-				self.emit('click:item', {$item: self.$focusItem, event: event});
-				break;
+	// custom navigation method
+	if ( config.navigate !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-	});
+
+		this.navigateDefault = config.navigate;
+	}
+
+	// navigation by keyboard
+	this.addListener('keydown', this.navigateDefault);
 
 	// navigation by mouse
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -193,6 +194,44 @@ List.prototype.renderItem = List.prototype.renderItemDefault;
 
 
 /**
+ * Default method to move focus according to pressed keys.
+ *
+ * @param {Event} event generated event source of movement
+ */
+List.prototype.navigateDefault = function ( event ) {
+	switch ( event.code ) {
+		case keys.up:
+		case keys.down:
+		case keys.right:
+		case keys.left:
+		case keys.pageUp:
+		case keys.pageDown:
+		case keys.home:
+		case keys.end:
+			// cursor move only on arrow keys
+			this.move(event.code);
+			break;
+		case keys.ok:
+			// there are some listeners
+			if ( this.events['click:item'] !== undefined ) {
+				// notify listeners
+				this.emit('click:item', {$item: this.$focusItem, event: event});
+			}
+			break;
+	}
+};
+
+
+/**
+ * Method to move focus according to pressed keys.
+ * Can be redefined to provide custom navigation.
+ *
+ * @type {function}
+ */
+List.prototype.navigate = List.prototype.navigateDefault;
+
+
+/**
  * Make all the data items identical.
  * Wrap to objects if necessary.
  *
@@ -202,13 +241,18 @@ List.prototype.renderItem = List.prototype.renderItemDefault;
 function normalize ( data ) {
 	var i, item;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+	}
+
 	// rows
 	for ( i = 0; i &lt; data.length; i++ ) {
 		// cell value
 		item = data[i];
 		// primitive value
 		if ( typeof item !== 'object' ) {
-			// wrap
+			// wrap with defaults
 			item = data[i] = {
 				value: data[i]
 			};
@@ -216,6 +260,7 @@ function normalize ( data ) {
 
 		if ( DEBUG ) {
 			if ( !('value' in item) ) { throw 'field "value" is missing'; }
+			if ( ('mark' in item) &amp;&amp; Boolean(item.mark) !== item.mark ) { throw 'item.mark must be boolean'; }
 		}
 	}
 
@@ -226,7 +271,7 @@ function normalize ( data ) {
 /**
  * Init or re-init of the component inner structures and HTML.
  *
- * @param {Object} [config={}] init parameters (subset of constructor config params)
+ * @param {Object} config init parameters (subset of constructor config params)
  */
 List.prototype.init = function ( config ) {
 	var self     = this,
@@ -243,13 +288,18 @@ List.prototype.init = function ( config ) {
 		onClick  = function ( event ) {
 			if ( this.data !== undefined ) {
 				self.focusItem(this);
-				// notify
-				self.emit('click:item', {$item: this, event: event});
+
+				// there are some listeners
+				if ( self.events['click:item'] !== undefined ) {
+					// notify listeners
+					self.emit('click:item', {$item: this, event: event});
+				}
 			}
 		},
 		item, i;
 
 	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
 	}
 
@@ -309,16 +359,30 @@ List.prototype.init = function ( config ) {
 
 
 /**
+ * Shift the visible view window event.
+ *
+ * @event module:stb/ui/list~List#move:view
+ *
+ * @type {Object}
+ * @property {number} prevIndex previous view window position
+ * @property {number} currIndex current view window position
+ */
+
+
+/**
  * Draw the visible window.
  *
  * @param {number} index start position to render
  *
  * @return {boolean} operation status
+ *
+ * @fires module:stb/ui/list~List#move:view
  */
 List.prototype.renderView = function ( index ) {
-	var $item, i, itemData;
+	var $item, i, itemData, prevIndex, currIndex;
 
 	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 		if ( Number(index) !== index ) { throw 'index must be a number'; }
 		if ( index &lt; 0 ) { throw 'index should be more than zero'; }
 		if ( index >= this.data.length ) { throw 'index should be less than data size'; }
@@ -326,8 +390,10 @@ List.prototype.renderView = function ( index ) {
 
 	// has the view window position changed
 	if ( this.indexView !== index ) {
+		// save for emit
+		prevIndex = this.indexView;
 		// sync global pointer
-		this.indexView = index;
+		this.indexView = currIndex = index;
 
 		// rebuild all visible items
 		for ( i = 0; i &lt; this.size; i++ ) {
@@ -341,12 +407,25 @@ List.prototype.renderView = function ( index ) {
 				$item.data  = itemData;
 				$item.index = index;
 				this.renderItem($item, itemData);
+
+				// apply CSS
+				if ( itemData.mark ) {
+					$item.classList.add('mark');
+				} else {
+					$item.classList.remove('mark');
+				}
 			} else {
 				// nothing to render
 				$item.data = $item.index = undefined;
 				$item.innerHTML = '&amp;nbsp;';
 			}
 			index++;
+		}
+
+		// there are some listeners
+		if ( this.events['move:view'] !== undefined ) {
+			// notify listeners
+			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
 		}
 
 		// full rebuild
@@ -367,6 +446,7 @@ List.prototype.renderView = function ( index ) {
  * @property {number} direction key code initiator of movement
  */
 
+
 /**
  * Attempt to go beyond the edge of the list.
  *
@@ -381,6 +461,9 @@ List.prototype.renderView = function ( index ) {
  * Move focus to the given direction.
  *
  * @param {number} direction arrow key code
+ *
+ * @fires module:stb/ui/list~List#cycle
+ * @fires module:stb/ui/list~List#overflow
  */
 List.prototype.move = function ( direction ) {
 	//switch ( direction ) {
@@ -400,6 +483,11 @@ List.prototype.move = function ( direction ) {
 	//
 	//return;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( Number(direction) !== direction ) { throw 'direction must be a number'; }
+	}
+
 	if ( (direction === keys.up &amp;&amp; this.type === this.TYPE_VERTICAL) || (direction === keys.left &amp;&amp; this.type === this.TYPE_HORIZONTAL) ) {
 		// still can go backward
 		if ( this.$focusItem &amp;&amp; this.$focusItem.index > 0 ) {
@@ -413,11 +501,18 @@ List.prototype.move = function ( direction ) {
 			if ( this.cycle ) {
 				// jump to the end of the list
 				this.move(keys.end);
-				// notify
-				this.emit('cycle', {direction: direction});
+
+				// there are some listeners
+				if ( this.events['cycle'] !== undefined ) {
+					// notify listeners
+					this.emit('cycle', {direction: direction});
+				}
 			} else {
-				// notify
-				this.emit('overflow', {direction: direction});
+				// there are some listeners
+				if ( this.events['overflow'] !== undefined ) {
+					// notify listeners
+					this.emit('overflow', {direction: direction});
+				}
 			}
 		}
 	}
@@ -434,11 +529,18 @@ List.prototype.move = function ( direction ) {
 			if ( this.cycle ) {
 				// jump to the beginning of the list
 				this.move(keys.home);
-				// notify
-				this.emit('cycle', {direction: direction});
+
+				// there are some listeners
+				if ( this.events['cycle'] !== undefined ) {
+					// notify listeners
+					this.emit('cycle', {direction: direction});
+				}
 			} else {
-				// notify
-				this.emit('overflow', {direction: direction});
+				// there are some listeners
+				if ( this.events['overflow'] !== undefined ) {
+					// notify listeners
+					this.emit('overflow', {direction: direction});
+				}
 			}
 		}
 	}
@@ -506,6 +608,10 @@ List.prototype.move = function ( direction ) {
 List.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	// different element
 	if ( $item !== undefined &amp;&amp; $prev !== $item ) {
 		if ( DEBUG ) {
@@ -522,15 +628,18 @@ List.prototype.focusItem = function ( $item ) {
 			// style
 			$prev.classList.remove('focus');
 
-			/**
-			 * Remove focus from an element.
-			 *
-			 * @event module:stb/ui/list~List#blur:item
-			 *
-			 * @type {Object}
-			 * @property {Element} $item previously focused HTML element
-			 */
-			this.emit('blur:item', {$item: $prev});
+			// there are some listeners
+			if ( this.events['blur:item'] !== undefined ) {
+				/**
+				 * Remove focus from an element.
+				 *
+				 * @event module:stb/ui/list~List#blur:item
+				 *
+				 * @type {Object}
+				 * @property {Element} $item previously focused HTML element
+				 */
+				this.emit('blur:item', {$item: $prev});
+			}
 		}
 		// reassign
 		this.$focusItem = $item;
@@ -540,22 +649,51 @@ List.prototype.focusItem = function ( $item ) {
 		// correct CSS
 		$item.classList.add('focus');
 
-		/**
-		 * Set focus to an element.
-		 *
-		 * @event module:stb/ui/list~List#focus:item
-		 *
-		 * @type {Object}
-		 * @property {Element} $prev old/previous focused HTML element
-		 * @property {Element} $curr new/current focused HTML element
-		 */
-		this.emit('focus:item', {$prev: $prev, $curr: $item});
+		// there are some listeners
+		if ( this.events['focus:item'] !== undefined ) {
+			/**
+			 * Set focus to an element.
+			 *
+			 * @event module:stb/ui/list~List#focus:item
+			 *
+			 * @type {Object}
+			 * @property {Element} $prev old/previous focused HTML element
+			 * @property {Element} $curr new/current focused HTML element
+			 */
+			this.emit('focus:item', {$prev: $prev, $curr: $item});
+		}
 
 		return true;
 	}
 
 	// nothing was done
 	return false;
+};
+
+
+/**
+ * Set item state and appearance as marked.
+ *
+ * @param {Node|Element} $item element to focus
+ * @param {boolean} state true - marked, false - not marked
+ */
+List.prototype.markItem = function ( $item, state ) {
+	if ( DEBUG ) {
+		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
+		if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+		if ( Boolean(state) !== state ) { throw 'state must be boolean'; }
+	}
+
+	// correct CSS
+	if ( state ) {
+		$item.classList.add('mark');
+	} else {
+		$item.classList.remove('mark');
+	}
+
+	// apply flag
+	$item.data.mark = state;
 };
 
 
@@ -571,13 +709,13 @@ module.exports = List;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_stack.html">stb/stack</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_input.html">stb/ui/input</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="module-stb_ui_widget.html">stb/ui/widget</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li><li><a href="stb_ui_scroll.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_stack-Stack.html">Stack</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_input-Input.html">Input</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="module-stb_ui_widget-Widget.html">Widget</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li><li><a href="stb_ui_scroll.module_bar-ScrollBar.html">ScrollBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_stack-Stack.html#event:pop">pop</a></li><li><a href="module-stb_stack-Stack.html#event:push">push</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:move:view">move:view</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:change">change</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Jan 13 2015 11:09:56 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Jan 26 2015 11:16:57 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

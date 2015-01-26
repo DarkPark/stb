@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: stb/develop/proxy</title>
+    <title>JSDoc: Source: stack.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,304 +17,155 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: stb/develop/proxy</h1>
+    <h1 class="page-title">Source: stack.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module stb/stack
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
+ */
+
+'use strict';
+
+var Emitter = require('./emitter');
+
+
+/**
+ * Simple observable stack implementation.
+ *
+ * @constructor
+ * @extends Emitter
+ *
+ * @param {Object} [data={}] init attributes
+ *
+ * @example
+ * var stack1 = new Stack(),
+ *     stack2 = new Stack([1, 2, 3]);
+ */
+function Stack ( data ) {
+	/**
+	 * Current top stack element.
+	 *
+	 * @readonly
+	 * @type {Object}
+	 */
+	this.current = null;
+
+	/**
+	 * List of all stack elements.
+	 *
+	 * @readonly
+	 * @type {Object[]}
+	 */
+	this.data = data || [];
+
+	if ( DEBUG ) {
+		if ( !Array.isArray(this.data) ) { throw 'wrong data type'; }
+	}
+
+	// parent init
+	Emitter.call(this);
+}
+
+
+// inheritance
+Stack.prototype = Object.create(Emitter.prototype);
+Stack.prototype.constructor = Stack;
+
+
+/**
+ * Add new element to the stack event.
+ *
+ * @event module:stb/stack~Stack#push
+ *
+ * @type {Object}
+ * @property {*} prev previous top element
+ * @property {*} curr current top element
+ */
+
+/**
+ * Add new element to the stack.
+ *
+ * @param {Object} data new element
+ *
+ * @fires module:stb/stack~Stack#push
+ *
+ * @example
+ * stack.push(123);
+ * stack.push('abc');
+ * stack.push({foo: 'bar'});
+ */
+Stack.prototype.push = function ( data ) {
+	var prev = this.current;
+
+	// apply
+	this.data.push(data);
+
+	// link
+	this.current = data;
+
+	// there are some listeners
+	if ( this.events['push'] !== undefined ) {
+		// notify listeners
+		this.emit('push', {prev: prev, curr: this.current});
+	}
+};
+
 
-    
-
-
-
-
-<section>
-
-<header>
-    
-        
-            
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>STB calls relay.</p></div>
-        
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:sk@infomir.eu">Stanislav Kalashnik</a></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>GNU GENERAL PUBLIC LICENSE Version 3</li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="develop_proxy.js.html">develop/proxy.js</a>, <a href="develop_proxy.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="~initGuest"><span class="type-signature">(inner) </span>initGuest<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Proxy guest activation</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="develop_proxy.js.html">develop/proxy.js</a>, <a href="develop_proxy.js.html#line54">line 54</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~initHost"><span class="type-signature">(inner) </span>initHost<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Proxy host activation</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="develop_proxy.js.html">develop/proxy.js</a>, <a href="develop_proxy.js.html#line29">line 29</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+/**
+ * Remove current top element from the stack event.
+ *
+ * @event module:stb/stack~Stack#pop
+ *
+ * @type {Object}
+ * @property {*} prev previous top element
+ * @property {*} curr current top element
+ */
+
+/**
+ * Remove current top element from the stack.
+ *
+ * @return {*} removed element
+ *
+ * @fires module:stb/stack~Stack#pop
+ *
+ * @example
+ * var item = stack.pop();
+ */
+Stack.prototype.pop = function () {
+	var prev = null;
+
+	// there are some pages in the stack
+	if ( this.data.length > 0 ) {
+		// remove the current
+		prev = this.data.pop();
+
+		// set top element
+		this.current = this.data.length > 0 ? this.data[this.data.length - 1] : null;
+
+		// there are some listeners
+		if ( this.events['pop'] !== undefined ) {
+			// notify listeners
+			this.emit('pop', {prev: prev, curr: this.current});
+		}
+	}
+
+	return prev;
+};
+
+
+// public export
+module.exports = Stack;
+</code></pre>
+        </article>
+    </section>
 
 
 

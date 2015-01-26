@@ -39,17 +39,29 @@ var Component = require('../component'),
 
 
 /**
+ * Mouse click event.
+ *
+ * @event module:stb/ui/grid~Grid#click:item
+ *
+ * @type {Object}
+ * @property {Element} $item clicked HTML item
+ * @property {Event} event click event data
+ */
+
+
+/**
  * Base grid/table implementation.
  *
  * For navigation map implementation and tests see {@link https://gist.github.com/DarkPark/8c0c2926bfa234043ed1}.
  *
- * Each data cell value can be either a primitive value or an object with these fields:
+ * Each data cell can be either a primitive value or an object with these fields:
  *
  *  Name    | Description
  * ---------|-------------
  *  value   | actual cell value to render
  *  colSpan | amount of cells to merge horizontally
  *  rowSpan | amount of cells to merge vertically
+ *  mark    | is it necessary or not to render this cell as marked
  *  focus   | is it necessary or not to render this cell as focused
  *  disable | is it necessary or not to set this cell as disabled
  *
@@ -59,8 +71,11 @@ var Component = require('../component'),
  * @param {Object}   [config={}] init parameters (all inherited from the parent)
  * @param {Array[]}  [config.data=[]] component data to visualize
  * @param {function} [config.render] method to build each grid cell content
+ * @param {function} [config.navigate] method to move focus according to pressed keys
  * @param {boolean}  [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
  * @param {boolean}  [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
+ *
+ * @fires module:stb/ui/grid~Grid#click:item
  *
  * @example
  * var Grid = require('stb/ui/grid'),
@@ -144,22 +159,17 @@ function Grid ( config ) {
 	// component setup
 	this.init(config);
 
-	// navigation by keyboard
-	this.addListener('keydown', function ( event ) {
-		switch ( event.code ) {
-			case keys.up:
-			case keys.down:
-			case keys.right:
-			case keys.left:
-				// cursor move only on arrow keys
-				self.move(event.code);
-				break;
-			case keys.ok:
-				// notify
-				self.emit('click:item', {$item: self.$focusItem, event: event});
-				break;
+	// custom navigation method
+	if ( config.navigate !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-	});
+
+		this.navigateDefault = config.navigate;
+	}
+
+	// navigation by keyboard
+	this.addListener('keydown', this.navigateDefault);
 
 	// navigation by mouse
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -189,6 +199,11 @@ Grid.prototype.constructor = Grid;
  * @param {*} data associated with this item data
  */
 Grid.prototype.renderItemDefault = function ( $item, data ) {
+	if ( DEBUG ) {
+		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
+	}
+
 	$item.innerText = data.value;
 };
 
@@ -203,6 +218,40 @@ Grid.prototype.renderItem = Grid.prototype.renderItemDefault;
 
 
 /**
+ * Default method to move focus according to pressed keys.
+ *
+ * @param {Event} event generated event source of movement
+ */
+Grid.prototype.navigateDefault = function ( event ) {
+	switch ( event.code ) {
+		case keys.up:
+		case keys.down:
+		case keys.right:
+		case keys.left:
+			// cursor move only on arrow keys
+			this.move(event.code);
+			break;
+		case keys.ok:
+			// there are some listeners
+			if ( this.events['click:item'] !== undefined ) {
+				// notify listeners
+				this.emit('click:item', {$item: this.$focusItem, event: event});
+			}
+			break;
+	}
+};
+
+
+/**
+ * Method to move focus according to pressed keys.
+ * Can be redefined to provide custom navigation.
+ *
+ * @type {function}
+ */
+Grid.prototype.navigate = Grid.prototype.navigateDefault;
+
+
+/**
  * Make all the data items identical.
  * Wrap to objects if necessary and add missing properties.
  *
@@ -212,6 +261,11 @@ Grid.prototype.renderItem = Grid.prototype.renderItemDefault;
 function normalize ( data ) {
 	var i, j, item;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+	}
+
 	// rows
 	for ( i = 0; i &lt; data.length; i++ ) {
 		// cols
@@ -220,15 +274,17 @@ function normalize ( data ) {
 			item = data[i][j];
 			// primitive value
 			if ( typeof item !== 'object' ) {
-				// wrap
+				// wrap with defaults
 				item = data[i][j] = {
-					value: data[i][j]
+					value: data[i][j],
+					colSpan: 1,
+					rowSpan: 1
 				};
+			} else {
+				// always at least one row/col
+				item.colSpan = item.colSpan || 1;
+				item.rowSpan = item.rowSpan || 1;
 			}
-
-			// always at least one row/col
-			item.colSpan = item.colSpan || 1;
-			item.rowSpan = item.rowSpan || 1;
 
 			if ( DEBUG ) {
 				if ( !('value' in item) ) { throw 'field "value" is missing'; }
@@ -236,6 +292,8 @@ function normalize ( data ) {
 				if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
 				if ( item.colSpan &lt;= 0 ) { throw 'item.colSpan should be positive'; }
 				if ( item.rowSpan &lt;= 0 ) { throw 'item.rowSpan should be positive'; }
+				if ( ('focus' in item) &amp;&amp; Boolean(item.focus) !== item.focus ) { throw 'item.focus must be boolean'; }
+				if ( ('disable' in item) &amp;&amp; Boolean(item.disable) !== item.disable ) { throw 'item.disable must be boolean'; }
 			}
 		}
 	}
@@ -256,6 +314,11 @@ function normalize ( data ) {
  */
 function fill ( map, x, y, dX, dY, value ) {
 	var i, j;
+
+	if ( DEBUG ) {
+		if ( arguments.length !== 6 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(map) ) { throw 'wrong map type'; }
+	}
 
 	// rows
 	for ( i = y; i &lt; y + dY; i++ ) {
@@ -291,6 +354,11 @@ function map ( data ) {
 	var result = [],
 		i, j, item;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+	}
+
 	// rows
 	for ( i = 0; i &lt; data.length; i++ ) {
 		// cols
@@ -309,26 +377,15 @@ function map ( data ) {
 
 
 /**
- * Mouse click event.
- *
- * @event module:stb/ui/grid~Grid#click:item
- *
- * @type {Object}
- * @property {Element} $item clicked HTML item
- * @property {Event} event click event data
- */
-
-
-/**
  * Init or re-init of the component inner structures and HTML.
  *
- * @param {Object} [config={}] init parameters (subset of constructor config params)
+ * @param {Object} config init parameters (subset of constructor config params)
  */
 Grid.prototype.init = function ( config ) {
 	var self = this,
 		draw = false,
 		i, j,
-		$row, $item, $table, $tbody, $focusItem,
+		$row, $item, $tbody, $focusItem,
 		itemData,
 		/**
 		 * Cell mouse click handler.
@@ -345,12 +402,16 @@ Grid.prototype.init = function ( config ) {
 				// visualize
 				self.focusItem(this);
 
-				// notify
-				self.emit('click:item', {$item: this, event: event});
+				// there are some listeners
+				if ( self.events['click:item'] !== undefined ) {
+					// notify listeners
+					self.emit('click:item', {$item: this, event: event});
+				}
 			}
 		};
 
 	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
 	}
 
@@ -361,7 +422,7 @@ Grid.prototype.init = function ( config ) {
 	// apply data
 	if ( config.data !== undefined ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+			if ( !Array.isArray(config.data) || !Array.isArray(config.data[0]) ) { throw 'wrong config.data type'; }
 		}
 
 		// new data is different
@@ -386,19 +447,14 @@ Grid.prototype.init = function ( config ) {
 		}
 	}
 
-	if ( DEBUG ) {
-		if ( !Array.isArray(this.data) || !Array.isArray(this.data[0]) ) { throw 'wrong this.data'; }
-	}
-
 	if ( !draw ) {
 		// do not redraw table
 		return;
 	}
 
-	$table = document.createElement('table');
-	$tbody = document.createElement('tbody');
-
-	$table.appendChild($tbody);
+	// export pointer to inner table
+	this.$table = document.createElement('table');
+	$tbody      = document.createElement('tbody');
 
 	// prepare user data
 	this.data = normalize(this.data);
@@ -428,15 +484,21 @@ Grid.prototype.init = function ( config ) {
 			$item.rowSpan = itemData.rowSpan;
 
 			// active cell
-			if ( itemData.focus === true ) {
+			if ( itemData.focus ) {
 				// store and clean
 				$focusItem = $item;
 			}
 
 			// disabled cell
-			if ( itemData.disable === true ) {
+			if ( itemData.disable ) {
 				// apply CSS
 				$item.classList.add('disable');
+			}
+
+			// marked cell
+			if ( itemData.mark ) {
+				// apply CSS
+				$item.classList.add('mark');
 			}
 
 			// visualize
@@ -459,7 +521,8 @@ Grid.prototype.init = function ( config ) {
 	this.$body.innerText = null;
 
 	// everything is ready
-	this.$body.appendChild($table);
+	this.$table.appendChild($tbody);
+	this.$body.appendChild(this.$table);
 
 	// apply focus
 	if ( $focusItem !== undefined ) {
@@ -486,6 +549,11 @@ Grid.prototype.move = function ( direction ) {
 		move     = true,
 		overflow = false,
 		cycle    = false;
+
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( Number(direction) !== direction ) { throw 'direction must be a number'; }
+	}
 
 	// shift till full stop
 	while ( move ) {
@@ -582,27 +650,33 @@ Grid.prototype.move = function ( direction ) {
 	}
 
 	if ( cycle ) {
-		/**
-		 * Jump to the opposite side.
-		 *
-		 * @event module:stb/ui/grid~Grid#cycle
-		 *
-		 * @type {Object}
-		 * @property {number} direction key code initiator of movement
-		 */
-		this.emit('cycle', {direction: direction});
+		// there are some listeners
+		if ( this.events['cycle'] !== undefined ) {
+			/**
+			 * Jump to the opposite side.
+			 *
+			 * @event module:stb/ui/grid~Grid#cycle
+			 *
+			 * @type {Object}
+			 * @property {number} direction key code initiator of movement
+			 */
+			this.emit('cycle', {direction: direction});
+		}
 	}
 
 	if ( overflow ) {
-		/**
-		 * Attempt to go beyond the edge of the grid.
-		 *
-		 * @event module:stb/ui/grid~Grid#overflow
-		 *
-		 * @type {Object}
-		 * @property {number} direction key code initiator of movement
-		 */
-		this.emit('overflow', {direction: direction});
+		// there are some listeners
+		if ( this.events['overflow'] !== undefined ) {
+			/**
+			 * Attempt to go beyond the edge of the grid.
+			 *
+			 * @event module:stb/ui/grid~Grid#overflow
+			 *
+			 * @type {Object}
+			 * @property {number} direction key code initiator of movement
+			 */
+			this.emit('overflow', {direction: direction});
+		}
 	}
 
 	// report
@@ -636,6 +710,10 @@ Grid.prototype.move = function ( direction ) {
 Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	// different element
 	if ( $item !== undefined &amp;&amp; $prev !== $item &amp;&amp; $item.data.disable !== true ) {
 		if ( DEBUG ) {
@@ -652,15 +730,18 @@ Grid.prototype.focusItem = function ( $item ) {
 			// style
 			$prev.classList.remove('focus');
 
-			/**
-			 * Remove focus from an element.
-			 *
-			 * @event module:stb/ui/grid~Grid#blur:item
-			 *
-			 * @type {Object}
-			 * @property {Element} $item previously focused HTML element
-			 */
-			this.emit('blur:item', {$item: $prev});
+			// there are some listeners
+			if ( this.events['blur:item'] !== undefined ) {
+				/**
+				 * Remove focus from an element.
+				 *
+				 * @event module:stb/ui/grid~Grid#blur:item
+				 *
+				 * @type {Object}
+				 * @property {Element} $item previously focused HTML element
+				 */
+				this.emit('blur:item', {$item: $prev});
+			}
 		}
 
 		// draft coordinates
@@ -673,22 +754,51 @@ Grid.prototype.focusItem = function ( $item ) {
 		// correct CSS
 		$item.classList.add('focus');
 
-		/**
-		 * Set focus to an element.
-		 *
-		 * @event module:stb/ui/grid~Grid#focus:item
-		 *
-		 * @type {Object}
-		 * @property {Element} $prev old/previous focused HTML element
-		 * @property {Element} $curr new/current focused HTML element
-		 */
-		this.emit('focus:item', {$prev: $prev, $curr: $item});
+		// there are some listeners
+		if ( this.events['focus:item'] !== undefined ) {
+			/**
+			 * Set focus to an element.
+			 *
+			 * @event module:stb/ui/grid~Grid#focus:item
+			 *
+			 * @type {Object}
+			 * @property {Element} $prev old/previous focused HTML element
+			 * @property {Element} $curr new/current focused HTML element
+			 */
+			this.emit('focus:item', {$prev: $prev, $curr: $item});
+		}
 
 		return true;
 	}
 
 	// nothing was done
 	return false;
+};
+
+
+/**
+ * Set item state and appearance as marked.
+ *
+ * @param {Node|Element} $item element to focus
+ * @param {boolean} state true - marked, false - not marked
+ */
+Grid.prototype.markItem = function ( $item, state ) {
+	if ( DEBUG ) {
+		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
+		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
+		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+		if ( Boolean(state) !== state ) { throw 'state must be boolean'; }
+	}
+
+	// correct CSS
+	if ( state ) {
+		$item.classList.add('mark');
+	} else {
+		$item.classList.remove('mark');
+	}
+
+	// apply flag
+	$item.data.mark = state;
 };
 
 
@@ -704,13 +814,13 @@ module.exports = Grid;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_stack.html">stb/stack</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_input.html">stb/ui/input</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="module-stb_ui_widget.html">stb/ui/widget</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li><li><a href="stb_ui_scroll.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_stack-Stack.html">Stack</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_input-Input.html">Input</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="module-stb_ui_widget-Widget.html">Widget</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li><li><a href="stb_ui_scroll.module_bar-ScrollBar.html">ScrollBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_stack-Stack.html#event:pop">pop</a></li><li><a href="module-stb_stack-Stack.html#event:push">push</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:move:view">move:view</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:change">change</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Jan 13 2015 11:09:56 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Jan 26 2015 11:16:57 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

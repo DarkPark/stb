@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: CheckBox</title>
+    <title>JSDoc: Class: Input</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: CheckBox</h1>
+    <h1 class="page-title">Class: Input</h1>
 
     
 
@@ -29,9 +29,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="stb_ui_check.module_box.html">.box</a>~</span>
+            <span class="ancestors"><a href="module-stb_ui_input.html">stb/ui/input</a>~</span>
         
-        CheckBox
+        Input
         </h2>
         
     
@@ -46,14 +46,16 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="CheckBox"><span class="type-signature"></span>new CheckBox<span class="signature">(config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Input"><span class="type-signature"></span>new Input<span class="signature">(config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Base check box implementation.</p>
+    <p>Base input field implementation.
+Has two types: text and password.
+Password - replace real text with '*', but real text presents in the own property 'value'.</p>
 </div>
 
 
@@ -161,7 +163,7 @@
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
@@ -182,19 +184,19 @@
             
                 <td class="default">
                 
-                    false
+                    'text'
                 
                 </td>
             
 
-            <td class="description last"><p>initial state</p></td>
+            <td class="description last"><p>input text value</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>group</code></td>
+                <td class="name"><code>placeholder</code></td>
             
 
             <td class="type">
@@ -221,10 +223,12 @@
             
                 <td class="default">
                 
+                    'password'
+                
                 </td>
             
 
-            <td class="description last"><p>group name to work synchronously with other checkboxes</p></td>
+            <td class="description last"><p>placeholder text value</p></td>
         </tr>
 
     
@@ -270,7 +274,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line31">line 31</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -297,10 +301,14 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var CheckBox = require('stb/ui/check.box'),
-    checkBox = new CheckBox({
-        value: true,
-        group: 'lang'
+    <pre class="prettyprint"><code>var Input = require('stb/ui/input'),
+    input = new Input({
+        placeholder: 'input password'
+        events: {
+            change: function ( event ) {
+                debug.log(event.value);
+            }
+        }
     });</code></pre>
 
 
@@ -334,13 +342,85 @@
 
         
             
-<h4 class="name" id="group"><span class="type-signature"></span>group<span class="type-signature"> :string</span></h4>
+<h4 class="name" id="$caret"><span class="type-signature"></span>$caret<span class="type-signature"> :Element</span></h4>
 
 
 
 
 <div class="description">
-    <p>Group name to work synchronously with other checkboxes.</p>
+    <p>Caret element, which shows current cursor position.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Element</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="placeholder"><span class="type-signature"></span>placeholder<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    <p>Placeholder for input, sets when no text in input and if placeholder not empty.</p>
 </div>
 
 
@@ -388,7 +468,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line50">line 50</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line53">line 53</a>
     </li></ul></dd>
     
 
@@ -406,13 +486,16 @@
 
         
             
-<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :boolean</span></h4>
+<h4 class="name" id="type"><span class="type-signature"></span>type<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    <p>Initial state.</p>
+    <p>Input type, now available only text and password.
+Different logic with different types.
+TYPE_TEXT - normal input.
+TYPE_PASSWORD - hidden input, all chars replaced with '*', but real value is located in 'this.value'.</p>
 </div>
 
 
@@ -421,7 +504,7 @@
     <ul>
         <li>
             
-<span class="param-type">boolean</span>
+<span class="param-type">number</span>
 
 
         </li>
@@ -460,7 +543,79 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line43">line 43</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line70">line 70</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    <p>Scroll area height or if scroll is horizontal its width.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line46">line 46</a>
     </li></ul></dd>
     
 
@@ -487,15 +642,548 @@
 
     
 
-    <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">(value)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="addChar"><span class="type-signature"></span>addChar<span class="signature">(char, index<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Set the given state.
-Does nothing in case the value is already as necessary.</p>
+    <p>Add given char to given position.
+Also moving caret in every action.
+Do nothing if position is &lt; 0, or if index more or equals to length add char to the end.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>char</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>symbol to add</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    this.value.length
+                
+                </td>
+            
+
+            <td class="description last"><p>given position</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line165">line 165</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li>module:stb/ui/input~Input#event:input</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="moveCaret"><span class="type-signature"></span>moveCaret<span class="signature">(direction, index<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Move caret to the given index
+Do nothing if index is out of the range (0, this.value.length).</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>direction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>given keyCode, keys.left or keys.right</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    this.$caret.index
+                
+                </td>
+            
+
+            <td class="description last"><p>given position, if not passed sets to caret index +/- 1 (depends on the direction)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line265">line 265</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="removeChar"><span class="type-signature"></span>removeChar<span class="signature">(index<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Remove char from given index.
+Do nothing if index is out of the range (0, length).</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    this.value.length
+                
+                </td>
+            
+
+            <td class="description last"><p>given position</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line222">line 222</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li>module:stb/ui/input~Input#event:input</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setValue"><span class="type-signature"></span>setValue<span class="signature">(value)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Setting new text value of the input field.</p>
 </div>
 
 
@@ -537,7 +1225,7 @@ Does nothing in case the value is already as necessary.</p>
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
@@ -547,7 +1235,7 @@ Does nothing in case the value is already as necessary.</p>
 
             
 
-            <td class="description last"><p>new value to set</p></td>
+            <td class="description last"><p>given string value</p></td>
         </tr>
 
     
@@ -587,7 +1275,7 @@ Does nothing in case the value is already as necessary.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line108">line 108</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line293">line 293</a>
     </li></ul></dd>
     
 
@@ -602,10 +1290,6 @@ Does nothing in case the value is already as necessary.</p>
 
 
 
-<h5>Fires:</h5>
-<ul>
-    <li><a href="module-stb_ui_check.box-CheckBox.html#event:change">module:stb/ui/check.box~CheckBox#event:change</a></li>
-</ul>
 
 
 
@@ -614,29 +1298,6 @@ Does nothing in case the value is already as necessary.</p>
 
 
 
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>operation status</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 

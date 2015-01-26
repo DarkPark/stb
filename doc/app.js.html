@@ -34,9 +34,11 @@
 
 'use strict';
 
-var Model  = require('./model'),
-	router = require('./router'),
-	app, linkCSS;
+var Model    = require('./model'),
+	router   = require('./router'),
+	keys     = require('./keys'),
+	keyCodes = {},
+	app, key;
 
 
 require('stb/shims');
@@ -100,17 +102,30 @@ app = new Model({
  * @return {boolean} operation status
  */
 app.setScreen = function ( metrics ) {
+	var linkCSS;
+
+	if ( DEBUG ) {
+		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+	}
+
 	if ( metrics ) {
+		if ( DEBUG ) {
+			if ( typeof metrics !== 'object' ) { throw 'wrong metrics type'; }
+		}
+
 		// calculate and extend
-		metrics.availHeight = metrics.height - (metrics.availTop  + metrics.availBottom);
-		metrics.availWidth  = metrics.width  - (metrics.availLeft + metrics.availRight);
+		metrics.availHeight = metrics.height - (metrics.availTop + metrics.availBottom);
+		metrics.availWidth  = metrics.width - (metrics.availLeft + metrics.availRight);
 
 		// set max browser window size
 		window.moveTo(0, 0);
 		window.resizeTo(metrics.width, metrics.height);
 
+		// get the link tag
+		linkCSS = document.querySelector('link[rel=stylesheet]');
+
 		// already was initialized
-		if ( linkCSS &amp;&amp; linkCSS instanceof Node ) {
+		if ( linkCSS &amp;&amp; linkCSS instanceof HTMLLinkElement ) {
 			// remove all current CSS styles
 			document.head.removeChild(linkCSS);
 		}
@@ -135,9 +150,22 @@ app.setScreen = function ( metrics ) {
 // apply screen size, position and margins
 app.setScreen(require('metrics')[screen.height]);
 
+// extract key codes
+for ( key in keys ) {
+	if ( key === 'volumeUp' || key === 'volumeDown' ) {
+		continue;
+	}
+	// no need to save key names
+	keyCodes[keys[key]] = true;
+}
 
 /**
  * The load event is fired when a resource and its dependent resources have finished loading.
+ *
+ * Control flow:
+ *   1. Global handler.
+ *   2. Each page handler.
+ *   3. Application DONE event.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/load
  *
@@ -152,20 +180,22 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	app.data.time.load = event.timeStamp;
 
 	// global handler
-	debug.log('load APP', 'green');
-	app.emit(event.type, event);
+	// there are some listeners
+	if ( app.events[event.type] !== undefined ) {
+		// notify listeners
+		app.emit(event.type, event);
+	}
 
 	// local handler on each page
 	router.pages.forEach(function forEachPages ( page ) {
-		//debug.log('load page ' + page.get('id').toUpperCase(), 'green');
 		debug.log('component ' + page.constructor.name + '.' + page.id + ' load', 'green');
-		page.emit(event.type, event);
-	});
 
-	// show main page
-	//pages.get(app.get('page')).show();
-	//window.dispatchEvent(new Event('hashchange'));
-	//app.parseHash();
+		// there are some listeners
+		if ( page.events[event.type] !== undefined ) {
+			// notify listeners
+			page.emit(event.type, event);
+		}
+	});
 
 	// go to the given page if set
 	if ( location.hash ) {
@@ -177,12 +207,20 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	app.data.time.done = +new Date();
 
 	// everything is ready
-	app.emit('done', event);
+	// and there are some listeners
+	if ( app.events['done'] !== undefined ) {
+		// notify listeners
+		app.emit('done', event);
+	}
 });
 
 
 /**
  * The unload event is fired when the document or a child resource is being unloaded.
+ *
+ * Control flow:
+ *   1. Each page handler.
+ *   2. Global handler.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/unload
  *
@@ -191,9 +229,20 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 	debug.event(event);
 
+	// global handler
+	// there are some listeners
+	if ( app.events[event.type] !== undefined ) {
+		// notify listeners
+		app.emit(event.type, event);
+	}
+
 	// local handler on each page
 	router.pages.forEach(function forEachPages ( page ) {
-		page.emit(event.type, event);
+		// there are some listeners
+		if ( page.events[event.type] !== undefined ) {
+			// notify listeners
+			page.emit(event.type, event);
+		}
 	});
 });
 
@@ -246,8 +295,8 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
  * Set event.stop to true in order to prevent bubbling.
  *
  * Control flow:
- *   1. Current active component.
- *   2. Current active page.
+ *   1. Current active component on the active page.
+ *   2. Current active page itself.
  *   3. Application.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
@@ -256,6 +305,10 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
  */
 window.addEventListener('keydown', function globalEventListenerKeydown ( event ) {
 	var page = router.current;
+
+	if ( DEBUG ) {
+		if ( page === null || page === undefined ) { throw 'app should have at least one page'; }
+	}
 
 	// filter phantoms
 	if ( event.keyCode === 0 ) { return; }
@@ -269,24 +322,65 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 
 	debug.event(event);
 
-	//page = data.pages.current;
-
-	// local handler
-	if ( page ) {
-		if ( page.activeComponent &amp;&amp; page.activeComponent !== page ) {
+	// current component handler
+	if ( page.activeComponent &amp;&amp; page.activeComponent !== page ) {
+		// component is available and not page itself
+		if ( page.activeComponent.events[event.type] !== undefined ) {
+			// there are some listeners
 			page.activeComponent.emit(event.type, event);
 		}
+	}
 
-		if ( !event.stop ) {
-			// not prevented
+	// page handler
+	if ( !event.stop ) {
+		// not prevented
+		if ( page.events[event.type] !== undefined ) {
+			// there are some listeners
 			page.emit(event.type, event);
 		}
 	}
 
-	// global handler
+	// global app handler
 	if ( !event.stop ) {
 		// not prevented
-		app.emit(event.type, event);
+		if ( app.events[event.type] !== undefined ) {
+			// there are some listeners
+			app.emit(event.type, event);
+		}
+	}
+
+	// suppress non-printable keys in stb device (not in your browser)
+	if ( app.data.host &amp;&amp; keyCodes[event.code] ) {
+		event.preventDefault();
+	}
+});
+
+
+/**
+ * The keypress event is fired when press a printable character.
+ * Delivers the event only to activeComponent at active page.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keypress
+ *
+ * @param {Event} event generated object with event data
+ * @param {string} event.char entered character
+ */
+window.addEventListener('keypress', function ( event ) {
+	var page = router.current;
+
+	if ( DEBUG ) {
+		if ( page === null || page === undefined ) { throw 'app should have at least one page'; }
+	}
+
+	//debug.event(event);
+
+	// current component handler
+	if ( page.activeComponent &amp;&amp; page.activeComponent !== page ) {
+		// component is available and not page itself
+		if ( page.activeComponent.events[event.type] !== undefined ) {
+			// there are some listeners
+			page.activeComponent.emit(event.type, event);
+		}
 	}
 });
 
@@ -315,8 +409,10 @@ window.addEventListener('click', function globalEventListenerClick ( event ) {
 window.addEventListener('contextmenu', function globalEventListenerContextmenu ( event ) {
 	debug.event(event);
 
-	// disable right click in release mode
-	if ( !app.data.debug ) { event.preventDefault(); }
+	if ( !DEBUG ) {
+		// disable right click in release mode
+		event.preventDefault();
+	}
 });
 
 
@@ -358,13 +454,13 @@ module.exports = app;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_stack.html">stb/stack</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_input.html">stb/ui/input</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="module-stb_ui_widget.html">stb/ui/widget</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li><li><a href="stb_ui_scroll.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_stack-Stack.html">Stack</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_input-Input.html">Input</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="module-stb_ui_widget-Widget.html">Widget</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li><li><a href="stb_ui_scroll.module_bar-ScrollBar.html">ScrollBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_stack-Stack.html#event:pop">pop</a></li><li><a href="module-stb_stack-Stack.html#event:push">push</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:move:view">move:view</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:change">change</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Jan 13 2015 11:09:56 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Jan 26 2015 11:16:57 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

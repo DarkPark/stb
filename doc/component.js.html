@@ -72,8 +72,6 @@ var Emitter = require('./emitter'),
  * });
  * component.add( ... );
  * component.focus();
- *
- * @todo find a solution to solve missing page link
  */
 function Component ( config ) {
 	// current execution context
@@ -117,7 +115,7 @@ function Component ( config ) {
 		 *
 		 * @type {Page}
 		 */
-		this.page = null;
+		//this.page = null;
 	}
 
 	/**
@@ -236,15 +234,18 @@ function Component ( config ) {
 			// activate if possible
 			self.focus();
 
-			/**
-			 * Mouse click event.
-			 *
-			 * @event module:stb/component~Component#click
-			 *
-			 * @type {Object}
-			 * @property {Event} event click event data
-			 */
-			self.emit('click', {event: event});
+			// there are some listeners
+			if ( self.events['click'] !== undefined ) {
+				/**
+				 * Mouse click event.
+				 *
+				 * @event module:stb/component~Component#click
+				 *
+				 * @type {Object}
+				 * @property {Event} event click event data
+				 */
+				self.emit('click', {event: event});
+			}
 
 			// not prevented
 			//if ( !event.stop ) {
@@ -307,40 +308,43 @@ Component.prototype.add = function ( child ) {
 		this.children.push(child);
 		child.parent = this;
 
-		if ( DEBUG ) {
-			// apply page for this and all children recursively
-			child.setPage(this.page);
-		}
+		//if ( DEBUG ) {
+		//	// apply page for this and all children recursively
+		//	child.setPage(this.page);
+		//}
 
 		// correct DOM parent/child connection if necessary
 		if ( child.$node !== undefined &amp;&amp; child.$node.parentNode === null ) {
 			this.$body.appendChild(child.$node);
 		}
 
-		/**
-		 * A child component is added.
-		 *
-		 * @event module:stb/component~Component#add
-		 *
-		 * @type {Object}
-		 * @property {Component} child new component added
-		 */
-		this.emit('add', {item: child});
+		// there are some listeners
+		if ( this.events['add'] !== undefined ) {
+			/**
+			 * A child component is added.
+			 *
+			 * @event module:stb/component~Component#add
+			 *
+			 * @type {Object}
+			 * @property {Component} child new component added
+			 */
+			this.emit('add', {item: child});
+		}
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' new child: ' + child.constructor.name + '.' + child.id);
 	}
 };
 
 
-if ( DEBUG ) {
-	Component.prototype.setPage = function ( page ) {
-		this.page = page;
-
-		this.children.forEach(function ( child ) {
-			child.setPage(page);
-		});
-	};
-}
+//if ( DEBUG ) {
+//	Component.prototype.setPage = function ( page ) {
+//		this.page = page;
+//
+//		this.children.forEach(function ( child ) {
+//			child.setPage(page);
+//		});
+//	};
+//}
 
 
 /**
@@ -377,12 +381,15 @@ Component.prototype.remove = function () {
 	this.removeAllListeners();
 	this.$node.parentNode.removeChild(this.$node);
 
-	/**
-	 * Delete this component.
-	 *
-	 * @event module:stb/component~Component#remove
-	 */
-	this.emit('remove');
+	// there are some listeners
+	if ( this.events['remove'] !== undefined ) {
+		/**
+		 * Delete this component.
+		 *
+		 * @event module:stb/component~Component#remove
+		 */
+		this.emit('remove');
+	}
 
 	debug.log('component ' + this.constructor.name + '.' + this.id + ' remove', 'red');
 };
@@ -400,12 +407,12 @@ Component.prototype.focus = function () {
 	var activePage = router.current,
 		activeItem = activePage.activeComponent;
 
-	if ( DEBUG ) {
-		if ( this.page !== activePage ) {
-			console.log(this, this.page, activePage);
-			throw 'attempt to focus an invisible component';
-		}
-	}
+	//if ( DEBUG ) {
+	//	if ( this.page !== activePage ) {
+	//		console.log(this, this.page, activePage);
+	//		throw 'attempt to focus an invisible component';
+	//	}
+	//}
 
 	// this is a visual component on a page
 	// not already focused and can accept focus
@@ -417,12 +424,15 @@ Component.prototype.focus = function () {
 		activePage.activeComponent = activeItem = this;
 		activeItem.$node.classList.add('focus');
 
-		/**
-		 * Make this component focused.
-		 *
-		 * @event module:stb/component~Component#focus
-		 */
-		activeItem.emit('focus');
+		// there are some listeners
+		if ( activeItem.events['focus'] !== undefined ) {
+			/**
+			 * Make this component focused.
+			 *
+			 * @event module:stb/component~Component#focus
+			 */
+			activeItem.emit('focus');
+		}
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' focus');
 
@@ -451,12 +461,15 @@ Component.prototype.blur = function () {
 		this.$node.classList.remove('focus');
 		activePage.activeComponent = null;
 
-		/**
-		 * Remove focus from this component.
-		 *
-		 * @event module:stb/component~Component#blur
-		 */
-		this.emit('blur');
+		// there are some listeners
+		if ( this.events['blur'] !== undefined ) {
+			/**
+			 * Remove focus from this component.
+			 *
+			 * @event module:stb/component~Component#blur
+			 */
+			this.emit('blur');
+		}
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' blur', 'grey');
 
@@ -483,12 +496,15 @@ Component.prototype.show = function () {
 		// flag
 		this.visible = true;
 
-		/**
-		 * Make the component visible.
-		 *
-		 * @event module:stb/component~Component#show
-		 */
-		this.emit('show');
+		// there are some listeners
+		if ( this.events['show'] !== undefined ) {
+			/**
+			 * Make the component visible.
+			 *
+			 * @event module:stb/component~Component#show
+			 */
+			this.emit('show');
+		}
 
 		return true;
 	}
@@ -513,12 +529,15 @@ Component.prototype.hide = function () {
 		// flag
 		this.visible = false;
 
-		/**
-		 * Make the component hidden.
-		 *
-		 * @event module:stb/component~Component#hide
-		 */
-		this.emit('hide');
+		// there are some listeners
+		if ( this.events['hide'] !== undefined ) {
+			/**
+			 * Make the component hidden.
+			 *
+			 * @event module:stb/component~Component#hide
+			 */
+			this.emit('hide');
+		}
 
 		return true;
 	}
@@ -540,13 +559,13 @@ module.exports = Component;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_stack.html">stb/stack</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_input.html">stb/ui/input</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="module-stb_ui_widget.html">stb/ui/widget</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li><li><a href="stb_ui_scroll.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_stack-Stack.html">Stack</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_input-Input.html">Input</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="module-stb_ui_widget-Widget.html">Widget</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li><li><a href="stb_ui_scroll.module_bar-ScrollBar.html">ScrollBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_stack-Stack.html#event:pop">pop</a></li><li><a href="module-stb_stack-Stack.html#event:push">push</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:move:view">move:view</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:change">change</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Tue Jan 13 2015 11:09:56 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Jan 26 2015 11:16:57 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

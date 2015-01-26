@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: CheckBox</title>
+    <title>JSDoc: Class: Stack</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: CheckBox</h1>
+    <h1 class="page-title">Class: Stack</h1>
 
     
 
@@ -29,9 +29,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="stb_ui_check.module_box.html">.box</a>~</span>
+            <span class="ancestors"><a href="module-stb_stack.html">stb/stack</a>~</span>
         
-        CheckBox
+        Stack
         </h2>
         
     
@@ -46,14 +46,14 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="CheckBox"><span class="type-signature"></span>new CheckBox<span class="signature">(config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Stack"><span class="type-signature"></span>new Stack<span class="signature">(data<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Base check box implementation.</p>
+    <p>Simple observable stack implementation.</p>
 </div>
 
 
@@ -93,7 +93,7 @@
 
         <tr>
             
-                <td class="name"><code>config</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
@@ -125,112 +125,7 @@
                 </td>
             
 
-            <td class="description last"><p>init parameters (all inherited from the parent)</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last"><p>initial state</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>group</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>group name to work synchronously with other checkboxes</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-            </td>
+            <td class="description last"><p>init attributes</p></td>
         </tr>
 
     
@@ -270,7 +165,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line31">line 31</a>
+        <a href="stack.js.html">stack.js</a>, <a href="stack.js.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -297,11 +192,8 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var CheckBox = require('stb/ui/check.box'),
-    checkBox = new CheckBox({
-        value: true,
-        group: 'lang'
-    });</code></pre>
+    <pre class="prettyprint"><code>var stack1 = new Stack(),
+    stack2 = new Stack([1, 2, 3]);</code></pre>
 
 
 
@@ -315,7 +207,7 @@
 
 
     <ul>
-        <li>Component</li>
+        <li>Emitter</li>
     </ul>
 
 
@@ -334,13 +226,13 @@
 
         
             
-<h4 class="name" id="group"><span class="type-signature"></span>group<span class="type-signature"> :string</span></h4>
+<h4 class="name" id="current"><span class="type-signature">(readonly) </span>current<span class="type-signature"> :Object</span></h4>
 
 
 
 
 <div class="description">
-    <p>Group name to work synchronously with other checkboxes.</p>
+    <p>Current top stack element.</p>
 </div>
 
 
@@ -349,7 +241,7 @@
     <ul>
         <li>
             
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
         </li>
@@ -388,7 +280,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line50">line 50</a>
+        <a href="stack.js.html">stack.js</a>, <a href="stack.js.html#line31">line 31</a>
     </li></ul></dd>
     
 
@@ -406,13 +298,13 @@
 
         
             
-<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :boolean</span></h4>
+<h4 class="name" id="data"><span class="type-signature">(readonly) </span>data<span class="type-signature"> :Array.&lt;Object></span></h4>
 
 
 
 
 <div class="description">
-    <p>Initial state.</p>
+    <p>List of all stack elements.</p>
 </div>
 
 
@@ -421,7 +313,7 @@
     <ul>
         <li>
             
-<span class="param-type">boolean</span>
+<span class="param-type">Array.&lt;Object></span>
 
 
         </li>
@@ -460,7 +352,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line43">line 43</a>
+        <a href="stack.js.html">stack.js</a>, <a href="stack.js.html#line39">line 39</a>
     </li></ul></dd>
     
 
@@ -487,15 +379,128 @@
 
     
 
-    <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">(value)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="pop"><span class="type-signature"></span>pop<span class="signature">()</span><span class="type-signature"> &rarr; {*}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Set the given state.
-Does nothing in case the value is already as necessary.</p>
+    <p>Remove current top element from the stack.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stack.js.html">stack.js</a>, <a href="stack.js.html#line114">line 114</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="module-stb_stack-Stack.html#event:pop">module:stb/stack~Stack#event:pop</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>removed element</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var item = stack.pop();</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="push"><span class="type-signature"></span>push<span class="signature">(data)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Add new element to the stack.</p>
 </div>
 
 
@@ -531,13 +536,13 @@ Does nothing in case the value is already as necessary.</p>
 
         <tr>
             
-                <td class="name"><code>value</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">Object</span>
 
 
             
@@ -547,7 +552,7 @@ Does nothing in case the value is already as necessary.</p>
 
             
 
-            <td class="description last"><p>new value to set</p></td>
+            <td class="description last"><p>new element</p></td>
         </tr>
 
     
@@ -587,7 +592,7 @@ Does nothing in case the value is already as necessary.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_check.box.js.html">ui/check.box.js</a>, <a href="ui_check.box.js.html#line108">line 108</a>
+        <a href="stack.js.html">stack.js</a>, <a href="stack.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -604,7 +609,7 @@ Does nothing in case the value is already as necessary.</p>
 
 <h5>Fires:</h5>
 <ul>
-    <li><a href="module-stb_ui_check.box-CheckBox.html#event:change">module:stb/ui/check.box~CheckBox#event:change</a></li>
+    <li><a href="module-stb_stack-Stack.html#event:push">module:stb/stack~Stack#event:push</a></li>
 </ul>
 
 
@@ -615,36 +620,359 @@ Does nothing in case the value is already as necessary.</p>
 
 
 
-<h5>Returns:</h5>
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>stack.push(123);
+stack.push('abc');
+stack.push({foo: 'bar'});</code></pre>
+
+
 
         
-<div class="param-desc">
-    <p>operation status</p>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Events</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="event:pop">pop</h4>
+
+    
+
+
+
+<div class="description">
+    <p>Remove current top element from the stack event.</p>
 </div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
         
-<span class="param-type">boolean</span>
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prev</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
 
 
-    </dd>
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>previous top element</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>curr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>current top element</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stack.js.html">stack.js</a>, <a href="stack.js.html#line94">line 94</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
 </dl>
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
         
+            
+
+    
+
+    <h4 class="name" id="event:push">push</h4>
+
+    
+
+
+
+<div class="description">
+    <p>Add new element to the stack event.</p>
+</div>
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prev</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>previous top element</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>curr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>current top element</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
     
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stack.js.html">stack.js</a>, <a href="stack.js.html#line55">line 55</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 </article>
 
