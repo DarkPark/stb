@@ -13,9 +13,9 @@ var gulp    = require('gulp'),
 
 
 gulp.task('lint', function () {
-	//return gulp
-	//	.src('./app/js/**/*.js')
-	//	.pipe(plumber())
-	//	.pipe(eslint())
-	//	.pipe(eslint.format());
+	return gulp
+		.src(['./app/js/**/*.js', './config/**/*.js'])
+		.pipe(plumber())
+		.pipe(eslint())
+		.pipe(eslint.format());
 });
