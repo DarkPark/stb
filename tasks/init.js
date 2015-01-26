@@ -14,21 +14,15 @@ var gulp     = require('gulp'),
 	files    = [
 		process.env.STB + '/tpl/**',
 		process.env.STB + '/license.md',
+		process.env.STB + '/.gitattributes',
 		process.env.STB + '/.eslintrc',
 		process.env.STB + '/.editorconfig'
 	];
 
 
-gulp.task('init', function ( done ) {
+gulp.task('init', function () {
 	// copy template files to the current dir
 	gulp.src(files, {dot: true})
 		.pipe(conflict('./'))
-		.pipe(gulp.dest('./'))
-		.on('end', function () {
-			// copy config files to the current dir
-			gulp.src(process.env.STB + '/config/**', {base: process.env.STB})
-				.pipe(conflict('./'))
-				.pipe(gulp.dest('./'))
-				.on('end', done);
-		});
+		.pipe(gulp.dest('./'));
 });

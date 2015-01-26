@@ -24,8 +24,7 @@ gulp.task('develop', [
 	gulp.watch([
 		'./app/less/**/*.less', './app/less/vars/*.js', './config/*.js',
 		process.env.STB + '/app/less/**/*.less',
-		process.env.STB + '/app/less/vars/*.js',
-		process.env.STB + '/config/*.js'
+		process.env.STB + '/app/less/vars/*.js'
 	], ['less:develop']);
 });
 

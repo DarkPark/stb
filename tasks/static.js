@@ -7,16 +7,16 @@
 
 'use strict';
 
-var path   = require('path'),
-	gulp   = require('gulp'),
-	log    = require('../lib/log'),
-	glr    = require('gulp-livereload'),
-	config = require(path.join(process.env.CWD, 'config', 'static')),
-	title  = 'static  '.inverse;
+var path  = require('path'),
+	gulp  = require('gulp'),
+	log   = require('../lib/log'),
+	glr   = require('gulp-livereload'),
+	title = 'static  '.inverse;
 
 
 gulp.task('static', function () {
-	var files, msInit;
+	var config = require(path.join(process.env.CWD, 'config', 'static')),
+		files, msInit;
 
 	if ( config.active ) {
 		// rfc 2616 compliant HTTP static file server

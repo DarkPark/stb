@@ -7,16 +7,16 @@
 
 'use strict';
 
-var path   = require('path'),
-	gulp   = require('gulp'),
-	log    = require('../lib/log'),
-	ws     = require('ws'),
-	config = require(path.join(process.env.CWD, 'config', 'logger')),
-	title  = 'logger  '.inverse.yellow;
+var path  = require('path'),
+	gulp  = require('gulp'),
+	log   = require('../lib/log'),
+	ws    = require('ws'),
+	title = 'logger  '.inverse.yellow;
 
 
 gulp.task('logger', function () {
-	var wss;
+	var config = require(path.join(process.env.CWD, 'config', 'logger')),
+		wss;
 
 	if ( config.active ) {
 		// WebSocket server creation

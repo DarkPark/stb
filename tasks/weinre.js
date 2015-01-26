@@ -7,15 +7,15 @@
 
 'use strict';
 
-var path   = require('path'),
-	gulp   = require('gulp'),
-	log    = require('../lib/log'),
-	config = require(path.join(process.env.CWD, 'config', 'weinre')),
-	title  = 'weinre  '.inverse;
+var path  = require('path'),
+	gulp  = require('gulp'),
+	log   = require('../lib/log'),
+	title = 'weinre  '.inverse;
 
 
 gulp.task('weinre', function () {
-	var spawn, weinre;
+	var config = require(path.join(process.env.CWD, 'config', 'weinre')),
+		spawn, weinre;
 
 	if ( config.active ) {
 		spawn  = require('child_process').spawn;
