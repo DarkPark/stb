@@ -17,8 +17,6 @@ var path     = require('path'),
 	log      = require('../lib/log'),
 	requirem = require('requirem'),
 	del      = require('del'),
-	cfgBase  = process.env.STB + '/config/metrics.js',
-	cfgUser  = process.env.CWD + '/config/metrics.js',
 	title    = 'less    '.inverse,
 
 
@@ -62,7 +60,7 @@ var path     = require('path'),
 function prepare () {
 	// prepare options sets for all dimensions
 	Object.keys(defaults).forEach(function ( mode ) {
-		var metrics = requirem(fs.existsSync(cfgUser) ? cfgUser : cfgBase, {reload: true});
+		var metrics = requirem(process.env.CWD + '/config/metrics.js', {reload: true});
 
 		options[mode] = {};
 
