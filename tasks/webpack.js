@@ -7,15 +7,12 @@
 
 'use strict';
 
-var fs      = require('fs'),
-	util    = require('util'),
+var util    = require('util'),
 	gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
 	webpack = require('gulp-webpack'),
 	report  = require('../lib/report').webpack,
-	del     = require('del'),
-	mtrBase = process.env.STB + '/config/metrics.js',
-	mtrUser = process.env.CWD + '/config/metrics.js';
+	del     = require('del');
 
 
 gulp.task('webpack:clean:develop', function ( done ) {
@@ -47,9 +44,9 @@ gulp.task('webpack:develop', function () {
 				root: process.env.STB + '/app/js/',
 				extensions:['', '.js'],
 				alias: {
-					stb: process.env.STB + '/app/js/',
-					app: process.env.CWD + '/app/js/',
-					metrics: fs.existsSync(mtrUser) ? mtrUser : mtrBase
+					stb: process.env.STB + '/app/js',
+					app: process.env.CWD + '/app/js',
+					cfg: process.env.CWD + '/config'
 				}
 			},
 			devtool: 'source-map',
@@ -94,8 +91,9 @@ gulp.task('webpack:release', function () {
 			resolve: {
 				extensions:['', '.js'],
 				alias: {
-					stb: process.env.STB + '/app/js/',
-					metrics: fs.existsSync(mtrUser) ? mtrUser : mtrBase
+					stb: process.env.STB + '/app/js',
+					app: process.env.CWD + '/app/js',
+					cfg: process.env.CWD + '/config'
 				}
 			},
 			debug: false,

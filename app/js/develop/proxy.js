@@ -10,17 +10,7 @@
 
 var host   = require('stb/app').data.host,
 	util   = require('util'),
-	config = require('../../../config/proxy');
-
-
-// init
-if ( config.active ) {
-	if ( host ) {
-		initHost();
-	} else {
-		initGuest();
-	}
-}
+	config = require('cfg/proxy');
 
 
 /**
@@ -110,4 +100,14 @@ function initGuest () {
 			});
 		}
 	});
+}
+
+
+// init
+if ( config.active ) {
+	if ( host ) {
+		initHost();
+	} else {
+		initGuest();
+	}
 }

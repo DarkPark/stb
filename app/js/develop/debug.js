@@ -9,7 +9,7 @@
 'use strict';
 
 var host   = require('stb/app').data.host,
-	config = require('../../../config/logger'),
+	config = require('cfg/logger'),
 	util   = require('util'),
 	buffer = [],
 	socket;
@@ -20,7 +20,7 @@ require('tty-colors');
 
 
 (function connect () {
-	if ( !host ) {
+	if ( !config.active || !host ) {
 		return;
 	}
 
@@ -42,7 +42,7 @@ require('tty-colors');
 function log ( message ) {
 	gSTB.Debug(message);
 	buffer.push(message);
-	if ( socket.readyState === socket.OPEN ) {
+	if ( socket && socket.readyState === socket.OPEN ) {
 		socket.send(JSON.stringify(buffer));
 		buffer = [];
 	}

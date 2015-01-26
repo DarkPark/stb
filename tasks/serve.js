@@ -8,7 +8,9 @@
 
 'use strict';
 
-var gulp = require('gulp'),
+var util = require('util'),
+	path = require('path'),
+	gulp = require('gulp'),
 	log  = require('../lib/log');
 
 
@@ -20,8 +22,10 @@ gulp.task('develop', [
 	gulp.watch(['./app/js/**/*.js', process.env.STB + '/app/js/**/*.js'], ['webpack:develop']);
 	gulp.watch(['./app/jade/**/*.jade'], ['jade:develop']);
 	gulp.watch([
-		'./app/less/**/*.less', './app/less/vars/*.js', './config/metrics.js',
-		process.env.STB + '/app/less/**/*.less', process.env.STB + '/app/less/vars/*.js', process.env.STB + '/config/metrics.js'
+		'./app/less/**/*.less', './app/less/vars/*.js', './config/*.js',
+		process.env.STB + '/app/less/**/*.less',
+		process.env.STB + '/app/less/vars/*.js',
+		process.env.STB + '/config/*.js'
 	], ['less:develop']);
 });
 
@@ -46,7 +50,8 @@ gulp.task('serve', ['develop', 'release'], function () {
 
 	// popup browser if not prevented
 	if ( command.open !== false ) {
-		require('open')('http://localhost:8000/');
+		// read http port from config
+		require('open')(util.format('http://localhost:%s/', require(path.join(process.env.CWD, 'config', 'static')).port));
 	}
 
 	// connect to STB

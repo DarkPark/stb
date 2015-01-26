@@ -9,7 +9,7 @@
 'use strict';
 
 var dom    = require('stb/dom'),
-	config = require('../../../config/static');
+	config = require('cfg/static');
 
 
 // livereload activation

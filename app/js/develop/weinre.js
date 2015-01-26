@@ -11,7 +11,7 @@
 var dom     = require('stb/dom'),
 	util    = require('util'),
 	storage = require('./storage'),
-	config  = require('../../../config/weinre');
+	config  = require('cfg/weinre');
 
 
 // web inspector is allowed only without SpyJS

@@ -171,7 +171,7 @@ function changeScreenDimension ( width, height ) {
 		document.body.style.display = 'none';
 
 		// apply new metrics
-		app.setScreen(require('metrics')[height]);
+		app.setScreen(require('cfg/metrics')[height]);
 
 		// restore visibility
 		document.body.style.display = '';

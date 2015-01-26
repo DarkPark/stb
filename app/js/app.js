@@ -120,7 +120,7 @@ app.setScreen = function ( metrics ) {
 
 
 // apply screen size, position and margins
-app.setScreen(require('metrics')[screen.height]);
+app.setScreen(require('cfg/metrics')[screen.height]);
 
 // extract key codes
 for ( key in keys ) {
