@@ -40,6 +40,7 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
 		// numpad 0
 		case 96:
 			debug.log('full document reload', 'red');
+			location.hash = '';
 			location.reload();
 			break;
 
