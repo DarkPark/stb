@@ -153,7 +153,7 @@ Illustrations of most approaches and components can be found in the [demo applic
 * [Jade](http://jade-lang.com/)
 * [Qunit](http://qunitjs.com/)
 * [Less](http://lesscss.org/)
-* [JSHint](http://www.jshint.com/)
+* [ESLint](http://eslint.org/)
 * [weinre](https://www.npmjs.org/package/weinre/)
 * [code-proxy](https://github.com/DarkPark/code-proxy/)
 * [gremlins.js](https://github.com/marmelab/gremlins.js)
