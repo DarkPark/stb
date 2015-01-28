@@ -6,8 +6,7 @@
 
 'use strict';
 
-var Modal = require('./modal'),
-	dom   = require('../dom');
+var Component = require('../component');
 
 
 /**
@@ -19,30 +18,28 @@ var Modal = require('./modal'),
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  */
 function ModalBox ( config ) {
-	var body;
-
 	// sanitize
 	config = config || {};
 
 	// parent init
-	Modal.call(this, config);
+	Component.call(this, config);
+
+	// create $body if not provided
+	if ( this.$node === this.$body ) {
+		// create centered div
+		this.$body = document.createElement('div');
+		this.$body.className = 'body';
+		// add table-cell wrapper
+		this.$node.appendChild(document.createElement('div').appendChild(this.$body).parentNode);
+	}
 
 	// correct CSS class names
 	this.$node.classList.add('modalBox');
-
-	// current inner node
-	body = this.$body;
-
-	body.appendChild(
-		dom.tag('div', {className: 'cell'},
-			this.$body = dom.tag('div', {className: 'content'}, 'qwe')
-		)
-	);
 }
 
 
 // inheritance
-ModalBox.prototype = Object.create(Modal.prototype);
+ModalBox.prototype = Object.create(Component.prototype);
 ModalBox.prototype.constructor = ModalBox;
 
 
