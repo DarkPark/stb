@@ -6,8 +6,7 @@
 
 'use strict';
 
-var ModalBox = require('./modal.box.js'),
-	dom      = require('../dom');
+var ModalBox = require('./modal.box.js');
 
 
 /**
@@ -28,13 +27,17 @@ function ModalMessage ( config ) {
 	// correct CSS class names
 	this.$node.classList.add('modalMessage');
 
-	this.$body.appendChild(
-		dom.tag('div', {className: 'cell'},
-			this.$header = dom.tag('div', {className: 'header'},  this.constructor.name),
-			this.$body   = dom.tag('div', {className: 'content'}, this.constructor.name),
-			this.$footer = dom.tag('div', {className: 'footer'},  this.constructor.name)
-		)
-	);
+	this.$header  = this.$body.appendChild(document.createElement('div'));
+	this.$content = this.$body.appendChild(document.createElement('div'));
+	this.$footer  = this.$body.appendChild(document.createElement('div'));
+
+	this.$header.className  = 'header';
+	this.$content.className = 'content';
+	this.$footer.className  = 'footer';
+
+	this.$header.innerText  = 'header';
+	this.$content.innerText = 'content';
+	this.$footer.innerText  = 'footer';
 }
 
 
