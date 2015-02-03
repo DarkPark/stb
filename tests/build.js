@@ -117,13 +117,10 @@
 						if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
 					}
 			
-					// valid input
-					if ( name && typeof callback === 'function' ) {
-						// initialization may be required
-						this.events[name] = this.events[name] || [];
-						// append this new event to the list
-						this.events[name].push(callback);
-					}
+					// initialization may be required
+					this.events[name] = this.events[name] || [];
+					// append this new event to the list
+					this.events[name].push(callback);
 				},
 			
 			
@@ -144,16 +141,13 @@
 						if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
 					}
 			
-					// valid input
-					if ( name && typeof callback === 'function' ) {
-						// initialization may be required
-						this.events[name] = this.events[name] || [];
-						// append this new event to the list
-						this.events[name].push(function onceWrapper ( data ) {
-							callback(data);
-							self.removeListener(name, onceWrapper);
-						});
-					}
+					// initialization may be required
+					this.events[name] = this.events[name] || [];
+					// append this new event to the list
+					this.events[name].push(function onceWrapper ( data ) {
+						callback(data);
+						self.removeListener(name, onceWrapper);
+					});
 				},
 			
 			
@@ -200,15 +194,17 @@
 						if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
 						if ( typeof name !== 'string' || name.length === 0 ) { throw 'wrong or empty name'; }
 						if ( typeof callback !== 'function' ) { throw 'wrong callback type'; }
+						if ( this.events[name] && !Array.isArray(this.events[name]) ) { throw 'corrupted inner data'; }
 					}
 			
 					// the event exists and should have some callbacks
-					if ( Array.isArray(this.events[name]) ) {
+					if ( this.events[name] !== undefined ) {
 						// rework the callback list to exclude the given one
 						this.events[name] = this.events[name].filter(function callbacksFilter ( fn ) { return fn !== callback; });
 						// event has no more callbacks so clean it
 						if ( this.events[name].length === 0 ) {
-							delete this.events[name];
+							// as if there were no listeners at all
+							this.events[name] = undefined;
 						}
 					}
 				},
@@ -239,20 +235,28 @@
 						}
 			
 						// only name is given so remove all callbacks for the given event
-						delete this.events[name];
+						// but object structure modification should be avoided
+						this.events[name] = undefined;
 					}
 				},
 			
 			
 				/**
-				 * Execute each of the listeners in order with the supplied arguments.
+				 * Execute each of the listeners in the given order with the supplied arguments.
 				 *
 				 * @param {string} name event identifier
 				 * @param {Object} [data] options to send
 				 *
+				 * @todo consider use context
+				 *
 				 * @example
 				 * obj.emit('init');
 				 * obj.emit('click', {src:panel1, dst:panel2});
+				 *
+				 * // it's a good idea to emit event only when there are some listeners
+				 * if ( this.events['click'] !== undefined ) {
+				 *     this.emit('click', {event: event});
+				 * }
 				 */
 				emit: function ( name, data ) {
 					var event = this.events[name],
@@ -275,7 +279,8 @@
 							}
 			
 							// invoke the callback with parameters
-							event[i](data);
+							// http://jsperf.com/function-calls-direct-vs-apply-vs-call-vs-bind/6
+							event[i].call(this, data);
 						}
 					}
 				}
@@ -556,8 +561,11 @@
 					// reset
 					this.data = {};
 			
-					// notify listeners
-					this.emit('clear', {data: data});
+					// there are some listeners
+					if ( this.events['clear'] !== undefined ) {
+						// notify listeners
+						this.emit('clear', {data: data});
+					}
 			
 					return true;
 				}
@@ -598,8 +606,11 @@
 					// init with given data
 					this.data = data;
 			
-					// notify listeners
-					this.emit('init', {data: data});
+					// there are some listeners
+					if ( this.events['init'] !== undefined ) {
+						// notify listeners
+						this.emit('init', {data: data});
+					}
 			
 					return true;
 				}
@@ -677,8 +688,11 @@
 					if ( value !== emitData.prev ) {
 						this.data[name] = value;
 			
-						// notify listeners
-						this.emit('change', emitData);
+						// there are some listeners
+						if ( this.events['change'] !== undefined ) {
+							// notify listeners
+							this.emit('change', emitData);
+						}
 			
 						return true;
 					}
@@ -686,8 +700,11 @@
 					// create
 					this.data[name] = value;
 			
-					// notify listeners
-					this.emit('change', emitData);
+					// there are some listeners
+					if ( this.events['change'] !== undefined ) {
+						// notify listeners
+						this.emit('change', emitData);
+					}
 			
 					return true;
 				}
@@ -716,8 +733,11 @@
 					emitData = {name: name, prev: this.data[name]};
 					delete this.data[name];
 			
-					// notify listeners
-					this.emit('change', emitData);
+					// there are some listeners
+					if ( this.events['change'] !== undefined ) {
+						// notify listeners
+						this.emit('change', emitData);
+					}
 			
 					return true;
 				}
