@@ -1,6 +1,7 @@
 /**
  * @module stb/ui/scroll.bar
  * @author Igor Zaporozhets <deadbyelpy@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -128,11 +129,11 @@ ScrollBar.prototype.init = function ( config ) {
 		}
 
 		this.min = config.min;
-	} if ( this.type === ScrollBar.TYPE_VERTICAL ) {
+	} /*if ( this.type === ScrollBar.TYPE_VERTICAL ) {
 		this.min = this.$node.offsetHeight;
 	} else {
 		this.min = this.$node.offsetWidth;
-	}
+	}*/
 
 	this.ratio = Math.abs(this.min / this.max);
 
