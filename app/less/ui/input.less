@@ -17,9 +17,8 @@
 
 	> .caret {
 		height:         unit(@inputHeight - @inputBorder*2 - @inputPaddingY*2, px);
-		margin:         unit(@inputPaddingY, px) 0 unit(@inputPaddingY, px) -1px;
+		margin:         unit(@inputPaddingY, px) 0 unit(@inputPaddingY, px) -2px;
 		width:          0;
-		border-right:   1px solid #000000;
 		display:        inline-block;
 		vertical-align: top;
 	}
@@ -31,4 +30,22 @@
 		height:         unit(@inputHeight - @inputBorder*2, px);
 		line-height:    unit(@inputHeight - @inputBorder*2, px);
 	}
+
+	&.focus {
+		> .caret {
+			border-right:                      2px solid #000000;
+			-webkit-animation:                 inputCursor 1s;
+			-webkit-animation-iteration-count: infinite;
+		}
+	}
 }
+
+@-webkit-keyframes inputCursor {
+	from {
+		border-right-color: #000000;
+	}
+	to {
+		border-right-color: transparent;
+	}
+}
+
