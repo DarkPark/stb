@@ -1,6 +1,6 @@
 {
 	"name": "stb",
-	"version": "0.4.6",
+	"version": "0.5.0",
 	"description": "STB single page application framework.",
 	"author": {
 		"name": "Stanislav Kalashnik",
