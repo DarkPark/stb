@@ -1,6 +1,7 @@
 /**
  * @module stb/ui/input
  * @author Igor Zaporozhets <deadbyelpy@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -33,15 +34,16 @@ var Component = require('stb/component'),
  *     });
  */
 function Input ( config ) {
+	// current execution context
 	var self = this;
 
 	// sanitize
 	config = config || {};
 
 	/**
-	 * Scroll area height or if scroll is horizontal its width.
+	 * Text value of input.
 	 *
-	 * @type {number}
+	 * @type {string}
 	 */
 	this.value = '';
 
@@ -100,7 +102,8 @@ function Input ( config ) {
 	this.$node.classList.add('input');
 	this.$caret.classList.add('caret');
 
-	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // set placeholder
+	if ( this.value.length === 0 && this.placeholder.length > 0 ) {
+		// set placeholder
 		this.$body.innerText = this.placeholder;
 	} else {
 		// appends caret to input
@@ -266,7 +269,7 @@ Input.prototype.moveCaret = function ( direction, index ) {
 	if ( index === undefined ) {
 		index = this.$caret.index;
 		if ( direction === keys.right ) {
-			 ++index;
+			++index;
 		} else {
 			--index;
 		}
