@@ -115,11 +115,11 @@ function List ( config ) {
 			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
 
-		this.navigateDefault = config.navigate;
+		this.navigate = config.navigate;
 	}
 
 	// navigation by keyboard
-	this.addListener('keydown', this.navigateDefault);
+	this.addListener('keydown', this.navigate);
 
 	// navigation by mouse
 	this.$body.addEventListener('mousewheel', function ( event ) {
@@ -195,7 +195,7 @@ List.prototype.navigateDefault = function ( event ) {
 
 
 /**
- * Method to move focus according to pressed keys.
+ * Current active method to move focus according to pressed keys.
  * Can be redefined to provide custom navigation.
  *
  * @type {function}
