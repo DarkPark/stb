@@ -10,8 +10,8 @@
 
 var util = require('util'),
 	path = require('path'),
-	gulp = require('gulp'),
-	log  = require('../lib/log');
+	gulp = require('gulp');
+	//log  = require('../lib/log');
 
 
 gulp.task('develop', [
