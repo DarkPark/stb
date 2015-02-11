@@ -70,7 +70,7 @@ function ScrollBar ( config ) {
 	this.ratio = 1;
 
 	// can't accept focus
-	this.focusable = false;
+	config.focusable = config.focusable || false;
 
 	// parent init
 	Component.call(this, config);
