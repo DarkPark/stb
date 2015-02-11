@@ -7,7 +7,6 @@
 // release rules
 @import "main";
 
-
 html {
 	background-color: transparent;
 	overflow:         auto;
@@ -69,7 +68,13 @@ div.develop {
 			}
 		}
 	}
-}
 
+	&.input > .body {
+		outline: 1px dashed #000;
+	}
+	&.focus.input > .body {
+		outline: 1px dashed red;
+	}
+}
 
 @import "@{pathApp}/less/develop";

@@ -23,7 +23,7 @@ module.exports = {
 	gridItemPaddingY: 4,
 
 	inputFontSize: 24,
-	inputHeight:   38,
+	inputHeight:   48,
 	inputWidth:    250,
 	inputBorder:   2,
 	inputPaddingX: 4,

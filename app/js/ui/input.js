@@ -48,18 +48,20 @@ function Input ( config ) {
 	this.value = '';
 
 	/**
-	 * Placeholder for input, sets when no text in input and if placeholder not empty.
+	 * Hint element with placeholder text.
 	 *
-	 * @type {string}
+	 * @type {Element}
 	 */
-	this.placeholder = '';
+	this.$placeholder = document.createElement('div');
 
 	/**
 	 * Caret element, which shows current cursor position.
 	 *
 	 * @type {Element}
 	 */
-	this.$caret = document.createElement('span');
+	this.$caret = document.createElement('div');
+
+	this.$caret.index = 0;
 
 	/**
 	 * Input type, now available only text and password.
@@ -74,71 +76,39 @@ function Input ( config ) {
 	// parent init
 	Component.call(this, config);
 
-	this.$caret.index = 0;
+	// create $body if not provided
+	if ( this.$node === this.$body ) {
+		// insert text line
+		this.$body = this.$node.appendChild(document.createElement('div'));
 
-	// type passed
-	if ( config.type !== undefined ) {
-		if ( DEBUG ) {
-			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
-			if ( config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw 'config.type must be one of the TYPE_* constant'; }
-		}
-		this.type = config.type;
-	}
+		// classes
+		this.$body.className = 'body';
+		this.$caret.className = 'caret';
+		this.$placeholder.className = 'placeholder';
 
-	// default value passed
-	if ( config.value !== undefined ) {
-		this.setValue(config.value);
-	}
-
-	if ( config.placeholder !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.placeholder !== 'string' ) { throw 'placeholder must be a string'; }
-			if ( config.placeholder.length === 0 ) { throw 'placeholder must be not an empty string'; }
-		}
-		this.placeholder = config.placeholder;
+		// appends hint and caret to input
+		this.$body.appendChild(this.$caret);
+		this.$body.appendChild(this.$placeholder);
 	}
 
 	// correct CSS class names
 	this.$node.classList.add('input');
-	this.$caret.classList.add('caret');
 
-	if ( this.value.length === 0 && this.placeholder.length > 0 ) {
-		// set placeholder
-		this.$body.innerText = this.placeholder;
-	} else {
-		// appends caret to input
-		this.$body.appendChild(this.$caret);
+	// component setup
+	this.init(config);
+
+	// custom navigation method
+	// todo: reassign this.navigate in init
+	if ( config.navigate !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
+		}
+
+		this.navigate = config.navigate;
 	}
 
-	this.addListener('keydown', function ( event ) {
-		switch ( event.code ) {
-			case keys['delete']:
-				self.removeChar(self.$caret.index);
-				break;
-
-			case keys.back:
-				self.removeChar(self.$caret.index - 1);
-				break;
-
-			case keys.left:
-			case keys.right:
-				self.moveCaret(event.code);
-				break;
-
-			case keys.end:
-			case keys.down:
-				self.moveCaret(0, self.value.length);
-				break;
-
-			case keys.home:
-			case keys.up:
-				self.moveCaret(0, 0);
-				break;
-
-			default:
-				break;
-		}
-	});
+	// navigation by keyboard
+	this.addListener('keydown', this.navigate);
 
 	this.addListener('keypress', function ( event ) {
 		self.addChar(String.fromCharCode(event.keyCode), self.$caret.index);
@@ -156,6 +126,92 @@ Input.prototype.TYPE_PASSWORD = 1;
 
 
 /**
+ * Default method to move focus according to pressed keys.
+ *
+ * @param {Event} event generated event source of movement
+ */
+Input.prototype.navigateDefault = function ( event ) {
+	switch ( event.code ) {
+		case keys['delete']:
+			this.removeChar(this.$caret.index);
+			break;
+
+		case keys.back:
+			this.removeChar(this.$caret.index - 1);
+			break;
+
+		case keys.left:
+			this.setCaretPosition(this.$caret.index - 1);
+			break;
+
+		case keys.right:
+			this.setCaretPosition(this.$caret.index + 1);
+			break;
+
+		case keys.end:
+		case keys.down:
+			this.setCaretPosition(this.value.length);
+			break;
+
+		case keys.home:
+		case keys.up:
+			this.setCaretPosition(0);
+			break;
+
+		default:
+			break;
+	}
+};
+
+
+/**
+ * Current active method to move focus according to pressed keys.
+ * Can be redefined to provide custom navigation.
+ *
+ * @type {function}
+ */
+Input.prototype.navigate = Input.prototype.navigateDefault;
+
+
+/**
+ * Init or re-init of the component inner structures and HTML.
+ *
+ * @param {Object} config init parameters (subset of constructor config params)
+ */
+Input.prototype.init = function ( config ) {
+	// type passed
+	if ( config.type !== undefined ) {
+		if ( DEBUG ) {
+			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
+			if ( config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw 'config.type must be one of the TYPE_* constant'; }
+		}
+
+		this.type = config.type;
+	}
+
+	// default value passed
+	if ( config.value !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.value !== 'string' ) { throw 'config.value must be a string'; }
+		}
+
+		this.setValue(config.value);
+	}
+
+	// hint
+	if ( config.placeholder !== undefined ) {
+		if ( DEBUG ) {
+			if ( typeof config.placeholder !== 'string' ) { throw 'config.placeholder must be a string'; }
+			if ( config.placeholder.length === 0 ) { throw 'config.placeholder must be not an empty string'; }
+		}
+
+		// apply placeholder
+		this.$placeholder.innerText = config.placeholder;
+	}
+};
+
+
+/**
  * Add given char to given position.
  * Also moving caret in every action.
  * Do nothing if position is < 0, or if index more or equals to length add char to the end.
@@ -166,7 +222,7 @@ Input.prototype.TYPE_PASSWORD = 1;
  * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.addChar = function ( char, index ) {
-	var span = document.createElement('span');
+	var $char = document.createElement('div');
 
 	index = (index === undefined) ? this.$caret.index : index;
 
@@ -176,13 +232,13 @@ Input.prototype.addChar = function ( char, index ) {
 		if ( char.length !== 1 ) { throw 'char must be a string with length = 1'}
 	}
 
-	if ( this.value.length === 0 && this.placeholder.length > 0 ) { // remove placeholder, add caret
-		this.$body.innerText = '';
-		this.$body.appendChild(this.$caret);
+	// remove hint
+	if ( this.value.length === 0 ) {
+		this.$body.removeChild(this.$placeholder);
 	}
 
 	// settings class name for span which presents one symbol in virtual input
-	span.className = 'char';
+	$char.className = 'char';
 
 	// insert char into value
 	this.value = this.value.substring(0, index) + char + this.value.substring(index, this.value.length);
@@ -191,19 +247,19 @@ Input.prototype.addChar = function ( char, index ) {
 	++this.$caret.index;
 
 	if ( this.type === this.TYPE_PASSWORD ) {
-		span.innerText = '*';
+		$char.innerText = '*';
 	} else if ( char === ' ' ) {
-		span.innerHTML = '&nbsp;';
+		$char.innerHTML = '&nbsp;';
 	} else {
-		span.innerText = char;
+		$char.innerText = char;
 	}
 
 	if ( index >= this.value.length ) { // add char to the end, move caret to the end
-		this.$body.appendChild(span);
+		this.$body.appendChild($char);
 		this.$body.appendChild(this.$caret);
 	} else { // move caret before index, append span before caret
-		this.$body.insertBefore(this.$caret, this.$body.children.item(index));
-		this.$body.insertBefore(span, this.$caret);
+		this.$body.insertBefore(this.$caret, this.$body.children[index]);
+		this.$body.insertBefore($char, this.$caret);
 	}
 
 	// there are some listeners
@@ -215,28 +271,28 @@ Input.prototype.addChar = function ( char, index ) {
 
 
 /**
- * Remove char from given index.
+ * Remove char from given position.
  * Do nothing if index is out of the range (0, length).
  *
- * @param {number} [index=this.value.length] given position
+ * @param {number} index given position
  *
  * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.removeChar = function ( index ) {
-	index = (index === undefined) ? (this.$caret.index - 1) : index;
-
+	// non-empty string
 	if ( this.value.length > 0 ) {
-
 		if ( DEBUG ) {
 			if ( index < 0 ) { throw 'index must be a positive value'; }
 			if ( index > this.value.length ) { throw 'index must be a less than or equal to total length'; }
 		}
 
-		if ( this.$caret.index === index && index < this.value.length ) { // remove char after caret
-			this.$body.removeChild(this.$body.children.item(index + 1));
-		} else if ( this.$caret.index > index ) { // remove char before caret
+		if ( this.$caret.index === index && index < this.value.length ) {
+			// remove char after caret
+			this.$body.removeChild(this.$body.children[index + 1]);
+		} else if ( this.$caret.index > index ) {
+			// remove char before caret
 			--this.$caret.index;
-			this.$body.removeChild(this.$body.children.item(index));
+			this.$body.removeChild(this.$body.children[index]);
 		}
 
 		// cut one char from the value
@@ -249,40 +305,33 @@ Input.prototype.removeChar = function ( index ) {
 		}
 	}
 
-	if ( this.value.length === 0 && this.placeholder.length > 0 ) {
-		if ( this.$caret.parentNode !== null ) { // check if caret is in the input
-			this.$body.removeChild(this.$caret);
-		}
-		this.$body.innerText = this.placeholder;
+	// only hint
+	if ( this.value.length === 0 ) {
+		this.$body.appendChild(this.$placeholder);
 	}
 };
 
 
 /**
- * Move caret to the given index
+ * Move caret to the given position.
  * Do nothing if index is out of the range (0, this.value.length).
  *
- * @param {number} direction given keyCode, keys.left or keys.right
- * @param {number} [index=this.$caret.index] given position, if not passed sets to caret index +/- 1 (depends on the direction)
+ * @param {number} index given position
  */
-Input.prototype.moveCaret = function ( direction, index ) {
-	if ( index === undefined ) {
-		index = this.$caret.index;
-		if ( direction === keys.right ) {
-			++index;
-		} else {
-			--index;
-		}
-	}
+Input.prototype.setCaretPosition = function ( index ) {
+	// check boundaries and current position
+	if ( index >= 0 && index <= this.value.length && this.$caret.index !== index ) {
+		// extract caret
+		this.$body.removeChild(this.$caret);
 
-	if ( index >= 0 && index <= this.value.length ) {
-		if ( index === this.value.length ) { // add to the end
+		// apply
+		if ( index === this.value.length ) {
+			// add to the end
 			this.$body.appendChild(this.$caret);
-		} else if ( this.$caret.index < index ) { // move right
-			this.$body.insertBefore(this.$caret, this.$body.children.item(index + 1));
-		} else { // move left
-			this.$body.insertBefore(this.$caret, this.$body.children.item(index));
+		} else {
+			this.$body.insertBefore(this.$caret, this.$body.children[index]);
 		}
+
 		this.$caret.index = index;
 	}
 };
@@ -294,68 +343,68 @@ Input.prototype.moveCaret = function ( direction, index ) {
  * @param {string} value given string value
  */
 Input.prototype.setValue = function ( value ) {
-	var len = value.length,
+	var oldLength = this.value.length,
+		newLength = value.length,
 		i = 0,
-		df = document.createDocumentFragment(),
-		span;
+		$char, diff;
 
 	if ( DEBUG ) {
 		if ( typeof value !== 'string' ) { throw 'value must be a string'; }
 	}
-	if ( len > 0 ) {
-		if ( this.value.length === 0 && this.placeholder.length > 0 ) { // remove placeholder
-			this.$body.innerText = '';
+
+	// non-empty string
+	if ( newLength > 0 ) {
+		// no hint
+		if ( this.$placeholder.parentNode === this.$body ) {
+			this.$body.removeChild(this.$placeholder);
 		}
 
-		if ( this.$caret.parentNode !== null ) { // remove caret
-			this.$body.removeChild(this.$caret);
-		}
+		// no cursor
+		this.$body.removeChild(this.$caret);
 
-		this.$caret.index = 0;
+		// value length has changed
+		if ( newLength !== oldLength ) {
+			diff = newLength - oldLength;
 
-		while ( i < this.value.length ) {
-			span = this.$body.children.item(i);
-			if ( this.type === this.TYPE_PASSWORD ) {
-			} else if ( value[i] === ' ' ) {
-				span.innerHTML = '&nbsp;';
+			// need to correct char divs amount
+			if ( diff > 0 ) {
+				// add missing chars
+				for ( i = 0; i < diff; i++ ) {
+					$char = this.$body.appendChild(document.createElement('div'));
+					$char.className = 'char';
+				}
 			} else {
-				span.innerText = value[i];
-			}
-			++i;
-		}
-
-		if ( len < this.value.length ) { // remove unused elements
-			while ( this.value.length !== len ) {
-				this.$body.removeChild(this.$body.lastChild);
-				this.value = this.value.substring(0, this.value.length - 1);
+				// remove unnecessary chars
+				for ( i = 0; i > diff; i-- ) {
+					this.$body.removeChild(this.$body.lastChild);
+				}
 			}
 		}
 
-		while ( i < value.length ) { // append child
-			span = document.createElement('span');
-			span.className = 'char';
-			df.appendChild(span);
+		// apply value
+		for ( i = 0; i < newLength; i++ ) {
+			$char = this.$body.children[i];
+
 			if ( this.type === this.TYPE_PASSWORD ) {
-				span.innerText = '*';
+				$char.innerHTML = '*';
 			} else if ( value[i] === ' ' ) {
-				span.innerHTML = '&nbsp;';
+				$char.innerHTML = '&nbsp;';
 			} else {
-				span.innerText = value[i];
+				$char.innerText = value[i];
 			}
-			++i;
 		}
 
-		this.$body.appendChild(df);
 		this.value = value;
-		this.$caret.index = i;
+		this.$caret.index = newLength;
 		this.$body.appendChild(this.$caret);
-	} else if ( this.placeholder.length > 0 ) {
-		if ( this.$caret.parentNode !== null ) { // remove caret
-			this.$body.removeChild(this.$caret);
-		}
+	} else {
+		// empty string
 		this.value = '';
-		this.$body.innerText = this.placeholder;
+		this.$body.innerText = '';
+		this.$body.appendChild(this.$caret);
+		this.$body.appendChild(this.$placeholder);
 	}
+
 	// there are some listeners
 	if ( this.events['input'] !== undefined ) {
 		// notify listeners

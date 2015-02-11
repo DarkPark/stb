@@ -6,46 +6,53 @@
 .component.input {
 	width:            unit(@inputWidth, px);
 	height:           unit(@inputHeight, px);
-	padding:          0 unit(@inputPaddingX, px);
 	border:           unit(@inputBorder, px) solid green;
-	cursor:           text;
-	overflow:         hidden;
 	font-size:        unit(@inputFontSize, px);
 	color:            #000;
-	text-align:       left;
 	background-color: #fff;
+	display:          table;
+	table-layout:     fixed;
 
-	> .caret {
-		height:         unit(@inputHeight - @inputBorder*2 - @inputPaddingY*2, px);
-		margin:         unit(@inputPaddingY, px) 0 unit(@inputPaddingY, px) -2px;
-		width:          0;
-		display:        inline-block;
-		vertical-align: top;
-	}
+	> .body {
+		cursor:         text;
+		display:        table-cell;
+		vertical-align: middle;
+		padding:        0 unit(@inputPaddingX, px);
+		overflow:       hidden;
+		white-space:    nowrap;
 
-	> .char {
-		color:          #000;
-		display:        inline-block;
-		vertical-align: top;
-		height:         unit(@inputHeight - @inputBorder*2, px);
-		line-height:    unit(@inputHeight - @inputBorder*2, px);
+		> .char, > .placeholder, > .caret {
+			display:        inline-block;
+			vertical-align: middle;
+		}
+
+		> .caret {
+			height:      80%;
+			width:       2px;
+			margin-left: -2px;
+		}
+
+		> .placeholder {
+			color: #999;
+		}
 	}
 
 	&.focus {
-		> .caret {
-			border-right:                      2px solid #000000;
-			-webkit-animation:                 inputCursor 1s;
-			-webkit-animation-iteration-count: infinite;
+		> .body {
+			> .caret {
+				background-color:                  #000000;
+				-webkit-animation:                 inputCursor 1s;
+				-webkit-animation-iteration-count: infinite;
+			}
 		}
 	}
 }
 
 @-webkit-keyframes inputCursor {
 	from {
-		border-right-color: #000000;
+		background-color: #000000;
 	}
 	to {
-		border-right-color: transparent;
+		background-color: transparent;
 	}
 }
-
