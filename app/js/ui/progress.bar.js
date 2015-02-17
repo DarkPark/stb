@@ -189,6 +189,10 @@ ProgressBar.prototype.init = function ( config ) {
 		this.min = config.min;
 	}
 
+	if ( DEBUG ) {
+		if ( this.min >= this.max ) { throw 'this.min value must be less than this.max'; }
+	}
+
 	if ( config.value !== undefined ) {
 		if ( DEBUG ) {
 			if ( Number(config.value) !== config.value ) { throw 'config.value must be a number'; }
