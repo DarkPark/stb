@@ -117,11 +117,10 @@ function Component ( config ) {
 
 	// outer handle
 	if ( config.$node !== undefined ) {
-
 		if ( DEBUG ) {
 			if ( !(config.$node instanceof Element) ) { throw 'wrong config.$node type'; }
 		}
-
+		// apply
 		this.$node = config.$node;
 	} else {
 		// empty div in case nothing is given
@@ -133,7 +132,7 @@ function Component ( config ) {
 		if ( DEBUG ) {
 			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
 		}
-
+		// apply
 		this.$body = config.$body;
 	} else {
 		// inner and outer handlers are identical
@@ -145,7 +144,7 @@ function Component ( config ) {
 		if ( DEBUG ) {
 			if ( !(config.$content instanceof Element) ) { throw 'wrong config.$content type'; }
 		}
-
+		// apply
 		this.$body.appendChild(config.$content);
 	}
 
@@ -157,7 +156,7 @@ function Component ( config ) {
 		if ( DEBUG ) {
 			if ( !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
 		}
-
+		// apply
 		config.parent.add(this);
 	}
 
@@ -166,7 +165,7 @@ function Component ( config ) {
 	//	if ( DEBUG ) {
 	//		if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
 	//	}
-    //
+    //	// apply
 	//	this.page = config.page;
 	//}
 
@@ -195,7 +194,7 @@ function Component ( config ) {
 		if ( DEBUG ) {
 			if ( !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
 		}
-
+		// apply
 		this.add.apply(this, config.children);
 	}
 
@@ -244,12 +243,47 @@ function Component ( config ) {
 		this.$node.title = 'component ' + this.constructor.name + '.' + this.id + ' (outer)';
 		this.$body.title = 'component ' + this.constructor.name + '.' + this.id + ' (inner)';
 	}
+
+	// @todo remove or implement
+	// navigation by keyboard
+	//this.addListener('keydown', this.navigateDefault);
 }
 
 
 // inheritance
 Component.prototype = Object.create(Emitter.prototype);
 Component.prototype.constructor = Component;
+
+
+/**
+ * Default method to move focus according to pressed keys.
+ *
+ * @todo remove or implement
+ *
+ * @param {Event} event generated event source of movement
+ */
+/*Component.prototype.navigateDefault = function ( event ) {
+	switch ( event.code ) {
+		case keys.up:
+		case keys.down:
+		case keys.right:
+		case keys.left:
+			// notify listeners
+			this.emit('overflow');
+			break;
+	}
+};*/
+
+
+/**
+ * Current active method to move focus according to pressed keys.
+ * Can be redefined to provide custom navigation.
+ *
+ * @todo remove or implement
+ *
+ * @type {function}
+ */
+/*Component.prototype.navigate = Component.prototype.navigateDefault;*/
 
 
 /**

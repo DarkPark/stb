@@ -108,7 +108,7 @@ function List ( config ) {
 		if ( DEBUG ) {
 			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
 		}
-
+		// apply
 		this.type = config.type;
 	}
 
@@ -127,7 +127,7 @@ function List ( config ) {
 		if ( DEBUG ) {
 			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-
+		// apply
 		this.navigate = config.navigate;
 	}
 
@@ -299,7 +299,6 @@ List.prototype.init = function ( config ) {
 		if ( DEBUG ) {
 			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
 		}
-
 		// prepare user data
 		this.data = normalize(config.data);
 	}
@@ -309,7 +308,7 @@ List.prototype.init = function ( config ) {
 		if ( DEBUG ) {
 			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
 		}
-
+		// apply
 		this.renderItem = config.render;
 	}
 
@@ -319,7 +318,7 @@ List.prototype.init = function ( config ) {
 			if ( Number(config.size) !== config.size ) { throw 'config.size must be a number'; }
 			if ( config.size <= 0 ) { throw 'config.size should be positive'; }
 		}
-
+		// apply
 		this.size = config.size;
 	}
 

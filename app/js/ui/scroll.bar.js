@@ -98,7 +98,7 @@ function ScrollBar ( config ) {
 		if ( DEBUG ) {
 			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
 		}
-
+		// apply
 		this.type = config.type;
 	}
 
