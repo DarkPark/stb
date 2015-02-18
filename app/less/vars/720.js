@@ -36,5 +36,8 @@ module.exports = {
 	panelPaddingX: 10,
 	panelPaddingY: 10,
 
-	progressBarHeight: 24
+	progressBarHeight: 24,
+
+	scrollBarHeight: 8,
+	scrollBarWidth:  8
 };

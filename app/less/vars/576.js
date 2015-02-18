@@ -38,5 +38,8 @@ module.exports = {
 	panelPaddingX: vars.panelPaddingX,
 	panelPaddingY: vars.panelPaddingY * 1.2,
 
-	progressBarHeight: vars.progressBarHeight * 1.2
+	progressBarHeight: vars.progressBarHeight * 1.2,
+
+	scrollBarWidth:  vars.scrollBarWidth,
+	scrollBarHeight: vars.scrollBarHeight * 1.2
 };
