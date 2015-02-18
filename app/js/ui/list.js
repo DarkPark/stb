@@ -40,6 +40,7 @@ var Component = require('../component'),
  * @param {function} [config.navigate] method to move focus according to pressed keys
  * @param {number}   [config.size=5] amount of visible items on a page
  * @param {boolean}  [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
+ * @param {boolean}  [config.scroll=null] associated ScrollBar component link
  *
  * @fires module:stb/ui/list~List#click:item
  */
@@ -68,6 +69,11 @@ function List ( config ) {
 	 */
 	this.data = [];
 
+	/**
+	 * Component orientation.
+	 *
+	 * @type {number}
+	 */
 	this.type = this.TYPE_VERTICAL;
 
 	/**
@@ -83,6 +89,13 @@ function List ( config ) {
 	 * @type {boolean}
 	 */
 	this.cycle = false;
+
+	/**
+	 * Associated ScrollBar component link.
+	 *
+	 * @type {ScrollBar}
+	 */
+	this.scroll = null;
 
 	// sanitize
 	config = config || {};
@@ -278,6 +291,9 @@ List.prototype.init = function ( config ) {
 	// apply cycle behaviour
 	if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
 
+	// apply ScrollBar link
+	if ( config.scroll !== undefined ) { this.scroll = config.scroll; }
+
 	// apply list of items
 	if ( config.data !== undefined ) {
 		if ( DEBUG ) {
@@ -398,6 +414,11 @@ List.prototype.renderView = function ( index ) {
 		if ( this.events['move:view'] !== undefined ) {
 			// notify listeners
 			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
+		}
+
+		// update a linked scroll component
+		if ( this.scroll ) {
+			this.scroll.scrollTo(this.indexView);
 		}
 
 		// full rebuild
