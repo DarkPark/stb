@@ -38,6 +38,7 @@ app.setScreen(
 
 
 // additional dev modules
+require('./shims');
 require('./static');
 require('./proxy');
 require('./events');

@@ -294,8 +294,10 @@ router.navigate = function ( name, data ) {
 		pageTo   = this.ids[name];
 
 	if ( DEBUG ) {
-		if ( !pageTo || typeof pageTo !== 'object' ) { throw 'wrong pageTo type'; }
-		if ( !('active' in pageTo) ) { throw 'missing field "active" in pageTo'; }
+		if ( router.pages.length > 0 ) {
+			if ( !pageTo || typeof pageTo !== 'object' ) { throw 'wrong pageTo type'; }
+			if ( !('active' in pageTo) ) { throw 'missing field "active" in pageTo'; }
+		}
 	}
 
 	// valid not already active page

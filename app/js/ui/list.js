@@ -40,6 +40,7 @@ var Component = require('../component'),
  * @param {function} [config.navigate] method to move focus according to pressed keys
  * @param {number}   [config.size=5] amount of visible items on a page
  * @param {boolean}  [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
+ * @param {boolean}  [config.scroll=null] associated ScrollBar component link
  *
  * @fires module:stb/ui/list~List#click:item
  */
@@ -68,6 +69,11 @@ function List ( config ) {
 	 */
 	this.data = [];
 
+	/**
+	 * Component orientation.
+	 *
+	 * @type {number}
+	 */
 	this.type = this.TYPE_VERTICAL;
 
 	/**
@@ -84,6 +90,13 @@ function List ( config ) {
 	 */
 	this.cycle = false;
 
+	/**
+	 * Associated ScrollBar component link.
+	 *
+	 * @type {ScrollBar}
+	 */
+	this.scroll = null;
+
 	// sanitize
 	config = config || {};
 
@@ -95,7 +108,7 @@ function List ( config ) {
 		if ( DEBUG ) {
 			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
 		}
-
+		// apply
 		this.type = config.type;
 	}
 
@@ -114,7 +127,7 @@ function List ( config ) {
 		if ( DEBUG ) {
 			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-
+		// apply
 		this.navigate = config.navigate;
 	}
 
@@ -278,12 +291,14 @@ List.prototype.init = function ( config ) {
 	// apply cycle behaviour
 	if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
 
+	// apply ScrollBar link
+	if ( config.scroll !== undefined ) { this.scroll = config.scroll; }
+
 	// apply list of items
 	if ( config.data !== undefined ) {
 		if ( DEBUG ) {
 			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
 		}
-
 		// prepare user data
 		this.data = normalize(config.data);
 	}
@@ -293,7 +308,7 @@ List.prototype.init = function ( config ) {
 		if ( DEBUG ) {
 			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
 		}
-
+		// apply
 		this.renderItem = config.render;
 	}
 
@@ -303,7 +318,7 @@ List.prototype.init = function ( config ) {
 			if ( Number(config.size) !== config.size ) { throw 'config.size must be a number'; }
 			if ( config.size <= 0 ) { throw 'config.size should be positive'; }
 		}
-
+		// apply
 		this.size = config.size;
 	}
 
@@ -398,6 +413,11 @@ List.prototype.renderView = function ( index ) {
 		if ( this.events['move:view'] !== undefined ) {
 			// notify listeners
 			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
+		}
+
+		// update a linked scroll component
+		if ( this.scroll ) {
+			this.scroll.scrollTo(this.indexView);
 		}
 
 		// full rebuild

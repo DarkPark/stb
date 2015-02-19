@@ -103,7 +103,7 @@ function Input ( config ) {
 		if ( DEBUG ) {
 			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-
+		// apply
 		this.navigate = config.navigate;
 	}
 
@@ -185,7 +185,7 @@ Input.prototype.init = function ( config ) {
 			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
 			if ( config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw 'config.type must be one of the TYPE_* constant'; }
 		}
-
+		// apply
 		this.type = config.type;
 	}
 
@@ -194,7 +194,7 @@ Input.prototype.init = function ( config ) {
 		if ( DEBUG ) {
 			if ( typeof config.value !== 'string' ) { throw 'config.value must be a string'; }
 		}
-
+		// apply
 		this.setValue(config.value);
 	}
 
@@ -204,8 +204,7 @@ Input.prototype.init = function ( config ) {
 			if ( typeof config.placeholder !== 'string' ) { throw 'config.placeholder must be a string'; }
 			if ( config.placeholder.length === 0 ) { throw 'config.placeholder must be not an empty string'; }
 		}
-
-		// apply placeholder
+		// apply
 		this.$placeholder.innerText = config.placeholder;
 	}
 };

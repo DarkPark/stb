@@ -274,7 +274,7 @@ Password - replace real text with '*', but real text presents in the own propert
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line35">line 35</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -396,7 +396,7 @@ Password - replace real text with '*', but real text presents in the own propert
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line60">line 60</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line62">line 62</a>
     </li></ul></dd>
     
 
@@ -414,13 +414,13 @@ Password - replace real text with '*', but real text presents in the own propert
 
         
             
-<h4 class="name" id="placeholder"><span class="type-signature"></span>placeholder<span class="type-signature"> :string</span></h4>
+<h4 class="name" id="$placeholder"><span class="type-signature"></span>$placeholder<span class="type-signature"> :Element</span></h4>
 
 
 
 
 <div class="description">
-    <p>Placeholder for input, sets when no text in input and if placeholder not empty.</p>
+    <p>Hint element with placeholder text.</p>
 </div>
 
 
@@ -429,7 +429,7 @@ Password - replace real text with '*', but real text presents in the own propert
     <ul>
         <li>
             
-<span class="param-type">string</span>
+<span class="param-type">Element</span>
 
 
         </li>
@@ -468,7 +468,80 @@ Password - replace real text with '*', but real text presents in the own propert
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line53">line 53</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line55">line 55</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="navigate"><span class="type-signature"></span>navigate<span class="type-signature"> :function</span></h4>
+
+
+
+
+<div class="description">
+    <p>Current active method to move focus according to pressed keys.
+Can be redefined to provide custom navigation.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">function</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line173">line 173</a>
     </li></ul></dd>
     
 
@@ -543,7 +616,7 @@ TYPE_PASSWORD - hidden input, all chars replaced with '*', but real value is loc
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line70">line 70</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line74">line 74</a>
     </li></ul></dd>
     
 
@@ -561,13 +634,13 @@ TYPE_PASSWORD - hidden input, all chars replaced with '*', but real value is loc
 
         
             
-<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"> :string</span></h4>
 
 
 
 
 <div class="description">
-    <p>Scroll area height or if scroll is horizontal its width.</p>
+    <p>Text value of input.</p>
 </div>
 
 
@@ -576,7 +649,7 @@ TYPE_PASSWORD - hidden input, all chars replaced with '*', but real value is loc
     <ul>
         <li>
             
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
         </li>
@@ -615,7 +688,7 @@ TYPE_PASSWORD - hidden input, all chars replaced with '*', but real value is loc
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line46">line 46</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line48">line 48</a>
     </li></ul></dd>
     
 
@@ -799,7 +872,7 @@ Do nothing if position is &lt; 0, or if index more or equals to length add char 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line165">line 165</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line223">line 223</a>
     </li></ul></dd>
     
 
@@ -835,15 +908,14 @@ Do nothing if position is &lt; 0, or if index more or equals to length add char 
 
     
 
-    <h4 class="name" id="moveCaret"><span class="type-signature"></span>moveCaret<span class="signature">(direction, index<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="init"><span class="type-signature"></span>init<span class="signature">(config)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Move caret to the given index
-Do nothing if index is out of the range (0, this.value.length).</p>
+    <p>Init or re-init of the component inner structures and HTML.</p>
 </div>
 
 
@@ -867,11 +939,7 @@ Do nothing if index is out of the range (0, this.value.length).</p>
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -883,74 +951,23 @@ Do nothing if index is out of the range (0, this.value.length).</p>
 
         <tr>
             
-                <td class="name"><code>direction</code></td>
+                <td class="name"><code>config</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last"><p>given keyCode, keys.left or keys.right</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>index</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    this.$caret.index
-                
-                </td>
-            
-
-            <td class="description last"><p>given position, if not passed sets to caret index +/- 1 (depends on the direction)</p></td>
+            <td class="description last"><p>init parameters (subset of constructor config params)</p></td>
         </tr>
 
     
@@ -991,7 +1008,7 @@ Do nothing if index is out of the range (0, this.value.length).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line265">line 265</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line181">line 181</a>
     </li></ul></dd>
     
 
@@ -1022,14 +1039,145 @@ Do nothing if index is out of the range (0, this.value.length).</p>
 
     
 
-    <h4 class="name" id="removeChar"><span class="type-signature"></span>removeChar<span class="signature">(index<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="navigateDefault"><span class="type-signature"></span>navigateDefault<span class="signature">(event)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Remove char from given index.
+    <p>Default method to move focus according to pressed keys.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>generated event source of movement</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line133">line 133</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="removeChar"><span class="type-signature"></span>removeChar<span class="signature">(index)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Remove char from given position.
 Do nothing if index is out of the range (0, length).</p>
 </div>
 
@@ -1054,11 +1202,7 @@ Do nothing if index is out of the range (0, length).</p>
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -1083,23 +1227,7 @@ Do nothing if index is out of the range (0, length).</p>
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    this.value.length
-                
-                </td>
             
 
             <td class="description last"><p>given position</p></td>
@@ -1143,7 +1271,7 @@ Do nothing if index is out of the range (0, length).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line222">line 222</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line280">line 280</a>
     </li></ul></dd>
     
 
@@ -1162,6 +1290,138 @@ Do nothing if index is out of the range (0, length).</p>
 <ul>
     <li>module:stb/ui/input~Input#event:input</li>
 </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setCaretPosition"><span class="type-signature"></span>setCaretPosition<span class="signature">(index)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Move caret to the given position.
+Do nothing if index is out of the range (0, this.value.length).</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>given position</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line320">line 320</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
 
 
 
@@ -1279,7 +1539,7 @@ Do nothing if index is out of the range (0, length).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line293">line 293</a>
+        <a href="ui_input.js.html">ui/input.js</a>, <a href="ui_input.js.html#line344">line 344</a>
     </li></ul></dd>
     
 
@@ -1327,7 +1587,7 @@ Do nothing if index is out of the range (0, length).</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta1</a> on Tue Feb 03 2015 14:02:46 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta1</a> on Wed Feb 18 2015 17:53:43 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -161,10 +161,7 @@ ProgressBar.prototype.set = function ( value ) {
 /**
  * Init or re-init current max or/and min or/and value.
  *
- * @param {Object} config init parameters
- * @param {number} [config.value=0] initial value
- * @param {number} [config.max=100] max progress value
- * @param {number} [config.min=0] min progress value
+ * @param {Object} config init parameters (subset of constructor config params)
  */
 ProgressBar.prototype.init = function ( config ) {
 	if ( DEBUG ) {
@@ -172,30 +169,36 @@ ProgressBar.prototype.init = function ( config ) {
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
 	}
 
-	// assignment of configuration parameters if they were transferred
+	// set max progress value
 	if ( config.max !== undefined ) {
 		if ( DEBUG ) {
 			if ( Number(config.max) !== config.max ) { throw 'config.max value must be a number'; }
 		}
-
+		// apply
 		this.max = config.max;
 	}
 
+	// set min progress value
 	if ( config.min !== undefined ) {
 		if ( DEBUG ) {
 			if ( Number(config.min) !== config.min ) { throw 'config.min value must be a number'; }
 		}
-
+		// apply
 		this.min = config.min;
 	}
 
+	if ( DEBUG ) {
+		if ( this.min >= this.max ) { throw 'this.min value must be less than this.max'; }
+	}
+
+	// set actual progress value
 	if ( config.value !== undefined ) {
 		if ( DEBUG ) {
 			if ( Number(config.value) !== config.value ) { throw 'config.value must be a number'; }
 			if ( config.value > this.max ) { throw 'config.value more than config.maximum'; }
 			if ( config.value < this.min ) { throw 'config.value less than config.minimum'; }
 		}
-
+		// apply
 		this.value = config.value;
 	}
 

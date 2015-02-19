@@ -136,7 +136,7 @@ function Grid ( config ) {
 		if ( DEBUG ) {
 			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
 		}
-
+		// apply
 		this.navigate = config.navigate;
 	}
 

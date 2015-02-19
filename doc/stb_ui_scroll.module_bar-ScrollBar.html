@@ -185,14 +185,14 @@
                 </td>
             
 
-            <td class="description last"><p>initial value</p></td>
+            <td class="description last"><p>initial thumb position</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>max</code></td>
+                <td class="name"><code>realSize</code></td>
             
 
             <td class="type">
@@ -224,14 +224,14 @@
                 </td>
             
 
-            <td class="description last"><p>max scroll value</p></td>
+            <td class="description last"><p>actual scroll size</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>min</code></td>
+                <td class="name"><code>viewSize</code></td>
             
 
             <td class="type">
@@ -258,12 +258,12 @@
             
                 <td class="default">
                 
-                    0
+                    10
                 
                 </td>
             
 
-            <td class="description last"><p>min scroll value</p></td>
+            <td class="description last"><p>visible area size</p></td>
         </tr>
 
     
@@ -340,8 +340,8 @@
     
     <pre class="prettyprint"><code>var ScrollBar = require('stb/ui/scroll.bar'),
     scrollBar = new ScrollBar({
-        min: -100,
-        max:  200,
+        viewSize: 5,
+        realSize: 25,
         events: {
             done: function () {
                 debug.log('ScrollBar: done');
@@ -383,85 +383,13 @@
 
         
             
-<h4 class="name" id="max"><span class="type-signature"></span>max<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="realSize"><span class="type-signature"></span>realSize<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    <p>Scroll area height or if scroll is horizontal its width.</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line47">line 47</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="min"><span class="type-signature"></span>min<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    <p>Min scroll value.</p>
+    <p>Scroll area actual height or width (if scroll is horizontal).</p>
 </div>
 
 
@@ -527,13 +455,157 @@
 
         
             
-<h4 class="name" id="ratio"><span class="type-signature"></span>ratio<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="thumbRect"><span class="type-signature"></span>thumbRect<span class="type-signature"> :ClientRect</span></h4>
 
 
 
 
 <div class="description">
-    <p>Coefficient between scroll bar height and real content height.</p>
+    <p>Geometry of the scroll thumb element.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">ClientRect</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line75">line 75</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="trackRect"><span class="type-signature"></span>trackRect<span class="type-signature"> :ClientRect</span></h4>
+
+
+
+
+<div class="description">
+    <p>Geometry of the scroll track element.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">ClientRect</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line82">line 82</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="type"><span class="type-signature"></span>type<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    <p>Component orientation.</p>
 </div>
 
 
@@ -581,7 +653,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line70">line 70</a>
+        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -605,7 +677,7 @@
 
 
 <div class="description">
-    <p>Initial scroll position.</p>
+    <p>Scroll thumb position.</p>
 </div>
 
 
@@ -670,6 +742,78 @@
 
 
         
+            
+<h4 class="name" id="viewSize"><span class="type-signature"></span>viewSize<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    <p>Visible area size.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
     
 
     
@@ -687,7 +831,7 @@
 
 
 <div class="description">
-    <p>Init or re-init current max or/and min or/and value.</p>
+    <p>Init or re-init realSize/viewSize/value parameters.</p>
 </div>
 
 
@@ -739,154 +883,7 @@
 
             
 
-            <td class="description last"><p>init parameters</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last"><p>initial value</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>max</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    100
-                
-                </td>
-            
-
-            <td class="description last"><p>max scroll value</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>min</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last"><p>min scroll value</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last"><p>init parameters (subset of constructor config params)</p></td>
         </tr>
 
     
@@ -927,7 +924,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line109">line 109</a>
+        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line132">line 132</a>
     </li></ul></dd>
     
 
@@ -1059,7 +1056,7 @@ Does nothing in case when scroll is in the end and passed value is more than scr
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line180">line 180</a>
+        <a href="ui_scroll.bar.js.html">ui/scroll.bar.js</a>, <a href="ui_scroll.bar.js.html#line195">line 195</a>
     </li></ul></dd>
     
 
@@ -1136,7 +1133,7 @@ Does nothing in case when scroll is in the end and passed value is more than scr
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta1</a> on Tue Feb 03 2015 14:02:47 GMT+0200 (EET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta1</a> on Wed Feb 18 2015 17:53:43 GMT+0200 (EET)
 </footer>
 
 <script> prettyPrint(); </script>
