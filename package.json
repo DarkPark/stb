@@ -18,7 +18,7 @@
 		"gremlins.js": "^0.1.0",
 		"gulp": "^3.8.0",
 		"gulp-conflict": "^0.3.0",
-		"gulp-eslint": "^0.6.0",
+		"gulp-eslint": "^0.7.0",
 		"gulp-jade": "^1.0.0",
 		"gulp-livereload": "^3.8.0",
 		"gulp-plumber": "^1.0.0",
