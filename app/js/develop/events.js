@@ -83,9 +83,7 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
 		// numpad 6
 		case 102:
 			// stress-testing for emulation
-			if ( !app.data.host ) {
-				window.horde.unleash({nb: 500});
-			}
+			window.horde.unleash({nb: 500});
 			break;
 
 		// numpad 7
