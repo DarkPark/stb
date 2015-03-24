@@ -26,7 +26,7 @@
 		"gulp-runtime": "^0.5.3",
 		"gulp-webpack": "^1.2.0",
 		"ip": "^0.3.2",
-		"jsdoc": "3.3.0-beta2",
+		"jsdoc": "3.3.0-beta3",
 		"less": "^2.4.0",
 		"node-static": "^0.7.6",
 		"open": "^0.0.5",
