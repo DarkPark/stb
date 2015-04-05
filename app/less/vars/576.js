@@ -10,7 +10,8 @@
 
 var vars = require('./480');
 
-// public export
+
+// public
 module.exports = {
 	buttonHeight:   vars.buttonHeight * 1.2,
 	buttonPaddingX: vars.buttonPaddingX,

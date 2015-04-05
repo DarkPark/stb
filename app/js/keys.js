@@ -18,7 +18,7 @@
 'use strict';
 
 
-// public export
+// public
 module.exports = {
 	back         : 8,    // Backspace
 	'delete'     : 46,

@@ -115,5 +115,5 @@ request.encode = function ( data ) {
 };
 
 
-// public export
+// public
 module.exports = request;

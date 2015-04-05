@@ -256,5 +256,5 @@ ScrollBar.prototype.scrollTo = function ( value ) {
 };
 
 
-// public export
+// public
 module.exports = ScrollBar;

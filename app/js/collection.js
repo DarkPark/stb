@@ -351,5 +351,5 @@ Object.defineProperty(Collection.prototype, 'length', {
 });
 
 
-// public export
+// public
 module.exports = Collection;
