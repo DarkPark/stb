@@ -82,5 +82,5 @@ Page.prototype = Object.create(Component.prototype);
 Page.prototype.constructor = Page;
 
 
-// public export
+// public
 module.exports = Page;

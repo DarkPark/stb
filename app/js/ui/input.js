@@ -412,5 +412,5 @@ Input.prototype.setValue = function ( value ) {
 };
 
 
-// public export
+// public
 module.exports = Input;

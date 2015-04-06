@@ -689,5 +689,5 @@ List.prototype.markItem = function ( $item, state ) {
 };
 
 
-// public export
+// public
 module.exports = List;

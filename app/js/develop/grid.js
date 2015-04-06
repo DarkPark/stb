@@ -12,7 +12,7 @@ var data    = require('stb/app').data,
 	storage = require('./storage');
 
 
-// public export
+// public
 module.exports = window.grid = {
 
 	/** @type {HTMLElement} */

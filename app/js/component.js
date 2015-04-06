@@ -553,5 +553,5 @@ Component.prototype.hide = function () {
 };
 
 
-// public export
+// public
 module.exports = Component;

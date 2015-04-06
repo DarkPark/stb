@@ -34,5 +34,5 @@ Modal.prototype = Object.create(Component.prototype);
 Modal.prototype.constructor = Modal;
 
 
-// public export
+// public
 module.exports = Modal;

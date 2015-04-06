@@ -46,5 +46,5 @@ ModalMessage.prototype = Object.create(ModalBox.prototype);
 ModalMessage.prototype.constructor = ModalMessage;
 
 
-// public export
+// public
 module.exports = ModalMessage;

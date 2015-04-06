@@ -1,6 +1,7 @@
 STB single page application framework
 =====================================
 
+[![Dependency Status](https://david-dm.org/darkpark/stb.svg)](https://david-dm.org/darkpark/stb)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/DarkPark/stb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Provides development environment and base components in a form of [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) modules

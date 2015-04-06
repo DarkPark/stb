@@ -147,5 +147,5 @@ CheckBox.prototype.set = function ( value ) {
 };
 
 
-// public export
+// public
 module.exports = CheckBox;

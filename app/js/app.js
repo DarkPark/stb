@@ -414,5 +414,5 @@ window.addEventListener('contextmenu', function globalEventListenerContextmenu (
 //});
 
 
-// public export
+// public
 module.exports = app;

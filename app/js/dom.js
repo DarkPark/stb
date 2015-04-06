@@ -172,5 +172,5 @@ dom.remove = function ( nodes ) {
 };
 
 
-// public export
+// public
 module.exports = dom;

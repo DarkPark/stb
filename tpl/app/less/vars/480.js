@@ -8,5 +8,5 @@
 
 'use strict';
 
-// public export
+// public
 module.exports = {};

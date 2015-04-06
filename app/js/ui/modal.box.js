@@ -43,5 +43,5 @@ ModalBox.prototype = Object.create(Component.prototype);
 ModalBox.prototype.constructor = ModalBox;
 
 
-// public export
+// public
 module.exports = ModalBox;
