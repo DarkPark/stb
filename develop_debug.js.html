@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: develop/debug.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: develop/debug.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Logger.
+ *
+ * @module stb/develop/debug
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
+ */
+
+'use strict';
+
+var host   = require('stb/app').data.host,
+	config = require('cfg/logger'),
+	util   = require('util'),
+	buffer = [],
+	socket;
+
+
+// enable colors in console
+require('tty-colors');
+
+
+(function connect () {
+	if ( !config.active || !host ) {
+		return;
+	}
+
+	socket = new WebSocket('ws://' + location.hostname + ':' + config.port);
+
+	socket.onclose = function () {
+		setTimeout(function () {
+			connect();
+		}, 5000);
+	};
+})();
+
+
+/**
+ * Wrapper to dump message locally and remotely.
+ *
+ * @param {string} message data to output and send
+ */
+function log ( message ) {
+	gSTB.Debug(message);
+	buffer.push(message);
+	if ( socket &amp;&amp; socket.readyState === socket.OPEN ) {
+		socket.send(JSON.stringify(buffer));
+		buffer = [];
+	}
+}
+
+
+/**
+ * Global object to output logs
+ * @namespace
+ * @global
+ */
+module.exports = window.debug = {
+
+	/**
+	 * Check condition and warn if not match.
+	 *
+	 * @param {boolean} condition should be true if okay
+	 * @param {string} title description of the problem
+	 */
+	assert: function ( condition, title ) {
+		if ( !condition ) {
+			if ( host ) {
+				log(('Assertion failed: ' + title).red);
+			} else {
+				console.assert(condition, title);
+			}
+		}
+	},
+
+
+	/**
+	 * Print a plain colored string.
+	 *
+	 * @param {*} message data to output
+	 * @param {string} [color='black'] colour to set
+	 */
+	log: function ( message, color ) {
+		message = (message + '') || '(empty message)';
+		if ( host ) {
+			log(message[color || 'white']);
+		} else {
+			console.log('%c%s', 'color:' + (color || 'black'), message);
+		}
+	},
+
+
+	/**
+	 * Print the given var with caption.
+	 *
+	 * @param {*} data data to output
+	 * @param {string} [title] optional caption
+	 */
+	info: function ( data, title ) {
+		var type = Object.prototype.toString.call(data).match(/\s([a-zA-Z]+)/)[1].toLowerCase(),
+			args;
+
+		if ( host ) {
+			// prepare
+			if ( data instanceof Object || Array.isArray(data) ) {
+				// complex object
+				data = data.nodeName ? data.outerHTML : JSON.stringify(data, null, 4);
+			}
+			// combine all together and print result
+			log((type === 'error' ? type.red : type.green) + '\t' + (title ? title.bold + ':\t'.green : '') + data);
+		} else {
+			args = ['color:' + (type === 'error' ? 'red' : 'green'), type];
+			if ( title ) {
+				args.unshift('%c%s\t%c%s\t');
+				args.push('color:grey');
+				args.push(title);
+			} else {
+				args.unshift('%c%s\t');
+			}
+			args.push(data);
+			// output
+			console.log.apply(console, args);
+		}
+	},
+
+
+	/**
+	 * Print the given complex var with level restriction.
+	 *
+	 * @param {*} data data to output
+	 * @param {number} [depth=0] amount of sub-levels to print
+	 */
+	inspect: function ( data, depth ) {
+		if ( host ) {
+			log('inspect:\n' + util.inspect(data, {depth: depth || 0, colors: true}));
+		} else {
+			console.log(data);
+		}
+	},
+
+
+	/**
+	 * Print the given event object in some special way.
+	 *
+	 * @param {Event} data event object
+	 */
+	event: function ( data ) {
+		var type  = data.type.toUpperCase(),
+			color = type === 'ERROR' ? 'red' : 'green',
+			text  = ('Event ' + type[color]).bold;
+
+		if ( host ) {
+			switch ( type ) {
+				case 'KEYDOWN':
+					text = text +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					' alt'  [data.altKey   ? 'green' : 'grey'] +
+					' shift'[data.shiftKey ? 'green' : 'grey'] +
+					'\t' + data.keyCode + '\t' + data.code + '\t' + (data.keyIdentifier || '').green;
+					break;
+				case 'KEYPRESS':
+					text = text +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					' alt'  [data.altKey   ? 'green' : 'grey'] +
+					' shift'[data.shiftKey ? 'green' : 'grey'] +
+					'\t' + data.keyCode + '\t' + (data.keyIdentifier || '').green + '\t' + String.fromCharCode(data.keyCode);
+					break;
+				case 'MOUSEMOVE':
+					text = text +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					' alt'  [data.altKey   ? 'green' : 'grey'] +
+					' shift'[data.shiftKey ? 'green' : 'grey'] +
+					'\t' + data.x + ':' + data.y;
+					break;
+				case 'CLICK':
+					text = text +
+					'\tctrl' [data.ctrlKey  ? 'green' : 'grey'] +
+					' alt'  [data.altKey   ? 'green' : 'grey'] +
+					' shift'[data.shiftKey ? 'green' : 'grey'] +
+					'\t' + data.x + ':' + data.y;
+					break;
+				case 'ERROR':
+					text = text +
+						'\t' + data.filename +
+						' (' + data.lineno + ':' + data.colno + ')' +
+						' ' + data.message;
+					break;
+			}
+			log(text);
+		} else {
+			switch ( type ) {
+				case 'KEYDOWN':
+				case 'KEYPRESS':
+					console.log('%o\t%c%s %c%s %c%s %c%s %c%s\t%s\t%c%s', data, 'color:' + color + ';font-weight:bold', type,
+						'color:' + (data.ctrlKey  ? 'green' : 'lightgrey'), 'ctrl',
+						'color:' + (data.altKey   ? 'green' : 'lightgrey'), 'alt',
+						'color:' + (data.shiftKey ? 'green' : 'lightgrey'), 'shift',
+						'color:black', data.keyCode, data.code || '', 'color:green', data.keyIdentifier
+					);
+					break;
+				default:
+					console.log('%o\t%c%s', data, 'color:' + color + ';font-weight:bold', type);
+			}
+		}
+	},
+
+
+	/**
+	 * Use to do some development-specific actions which are removed in release mode.
+	 *
+	 * @param {function} cb callback to execute
+	 *
+	 * @example
+	 * debug.stub(function () {
+	 *     alert('This is visible only in debug mode!');
+	 * });
+	 * // it's also possible to use simple expression:
+	 * // link the current scope var with global
+	 * // useful for dev only
+	 * debug.stub(window.app = this);
+	 */
+	stub: function ( cb ) {
+		if ( typeof cb === 'function' ) {
+			cb();
+		}
+	}
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_stack.html">stb/stack</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_input.html">stb/ui/input</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="module-stb_ui_widget.html">stb/ui/widget</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li><li><a href="stb_ui_scroll.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_stack-Stack.html">Stack</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_input-Input.html">Input</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="module-stb_ui_widget-Widget.html">Widget</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li><li><a href="stb_ui_scroll.module_bar-ScrollBar.html">ScrollBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_stack-Stack.html#event:pop">pop</a></li><li><a href="module-stb_stack-Stack.html#event:push">push</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:move:view">move:view</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:change">change</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Fri Apr 17 2015 14:45:54 GMT+0300 (EEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

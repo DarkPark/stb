@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: component.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: component.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module stb/component
+ * @author Stanislav Kalashnik &lt;sk@infomir.eu>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
+ */
+
+'use strict';
+
+var Emitter = require('./emitter'),
+	router  = require('./router'),
+	counter = 0;
+
+
+/**
+ * Base component implementation.
+ *
+ * Visual element that can handle sub-components.
+ * Each component has a DOM element container $node with a set of classes:
+ * "component" and some specific component class names depending on the hierarchy, for example "page".
+ * Each component has a unique ID given either from $node.id or from data.id. If not given will generate automatically.
+ *
+ * @constructor
+ * @extends Emitter
+ *
+ * @param {Object} [config={}] init parameters
+ * @param {Element} [config.id] component unique identifier (generated if not set)
+ * @param {Element} [config.$node] DOM element/fragment to be a component outer container
+ * @param {Element} [config.$body] DOM element/fragment to be a component inner container (by default is the same as $node)
+ * @param {Element} [config.$content] DOM element/fragment to be appended to the $body
+ * @param {Component} [config.parent] link to the parent component which has this component as a child
+ * @param {Array.&lt;Component>} [config.children=[]] list of components in this component
+ * @param {Object.&lt;string, function>} [config.events={}] list of event callbacks
+ * @param {boolean} [config.visible=true] component initial visibility state flag
+ * @param {boolean} [config.focusable=true] component can accept focus or not
+ *
+ * @fires module:stb/component~Component#click
+ *
+ * @example
+ * var component = new Component({
+ *     $node: document.getElementById(id),
+ *     events: {
+ *         click: function () { ... }
+ *     }
+ * });
+ * component.add( ... );
+ * component.focus();
+ */
+function Component ( config ) {
+	// current execution context
+	var self = this;
+
+	/**
+	 * Component visibility state flag.
+	 *
+	 * @readonly
+	 * @type {boolean}
+	 */
+	this.visible = true;
+
+	/**
+	 * Component can accept focus or not.
+	 *
+	 * @type {boolean}
+	 */
+	this.focusable = true;
+
+	/**
+	 * DOM outer handle.
+	 *
+	 * @type {Element}
+	 */
+	this.$node = null;
+
+	/**
+	 * DOM inner handle.
+	 * In simple cases is the same as $node.
+	 *
+	 * @type {Element}
+	 */
+	this.$body = null;
+
+	if ( DEBUG ) {
+		/**
+		 * Link to the page owner component.
+		 * It can differ from the direct parent.
+		 * Should be used only in debug.
+		 *
+		 * @type {Page}
+		 */
+		//this.page = null;
+	}
+
+	/**
+	 * Link to the parent component which has this component as a child.
+	 *
+	 * @type {Component}
+	 */
+	this.parent = null;
+
+	/**
+	 * List of all children components.
+	 *
+	 * @type {Component[]}
+	 */
+	this.children = [];
+
+
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+	}
+
+	// parent init
+	Emitter.call(this, config.data);
+
+	// outer handle
+	if ( config.$node !== undefined ) {
+		if ( DEBUG ) {
+			if ( !(config.$node instanceof Element) ) { throw 'wrong config.$node type'; }
+		}
+		// apply
+		this.$node = config.$node;
+	} else {
+		// empty div in case nothing is given
+		this.$node = document.createElement('div');
+	}
+
+	// inner handle
+	if ( config.$body !== undefined ) {
+		if ( DEBUG ) {
+			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
+		}
+		// apply
+		this.$body = config.$body;
+	} else {
+		// inner and outer handlers are identical
+		this.$body = this.$node;
+	}
+
+	// inject given content into inner component part
+	if ( config.$content !== undefined ) {
+		if ( DEBUG ) {
+			if ( !(config.$content instanceof Element) ) { throw 'wrong config.$content type'; }
+		}
+		// apply
+		this.$body.appendChild(config.$content);
+	}
+
+	// correct CSS class names
+	this.$node.classList.add('component');
+
+	// apply hierarchy
+	if ( config.parent !== undefined ) {
+		if ( DEBUG ) {
+			if ( !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
+		}
+		// apply
+		config.parent.add(this);
+	}
+
+	// set link to the page owner component
+	//if ( config.page !== undefined ) {
+	//	if ( DEBUG ) {
+	//		if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
+	//	}
+    //	// apply
+	//	this.page = config.page;
+	//}
+
+	// apply given visibility
+	if ( config.visible === false ) {
+		// default state is visible
+		this.hide();
+	}
+
+	// can't accept focus
+	if ( config.focusable === false ) {
+		this.focusable = false;
+	}
+
+	// apply given events
+	if ( config.events !== undefined ) {
+		// no need in assert here (it is done inside the addListeners)
+		this.addListeners(config.events);
+	}
+
+	// apply component id if given, generate otherwise
+	this.id = config.id || this.$node.id || 'id' + counter++;
+
+	// apply the given children components
+	if ( config.children ) {
+		if ( DEBUG ) {
+			if ( !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
+		}
+		// apply
+		this.add.apply(this, config.children);
+	}
+
+	// component activation by mouse
+	this.$node.addEventListener('click', function ( event ) {
+		// left mouse button
+		if ( event.button === 0 ) {
+			// activate if possible
+			self.focus();
+
+			// there are some listeners
+			if ( self.events['click'] !== undefined ) {
+				/**
+				 * Mouse click event.
+				 *
+				 * @event module:stb/component~Component#click
+				 *
+				 * @type {Object}
+				 * @property {Event} event click event data
+				 */
+				self.emit('click', {event: event});
+			}
+
+			// not prevented
+			//if ( !event.stop ) {
+			//	// activate if possible
+			//	self.focus();
+			//}
+		}
+
+		if ( DEBUG ) {
+			// middle mouse button
+			if ( event.button === 1 ) {
+				debug.inspect(self);
+				debug.log('this component is now available by window.link');
+				window.link = self;
+			}
+		}
+
+		event.stopPropagation();
+	});
+
+	if ( DEBUG ) {
+		// expose a link
+		this.$node.component = this.$body.component = this;
+		this.$node.title = 'component ' + this.constructor.name + '.' + this.id + ' (outer)';
+		this.$body.title = 'component ' + this.constructor.name + '.' + this.id + ' (inner)';
+	}
+
+	// @todo remove or implement
+	// navigation by keyboard
+	//this.addListener('keydown', this.navigateDefault);
+}
+
+
+// inheritance
+Component.prototype = Object.create(Emitter.prototype);
+Component.prototype.constructor = Component;
+
+
+/**
+ * Default method to move focus according to pressed keys.
+ *
+ * @todo remove or implement
+ *
+ * @param {Event} event generated event source of movement
+ */
+/*Component.prototype.navigateDefault = function ( event ) {
+	switch ( event.code ) {
+		case keys.up:
+		case keys.down:
+		case keys.right:
+		case keys.left:
+			// notify listeners
+			this.emit('overflow');
+			break;
+	}
+};*/
+
+
+/**
+ * Current active method to move focus according to pressed keys.
+ * Can be redefined to provide custom navigation.
+ *
+ * @todo remove or implement
+ *
+ * @type {function}
+ */
+/*Component.prototype.navigate = Component.prototype.navigateDefault;*/
+
+
+/**
+ * Add a new component as a child.
+ *
+ * @param {...Component} [child] variable number of elements to append
+ *
+ * @files Component#add
+ *
+ * @example
+ * panel.add(
+ *     new Button( ... ),
+ *     new Button( ... )
+ * );
+ */
+Component.prototype.add = function ( child ) {
+	var i;
+
+	// walk through all the given elements
+	for ( i = 0; i &lt; arguments.length; i++ ) {
+		child = arguments[i];
+
+		if ( DEBUG ) {
+			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+		}
+
+		// apply
+		this.children.push(child);
+		child.parent = this;
+
+		//if ( DEBUG ) {
+		//	// apply page for this and all children recursively
+		//	child.setPage(this.page);
+		//}
+
+		// correct DOM parent/child connection if necessary
+		if ( child.$node !== undefined &amp;&amp; child.$node.parentNode === null ) {
+			this.$body.appendChild(child.$node);
+		}
+
+		// there are some listeners
+		if ( this.events['add'] !== undefined ) {
+			/**
+			 * A child component is added.
+			 *
+			 * @event module:stb/component~Component#add
+			 *
+			 * @type {Object}
+			 * @property {Component} child new component added
+			 */
+			this.emit('add', {item: child});
+		}
+
+		debug.log('component ' + this.constructor.name + '.' + this.id + ' new child: ' + child.constructor.name + '.' + child.id);
+	}
+};
+
+
+//if ( DEBUG ) {
+//	Component.prototype.setPage = function ( page ) {
+//		this.page = page;
+//
+//		this.children.forEach(function ( child ) {
+//			child.setPage(page);
+//		});
+//	};
+//}
+
+
+/**
+ * Delete this component and clear all associated events.
+ *
+ * @fires module:stb/component~Component#remove
+ */
+Component.prototype.remove = function () {
+	var page = router.current;
+
+	// really inserted somewhere
+	if ( this.parent ) {
+		if ( DEBUG ) {
+			if ( !(this.parent instanceof Component) ) { throw 'wrong this.parent type'; }
+		}
+
+		// active at the moment
+		if ( page.activeComponent === this ) {
+			this.blur();
+			this.parent.focus();
+		}
+		this.parent.children.splice(this.parent.children.indexOf(this), 1);
+	}
+
+	// remove all children
+	this.children.forEach(function ( child ) {
+		if ( DEBUG ) {
+			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+		}
+
+		child.remove();
+	});
+
+	this.removeAllListeners();
+	this.$node.parentNode.removeChild(this.$node);
+
+	// there are some listeners
+	if ( this.events['remove'] !== undefined ) {
+		/**
+		 * Delete this component.
+		 *
+		 * @event module:stb/component~Component#remove
+		 */
+		this.emit('remove');
+	}
+
+	debug.log('component ' + this.constructor.name + '.' + this.id + ' remove', 'red');
+};
+
+
+/**
+ * Activate the component.
+ * Notify the owner-page and apply CSS class.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires module:stb/component~Component#focus
+ */
+Component.prototype.focus = function () {
+	var activePage = router.current,
+		activeItem = activePage.activeComponent;
+
+	//if ( DEBUG ) {
+	//	if ( this.page !== activePage ) {
+	//		console.log(this, this.page, activePage);
+	//		throw 'attempt to focus an invisible component';
+	//	}
+	//}
+
+	// this is a visual component on a page
+	// not already focused and can accept focus
+	if ( this.focusable &amp;&amp; this !== activeItem ) {
+		// notify the current active component
+		if ( activeItem ) { activeItem.blur(); }
+
+		// apply
+		activePage.activeComponent = activeItem = this;
+		activeItem.$node.classList.add('focus');
+
+		// there are some listeners
+		if ( activeItem.events['focus'] !== undefined ) {
+			/**
+			 * Make this component focused.
+			 *
+			 * @event module:stb/component~Component#focus
+			 */
+			activeItem.emit('focus');
+		}
+
+		debug.log('component ' + this.constructor.name + '.' + this.id + ' focus');
+
+		return true;
+	}
+
+	// nothing was done
+	return false;
+};
+
+
+/**
+ * Remove focus.
+ * Change page.activeComponent and notify subscribers.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires module:stb/component~Component#blur
+ */
+Component.prototype.blur = function () {
+	var activePage = router.current,
+		activeItem = activePage.activeComponent;
+
+	// this is the active component
+	if ( this === activeItem ) {
+		this.$node.classList.remove('focus');
+		activePage.activeComponent = null;
+
+		// there are some listeners
+		if ( this.events['blur'] !== undefined ) {
+			/**
+			 * Remove focus from this component.
+			 *
+			 * @event module:stb/component~Component#blur
+			 */
+			this.emit('blur');
+		}
+
+		debug.log('component ' + this.constructor.name + '.' + this.id + ' blur', 'grey');
+
+		return true;
+	}
+
+	// nothing was done
+	return false;
+};
+
+
+/**
+ * Make the component visible and notify subscribers.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires module:stb/component~Component#show
+ */
+Component.prototype.show = function () {
+	// is it hidden
+	if ( !this.visible ) {
+		// correct style
+		this.$node.classList.remove('hidden');
+		// flag
+		this.visible = true;
+
+		// there are some listeners
+		if ( this.events['show'] !== undefined ) {
+			/**
+			 * Make the component visible.
+			 *
+			 * @event module:stb/component~Component#show
+			 */
+			this.emit('show');
+		}
+
+		return true;
+	}
+
+	// nothing was done
+	return true;
+};
+
+
+/**
+ * Make the component hidden and notify subscribers.
+ *
+ * @return {boolean} operation status
+ *
+ * @fires module:stb/component~Component#hide
+ */
+Component.prototype.hide = function () {
+	// is it visible
+	if ( this.visible ) {
+		// correct style
+		this.$node.classList.add('hidden');
+		// flag
+		this.visible = false;
+
+		// there are some listeners
+		if ( this.events['hide'] !== undefined ) {
+			/**
+			 * Make the component hidden.
+			 *
+			 * @event module:stb/component~Component#hide
+			 */
+			this.emit('hide');
+		}
+
+		return true;
+	}
+
+	// nothing was done
+	return true;
+};
+
+
+// public
+module.exports = Component;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-stb_app.html">stb/app</a></li><li><a href="module-stb_collection.html">stb/collection</a></li><li><a href="module-stb_component.html">stb/component</a></li><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li><li><a href="module-stb_develop_events.html">stb/develop/events</a></li><li><a href="module-stb_develop_grid.html">stb/develop/grid</a></li><li><a href="module-stb_develop_main.html">stb/develop/main</a></li><li><a href="module-stb_develop_proxy.html">stb/develop/proxy</a></li><li><a href="module-stb_develop_static.html">stb/develop/static</a></li><li><a href="module-stb_develop_storage.html">stb/develop/storage</a></li><li><a href="module-stb_develop_weinre.html">stb/develop/weinre</a></li><li><a href="module-stb_dom.html">stb/dom</a></li><li><a href="module-stb_emitter.html">stb/emitter</a></li><li><a href="module-stb_keys.html">stb/keys</a></li><li><a href="module-stb_model.html">stb/model</a></li><li><a href="module-stb_request.html">stb/request</a></li><li><a href="module-stb_router.html">stb/router</a></li><li><a href="module-stb_stack.html">stb/stack</a></li><li><a href="module-stb_ui_button.html">stb/ui/button</a></li><li><a href="module-stb_ui_grid.html">stb/ui/grid</a></li><li><a href="module-stb_ui_input.html">stb/ui/input</a></li><li><a href="module-stb_ui_list.html">stb/ui/list</a></li><li><a href="module-stb_ui_modal.html">stb/ui/modal</a></li><li><a href="module-stb_ui_page.html">stb/ui/page</a></li><li><a href="module-stb_ui_panel.html">stb/ui/panel</a></li><li><a href="module-stb_ui_widget.html">stb/ui/widget</a></li><li><a href="stb_ui_check.module_box.html">box</a></li><li><a href="stb_ui_modal.module_box.html">box</a></li><li><a href="stb_ui_modal.module_message.html">message</a></li><li><a href="stb_ui_progress.module_bar.html">bar</a></li><li><a href="stb_ui_scroll.module_bar.html">bar</a></li></ul><h3>Classes</h3><ul><li><a href="module-stb_collection-Collection.html">Collection</a></li><li><a href="module-stb_component-Component.html">Component</a></li><li><a href="module-stb_emitter-Emitter.html">Emitter</a></li><li><a href="module-stb_model-Model.html">Model</a></li><li><a href="module-stb_stack-Stack.html">Stack</a></li><li><a href="module-stb_ui_button-Button.html">Button</a></li><li><a href="module-stb_ui_grid-Grid.html">Grid</a></li><li><a href="module-stb_ui_input-Input.html">Input</a></li><li><a href="module-stb_ui_list-List.html">List</a></li><li><a href="module-stb_ui_modal-Modal.html">Modal</a></li><li><a href="module-stb_ui_page-Page.html">Page</a></li><li><a href="module-stb_ui_panel-Panel.html">Panel</a></li><li><a href="module-stb_ui_widget-Widget.html">Widget</a></li><li><a href="stb_ui_check.module_box-CheckBox.html">CheckBox</a></li><li><a href="stb_ui_modal.module_box-ModalBox.html">ModalBox</a></li><li><a href="stb_ui_modal.module_message-ModalMessage.html">ModalMessage</a></li><li><a href="stb_ui_progress.module_bar-ProgressBar.html">ProgressBar</a></li><li><a href="stb_ui_scroll.module_bar-ScrollBar.html">ScrollBar</a></li></ul><h3>Events</h3><ul><li><a href="module-stb_collection-Collection.html#event:add">add</a></li><li><a href="module-stb_collection-Collection.html#event:clear">clear</a></li><li><a href="module-stb_collection-Collection.html#event:init">init</a></li><li><a href="module-stb_collection-Collection.html#event:remove">remove</a></li><li><a href="module-stb_collection-Collection.html#event:sort">sort</a></li><li><a href="module-stb_component-Component.html#event:add">add</a></li><li><a href="module-stb_component-Component.html#event:blur">blur</a></li><li><a href="module-stb_component-Component.html#event:click">click</a></li><li><a href="module-stb_component-Component.html#event:focus">focus</a></li><li><a href="module-stb_component-Component.html#event:hide">hide</a></li><li><a href="module-stb_component-Component.html#event:remove">remove</a></li><li><a href="module-stb_component-Component.html#event:show">show</a></li><li><a href="module-stb_model-Model.html#event:change">change</a></li><li><a href="module-stb_model-Model.html#event:clear">clear</a></li><li><a href="module-stb_model-Model.html#event:init">init</a></li><li><a href="module-stb_router.html#event:init">init</a></li><li><a href="module-stb_stack-Stack.html#event:pop">pop</a></li><li><a href="module-stb_stack-Stack.html#event:push">push</a></li><li><a href="module-stb_ui_button-Button.html#event:click">click</a></li><li><a href="module-stb_ui_check.box-CheckBox.html#event:change">change</a></li><li><a href="module-stb_ui_grid-Grid.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_grid-Grid.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_grid-Grid.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_grid-Grid.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:blur:item">blur:item</a></li><li><a href="module-stb_ui_list-List.html#event:click:item">click:item</a></li><li><a href="module-stb_ui_list-List.html#event:cycle">cycle</a></li><li><a href="module-stb_ui_list-List.html#event:overflow">overflow</a></li><li><a href="module-stb_ui_list-List.html#event:focus:item">focus:item</a></li><li><a href="module-stb_ui_list-List.html#event:move:view">move:view</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:change">change</a></li><li><a href="module-stb_ui_progress.bar-ProgressBar.html#event:done">done</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:change">change</a></li><li><a href="module-stb_ui_scroll.bar-ScrollBar.html#event:done">done</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-stb_develop_debug.html">stb/develop/debug</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Fri Apr 17 2015 14:45:54 GMT+0300 (EEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
