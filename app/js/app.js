@@ -262,20 +262,7 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
 });
 
 
-/**
- * The keydown event is fired when a key is pressed down.
- * Set event.stop to true in order to prevent bubbling.
- *
- * Control flow:
- *   1. Current active component on the active page.
- *   2. Current active page itself.
- *   3. Application.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
- *
- * @param {Event} event generated object with event data
- */
-window.addEventListener('keydown', function globalEventListenerKeydown ( event ) {
+function globalEventListenerKeydown ( event ) {
 	var page = router.current;
 
 	if ( DEBUG ) {
@@ -322,10 +309,26 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 	}
 
 	// suppress non-printable keys in stb device (not in your browser)
-	if ( app.data.host && keyCodes[event.code] ) {
+	if ( app.data.host && keyCodes[event.code] && event.preventDefault ) {
 		event.preventDefault();
 	}
-});
+}
+
+
+/**
+ * The keydown event is fired when a key is pressed down.
+ * Set event.stop to true in order to prevent bubbling.
+ *
+ * Control flow:
+ *   1. Current active component on the active page.
+ *   2. Current active page itself.
+ *   3. Application.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
+ *
+ * @param {Event} event generated object with event data
+ */
+window.addEventListener('keydown', globalEventListenerKeydown);
 
 
 /**
@@ -379,12 +382,25 @@ window.addEventListener('click', function globalEventListenerClick ( event ) {
  * @param {Event} event generated object with event data
  */
 window.addEventListener('contextmenu', function globalEventListenerContextmenu ( event ) {
+	var kbEvent = {}; //Object.create(document.createEvent('KeyboardEvent'));
+
 	debug.event(event);
 
-	if ( !DEBUG ) {
-		// disable right click in release mode
-		event.preventDefault();
-	}
+	kbEvent.type    = 'keydown';
+	kbEvent.keyCode = 27;
+
+	//debug.log(kbEvent.type);
+
+	globalEventListenerKeydown(kbEvent);
+	//var event = document.createEvent('KeyboardEvent');
+	//event.initEvent('keydown', true, true);
+
+	//document.dispatchEvent(kbEvent);
+
+	//if ( !DEBUG ) {
+	// disable right click in release mode
+	event.preventDefault();
+	//}
 });
 
 
