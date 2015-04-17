@@ -130,6 +130,7 @@ At runtime the development mode has a set of useful function available via keybo
 
 Illustrations of most approaches and components can be found in the [demo application](https://github.com/DarkPark/stb-demo).
 
+Help files generated from JSDocs comments in framework modules are available [online](http://darkpark.github.io/stb/).
 
 ## Structure
 
@@ -138,7 +139,6 @@ Illustrations of most approaches and components can be found in the [demo applic
  app    | contains all framework JavaScript modules and associated Less files
  bin    | main command-line script available globally
  config | base config files for all servers
- doc    | help files generated from JSDocs comments in framework modules
  lib    | modules required to framework work
  tasks  | gulp tasks to provide all the functionality
  test   | QUnit tests files (units and static)
