@@ -387,7 +387,7 @@ window.addEventListener('contextmenu', function globalEventListenerContextmenu (
 	debug.event(event);
 
 	kbEvent.type    = 'keydown';
-	kbEvent.keyCode = 27;
+	kbEvent.keyCode = 8;
 
 	//debug.log(kbEvent.type);
 
