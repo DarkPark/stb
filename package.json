@@ -33,7 +33,7 @@
 		"pretty-hrtime": "^1.0.0",
 		"requirem": "^0.7.5",
 		"ssh2": "^0.4.1",
-		"tty-colors": "^0.0.4",
+		"tty-colors": "^0.0.5",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
 		"ws": "^0.7.0"
 	},
