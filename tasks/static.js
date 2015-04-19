@@ -14,7 +14,7 @@ var path  = require('path'),
 	title = 'static  '.inverse;
 
 
-gulp.task('static', function () {
+gulp.task('static', function ( done ) {
 	var config = require(path.join(process.env.CWD, 'config', 'static')),
 		files, msInit;
 
@@ -58,6 +58,8 @@ gulp.task('static', function () {
 			log(title, hash);
 			log(title, msg.green);
 			log(title, hash);
+
+			done();
 		});
 
 		if ( config.livereload ) {
