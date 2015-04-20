@@ -28,7 +28,8 @@ gulp.task('static', function ( done ) {
 				// static files
 				files.serve(request, response, function serve ( e ) {
 					var msCurr  = +new Date(),
-						address = request.connection.remoteAddress,
+						address = request.connection.remoteAddress || '[0.0.0.0]'.red,
+						status  = response.statusCode === 200 ? response.statusCode.toString().green : response.statusCode.toString().yellow,
 						msDiff;
 
 					if ( e ) {
@@ -42,8 +43,8 @@ gulp.task('static', function ( done ) {
 						log(title, [
 							'',
 							msDiff,
-							address ? (address === '127.0.0.1' ? address : address.cyan) : '[0.0.0.0]'.red,
-							e ? e.status.red : (response.statusCode === 200 ? response.statusCode.toString().green : response.statusCode.toString().yellow),
+							address,
+							e ? e.status.red : status,
 							request.method.grey,
 							request.url.replace(/\//g, '/'.grey)
 						].join('\t'));
