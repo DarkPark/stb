@@ -29,8 +29,6 @@ var dom = {};
  * dom.tag('link', {rel:'stylesheet', type:'text/css', href:'http://some.url/'});
  */
 dom.tag = function ( tagName, attrList, content ) {
-	/* jshint unused:vars */
-
 	var node = null,
 		i, name;
 
@@ -41,7 +39,6 @@ dom.tag = function ( tagName, attrList, content ) {
 
 		// optional attribute list is given
 		if ( attrList && typeof attrList === 'object' ) {
-			/* jshint forin:false */
 			for ( name in attrList ) {
 				// extend a new node with the given attributes
 				node[name] = attrList[name];
@@ -117,8 +114,6 @@ dom.fragment = function ( node ) {
  * add(some_div, div1, 'hello', 'world');
  */
 dom.add = function ( tagDst, content ) {
-	/* jshint unused:vars */
-
 	var i;
 
 	// valid HTML tag as the destination
@@ -153,8 +148,6 @@ dom.add = function ( tagDst, content ) {
  * dom.remove(div1, div2, div3);
  */
 dom.remove = function ( nodes ) {
-	/* jshint unused:vars */
-
 	var count = 0,  // amount of successfully removed nodes
 		i;
 
