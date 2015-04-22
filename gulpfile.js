@@ -87,7 +87,4 @@ gulp.task('jsdoc', function ( done ) {
 gulp.task('default', ['webpack', 'jsdoc'], function () {
 	gulp.watch(['./app/js/**/*.js', './tests/units/**/*.js'], ['webpack']);
 	gulp.watch(['./app/js/**/*.js'], ['jsdoc']);
-
-	// manage gulp from command line
-	//require('gulp-runtime').setPrompt('');
 });
