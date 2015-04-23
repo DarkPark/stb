@@ -53,11 +53,14 @@ gulp.task('static', function ( done ) {
 			}).resume();
 		}).listen(config.port).on('listening', function eventListenerListening () {
 			var ip   = require('ip').address(),
-				msg  = 'Serve directory ' + path.join(process.env.CWD, 'build') + ' at ' + 'http://' + ip + ':' + config.port + '/',
-				hash = new Array(msg.length + 1).join('#');
+				msg  = 'Serve build directory ' + path.join(process.env.CWD, 'build'),
+				hash = new Array(msg.length + 1).join('-');
 
 			log(title, hash);
-			log(title, msg.green);
+			log(title, msg.bold);
+			log(title, 'release: ' + ('http://' + ip + ':' + config.port + '/release/').green);
+			log(title, 'develop: ' + ('http://' + ip + ':' + config.port + '/develop/').green);
+			log(title, 'weinre:  ' + ('http://' + ip + ':' + require(path.join(process.env.CWD, 'config', 'weinre')).port + '/client/').green);
 			log(title, hash);
 
 			done();
