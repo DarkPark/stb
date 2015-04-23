@@ -1,8 +1,9 @@
 STB single page application framework
 =====================================
 
-[![Dependency Status](https://david-dm.org/darkpark/stb.svg)](https://david-dm.org/darkpark/stb)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/DarkPark/stb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![NPM version](https://img.shields.io/npm/v/stb.svg?style=flat-square)](https://david-dm.org/darkpark/stb)
+[![Dependencies Status](https://img.shields.io/david/darkpark/stb.svg?style=flat-square)](https://david-dm.org/darkpark/stb)
+[![Gitter](https://img.shields.io/badge/gitter-join%20chat-blue.svg?style=flat-square)](https://gitter.im/DarkPark/stb)
 
 Provides development environment and base components in a form of [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) modules
 for [set-top box](http://en.wikipedia.org/wiki/Set-top_box) software production.
