@@ -11,7 +11,7 @@
 var data = require('stb/app').data;
 
 
-// public export
+// public
 module.exports = {
 	get: function ( name ) {
 		var value;

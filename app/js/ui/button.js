@@ -99,5 +99,5 @@ Button.prototype = Object.create(Component.prototype);
 Button.prototype.constructor = Button;
 
 
-// public export
+// public
 module.exports = Button;

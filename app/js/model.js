@@ -340,5 +340,5 @@ Model.prototype.unset = function ( name ) {
 //};
 
 
-// public export
+// public
 module.exports = Model;

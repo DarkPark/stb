@@ -14,7 +14,7 @@ var path  = require('path'),
 	title = 'static  '.inverse;
 
 
-gulp.task('static', function () {
+gulp.task('static', function ( done ) {
 	var config = require(path.join(process.env.CWD, 'config', 'static')),
 		files, msInit;
 
@@ -28,7 +28,8 @@ gulp.task('static', function () {
 				// static files
 				files.serve(request, response, function serve ( e ) {
 					var msCurr  = +new Date(),
-						address = request.connection.remoteAddress,
+						address = request.connection.remoteAddress || '[0.0.0.0]'.red,
+						status  = response.statusCode === 200 ? response.statusCode.toString().green : response.statusCode.toString().yellow,
 						msDiff;
 
 					if ( e ) {
@@ -42,8 +43,8 @@ gulp.task('static', function () {
 						log(title, [
 							'',
 							msDiff,
-							address ? (address === '127.0.0.1' ? address : address.cyan) : '[0.0.0.0]'.red,
-							e ? e.status.red : (response.statusCode === 200 ? response.statusCode.toString().green : response.statusCode.toString().yellow),
+							address,
+							e ? e.status.red : status,
 							request.method.grey,
 							request.url.replace(/\//g, '/'.grey)
 						].join('\t'));
@@ -52,12 +53,17 @@ gulp.task('static', function () {
 			}).resume();
 		}).listen(config.port).on('listening', function eventListenerListening () {
 			var ip   = require('ip').address(),
-				msg  = 'Serve directory ' + path.join(process.env.CWD, 'build') + ' at ' + 'http://' + ip + ':' + config.port + '/',
-				hash = new Array(msg.length + 1).join('#');
+				msg  = 'Serve build directory ' + path.join(process.env.CWD, 'build'),
+				hash = new Array(msg.length + 1).join('-');
 
 			log(title, hash);
-			log(title, msg.green);
+			log(title, msg.bold);
+			log(title, 'release: ' + ('http://' + ip + ':' + config.port + '/release/').green);
+			log(title, 'develop: ' + ('http://' + ip + ':' + config.port + '/develop/').green);
+			log(title, 'weinre:  ' + ('http://' + ip + ':' + require(path.join(process.env.CWD, 'config', 'weinre')).port + '/client/').green);
 			log(title, hash);
+
+			done();
 		});
 
 		if ( config.livereload ) {

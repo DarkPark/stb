@@ -34,12 +34,14 @@ var Component = require('../component'),
  * @constructor
  * @extends Component
  *
- * @param {Object}   [config={}] init parameters (all inherited from the parent)
- * @param {Array}    [config.data=[]] component data to visualize
- * @param {function} [config.render] method to build each grid cell content
- * @param {function} [config.navigate] method to move focus according to pressed keys
- * @param {number}   [config.size=5] amount of visible items on a page
- * @param {boolean}  [config.cycle=true] allow or not to jump to the opposite side of a list when there is nowhere to go next
+ * @param {Object}   [config={}]          init parameters (all inherited from the parent)
+ * @param {Array}    [config.data=[]]     component data to visualize
+ * @param {function} [config.render]      method to build each grid cell content
+ * @param {function} [config.navigate]    method to move focus according to pressed keys
+ * @param {number}   [config.size=5]      amount of visible items on a page
+ * @param {number}   [config.viewIndex=0] move view window to this position on init
+ * @param {number}   [config.focusIndex]  list item index to make item focused (move view window to this position)
+ * @param {boolean}  [config.cycle=true]  allow or not to jump to the opposite side of a list when there is nowhere to go next
  * @param {boolean}  [config.scroll=null] associated ScrollBar component link
  *
  * @fires module:stb/ui/list~List#click:item
@@ -60,7 +62,7 @@ function List ( config ) {
 	 *
 	 * @type {number}
 	 */
-	this.indexView = null;
+	this.viewIndex = null;
 
 	/**
 	 * Component data to visualize.
@@ -270,7 +272,7 @@ List.prototype.init = function ( config ) {
 		 *
 		 * @fires module:stb/ui/list~List#click:item
 		 */
-		onClick  = function ( event ) {
+		onClick = function ( event ) {
 			if ( this.data !== undefined ) {
 				self.focusItem(this);
 
@@ -341,7 +343,28 @@ List.prototype.init = function ( config ) {
 		}
 	}
 
-	this.renderView(0);
+	// view window position
+	if ( config.viewIndex !== undefined ) {
+		if ( DEBUG ) {
+			if ( Number(config.viewIndex) !== config.viewIndex ) { throw 'config.viewIndex must be a number'; }
+			if ( config.viewIndex < 0 ) { throw 'config.viewIndex should be positive'; }
+		}
+	}
+
+	// set focus item
+	if ( config.focusIndex !== undefined ) {
+		if ( DEBUG ) {
+			if ( Number(config.focusIndex) !== config.focusIndex ) { throw 'config.focusIndex must be a number'; }
+			if ( config.focusIndex < 0 ) { throw 'config.focusIndex should be positive'; }
+			if ( config.focusIndex > this.data.length - 1 ) { throw 'config.focusIndex should be less than data size'; }
+		}
+
+		// jump to the necessary item
+		this.focusIndex(config.focusIndex);
+	} else {
+		// go to the first page
+		this.renderView(config.viewIndex || 0);
+	}
 };
 
 
@@ -376,11 +399,11 @@ List.prototype.renderView = function ( index ) {
 	}
 
 	// has the view window position changed
-	if ( this.indexView !== index ) {
+	if ( this.viewIndex !== index ) {
 		// save for emit
-		prevIndex = this.indexView;
+		prevIndex = this.viewIndex;
 		// sync global pointer
-		this.indexView = currIndex = index;
+		this.viewIndex = currIndex = index;
 
 		// rebuild all visible items
 		for ( i = 0; i < this.size; i++ ) {
@@ -417,7 +440,7 @@ List.prototype.renderView = function ( index ) {
 
 		// update a linked scroll component
 		if ( this.scroll ) {
-			this.scroll.scrollTo(this.indexView);
+			this.scroll.scrollTo(this.viewIndex);
 		}
 
 		// full rebuild
@@ -458,23 +481,6 @@ List.prototype.renderView = function ( index ) {
  * @fires module:stb/ui/list~List#overflow
  */
 List.prototype.move = function ( direction ) {
-	//switch ( direction ) {
-	//	case keys.up:
-	//
-	//		break;
-	//	case keys.down:
-	//
-	//		break;
-	//	case keys.right:
-	//
-	//		break;
-	//	case keys.left:
-	//
-	//		break;
-	//}
-	//
-	//return;
-
 	if ( DEBUG ) {
 		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
 		if ( Number(direction) !== direction ) { throw 'direction must be a number'; }
@@ -484,7 +490,7 @@ List.prototype.move = function ( direction ) {
 		// still can go backward
 		if ( this.$focusItem && this.$focusItem.index > 0 ) {
 			if ( this.$focusItem === this.$body.firstChild ) {
-				this.renderView(this.indexView - 1);
+				this.renderView(this.viewIndex - 1);
 			} else {
 				this.focusItem(this.$focusItem.previousSibling);
 			}
@@ -512,7 +518,7 @@ List.prototype.move = function ( direction ) {
 		// still can go forward
 		if ( this.$focusItem && this.$focusItem.index < this.data.length - 1 ) {
 			if ( this.$focusItem === this.$body.lastChild ) {
-				this.renderView(this.indexView + 1);
+				this.renderView(this.viewIndex + 1);
 			} else {
 				this.focusItem(this.$focusItem.nextSibling);
 			}
@@ -539,12 +545,12 @@ List.prototype.move = function ( direction ) {
 
 	if ( direction === keys.pageUp ) {
 		// determine jump size
-		if ( this.indexView < this.size ) {
+		if ( this.viewIndex < this.size ) {
 			// first page
 			this.renderView(0);
 		} else {
 			// second page and further
-			this.renderView(this.indexView - this.size + 1);
+			this.renderView(this.viewIndex - this.size + 1);
 		}
 
 		this.focusItem(this.$body.firstChild);
@@ -554,12 +560,12 @@ List.prototype.move = function ( direction ) {
 		// data is bigger then one page
 		if ( this.data.length > this.size ) {
 			// determine jump size
-			if ( this.indexView > this.data.length - this.size * 2 ) {
+			if ( this.viewIndex > this.data.length - this.size * 2 ) {
 				// last page
 				this.renderView(this.data.length - this.size);
 			} else {
 				// before the last page
-				this.renderView(this.indexView + this.size - 1);
+				this.renderView(this.viewIndex + this.size - 1);
 			}
 			this.focusItem(this.$body.lastChild);
 		} else {
@@ -664,6 +670,44 @@ List.prototype.focusItem = function ( $item ) {
 
 
 /**
+ * Set the given item focused by item index.
+ *
+ * @param {number} index item data index
+ */
+List.prototype.focusIndex = function ( index ) {
+	var viewIndex = this.viewIndex || 0;
+
+	if ( DEBUG ) {
+		if ( Number(index) !== index ) { throw 'index must be a number'; }
+		if ( index < 0 ) { throw 'index should be positive'; }
+		if ( index > this.data.length - 1 ) { throw 'index should be less than data size'; }
+	}
+
+	// determine direction
+	if ( index >= viewIndex + this.size ) {
+		// check range
+		index = index < this.data.length - 1 ? index : this.data.length - 1;
+		// move down
+		this.renderView(index - this.size + 1);
+		this.focusItem(this.$body.lastChild);
+	} else if ( index < viewIndex ) {
+		// check range
+		index = index > 0 ? index : 0;
+		// move up
+		this.renderView(index);
+		this.focusItem(this.$body.firstChild);
+	} else {
+		// no move
+		if ( this.viewIndex === null ) {
+			// first attempt
+			this.renderView(0);
+		}
+		this.focusItem(this.$body.children[index - viewIndex]);
+	}
+};
+
+
+/**
  * Set item state and appearance as marked.
  *
  * @param {Node|Element} $item element to focus
@@ -689,5 +733,5 @@ List.prototype.markItem = function ( $item, state ) {
 };
 
 
-// public export
+// public
 module.exports = List;

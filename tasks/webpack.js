@@ -33,9 +33,7 @@ gulp.task('webpack:develop', function () {
 		.src(process.env.STB + '/app/js/develop/main.js')
 		.pipe(plumber())
 		.pipe(webpack({
-			//entry: 'develop/main.js',
 			output: {
-				//path: './build/develop/',
 				filename: 'app.js',
 				pathinfo: true,
 				sourcePrefix: '\t\t\t'
@@ -60,8 +58,6 @@ gulp.task('webpack:develop', function () {
 			},
 			debug: true,
 			cache: false,
-			//watch: true,
-			//watchDelay: 300,
 			plugins: [
 				// fix compilation persistence
 				new webpack.webpack.optimize.OccurenceOrderPlugin(true),
@@ -85,7 +81,6 @@ gulp.task('webpack:release', function () {
 		.pipe(plumber())
 		.pipe(webpack({
 			output: {
-				//path: './build/release/',
 				filename: 'app.js'
 			},
 			resolve: {

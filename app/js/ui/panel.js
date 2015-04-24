@@ -56,5 +56,5 @@ Panel.prototype = Object.create(Component.prototype);
 Panel.prototype.constructor = Panel;
 
 
-// public export
+// public
 module.exports = Panel;

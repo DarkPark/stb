@@ -133,5 +133,5 @@ Stack.prototype.pop = function () {
 };
 
 
-// public export
+// public
 module.exports = Stack;

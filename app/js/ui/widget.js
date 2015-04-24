@@ -53,5 +53,5 @@ Widget.prototype = Object.create(Component.prototype);
 Widget.prototype.constructor = Widget;
 
 
-// public export
+// public
 module.exports = Widget;

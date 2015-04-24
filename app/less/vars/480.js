@@ -8,7 +8,7 @@
 
 'use strict';
 
-// public export
+// public
 module.exports = {
 	buttonHeight:   30,
 	buttonPaddingX: 7,

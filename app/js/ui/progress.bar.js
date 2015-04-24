@@ -209,5 +209,5 @@ ProgressBar.prototype.init = function ( config ) {
 };
 
 
-// public export
+// public
 module.exports = ProgressBar;

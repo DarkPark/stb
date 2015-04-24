@@ -36,7 +36,7 @@ gulp.task('jade:develop', function () {
 		.src('./app/jade/main.jade')
 		.pipe(plumber())
 		.pipe(jade({
-			pretty: true,
+			pretty: '\t',
 			locals: {
 				develop: true,
 				title  : 'develop :: ' + pkgInfo.name,
@@ -55,7 +55,7 @@ gulp.task('jade:release', function () {
 		.src('./app/jade/main.jade')
 		.pipe(plumber())
 		.pipe(jade({
-			pretty: false,
+			pretty: '\t',
 			locals: {
 				develop: false,
 				title  : 'release :: ' + pkgInfo.name,

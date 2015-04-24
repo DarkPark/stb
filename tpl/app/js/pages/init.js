@@ -12,5 +12,5 @@ var id   = 'pageInit',
 	page = new Page({$node: document.getElementById(id)});
 
 
-// public export
+// public
 module.exports = page;

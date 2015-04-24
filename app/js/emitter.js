@@ -226,5 +226,5 @@ Emitter.prototype = {
 };
 
 
-// public export
+// public
 module.exports = Emitter;

@@ -7,7 +7,7 @@
 
 'use strict';
 
-// public export
+// public
 module.exports = {
 	480 : {
 		// screen base dimension

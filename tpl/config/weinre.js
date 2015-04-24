@@ -7,7 +7,7 @@
 
 'use strict';
 
-// public export
+// public
 module.exports = {
 	// turn on/off server
 	active: true,
