@@ -12,6 +12,10 @@ var host   = require('stb/app').data.host,
 	config = require('cfg/logger'),
 	util   = require('util'),
 	buffer = [],
+	/**
+	 * Storage for timers (time, timeEnd).
+	 */
+	timeCounters = {},
 	socket;
 
 
@@ -222,5 +226,76 @@ module.exports = window.debug = {
 		if ( typeof cb === 'function' ) {
 			cb();
 		}
+	},
+
+
+	/**
+	 * Start specific timer.
+	 * Use to calculate time of some actions.
+	 *
+	 * @param {string} name timer name
+	 *
+	 * @example
+	 * debug.time('function1');
+	 * // some processing...
+	 * debug.timeEnd('function1');
+	 * // print time execution, like 'function1: 934ms'
+	 */
+	time: function ( name ) {
+		var time, key;
+
+		if ( host ) {
+			if ( !name ) {
+				return;
+			}
+
+			time = new Date().getTime();
+
+			key = 'KEY:' + name;
+
+			timeCounters[key] = time;
+		} else {
+			console.time(name);
+		}
+	},
+
+
+	/**
+	 * End specific timer.
+	 * Use to calculate time of some actions.
+	 *
+	 * @param {string} name timer name
+	 *
+	 * @example
+	 * debug.time('function1');
+	 * // some processing...
+	 * debug.timeEnd('function1');
+	 * // print time execution, like 'function1: 934ms'
+	 */
+	timeEnd: function ( name ) {
+		var key, diff, timeCounter;
+
+		if ( host ) {
+			if ( !name ) {
+				return;
+			}
+
+			key = 'KEY:' + name;
+			timeCounter = timeCounters[key];
+
+			if ( timeCounter ) {
+				diff = +new Date() - timeCounter;
+				timeCounters[key] = null;
+				diff += 'ms';
+				log(name + ':\t' + diff.bgBlue);
+			} else {
+				throw 'no started timer for "' + name + '"';
+			}
+
+			return diff;
+		} else {
+			console.timeEnd(name);
+		}
 	}
+
 };
