@@ -440,7 +440,6 @@ List.prototype.renderView = function ( index ) {
 
 		// update a linked scroll component
 		if ( this.scroll ) {
-			console.log(this.viewIndex);
 			this.scroll.scrollTo(this.viewIndex);
 		}
 
