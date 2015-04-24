@@ -309,7 +309,7 @@ function globalEventListenerKeydown ( event ) {
 	}
 
 	// suppress non-printable keys in stb device (not in your browser)
-	if ( app.data.host && keyCodes[event.code] && event.preventDefault ) {
+	if ( app.data.host && keyCodes[event.code] ) {
 		event.preventDefault();
 	}
 }
@@ -382,25 +382,25 @@ window.addEventListener('click', function globalEventListenerClick ( event ) {
  * @param {Event} event generated object with event data
  */
 window.addEventListener('contextmenu', function globalEventListenerContextmenu ( event ) {
-	var kbEvent = {}; //Object.create(document.createEvent('KeyboardEvent'));
+	//var kbEvent = {}; //Object.create(document.createEvent('KeyboardEvent'));
 
 	debug.event(event);
 
-	kbEvent.type    = 'keydown';
-	kbEvent.keyCode = 8;
+	//kbEvent.type    = 'keydown';
+	//kbEvent.keyCode = 8;
 
 	//debug.log(kbEvent.type);
 
-	globalEventListenerKeydown(kbEvent);
+	//globalEventListenerKeydown(kbEvent);
 	//var event = document.createEvent('KeyboardEvent');
 	//event.initEvent('keydown', true, true);
 
 	//document.dispatchEvent(kbEvent);
 
-	//if ( !DEBUG ) {
-	// disable right click in release mode
-	event.preventDefault();
-	//}
+	if ( !DEBUG ) {
+		// disable right click in release mode
+		event.preventDefault();
+	}
 });
 
 
