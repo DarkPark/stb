@@ -118,6 +118,137 @@ app.setScreen = function ( metrics ) {
 	return false;
 };
 
+// define events constants
+
+/**
+ * The player reached the end of the media content or detected a discontinuity of the stream
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_END_OF_FILE = 1;
+
+/**
+ * Information on audio and video tracks of the media content is received. It's now possible to call gSTB.GetAudioPIDs etc.
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_GET_MEDIA_INFO = 2;
+
+/**
+ * Video and/or audio playback has begun
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_PLAYBACK_BEGIN = 4;
+
+/**
+ * Error when opening the content: content not found on the server or connection with the server was rejected
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_CONTENT_ERROR = 5;
+
+/**
+ * Detected DualMono AC-3 sound
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_DUAL_MONO_DETECT = 6;
+
+/**
+ * The decoder has received info about the content and started to play. It's now possible to call gSTB.GetVideoInfo
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_INFO_GET = 7;
+
+/**
+ * Error occurred while loading external subtitles
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_SUBTITLE_LOAD_ERROR = 8;
+
+/**
+ * Found new teletext subtitles in stream
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_SUBTITLE_FIND = 9;
+
+/**
+ * HDMI device has been connected
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_HDMI_CONNECT = 32;
+
+/**
+ * HDMI device has been disconnected
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_HDMI_DISCONNECT = 33;
+
+/**
+ * Recording task has been finished successfully. See Appendix 13. JavaScript API for PVR subsystem
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_RECORD_FINISH_SUCCESSFULL = 34;
+
+/**
+ * Recording task has been finished with error. See Appendix 13. JavaScript API for PVR subsystem
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_RECORD_FINISH_ERROR = 35;
+
+/**
+ * Scanning DVB Channel in progress
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_DVB_SCANING = 40;
+
+/**
+ * Scanning DVB Channel found
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_DVB_FOUND = 41;
+
+/**
+ * DVB Channel EPG update
+ *
+ * @type {number}
+ * @const
+ */
+app.EVENT_DVB_CHANELL_EPG_UPDATE = 42;
+
+/**
+ * DVB antenna power off
+ *
+ * @type {number}
+ * @const
+ */
+app.DVB_ANTENNA_OFF = 43;
+
+
 
 // apply screen size, position and margins
 app.setScreen(require('cfg/metrics')[screen.height]);
