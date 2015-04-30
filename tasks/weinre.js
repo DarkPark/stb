@@ -45,7 +45,7 @@ gulp.task('weinre', function () {
 			});
 		});
 
-		process.on('SIGINT', function() {
+		process.on('SIGINT', function () {
 			weinre.kill();
 			console.log(' weinre exit');
 
