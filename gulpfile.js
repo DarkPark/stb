@@ -12,6 +12,7 @@ var path       = require('path'),
 	plumber    = require('gulp-plumber'),
 	eslint     = require('gulp-eslint'),
 	webpack    = require('gulp-webpack'),
+	log        = require('./lib/log'),
 	report     = require('./lib/report').webpack;
 
 
@@ -29,7 +30,12 @@ gulp.task('lint', function () {
 		])
 		.pipe(plumber())
 		.pipe(eslint())
-		.pipe(eslint.format());
+		.pipe(eslint.format('stylish', function ( result ) {
+			// make nice output
+			result.split('\n').forEach(function ( line ) {
+				log('eslint  '.bgRed, line + ''.reset);
+			});
+		}));
 });
 
 
