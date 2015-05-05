@@ -123,131 +123,130 @@ app.setScreen = function ( metrics ) {
 /**
  * The player reached the end of the media content or detected a discontinuity of the stream
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_END_OF_FILE
+ * @default 1
  */
 app.EVENT_END_OF_FILE = 1;
 
 /**
  * Information on audio and video tracks of the media content is received. It's now possible to call gSTB.GetAudioPIDs etc.
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_GET_MEDIA_INFO
+ * @default 2
  */
 app.EVENT_GET_MEDIA_INFO = 2;
 
 /**
  * Video and/or audio playback has begun
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_PLAYBACK_BEGIN
+ * @default 4
  */
 app.EVENT_PLAYBACK_BEGIN = 4;
 
 /**
  * Error when opening the content: content not found on the server or connection with the server was rejected
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_CONTENT_ERROR
+ * @default 5
  */
 app.EVENT_CONTENT_ERROR = 5;
 
 /**
  * Detected DualMono AC-3 sound
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_DUAL_MONO_DETECT
+ * @default 6
  */
 app.EVENT_DUAL_MONO_DETECT = 6;
 
 /**
  * The decoder has received info about the content and started to play. It's now possible to call gSTB.GetVideoInfo
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_INFO_GET
+ * @default 7
  */
 app.EVENT_INFO_GET = 7;
 
 /**
  * Error occurred while loading external subtitles
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_SUBTITLE_LOAD_ERROR
+ * @default 8
  */
 app.EVENT_SUBTITLE_LOAD_ERROR = 8;
 
 /**
  * Found new teletext subtitles in stream
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_SUBTITLE_FIND
+ * @default 9
  */
 app.EVENT_SUBTITLE_FIND = 9;
 
 /**
  * HDMI device has been connected
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_HDMI_CONNECT
+ * @default 32
  */
 app.EVENT_HDMI_CONNECT = 32;
 
 /**
  * HDMI device has been disconnected
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_HDMI_DISCONNECT
+ * @default 33
  */
 app.EVENT_HDMI_DISCONNECT = 33;
 
 /**
  * Recording task has been finished successfully. See Appendix 13. JavaScript API for PVR subsystem
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_RECORD_FINISH_SUCCESSFULL
+ * @default 34
  */
 app.EVENT_RECORD_FINISH_SUCCESSFULL = 34;
 
 /**
  * Recording task has been finished with error. See Appendix 13. JavaScript API for PVR subsystem
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_RECORD_FINISH_ERROR
+ * @default 35
  */
 app.EVENT_RECORD_FINISH_ERROR = 35;
 
 /**
  * Scanning DVB Channel in progress
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_DVB_SCANING
+ * @default 40
  */
 app.EVENT_DVB_SCANING = 40;
 
 /**
  * Scanning DVB Channel found
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_DVB_FOUND
+ * @default 41
  */
 app.EVENT_DVB_FOUND = 41;
 
 /**
  * DVB Channel EPG update
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_DVB_CHANELL_EPG_UPDATE
+ * @default 42
  */
 app.EVENT_DVB_CHANELL_EPG_UPDATE = 42;
 
 /**
  * DVB antenna power off
  *
- * @type {number}
- * @const
+ * @const {number} EVENT_DVB_ANTENNA_OFF
+ * @default 43
  */
-app.DVB_ANTENNA_OFF = 43;
-
+app.EVENT_DVB_ANTENNA_OFF = 43;
 
 
 // apply screen size, position and margins
@@ -281,6 +280,9 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 
 	// time mark
 	app.data.time.load = event.timeStamp;
+
+	// require device event listener for stb target
+	require('./targets/stb/events');
 
 	// global handler
 	// there are some listeners

@@ -7,15 +7,13 @@
 
 'use strict';
 
-var	Emitter = require('stb/emitter'),
-	app		= require('stb/app'),
-	event;
+var	app		= require('stb/app'),
+	event = {};
 
 /**
  * @instance
  * @type {Emitter}
  */
-event = new Emitter();
 
 
 // Creating stbEvent instance
@@ -37,32 +35,29 @@ window.stbEvent = {};
  * @type object
  * @property {boolean} broadcast message flag
  * @property {string} message received from window
- * @property {object} data recived from window
+ * @property {object} data received from window
  */
-
 
 
 /**
  * Fires stb device media events
  *
- * @param e
- * @fires module:stb/app#media
+ * @param {number} event code
  */
-stbEvent.onEvent = function ( e ) {
-	e = parseInt(e, 10);
-	app.emit('media', {code: e});
+window.stbEvent.onEvent = function ( event ) {
+	app.emit('media', {code: parseInt(event, 10)});
 };
 
 
 /**
  * Fires event on broadcast messages from a window
  *
- * @param windowId
- * @param message
- * @param data
+ * @param {number} windowId that sent message
+ * @param {string} message text
+ * @param {object} data in sent message
  * @fires module:/stb/app#message
  */
-stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
+window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
 	app.emit('message', {
 		broadcast: true,
 		windowId: windowId,
@@ -75,12 +70,12 @@ stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
 /**
  * Fires event on messages from a window
  *
- * @param windowId
- * @param message
- * @param data
+ * @param {number} windowId that sent message
+ * @param {string} message text
+ * @param {object} data in sent message
  * @fires module:/stb/app#message
  */
-stbEvent.onMessage = function ( windowId, message, data ) {
+window.stbEvent.onMessage = function ( windowId, message, data ) {
 	app.emit('message', {
 		broadcast: false,
 		windowId: windowId,
@@ -101,10 +96,10 @@ stbEvent.onMessage = function ( windowId, message, data ) {
 /**
  * Fires device mount state event
  *
- * @param state
+ * @param {boolean} state of mount device
  * @fires module:/stb/app#mount
  */
-stbEvent.onMount = function ( state ) {
+window.stbEvent.onMount = function ( state ) {
 	app.emit('device:mount', {state: state});
 };
 
@@ -120,7 +115,7 @@ stbEvent.onMount = function ( state ) {
  *
  * @fires module:/stb/app#media:available
  */
-stbEvent.onMediaAvailable = function () {
+window.stbEvent.onMediaAvailable = function () {
 	app.emit('media:available');
 };
 
@@ -136,13 +131,12 @@ stbEvent.onMediaAvailable = function () {
 /**
  * FIres new internet connection state event
  *
- * @param state
+ * @param {boolean} state of internet connection
  * @fires module:/stb/app#internet:state
  */
-stbEvent.onNetworkStateChange = function ( state ) {
+window.stbEvent.onNetworkStateChange = function ( state ) {
 	app.emit('internet:state', {state: state});
 };
-
 
 
 /**
@@ -157,11 +151,11 @@ stbEvent.onNetworkStateChange = function ( state ) {
 /**
  * Fires document loading progress changes event
  *
- * @param p
+ * @param {number} progress of document loading
  * fires module:/stb/app#browser:progress
  */
-stbEvent.onWebBrowserProgress = function ( p ) {
-	app.emit('browser:progress', {progress: p});
+window.stbEvent.onWebBrowserProgress = function ( progress ) {
+	app.emit('browser:progress', {progress: progress});
 };
 
 
@@ -177,7 +171,7 @@ stbEvent.onWebBrowserProgress = function ( p ) {
  *
  * fires module:/stb/app#window:focus
  */
-stbEvent.onWindowActivated = function () {
+window.stbEvent.onWindowActivated = function () {
 	app.emit('window:focus');
 };
 
