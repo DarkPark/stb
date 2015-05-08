@@ -511,19 +511,18 @@ Player.prototype.rewind = function ( forward, duration ) {
 	}
 
 	if ( forward ) {
-		if ( this.rewindHelper.startTime + duration < this.totalDurationSec ) {
+		if ( this.rewindHelper.time + duration < this.totalDurationSec ) {
 			this.rewindHelper.time += duration;
 		} else {
 			this.rewindHelper.time = this.totalDurationSec;
 		}
 	} else {
-		if ( this.rewindHelper.startTime - duration > 0 ) {
+		if ( this.rewindHelper.time - duration > 0 ) {
 			this.rewindHelper.time -= duration;
 		} else {
 			this.rewindHelper.time = 0;
 		}
 	}
-
 	if ( this.rewindHelper.timeout ) {
 		clearTimeout(this.rewindHelper.timeout);
 	}
@@ -532,15 +531,22 @@ Player.prototype.rewind = function ( forward, duration ) {
 	// do gSTB.SetPosTime instantly if rewind timeout is not set
 	if ( this.rewindHelper.timeoutDuration ) {
 		this.rewindHelper.timeout = setTimeout(function () {
-			// clear time pars interval
+			// clear time parsing interval
 			clearInterval(self.durationInterval);
 			self.durationInterval = 0;
-
-			gSTB.SetPosTime(self.rewindHelper.time);
-			self.currentSec = self.rewindHelper.time;
-			self.rewindHelper.timeout = 0;
 			self.rewindHelper.isActive = false;
 			self.emit('rewind:apply');
+			self.currentSec = self.rewindHelper.time;
+			self.rewindHelper.timeout = 0;
+
+			// emit end of content instantly without setting position to the end
+			if ( self.rewindHelper.time === self.totalDurationSec ) {
+				self.emit('content:end');
+				return;
+			}
+
+			gSTB.SetPosTime(self.rewindHelper.time);
+
 		}, this.rewindHelper.timeoutDuration);
 	} else {
 		// clear time pars interval
@@ -811,6 +817,11 @@ Player.prototype.inputPosition = function ( code ) {
 	}
 	this.setModeHelper.timeout = setTimeout(function () {
 		self.setModeHelper.active = false;
+
+		// stop listening current position
+		clearInterval(self.durationInterval);
+		self.durationInterval = 0;
+
 		gSTB.SetPosTime(self.setModeHelper.sec);
 		self.emit('position:input', {
 			time: self.setModeHelper.timeStr,
