@@ -127,7 +127,7 @@ function Player ( config ) {
 	 *
 	 * @type {number}
 	 */
-	this.currentSubtitle = 0;
+	this.currentSubtitle = null;
 
 	/**
 	 * Current duration interval id
@@ -169,7 +169,7 @@ function Player ( config ) {
 	// navigation by keyboard
 	this.addListener('keydown', this.control);
 	// media events listening and broadcasting events
-	app.addListener('media', function (event) {
+	app.addListener('media', function ( event ) {
 		Player.prototype.mediaListener.call(self, event);
 	});
 
@@ -215,19 +215,19 @@ Player.prototype.STEREO_MODE_SIDE_BY_SIDE = 3;
 Player.prototype.stereoModes = [
 	{
 		mode: Player.prototype.STEREO_MODE_OFF,
-		text: 'Off'
+		name: 'Off'
 	},
 	{
 		mode: Player.prototype.STEREO_MODE_OVER_UNDER,
-		text: 'Over-Under'
+		name: 'Over-Under'
 	},
 	{
 		mode: Player.prototype.STEREO_MODE_OVER_UNDER_HD,
-		text: 'Over-Under HD'
+		name: 'Over-Under HD'
 	},
 	{
 		mode: Player.prototype.STEREO_MODE_SIDE_BY_SIDE,
-		text: 'Side-by-side'
+		name: 'Side-by-side'
 	}
 ];
 
@@ -298,7 +298,7 @@ Player.prototype.mediaListener = function ( event ) {
 	switch ( event.code ) {
 		case app.EVENT_PLAYBACK_BEGIN :
 			self.isPLaying = true;
-			if (self.durationInterval) {
+			if ( self.durationInterval ) {
 				clearInterval(self.durationInterval);
 				self.durationInterval = 0;
 			}
@@ -337,14 +337,12 @@ Player.prototype.mediaListener = function ( event ) {
 			}
 			// audio PIDs
 			self.currentAudioPID = 0;
-			if ( self.audioPIDs.length > 1 ) {
-				if ( self.audioPIDs[0].lang[0] !== '' ) {
-					info.audioPid = self.audioPIDs[0].lang[0];
-				} else {
-					info.audioPid = undefined;
-				}
+			if ( self.audioPIDs[0].lang[0] !== '' ) {
+				info.audioPid = self.audioPIDs[0].lang[0];
+			} else {
+				info.audioPid = undefined;
 			}
-			self.currentSubtitle = 0;
+			self.currentSubtitle = null;
 			info.subtitles = null;
 			info.stereoMode = {
 				type: gSTB.Get3DConversionMode(),
@@ -534,13 +532,23 @@ Player.prototype.rewind = function ( forward, duration ) {
 	// do gSTB.SetPosTime instantly if rewind timeout is not set
 	if ( this.rewindHelper.timeoutDuration ) {
 		this.rewindHelper.timeout = setTimeout(function () {
+			// clear time pars interval
+			clearInterval(self.durationInterval);
+			self.durationInterval = 0;
+
 			gSTB.SetPosTime(self.rewindHelper.time);
+			self.currentSec = self.rewindHelper.time;
 			self.rewindHelper.timeout = 0;
 			self.rewindHelper.isActive = false;
 			self.emit('rewind:apply');
 		}, this.rewindHelper.timeoutDuration);
 	} else {
+		// clear time pars interval
+		clearInterval(self.durationInterval);
+		self.durationInterval = 0;
+
 		gSTB.SetPosTime(self.rewindHelper.time);
+		self.currentSec = self.rewindHelper.time;
 		self.rewindHelper.isActive = false;
 		self.emit('rewind:apply');
 	}
@@ -599,7 +607,7 @@ Player.prototype.nextAspect = function () {
 
 	gSTB.SetAspect(this.aspects[this.activeAspect].mode);
 	this.emit('aspect:change', {
-		type: this.aspects[this.activeAspect].type,
+		type: this.aspects[this.activeAspect].mode,
 		name: this.aspects[this.activeAspect].name
 	});
 };
@@ -630,22 +638,24 @@ Player.prototype.nextSubtitle = function () {
 		return false;
 	}
 
-	if ( this.currentSubtitle < this.subtitlePIDs.length ) {
+	if ( this.currentSubtitle === null ) {
+		this.currentSubtitle = 0;
+	} else if ( this.currentSubtitle < this.subtitlePIDs.length - 1) {
 		this.currentSubtitle++;
 	} else {
-		this.currentSubtitle = 0;
+		this.currentSubtitle = null;
 	}
 
-	if ( this.currentSubtitle === 0 ) {
-		this.emit('subtitles:change', null);
-		gSTB.SetSubtitles(false);
-	} else {
+	if (this.currentSubtitle !== null) {
+		gSTB.SetSubtitlePID(this.subtitlePIDs[this.currentSubtitle].pid);
+		gSTB.SetSubtitles(true);
 		this.emit('subtitles:change', {
 			lang: this.subtitlePIDs[this.currentSubtitle].lang[0],
 			pid: this.subtitlePIDs[this.currentSubtitle].pid
 		});
-		gSTB.SetSubtitlePID(this.subtitlePIDs[this.currentSubtitle].pid);
-		gSTB.SetSubtitles(true);
+	} else {
+		gSTB.SetSubtitles(false);
+		this.emit('subtitles:change', null);
 	}
 
 	return true;
