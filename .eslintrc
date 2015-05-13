@@ -57,6 +57,7 @@
 		"no-caller": 1,
 		"no-else-return": 1,
 		"no-eval": 1,
+		"no-extend-native": [2, {"exceptions": []}],
 		"no-fallthrough": 1,
 		"no-floating-decimal": 1,
 		"no-implied-eval": 1,
