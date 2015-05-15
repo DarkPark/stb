@@ -16,12 +16,12 @@ var util    = require('util'),
 
 
 gulp.task('webpack:clean:develop', function ( done ) {
-	del(['./build/develop/app.js', './build/develop/app.js.map'], done);
+	del(['./build/develop/' + process.env.target + '/app.js', './build/develop/' + process.env.target + '/app.js.map'], done);
 });
 
 
 gulp.task('webpack:clean:release', function ( done ) {
-	del(['./build/release/app.js'], done);
+	del(['./build/release/' + process.env.target + '/app.js'], done);
 });
 
 
@@ -69,7 +69,7 @@ gulp.task('webpack:develop', function () {
 				})
 			]
 		}, null, report))
-		.pipe(gulp.dest('./build/develop/'));
+		.pipe(gulp.dest('./build/develop/' + process.env.target));
 });
 
 
@@ -128,7 +128,7 @@ gulp.task('webpack:release', function () {
 				))
 			]
 		}, null, report))
-		.pipe(gulp.dest('./build/release/'));
+		.pipe(gulp.dest('./build/release/' + process.env.target));
 });
 
 

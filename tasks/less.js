@@ -26,8 +26,8 @@ var path     = require('path'),
 			relativeUrls     : true,
 			//paths            : [process.env.STB + '/app/less', process.env.CWD + '/app/less'],
 			paths            : ['.'],
-			rootpath         : './build/develop/',
-			outpath          : './build/develop/css/',
+			rootpath         : './build/develop/' + process.env.target,
+			outpath          : './build/develop/' + process.env.target + '/css/',
 			//filename         : process.env.STB + '/app/less/entry.develop.less',
 			filename         : process.env.STB + '/app/less/develop.less',
 			//filename         : [process.env.STB + '/app/less/develop.less', process.env.CWD + '/app/less/main.less'],
@@ -43,8 +43,8 @@ var path     = require('path'),
 			relativeUrls: true,
 			//paths       : [/*process.env.STB, process.env.CWD + '/app/less'*/],
 			paths       : ['.'],
-			rootpath    : './build/release/',
-			outpath     : './build/release/css/',
+			rootpath    : './build/release/' + process.env.target,
+			outpath     : './build/release/' + process.env.target + '/css/',
 			filename    : process.env.STB + '/app/less/main.less',
 			compress    : true,
 			cleancss    : true,
@@ -161,12 +161,12 @@ function build ( mode, done ) {
 
 
 gulp.task('less:clean:develop', function ( done ) {
-	del(['./build/develop/css/*.css', './build/develop/css/*.map'], done);
+	del(['./build/develop/' + process.env.target + '/css/*.css', './build/develop/' + process.env.target + '/css/*.map'], done);
 });
 
 
 gulp.task('less:clean:release', function ( done ) {
-	del(['./build/release/css/*.css', './build/release/css/*.map'], done);
+	del(['./build/release/' + process.env.target + '/css/*.css', './build/release/' + process.env.target + '/css/*.map'], done);
 });
 
 

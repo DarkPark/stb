@@ -13,12 +13,12 @@ var gulp    = require('gulp'),
 
 
 gulp.task('img:clean:develop', function ( done ) {
-	del(['./build/develop/img/**'], done);
+	del(['./build/develop/' + process.env.target + '/img/**'], done);
 });
 
 
 gulp.task('img:clean:release', function ( done ) {
-	del(['./build/release/img/**'], done);
+	del(['./build/release/' + process.env.target + '/img/**'], done);
 });
 
 
@@ -29,7 +29,7 @@ gulp.task('img:develop', ['img:clean:develop'], function () {
 	return gulp
 		.src(['./app/img/**', '!./app/img/**/readme.md'], {base: './app/'})
 		.pipe(plumber())
-		.pipe(gulp.dest('./build/develop/'));
+		.pipe(gulp.dest('./build/develop/' + process.env.target));
 });
 
 
@@ -37,7 +37,7 @@ gulp.task('img:release', ['img:clean:release'], function () {
 	return gulp
 		.src(['./app/img/**', '!./app/img/**/readme.md'], {base: './app/'})
 		.pipe(plumber())
-		.pipe(gulp.dest('./build/release/'));
+		.pipe(gulp.dest('./build/release/' + process.env.target));
 });
 
 
