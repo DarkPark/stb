@@ -26,8 +26,3 @@ app.addListeners({
 		/* router.navigate('pageMain'); */
 	}
 });
-
-
-// new way of string handling
-// all strings are in UTF-16
-//gSTB.SetNativeStringMode(true);

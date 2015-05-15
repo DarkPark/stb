@@ -282,7 +282,7 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	app.data.time.load = event.timeStamp;
 
 	// require device event listener for stb target
-	require('./targets/stb/events');
+	//require('./targets/stb/events');
 
 	// global handler
 	// there are some listeners

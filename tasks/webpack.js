@@ -29,8 +29,10 @@ gulp.task('webpack:clean', ['webpack:clean:develop', 'webpack:clean:release']);
 
 
 gulp.task('webpack:develop', function () {
+	var target = process.env.STB + '/app/js/targets/' + process.env.target + '/main.js';
+
 	return gulp
-		.src(process.env.STB + '/app/js/develop/main.js')
+		.src([target, process.env.STB + '/app/js/develop/main.js'])
 		.pipe(plumber())
 		.pipe(webpack({
 			output: {
@@ -74,10 +76,11 @@ gulp.task('webpack:develop', function () {
 gulp.task('webpack:release', function () {
 	var appInfo = require(process.env.CWD + '/package.json'),
 		stbInfo = require(process.env.STB + '/package.json'),
-		wpkInfo = require(process.env.STB + '/node_modules/gulp-webpack/node_modules/webpack/package.json');
+		wpkInfo = require(process.env.STB + '/node_modules/gulp-webpack/node_modules/webpack/package.json'),
+		target  = process.env.STB + '/app/js/targets/' + process.env.target + '/main.js';
 
 	return gulp
-		.src('./app/js/main.js')
+		.src([target, './app/js/main.js'])
 		.pipe(plumber())
 		.pipe(webpack({
 			output: {
