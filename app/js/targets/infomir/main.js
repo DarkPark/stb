@@ -11,7 +11,7 @@
 // new way of string handling
 // all strings are in UTF-16
 // since stbapp 2.18
-if ( gSTB && gSTB.SetNativeStringMode ) {
+if ( window.gSTB && gSTB.SetNativeStringMode ) {
 	gSTB.SetNativeStringMode(true);
 }
 
