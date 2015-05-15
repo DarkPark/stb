@@ -10,7 +10,10 @@
 
 // new way of string handling
 // all strings are in UTF-16
-gSTB.SetNativeStringMode(true);
+// since stbapp 2.18
+if ( gSTB && gSTB.SetNativeStringMode ) {
+	gSTB.SetNativeStringMode(true);
+}
 
 // apply wrappers
 window.addEventListener('load', function onload () {
