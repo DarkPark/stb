@@ -490,11 +490,12 @@ Component.prototype.blur = function () {
 /**
  * Make the component visible and notify subscribers.
  *
+ * @param {mixed} data custom data which passed into handlers
  * @return {boolean} operation status
  *
  * @fires module:stb/component~Component#show
  */
-Component.prototype.show = function () {
+Component.prototype.show = function ( data ) {
 	// is it hidden
 	if ( !this.visible ) {
 		// correct style
@@ -509,7 +510,7 @@ Component.prototype.show = function () {
 			 *
 			 * @event module:stb/component~Component#show
 			 */
-			this.emit('show');
+			this.emit('show', data);
 		}
 
 		return true;
