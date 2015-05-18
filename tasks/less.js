@@ -16,10 +16,19 @@ var path     = require('path'),
 	fs       = require('fs'),
 	log      = require('../lib/log'),
 	requirem = require('requirem'),
+	mkdirp   = require('mkdirp'),
 	del      = require('del'),
 	title    = 'less    '.inverse,
 
+	// main less options
+	defaults = {},
 
+	// config for all modes
+	// with all dimensions
+	options = {};
+
+
+function prepare () {
 	// main less options
 	defaults = {
 		develop: {
@@ -51,13 +60,8 @@ var path     = require('path'),
 			ieCompat    : false,
 			sourceMap   : false
 		}
-	},
-	// config for all modes
-	// with all dimensions
-	options = {};
+	};
 
-
-function prepare () {
 	// prepare options sets for all dimensions
 	Object.keys(defaults).forEach(function ( mode ) {
 		var metrics = requirem(process.env.CWD + '/config/metrics.js', {reload: true});
@@ -175,12 +179,14 @@ gulp.task('less:clean', ['less:clean:develop', 'less:clean:release']);
 
 gulp.task('less:develop', function ( done ) {
 	prepare();
+	mkdirp.sync('./build/develop/' + process.env.target + '/css');
 	build('develop', done);
 });
 
 
 gulp.task('less:release', function ( done ) {
 	prepare();
+	mkdirp.sync('./build/release/' + process.env.target + '/css');
 	build('release', done);
 });
 
