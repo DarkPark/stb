@@ -27,6 +27,7 @@
 		"ip": "^0.3.2",
 		"jsdoc": "3.3.0",
 		"less": "^2.5.0",
+		"mkdirp": "^0.5.1",
 		"node-static": "^0.7.6",
 		"open": "^0.0.5",
 		"pretty-hrtime": "^1.0.0",
@@ -34,7 +35,7 @@
 		"ssh2": "^0.4.8",
 		"tty-colors": "^0.0.6",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
-		"ws": "^0.7.1"
+		"ws": "^0.7.2"
 	},
 	"keywords": [
 		"stb",
