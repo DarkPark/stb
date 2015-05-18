@@ -490,7 +490,7 @@ Component.prototype.blur = function () {
 /**
  * Make the component visible and notify subscribers.
  *
- * @param {mixed} data custom data which passed into handlers
+ * @param {object} data custom data which passed into handlers
  * @return {boolean} operation status
  *
  * @fires module:stb/component~Component#show
