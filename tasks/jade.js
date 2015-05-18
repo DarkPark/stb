@@ -17,12 +17,12 @@ var path    = require('path'),
 
 
 gulp.task('jade:clean:develop', function ( done ) {
-	del('./build/develop/index.html', done);
+	del('./build/develop/' + process.env.target + '/index.html', done);
 });
 
 
 gulp.task('jade:clean:release', function ( done ) {
-	del('./build/release/index.html', done);
+	del('./build/release/' + process.env.target + '/index.html', done);
 });
 
 
@@ -36,7 +36,7 @@ gulp.task('jade:develop', function () {
 		.src('./app/jade/main.jade')
 		.pipe(plumber())
 		.pipe(jade({
-			pretty: true,
+			pretty: '\t',
 			locals: {
 				develop: true,
 				title  : 'develop :: ' + pkgInfo.name,
@@ -44,7 +44,7 @@ gulp.task('jade:develop', function () {
 			}
 		}))
 		.pipe(rename('index.html'))
-		.pipe(gulp.dest('./build/develop/'));
+		.pipe(gulp.dest('./build/develop/' + process.env.target));
 });
 
 
@@ -55,7 +55,7 @@ gulp.task('jade:release', function () {
 		.src('./app/jade/main.jade')
 		.pipe(plumber())
 		.pipe(jade({
-			pretty: false,
+			pretty: '\t',
 			locals: {
 				develop: false,
 				title  : 'release :: ' + pkgInfo.name,
@@ -63,7 +63,7 @@ gulp.task('jade:release', function () {
 			}
 		}))
 		.pipe(rename('index.html'))
-		.pipe(gulp.dest('./build/release/'));
+		.pipe(gulp.dest('./build/release/' + process.env.target));
 });
 
 

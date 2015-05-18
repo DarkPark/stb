@@ -11,7 +11,6 @@
 var util = require('util'),
 	path = require('path'),
 	gulp = require('gulp');
-	//log  = require('../lib/log');
 
 
 gulp.task('develop', [
@@ -35,17 +34,6 @@ gulp.task('release', ['lint', 'img:release', 'jade:release', 'less:release', 'we
 // build everything and open main entry page
 gulp.task('serve', ['develop', 'release'], function () {
 	var command = require('../lib/cli/program').currCommnand;
-
-	// manage gulp from command line
-	//var runtime = require('gulp-runtime');
-	//runtime.setPrompt('');
-    //
-	//// runtime reload of changed tasks
-	//gulp.watch([__filename, './tasks/**/*.js'], function ( file ) {
-	//	// clear cache
-	//	runtime.require(file.path, {reload: true});
-	//	log('runtime:', gutil.colors.green('reloaded ') + file.path);
-	//});
 
 	// popup browser if not prevented
 	if ( command.open !== false ) {

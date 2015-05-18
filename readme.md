@@ -1,8 +1,9 @@
 STB single page application framework
 =====================================
 
-[![Dependency Status](https://david-dm.org/darkpark/stb.svg)](https://david-dm.org/darkpark/stb)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/DarkPark/stb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![NPM version](https://img.shields.io/npm/v/stb.svg?style=flat-square)](https://www.npmjs.com/package/stb)
+[![Dependencies Status](https://img.shields.io/david/darkpark/stb.svg?style=flat-square)](https://david-dm.org/darkpark/stb)
+[![Gitter](https://img.shields.io/badge/gitter-join%20chat-blue.svg?style=flat-square)](https://gitter.im/DarkPark/stb)
 
 Provides development environment and base components in a form of [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) modules
 for [set-top box](http://en.wikipedia.org/wiki/Set-top_box) software production.
@@ -130,6 +131,7 @@ At runtime the development mode has a set of useful function available via keybo
 
 Illustrations of most approaches and components can be found in the [demo application](https://github.com/DarkPark/stb-demo).
 
+Help files generated from JSDocs comments in framework modules are available [online](http://darkpark.github.io/stb/).
 
 ## Structure
 
@@ -138,7 +140,6 @@ Illustrations of most approaches and components can be found in the [demo applic
  app    | contains all framework JavaScript modules and associated Less files
  bin    | main command-line script available globally
  config | base config files for all servers
- doc    | help files generated from JSDocs comments in framework modules
  lib    | modules required to framework work
  tasks  | gulp tasks to provide all the functionality
  test   | QUnit tests files (units and static)

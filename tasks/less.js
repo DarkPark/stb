@@ -16,18 +16,27 @@ var path     = require('path'),
 	fs       = require('fs'),
 	log      = require('../lib/log'),
 	requirem = require('requirem'),
+	mkdirp   = require('mkdirp'),
 	del      = require('del'),
 	title    = 'less    '.inverse,
 
+	// main less options
+	defaults = {},
 
+	// config for all modes
+	// with all dimensions
+	options = {};
+
+
+function prepare () {
 	// main less options
 	defaults = {
 		develop: {
 			relativeUrls     : true,
 			//paths            : [process.env.STB + '/app/less', process.env.CWD + '/app/less'],
 			paths            : ['.'],
-			rootpath         : './build/develop/',
-			outpath          : './build/develop/css/',
+			rootpath         : './build/develop/' + process.env.target,
+			outpath          : './build/develop/' + process.env.target + '/css/',
 			//filename         : process.env.STB + '/app/less/entry.develop.less',
 			filename         : process.env.STB + '/app/less/develop.less',
 			//filename         : [process.env.STB + '/app/less/develop.less', process.env.CWD + '/app/less/main.less'],
@@ -43,21 +52,16 @@ var path     = require('path'),
 			relativeUrls: true,
 			//paths       : [/*process.env.STB, process.env.CWD + '/app/less'*/],
 			paths       : ['.'],
-			rootpath    : './build/release/',
-			outpath     : './build/release/css/',
+			rootpath    : './build/release/' + process.env.target,
+			outpath     : './build/release/' + process.env.target + '/css/',
 			filename    : process.env.STB + '/app/less/main.less',
 			compress    : true,
 			cleancss    : true,
 			ieCompat    : false,
 			sourceMap   : false
 		}
-	},
-	// config for all modes
-	// with all dimensions
-	options = {};
+	};
 
-
-function prepare () {
 	// prepare options sets for all dimensions
 	Object.keys(defaults).forEach(function ( mode ) {
 		var metrics = requirem(process.env.CWD + '/config/metrics.js', {reload: true});
@@ -161,12 +165,12 @@ function build ( mode, done ) {
 
 
 gulp.task('less:clean:develop', function ( done ) {
-	del(['./build/develop/css/*.css', './build/develop/css/*.map'], done);
+	del(['./build/develop/' + process.env.target + '/css/*.css', './build/develop/' + process.env.target + '/css/*.map'], done);
 });
 
 
 gulp.task('less:clean:release', function ( done ) {
-	del(['./build/release/css/*.css', './build/release/css/*.map'], done);
+	del(['./build/release/' + process.env.target + '/css/*.css', './build/release/' + process.env.target + '/css/*.map'], done);
 });
 
 
@@ -175,12 +179,14 @@ gulp.task('less:clean', ['less:clean:develop', 'less:clean:release']);
 
 gulp.task('less:develop', function ( done ) {
 	prepare();
+	mkdirp.sync('./build/develop/' + process.env.target + '/css');
 	build('develop', done);
 });
 
 
 gulp.task('less:release', function ( done ) {
 	prepare();
+	mkdirp.sync('./build/release/' + process.env.target + '/css');
 	build('release', done);
 });
 

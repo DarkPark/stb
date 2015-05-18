@@ -12,6 +12,7 @@ var path       = require('path'),
 	plumber    = require('gulp-plumber'),
 	eslint     = require('gulp-eslint'),
 	webpack    = require('gulp-webpack'),
+	log        = require('./lib/log'),
 	report     = require('./lib/report').webpack;
 
 
@@ -29,7 +30,12 @@ gulp.task('lint', function () {
 		])
 		.pipe(plumber())
 		.pipe(eslint())
-		.pipe(eslint.format());
+		.pipe(eslint.format('stylish', function ( result ) {
+			// make nice output
+			result.split('\n').forEach(function ( line ) {
+				log('eslint  '.bgRed, line + ''.reset);
+			});
+		}));
 });
 
 
@@ -66,7 +72,7 @@ gulp.task('jsdoc', function ( done ) {
 	// run process
 	var child = require('child_process').spawn(
 		'./node_modules/.bin/jsdoc',
-		['--recurse', '--configure', 'jsdoc.json', '--destination', 'doc/', 'app/js/', 'readme.md']
+		['--recurse', '--configure', 'jsdoc.json', '--destination', '../stb-pages/', 'app/js/', 'readme.md']
 	);
 
 	child.on('close', done);
@@ -87,7 +93,4 @@ gulp.task('jsdoc', function ( done ) {
 gulp.task('default', ['webpack', 'jsdoc'], function () {
 	gulp.watch(['./app/js/**/*.js', './tests/units/**/*.js'], ['webpack']);
 	gulp.watch(['./app/js/**/*.js'], ['jsdoc']);
-
-	// manage gulp from command line
-	//require('gulp-runtime').setPrompt('');
 });

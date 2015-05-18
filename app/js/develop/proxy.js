@@ -55,7 +55,6 @@ function initGuest () {
 
 	// create local stb objects
 	stbNames.forEach(function forEachStbNames ( stbObjName ) {
-		/* jshint evil:true */
 		// prepare
 		var stbObj = window[stbObjName] = {},
 			// for each global stb object get all its properties

@@ -273,11 +273,12 @@ Input.prototype.addChar = function ( char, index ) {
  * Remove char from given position.
  * Do nothing if index is out of the range (0, length).
  *
- * @param {number} index given position
+ * @param {number} [index=this.$caret.index - 1] index given position
  *
  * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.removeChar = function ( index ) {
+	index = (index === undefined) ? this.$caret.index - 1 : index;
 	// non-empty string
 	if ( this.value.length > 0 ) {
 		if ( DEBUG ) {

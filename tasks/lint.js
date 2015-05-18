@@ -9,7 +9,8 @@
 
 var gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
-	eslint  = require('gulp-eslint');
+	eslint  = require('gulp-eslint'),
+	log     = require('../lib/log');
 
 
 gulp.task('lint', function () {
@@ -17,5 +18,10 @@ gulp.task('lint', function () {
 		.src(['./app/js/**/*.js', './config/**/*.js'])
 		.pipe(plumber())
 		.pipe(eslint())
-		.pipe(eslint.format());
+		.pipe(eslint.format('stylish', function ( result ) {
+			// make nice output
+			result.split('\n').forEach(function ( line ) {
+				log('eslint  '.bgRed, line + ''.reset);
+			});
+		}));
 });

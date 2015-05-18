@@ -16,12 +16,12 @@ var util    = require('util'),
 
 
 gulp.task('webpack:clean:develop', function ( done ) {
-	del(['./build/develop/app.js', './build/develop/app.js.map'], done);
+	del(['./build/develop/' + process.env.target + '/app.js', './build/develop/' + process.env.target + '/app.js.map'], done);
 });
 
 
 gulp.task('webpack:clean:release', function ( done ) {
-	del(['./build/release/app.js'], done);
+	del(['./build/release/' + process.env.target + '/app.js'], done);
 });
 
 
@@ -29,13 +29,13 @@ gulp.task('webpack:clean', ['webpack:clean:develop', 'webpack:clean:release']);
 
 
 gulp.task('webpack:develop', function () {
+	var target = process.env.STB + '/app/js/targets/' + process.env.target + '/main.js';
+
 	return gulp
-		.src(process.env.STB + '/app/js/develop/main.js')
+		.src([target, process.env.STB + '/app/js/develop/main.js'])
 		.pipe(plumber())
 		.pipe(webpack({
-			//entry: 'develop/main.js',
 			output: {
-				//path: './build/develop/',
 				filename: 'app.js',
 				pathinfo: true,
 				sourcePrefix: '\t\t\t'
@@ -60,8 +60,6 @@ gulp.task('webpack:develop', function () {
 			},
 			debug: true,
 			cache: false,
-			//watch: true,
-			//watchDelay: 300,
 			plugins: [
 				// fix compilation persistence
 				new webpack.webpack.optimize.OccurenceOrderPlugin(true),
@@ -71,21 +69,21 @@ gulp.task('webpack:develop', function () {
 				})
 			]
 		}, null, report))
-		.pipe(gulp.dest('./build/develop/'));
+		.pipe(gulp.dest('./build/develop/' + process.env.target));
 });
 
 
 gulp.task('webpack:release', function () {
 	var appInfo = require(process.env.CWD + '/package.json'),
 		stbInfo = require(process.env.STB + '/package.json'),
-		wpkInfo = require(process.env.STB + '/node_modules/gulp-webpack/node_modules/webpack/package.json');
+		wpkInfo = require(process.env.STB + '/node_modules/gulp-webpack/node_modules/webpack/package.json'),
+		target  = process.env.STB + '/app/js/targets/' + process.env.target + '/main.js';
 
 	return gulp
-		.src('./app/js/main.js')
+		.src([target, './app/js/main.js'])
 		.pipe(plumber())
 		.pipe(webpack({
 			output: {
-				//path: './build/release/',
 				filename: 'app.js'
 			},
 			resolve: {
@@ -120,7 +118,7 @@ gulp.task('webpack:release', function () {
 						dead_code: true,
 						drop_console: true,
 						drop_debugger: true,
-						pure_funcs: ['debug.assert', 'debug.log', 'debug.info', 'debug.inspect', 'debug.event', 'debug.stab']
+						pure_funcs: ['debug.assert', 'debug.log', 'debug.info', 'debug.inspect', 'debug.event', 'debug.stub', 'debug.time', 'debug.timeEnd']
 					}
 				}),
 				// add comment to the top of app.js
@@ -130,7 +128,7 @@ gulp.task('webpack:release', function () {
 				))
 			]
 		}, null, report))
-		.pipe(gulp.dest('./build/release/'));
+		.pipe(gulp.dest('./build/release/' + process.env.target));
 });
 
 

@@ -27,6 +27,7 @@ gulp.task('logger', function () {
 
 			socket.on('message', function ( data ) {
 				var messages = JSON.parse(data);
+
 				if ( Array.isArray(messages) ) {
 					messages.forEach(function ( message ) {
 						log(title, message);
