@@ -465,6 +465,7 @@ Player.prototype.stop = function () {
 	gSTB.Stop();
 	clearInterval(this.durationInterval);
 	this.isPLaying = false;
+	this.isPause = false;
 };
 
 
