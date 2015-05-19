@@ -7,7 +7,8 @@
 
 'use strict';
 
-var util    = require('util'),
+var fs      = require('fs'),
+	util    = require('util'),
 	gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
 	webpack = require('gulp-webpack'),
@@ -28,7 +29,13 @@ gulp.task('webpack:clean:release', function ( done ) {
 gulp.task('webpack:clean', ['webpack:clean:develop', 'webpack:clean:release']);
 
 
-gulp.task('webpack:develop', function () {
+gulp.task('webpack:index', function () {
+	// copy entry point index file
+	fs.writeFileSync(process.env.CWD + '/build/index.html', fs.readFileSync(process.env.STB + '/tpl/build/index.html'));
+});
+
+
+gulp.task('webpack:develop', ['webpack:index'], function () {
 	var target = process.env.STB + '/app/js/targets/' + process.env.target + '/main.js';
 
 	return gulp
@@ -73,7 +80,7 @@ gulp.task('webpack:develop', function () {
 });
 
 
-gulp.task('webpack:release', function () {
+gulp.task('webpack:release', ['webpack:index'], function () {
 	var appInfo = require(process.env.CWD + '/package.json'),
 		stbInfo = require(process.env.STB + '/package.json'),
 		wpkInfo = require(process.env.STB + '/node_modules/gulp-webpack/node_modules/webpack/package.json'),
