@@ -475,14 +475,12 @@ Player.prototype.stop = function () {
  */
 Player.prototype.playPause = function () {
 	if ( this.isPause ) {
-		this.isPause = false;
-		this.emit('pause', {state: false});
 		gSTB.Continue();
 	} else {
-		this.isPause = true;
-		this.emit('pause', {state: true});
 		gSTB.Pause();
 	}
+	this.isPause = !this.isPause;
+	this.emit('pause', {state: this.isPause});
 };
 
 /**
