@@ -6,6 +6,9 @@ Global variables:
 
 	// global absolute paths
 	@pathApp
+	@pathImgFull
+
+	// relative paths
 	@pathImg
 
 	// window dimension
