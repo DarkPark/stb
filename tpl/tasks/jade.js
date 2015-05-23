@@ -13,7 +13,7 @@ var path    = require('path'),
 	plumber = require('gulp-plumber'),
 	rename  = require('gulp-rename'),
 	del     = require('del'),
-	pkgName = path.join(process.env.CWD, 'package.json');
+	pkgName = path.join('..', 'package.json');
 
 
 gulp.task('jade:clean:develop', function ( done ) {

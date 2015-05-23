@@ -9,7 +9,8 @@
 
 var path  = require('path'),
 	gulp  = require('gulp'),
-	log   = require('../lib/log'),
+	//log   = require('../lib/log'),
+	log   = require('gulp-util').log,
 	title = 'weinre  '.inverse;
 
 

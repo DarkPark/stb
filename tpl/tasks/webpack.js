@@ -12,8 +12,81 @@ var fs      = require('fs'),
 	gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
 	webpack = require('gulp-webpack'),
-	report  = require('../lib/report').webpack,
+	//report  = require('../lib/report').webpack,
+	log     = require('gulp-util').log,
 	del     = require('del');
+
+
+/**
+ * Callback to output the statistics.
+ *
+ * @param {Object} err problem description structure if any
+ * @param {Object} stats data to report
+ */
+function report ( err, stats ) {
+	var json  = stats.toJson({source:false}),
+		title = 'webpack '.inverse;
+
+	if ( err ) {
+		log(title, 'FATAL ERROR'.red, err);
+	} else {
+		// general info
+		log(title, '********************************'.grey);
+		log(title, 'target:\t'  + process.env.target.bold);
+		log(title, 'hash:\t'    + json.hash.bold);
+		log(title, 'version:\t' + json.version.bold);
+		log(title, 'time:\t'    + json.time.toString().bold + ' ms');
+		log(title, '********************************'.grey);
+
+		// title and headers
+		log(title, 'ASSETS'.green);
+		log(title, '\tSize\tName'.grey);
+		// data
+		json.assets.forEach(function ( asset ) {
+			log(title, '\t' + asset.size + '\t' + asset.name.bold);
+		});
+
+		// title and headers
+		log(title, 'MODULES'.green);
+		log(title, '\tID\tSize\tErrs\tWarns\tName'.grey);
+
+		// sort modules by name (not always is necessary)
+		//json.modules.sort(function ( a, b ) { return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
+
+		// data
+		json.modules.forEach(function ( module ) {
+			log(title, '\t' +
+				module.id + '\t' +
+				module.size + '\t' +
+				(module.errors > 0 ? module.errors.toString().red : '0') + '\t' +
+				(module.warnings > 0 ? module.warnings.toString().yellow : '0') + '\t' +
+				(module.name.indexOf('./') === 0 ? module.name.replace(/\//g, '/'.grey) : module.name.grey)
+			);
+		});
+
+		json.errors.forEach(function ( error, errorIndex ) {
+			log(title, ('ERROR #' + errorIndex).red);
+			error.split('\n').forEach(function ( line, lineIndex ) {
+				if ( lineIndex === 0 ) {
+					log(title, line.bold);
+				} else {
+					log(title, '\t' + line.grey);
+				}
+			});
+		});
+
+		json.warnings.forEach(function ( warning, warningIndex ) {
+			log(title, ('WARNING #' + warningIndex).yellow);
+			warning.split('\n').forEach(function ( line, lineIndex ) {
+				if ( lineIndex === 0 ) {
+					log(title, line.bold);
+				} else {
+					log(title, '\t' + line.grey);
+				}
+			});
+		});
+	}
+}
 
 
 gulp.task('webpack:clean:develop', function ( done ) {
@@ -29,10 +102,10 @@ gulp.task('webpack:clean:release', function ( done ) {
 gulp.task('webpack:clean', ['webpack:clean:develop', 'webpack:clean:release']);
 
 
-gulp.task('webpack:index', function () {
-	// copy entry point index file
-	fs.writeFileSync(process.env.CWD + '/build/index.html', fs.readFileSync(process.env.STB + '/tpl/build/index.html'));
-});
+//gulp.task('webpack:index', function () {
+//	// copy entry point index file
+//	fs.writeFileSync(process.env.CWD + '/build/index.html', fs.readFileSync(process.env.STB + '/tpl/build/index.html'));
+//});
 
 
 gulp.task('webpack:develop', ['webpack:index'], function () {

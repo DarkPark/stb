@@ -10,7 +10,8 @@
 var gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
 	eslint  = require('gulp-eslint'),
-	log     = require('../lib/log');
+	//log     = require('../lib/log'),
+	log     = require('gulp-util').log;
 
 
 gulp.task('lint', function () {
