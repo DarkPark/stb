@@ -11,5 +11,5 @@ var gulp = require('gulp');
 
 
 gulp.task('doc', function () {
-	require('open')('file://' + process.env.STB + '/doc/index.html');
+	require('open')('http://darkpark.github.io/stb/');
 });
