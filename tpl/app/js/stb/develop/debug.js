@@ -8,8 +8,8 @@
 
 'use strict';
 
-var host   = require('stb/app').data.host,
-	config = require('cfg/logger'),
+var host   = require('../app').data.host,
+	config = require('../../../../config/logger'),
 	util   = require('util'),
 	buffer = [],
 	/**

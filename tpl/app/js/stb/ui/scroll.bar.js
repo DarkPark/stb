@@ -6,7 +6,7 @@
 
 'use strict';
 
-var Component = require('stb/component');
+var Component = require('../component');
 
 
 /**

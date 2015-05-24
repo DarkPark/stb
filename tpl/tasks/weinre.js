@@ -7,21 +7,20 @@
 
 'use strict';
 
-var path  = require('path'),
-	gulp  = require('gulp'),
-	//log   = require('../lib/log'),
-	log   = require('gulp-util').log,
-	title = 'weinre  '.inverse;
+var path   = require('path'),
+	gulp   = require('gulp'),
+	log    = require('gulp-util').log,
+	config = require(path.join(global.paths.config, 'weinre')),
+	title  = 'weinre  '.inverse;
 
 
 gulp.task('weinre', function () {
-	var config = require(path.join(process.env.CWD, 'config', 'weinre')),
-		spawn, weinre;
+	var spawn, weinre;
 
 	if ( config.active ) {
-		spawn  = require('child_process').spawn;
+		spawn = require('child_process').spawn;
 		//TODO: make it work on Windows
-		weinre = spawn(path.join(process.env.STB, 'node_modules', '.bin', 'weinre'), [
+		weinre = spawn(path.join(global.paths.root, 'node_modules', '.bin', 'weinre'), [
 			'--httpPort',  config.port,
 			'--boundHost', config.host,
 			'--verbose',   config.logging.toString(),
@@ -53,5 +52,8 @@ gulp.task('weinre', function () {
 			// graceful shutdown
 			process.exit();
 		});
+	} else {
+		// just exit
+		log(title, 'task is disabled');
 	}
 });

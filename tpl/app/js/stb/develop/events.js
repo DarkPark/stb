@@ -9,9 +9,9 @@
 'use strict';
 
 var util    = require('util'),
-	app     = require('stb/app'),
-	request = require('stb/request'),
-	dom     = require('stb/dom'),
+	app     = require('../app'),
+	request = require('../request'),
+	dom     = require('../dom'),
 	grid    = require('./grid'),
 	storage = require('./storage');
 
@@ -170,7 +170,7 @@ function changeScreenDimension ( width, height ) {
 		document.body.style.display = 'none';
 
 		// apply new metrics
-		app.setScreen(require('cfg/metrics')[height]);
+		app.setScreen(require('../../../../config/metrics')[height]);
 
 		// restore visibility
 		document.body.style.display = '';

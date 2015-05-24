@@ -13,7 +13,7 @@ var Model    = require('./model'),
 	app, key;
 
 
-require('stb/shims');
+require('./shims');
 
 
 /**
@@ -250,7 +250,7 @@ app.EVENT_DVB_ANTENNA_OFF = 43;
 
 
 // apply screen size, position and margins
-app.setScreen(require('cfg/metrics')[screen.height]);
+app.setScreen(require('../../../config/metrics')[screen.height]);
 
 // extract key codes
 for ( key in keys ) {

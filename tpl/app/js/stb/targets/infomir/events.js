@@ -7,7 +7,7 @@
 
 'use strict';
 
-var app = require('stb/app'),
+var app = require('../../app'),
 	event = {};
 
 /**

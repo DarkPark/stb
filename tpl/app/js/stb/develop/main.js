@@ -10,7 +10,7 @@
 
 var app     = require('../app'),
 	storage = require('./storage'),
-	metrics = require('cfg/metrics');
+	metrics = require('../../../../config/metrics');
 
 
 // export to globals for easy debugging
@@ -45,4 +45,4 @@ require('./events');
 require('./debug');
 
 // the application itself
-require('app/main');
+require('../../main');

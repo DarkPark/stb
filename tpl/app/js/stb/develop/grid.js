@@ -8,7 +8,7 @@
 
 'use strict';
 
-var data    = require('stb/app').data,
+var data    = require('../app').data,
 	storage = require('./storage');
 
 

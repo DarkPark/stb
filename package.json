@@ -16,16 +16,13 @@
 		"commander": "^2.8.1",
 		"del": "^1.2.0",
 		"gremlins.js": "^0.1.0",
-		"gulp": "^3.8.11",
 		"gulp-conflict": "^0.4.0",
-		"gulp-eslint": "^0.12.0",
 		"gulp-jade": "^1.0.1",
 		"gulp-livereload": "^3.8.0",
 		"gulp-plumber": "^1.0.1",
 		"gulp-rename": "^1.2.0",
 		"gulp-webpack": "^1.4.0",
 		"ip": "^0.3.2",
-		"jsdoc": "3.3.0",
 		"less": "^2.5.1",
 		"mkdirp": "^0.5.1",
 		"node-static": "^0.7.6",
@@ -36,6 +33,11 @@
 		"tty-colors": "^0.0.6",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
 		"ws": "^0.7.2"
+	},
+	"devDependencies": {
+		"gulp": "^3.8.11",
+		"gulp-eslint": "^0.12.0",
+		"jsdoc": "3.3.0",
 	},
 	"keywords": [
 		"stb",

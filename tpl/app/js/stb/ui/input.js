@@ -6,8 +6,8 @@
 
 'use strict';
 
-var Component = require('stb/component'),
-	keys      = require('stb/keys');
+var Component = require('../component'),
+	keys      = require('../keys');
 
 
 /**

@@ -25,7 +25,6 @@ function load ( dir ) {
 			name = path.join(dir, name);
 			// check file type
 			if ( path.extname(name) === '.js' ) {
-				console.log(name);
 				require(name);
 			}
 		});
@@ -36,6 +35,14 @@ function load ( dir ) {
 // enable colors in console
 require('tty-colors');
 
+// general app paths
+global.paths = {
+	root:   __dirname,
+	tasks:  path.join(__dirname, 'tasks'),
+	app:    path.join(__dirname, 'app'),
+	build:  path.join(__dirname, 'build'),
+	config: path.join(__dirname, 'config')
+};
 
-// load all tasks
-load(path.join(__dirname, 'tasks'));
+// load tasks
+load(global.paths.tasks);

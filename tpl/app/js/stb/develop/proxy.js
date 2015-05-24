@@ -8,9 +8,9 @@
 
 'use strict';
 
-var host   = require('stb/app').data.host,
+var host   = require('../app').data.host,
 	util   = require('util'),
-	config = require('cfg/proxy');
+	config = require('../../../../config/proxy');
 
 
 /**

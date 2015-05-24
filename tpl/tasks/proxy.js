@@ -7,18 +7,20 @@
 
 'use strict';
 
-var path  = require('path'),
-	gulp  = require('gulp'),
-	//log   = require('../lib/log'),
-	log   = require('gulp-util').log,
-	title = 'proxy   '.inverse;
+var path   = require('path'),
+	gulp   = require('gulp'),
+	log    = require('gulp-util').log,
+	config = require(path.join(global.paths.config, 'proxy')),
+	title  = 'proxy   '.inverse;
 
 
 gulp.task('proxy', function () {
-	var config = require(path.join(process.env.CWD, 'config', 'proxy'));
-
 	if ( config.active ) {
+		// start
 		require('code-proxy')(config);
 		log(title, 'listening ...');
+	} else {
+		// just exit
+		log(title, 'task is disabled');
 	}
 });

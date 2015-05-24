@@ -8,10 +8,10 @@
 
 'use strict';
 
-var dom     = require('stb/dom'),
+var dom     = require('../dom'),
 	util    = require('util'),
 	storage = require('./storage'),
-	config  = require('cfg/weinre');
+	config  = require('../../../../config/weinre');
 
 
 // web inspector is allowed only without SpyJS

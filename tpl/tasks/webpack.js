@@ -7,14 +7,15 @@
 
 'use strict';
 
-var fs      = require('fs'),
+var path    = require('path'),
 	util    = require('util'),
 	gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
 	webpack = require('gulp-webpack'),
-	//report  = require('../lib/report').webpack,
 	log     = require('gulp-util').log,
-	del     = require('del');
+	del     = require('del'),
+	pkgInfo = require(path.join(global.paths.root, 'package.json')),
+	wpkInfo = require(path.join(global.paths.root, 'node_modules', 'gulp-webpack', 'node_modules', 'webpack', 'package.json'));
 
 
 /**
@@ -32,7 +33,7 @@ function report ( err, stats ) {
 	} else {
 		// general info
 		log(title, '********************************'.grey);
-		log(title, 'target:\t'  + process.env.target.bold);
+		//log(title, 'target:\t'  + process.env.target.bold);
 		log(title, 'hash:\t'    + json.hash.bold);
 		log(title, 'version:\t' + json.version.bold);
 		log(title, 'time:\t'    + json.time.toString().bold + ' ms');
@@ -75,7 +76,7 @@ function report ( err, stats ) {
 			});
 		});
 
-		json.warnings.forEach(function ( warning, warningIndex ) {
+		/*json.warnings.forEach(function ( warning, warningIndex ) {
 			log(title, ('WARNING #' + warningIndex).yellow);
 			warning.split('\n').forEach(function ( line, lineIndex ) {
 				if ( lineIndex === 0 ) {
@@ -84,50 +85,39 @@ function report ( err, stats ) {
 					log(title, '\t' + line.grey);
 				}
 			});
-		});
+		});*/
 	}
 }
 
 
-gulp.task('webpack:clean:develop', function ( done ) {
-	del(['./build/develop/' + process.env.target + '/app.js', './build/develop/' + process.env.target + '/app.js.map'], done);
+// remove all js and map files
+gulp.task('webpack:clean', function ( done ) {
+	del([
+		path.join(global.paths.build, 'js', 'release.*'),
+		path.join(global.paths.build, 'js', 'develop.*')
+	], done);
 });
 
 
-gulp.task('webpack:clean:release', function ( done ) {
-	del(['./build/release/' + process.env.target + '/app.js'], done);
-});
-
-
-gulp.task('webpack:clean', ['webpack:clean:develop', 'webpack:clean:release']);
-
-
-//gulp.task('webpack:index', function () {
-//	// copy entry point index file
-//	fs.writeFileSync(process.env.CWD + '/build/index.html', fs.readFileSync(process.env.STB + '/tpl/build/index.html'));
-//});
-
-
-gulp.task('webpack:develop', ['webpack:index'], function () {
-	var target = process.env.STB + '/app/js/targets/' + process.env.target + '/main.js';
-
+// generate js files
+gulp.task('webpack:develop', function () {
 	return gulp
-		.src([target, process.env.STB + '/app/js/develop/main.js'])
+		.src(path.join(global.paths.app, 'js', 'stb', 'develop', 'main.js'))
 		.pipe(plumber())
 		.pipe(webpack({
 			output: {
-				filename: 'app.js',
+				filename: 'develop.js',
 				pathinfo: true,
 				sourcePrefix: '\t\t\t'
 			},
 			resolve: {
-				root: process.env.STB + '/app/js/',
-				extensions:['', '.js'],
-				alias: {
-					stb: process.env.STB + '/app/js',
+				//root: path.join(global.paths.app, 'js'),
+				extensions:['', '.js']
+				/*alias: {
+					//stb: process.env.STB + '/app/js',
 					app: process.env.CWD + '/app/js',
-					cfg: process.env.CWD + '/config'
-				}
+					//cfg: process.env.CWD + '/config'
+				}*/
 			},
 			devtool: 'source-map',
 			node: {
@@ -149,30 +139,26 @@ gulp.task('webpack:develop', ['webpack:index'], function () {
 				})
 			]
 		}, null, report))
-		.pipe(gulp.dest('./build/develop/' + process.env.target));
+		.pipe(gulp.dest(path.join(global.paths.build, 'js')));
 });
 
 
-gulp.task('webpack:release', ['webpack:index'], function () {
-	var appInfo = require(process.env.CWD + '/package.json'),
-		stbInfo = require(process.env.STB + '/package.json'),
-		wpkInfo = require(process.env.STB + '/node_modules/gulp-webpack/node_modules/webpack/package.json'),
-		target  = process.env.STB + '/app/js/targets/' + process.env.target + '/main.js';
-
+// generate js files
+gulp.task('webpack:release', function () {
 	return gulp
-		.src([target, './app/js/main.js'])
+		.src(path.join(global.paths.app, 'js', 'main.js'))
 		.pipe(plumber())
 		.pipe(webpack({
 			output: {
-				filename: 'app.js'
+				filename: 'release.js'
 			},
 			resolve: {
-				extensions:['', '.js'],
-				alias: {
-					stb: process.env.STB + '/app/js',
-					app: process.env.CWD + '/app/js',
-					cfg: process.env.CWD + '/config'
-				}
+				extensions:['', '.js']
+				/*alias: {
+					//stb: process.env.STB + '/app/js',
+					//app: process.env.CWD + '/app/js',
+					//cfg: process.env.CWD + '/config'
+				}*/
 			},
 			debug: false,
 			cache: false,
@@ -203,13 +189,14 @@ gulp.task('webpack:release', ['webpack:index'], function () {
 				}),
 				// add comment to the top of app.js
 				new webpack.webpack.BannerPlugin(util.format(
-					'%s: v%s (stb: v%s, webpack: v%s)',
-					appInfo.name, appInfo.version, stbInfo.version, wpkInfo.version
+					'%s: v%s (webpack: v%s)',
+					pkgInfo.name, pkgInfo.version, wpkInfo.version
 				))
 			]
 		}, null, report))
-		.pipe(gulp.dest('./build/release/' + process.env.target));
+		.pipe(gulp.dest(path.join(global.paths.build, 'js')));
 });
 
 
+// generate all js files
 gulp.task('webpack', ['webpack:develop', 'webpack:release']);

@@ -13,58 +13,53 @@ var path    = require('path'),
 	plumber = require('gulp-plumber'),
 	rename  = require('gulp-rename'),
 	del     = require('del'),
-	pkgName = path.join('..', 'package.json');
+	pkgInfo = require(path.join(global.paths.root, 'package.json'));
 
 
-gulp.task('jade:clean:develop', function ( done ) {
-	del('./build/develop/' + process.env.target + '/index.html', done);
+// remove all html files
+gulp.task('jade:clean', function ( done ) {
+	del([
+		path.join(global.paths.build, 'index.html'),
+		path.join(global.paths.build, 'develop.html')
+	], done);
 });
 
 
-gulp.task('jade:clean:release', function ( done ) {
-	del('./build/release/' + process.env.target + '/index.html', done);
-});
-
-
-gulp.task('jade:clean', ['jade:clean:develop', 'jade:clean:release']);
-
-
+// generate html files
 gulp.task('jade:develop', function () {
-	var pkgInfo = require(pkgName);
-
 	return gulp
-		.src('./app/jade/main.jade')
+		.src(path.join(global.paths.app, 'jade', 'main.jade'))
 		.pipe(plumber())
 		.pipe(jade({
 			pretty: '\t',
 			locals: {
 				develop: true,
-				title  : 'develop :: ' + pkgInfo.name,
+				title:   '[develop] ' + pkgInfo.name,
 				version: pkgInfo.version
 			}
 		}))
-		.pipe(rename('index.html'))
-		.pipe(gulp.dest('./build/develop/' + process.env.target));
+		.pipe(rename('develop.html'))
+		.pipe(gulp.dest(global.paths.build));
 });
 
 
+// generate html files
 gulp.task('jade:release', function () {
-	var pkgInfo = require(pkgName);
-
 	return gulp
-		.src('./app/jade/main.jade')
+		.src(path.join(global.paths.app, 'jade', 'main.jade'))
 		.pipe(plumber())
 		.pipe(jade({
 			pretty: '\t',
 			locals: {
 				develop: false,
-				title  : 'release :: ' + pkgInfo.name,
+				title:   '[release] ' + pkgInfo.name,
 				version: pkgInfo.version
 			}
 		}))
 		.pipe(rename('index.html'))
-		.pipe(gulp.dest('./build/release/' + process.env.target));
+		.pipe(gulp.dest(global.paths.build));
 });
 
 
+// generate all html files
 gulp.task('jade', ['jade:develop', 'jade:release']);

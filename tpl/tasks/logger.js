@@ -7,17 +7,16 @@
 
 'use strict';
 
-var path  = require('path'),
-	gulp  = require('gulp'),
-	//log   = require('../lib/log'),
-	log   = require('gulp-util').log,
-	ws    = require('ws'),
-	title = 'logger  '.inverse.yellow;
+var path   = require('path'),
+	gulp   = require('gulp'),
+	log    = require('gulp-util').log,
+	ws     = require('ws'),
+	config = require(path.join(global.paths.config, 'logger')),
+	title  = 'logger  '.inverse.yellow;
 
 
 gulp.task('logger', function () {
-	var config = require(path.join(process.env.CWD, 'config', 'logger')),
-		wss;
+	var wss;
 
 	if ( config.active ) {
 		// WebSocket server creation
@@ -40,5 +39,8 @@ gulp.task('logger', function () {
 		wss.on('listening', function () {
 			log(title, 'listening ...');
 		});
+	} else {
+		// just exit
+		log(title, 'task is disabled');
 	}
 });
