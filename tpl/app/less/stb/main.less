@@ -5,12 +5,6 @@
 // @author Stanislav Kalashnik <sk@infomir.eu>
 // @license GNU GENERAL PUBLIC LICENSE Version 3
 
-// relative path
-@pathImg: '../img/@{height}';
-// absolute path
-@pathImgFull: '@{pathApp}/img/@{height}';
-
-
 html, body {
 	width:               unit(@width, px);
 	height:              unit(@height, px);
@@ -41,4 +35,3 @@ a { text-decoration: none }
 
 
 @import "components";
-@import "@{pathApp}/less/main";

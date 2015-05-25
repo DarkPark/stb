@@ -1,6 +1,6 @@
 #### Resolution dependent LESS rules
 
-Compiles to a set of css files in the application directory `./build/develop/css/*.css` and `./build/release/css/*.css`.
+Compiles to a set of css files in the application directory `./build/css/*.css`.
 
 Global variables:
 
