@@ -33,8 +33,8 @@ gulp.task('pack:develop', function () {
 
 	return gulp.src([
 			path.join(global.paths.build, 'img', '*'),
-			path.join(global.paths.build, 'css', '*'),
-			path.join(global.paths.build, 'js', 'develop.*'),
+			path.join(global.paths.build, 'css', 'develop.*'),
+			path.join(global.paths.build, 'js',  'develop.*'),
 			path.join(global.paths.build, 'develop.html')
 		], {base: global.paths.build})
 		.pipe(plumber())
@@ -51,8 +51,8 @@ gulp.task('pack:release', function () {
 
 	return gulp.src([
 			path.join(global.paths.build, 'img', '*'),
-			path.join(global.paths.build, 'css', '*'),
-			path.join(global.paths.build, 'js', 'release.*'),
+			path.join(global.paths.build, 'css', 'release.*'),
+			path.join(global.paths.build, 'js',  'release.*'),
 			path.join(global.paths.build, 'index.html')
 		], {base: global.paths.build})
 		.pipe(plumber())
