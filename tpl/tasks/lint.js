@@ -18,7 +18,8 @@ gulp.task('lint', function () {
 	return gulp
 		.src([
 			path.join(global.paths.app,    'js', '**', '*.js'),
-			path.join(global.paths.config, 'js', '**', '*.js')
+			path.join(global.paths.config, '**', '*.js'),
+			path.join(global.paths.tasks,  '**', '*.js')
 		])
 		.pipe(plumber())
 		.pipe(eslint())
