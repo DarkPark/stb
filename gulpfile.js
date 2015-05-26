@@ -12,8 +12,7 @@ var path       = require('path'),
 	plumber    = require('gulp-plumber'),
 	eslint     = require('gulp-eslint'),
 	webpack    = require('gulp-webpack'),
-	log        = require('./lib/log'),
-	report     = require('./lib/report').webpack;
+	log        = require('gulp-util').log;
 
 
 // enable colors in console
@@ -62,7 +61,7 @@ gulp.task('webpack', function () {
 					DEBUG: false
 				})
 			]
-		}, null, report))
+		}, null/*, report*/))
 		.pipe(gulp.dest('tests'));
 });
 
