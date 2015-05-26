@@ -8,8 +8,7 @@
 
 'use strict';
 
-var //util = require('util'),
-	path = require('path'),
+var path = require('path'),
 	gulp = require('gulp');
 
 
@@ -29,13 +28,16 @@ gulp.task('release', ['lint', 'img', 'jade:release', 'less:release', 'webpack:re
 
 // build everything and open main entry page
 gulp.task('serve', ['develop', 'release'], function () {
-	//var command = require('../lib/cli/program').currCommnand;
+	// read-eval-print loop
+	var repl = require('gulp-repl');
 
-	// popup browser if not prevented
-	//if ( command.open !== false ) {
-	//	// read http port from config
-	//	require('open')(util.format('http://localhost:%s/', require(path.join(process.env.CWD, 'config', 'static')).port));
-	//}
+	// no unnecessary prompts
+	repl.setPrompt('');
+
+	// Ctrl+C was pressed
+	repl.on('SIGINT', function () {
+		process.exit();
+	});
 
 	// connect to STB
 	//require('../lib/ssh');
