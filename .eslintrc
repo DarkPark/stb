@@ -94,7 +94,8 @@
 		"no-new-require": 0,
 		"no-path-concat": 1,
 
-		"indent": [2, "tab", {"indentSwitchCase": true}],
+		"no-process-exit": 0,
+
 		"brace-style": [1, "1tbs", {"allowSingleLine": true}],
 		"camelcase": 1,
 		"comma-spacing": [1, {"before": false, "after": true}],
@@ -102,6 +103,7 @@
 		"consistent-this": [1, "self"],
 		"eol-last": 1,
 		"func-names": 0,
+		"indent": [2, "tab", {"indentSwitchCase": true}],
 		"key-spacing": [0, { "align": "colon" }],
 		"linebreak-style": [2, "unix"],
 		"new-cap": 1,
