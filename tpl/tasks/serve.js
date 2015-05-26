@@ -38,7 +38,4 @@ gulp.task('serve', ['develop', 'release'], function () {
 	repl.on('SIGINT', function () {
 		process.exit();
 	});
-
-	// connect to STB
-	//require('../lib/ssh');
 });

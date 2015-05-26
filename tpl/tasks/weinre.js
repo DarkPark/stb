@@ -14,6 +14,7 @@ var path   = require('path'),
 	title  = 'weinre  '.inverse;
 
 
+// start or restart service
 gulp.task('weinre', function () {
 	var spawn, weinre;
 
