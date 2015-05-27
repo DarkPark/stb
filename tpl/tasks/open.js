@@ -32,5 +32,11 @@ gulp.task('open:release', function () {
 });
 
 
+// weinre main page
+gulp.task('open:weinre', function () {
+	open(util.format('http://localhost:%s/client/#anonymous', require(path.join(global.paths.config, 'weinre')).port));
+});
+
+
 // default entry point
 gulp.task('open', ['open:develop']);
