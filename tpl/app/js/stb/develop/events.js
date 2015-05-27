@@ -8,6 +8,8 @@
 
 'use strict';
 
+/* eslint new-cap: 0 */
+
 var util    = require('util'),
 	app     = require('../app'),
 	request = require('../request'),

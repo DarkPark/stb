@@ -5,6 +5,7 @@
 
 'use strict';
 
+/* eslint-disable */
 
 if ( !('classList' in document.documentElement) ) {
 	var prototype = Array.prototype,

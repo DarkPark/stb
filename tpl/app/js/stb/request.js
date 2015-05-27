@@ -43,7 +43,7 @@ request.ajax = function ( url, options ) {
 		// plain object is given as param
 		if ( options && typeof options === 'object') {
 			// extend with default options
-			for ( i = 0 ; i < defaultsKeys.length ; i++ ) {
+			for ( i = 0; i < defaultsKeys.length; i++ ) {
 				// in case not redefined
 				if ( options[defaultsKeys[i]] === undefined ) {
 					options[defaultsKeys[i]] = defaults[defaultsKeys[i]];

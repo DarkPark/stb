@@ -6,6 +6,7 @@
 
 'use strict';
 
+/* eslint-disable */
 
 if ( !Function.prototype.bind ) {
 	Function.prototype.bind = function ( oThis ) {

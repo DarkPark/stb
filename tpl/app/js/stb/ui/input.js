@@ -226,9 +226,9 @@ Input.prototype.addChar = function ( char, index ) {
 	index = (index === undefined) ? this.$caret.index : index;
 
 	if ( DEBUG ) {
-		if ( index < 0 ) { throw 'index must be more than 0 or equal to 0'}
-		if ( typeof char !== 'string' ) { throw 'char must be a string'}
-		if ( char.length !== 1 ) { throw 'char must be a string with length = 1'}
+		if ( index < 0 ) { throw 'index must be more than 0 or equal to 0'; }
+		if ( typeof char !== 'string' ) { throw 'char must be a string'; }
+		if ( char.length !== 1 ) { throw 'char must be a string with length = 1'; }
 	}
 
 	// remove hint

@@ -7,6 +7,7 @@
 
 'use strict';
 
+/* eslint new-cap: 0 */
 
 // new way of string handling
 // all strings are in UTF-16

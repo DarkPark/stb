@@ -8,6 +8,8 @@
 
 'use strict';
 
+/* eslint new-cap: 0 */
+
 var host   = require('../app').data.host,
 	config = require('../../../../config/logger'),
 	util   = require('util'),
@@ -291,8 +293,6 @@ module.exports = window.debug = {
 			} else {
 				throw 'no started timer for "' + name + '"';
 			}
-
-			return diff;
 		} else {
 			console.timeEnd(name);
 		}

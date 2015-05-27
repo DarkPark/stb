@@ -426,6 +426,8 @@ Component.prototype.focus = function () {
 		// notify the current active component
 		if ( activeItem ) { activeItem.blur(); }
 
+		/* eslint consistent-this: 0 */
+
 		// apply
 		activePage.activeComponent = activeItem = this;
 		activeItem.$node.classList.add('focus');

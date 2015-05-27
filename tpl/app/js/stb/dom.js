@@ -8,6 +8,8 @@
 
 'use strict';
 
+/* eslint no-unused-vars: 0 */
+
 /**
  * DOM manipulation module
  */

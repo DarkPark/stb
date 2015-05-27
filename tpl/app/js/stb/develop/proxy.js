@@ -8,6 +8,8 @@
 
 'use strict';
 
+/* eslint new-cap: 0 */
+
 var host   = require('../app').data.host,
 	util   = require('util'),
 	config = require('../../../../config/proxy');

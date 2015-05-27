@@ -5,6 +5,7 @@
 
 'use strict';
 
+/* eslint new-cap: 0 */
 
 var app       = require('./app'),
 	keys      = require('./keys'),
