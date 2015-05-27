@@ -7,12 +7,12 @@
 
 'use strict';
 
-var path     = require('path'),
-	gulp     = require('gulp'),
-	less     = require('gulp-less'),
-	plumber  = require('gulp-plumber'),
-	rename   = require('gulp-rename'),
-	del      = require('del'),
+var path       = require('path'),
+	gulp       = require('gulp'),
+	less       = require('gulp-less'),
+	plumber    = require('gulp-plumber'),
+	rename     = require('gulp-rename'),
+	del        = require('del'),
 	sourceMaps = require('gulp-sourcemaps'),
 	minifyCSS  = require('gulp-minify-css');
 
@@ -28,28 +28,34 @@ function prepare ( resolution ) {
 	var mName   = path.join(global.paths.root, 'config', 'metrics.js'),
 		vName   = path.join(global.paths.app, 'less', 'vars', resolution + '.js'),
 		metrics = require(mName)[resolution],
-		stbVars = require(vName);
+		stbVars = require(vName),
+		data    = {};
 
 	// clear cache
 	delete require.cache[mName];
 	delete require.cache[vName];
 
+	// clone metrics
+	Object.keys(metrics).forEach(function ( name ) {
+		data[name] = metrics[name];
+	});
+
 	// safe zone dimension
 	// base dimension minus safe zone margins
-	metrics.availHeight = metrics.height - metrics.availTop  - metrics.availBottom;
-	metrics.availWidth  = metrics.width  - metrics.availLeft - metrics.availRight;
+	data.availHeight = data.height - data.availTop  - data.availBottom;
+	data.availWidth  = data.width  - data.availLeft - data.availRight;
 
 	// extend with stb vars
 	Object.keys(stbVars).forEach(function ( name ) {
-		metrics[name] = stbVars[name];
+		data[name] = stbVars[name];
 	});
 
 	// application paths
-	metrics.pathApp     = '"' + global.paths.app + '"';
-	metrics.pathImg     = '"../img/' + resolution + '"';
-	metrics.pathImgFull = '"' + path.join(global.paths.app, 'img', resolution.toString()) + '"';
+	data.pathApp     = '"' + global.paths.app + '"';
+	data.pathImg     = '"../img/' + resolution + '"';
+	data.pathImgFull = '"' + path.join(global.paths.app, 'img', resolution.toString()) + '"';
 
-	return metrics;
+	return data;
 }
 
 
