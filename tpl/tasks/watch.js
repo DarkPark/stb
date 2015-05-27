@@ -8,7 +8,8 @@
 'use strict';
 
 var path = require('path'),
-	gulp = require('gulp');
+	gulp = require('gulp'),
+	log  = require('gulp-util').log;
 
 
 // rebuild everything on file changes
@@ -20,6 +21,10 @@ gulp.task('watch', function () {
 	]).on('change', function (file) {
 		// clear cache
 		delete require.cache[file.path];
+		// reload
+		require(file.path);
+		// report
+		log('watch   '.bgCyan.black,  'reload ' + ('./' + path.relative(global.paths.root, file.path)).bold);
 	});
 
 	// img
