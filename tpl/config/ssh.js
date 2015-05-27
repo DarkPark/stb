@@ -34,8 +34,14 @@ module.exports = {
 			exec: 'reboot'
 		},
 
+		// stbapp process info
 		status: {
 			exec: 'cat /proc/$(pidof stbapp)/status'
+		},
+
+		// force stop stbapp process
+		kill: {
+			exec: 'killall -9 stbapp'
 		},
 
 		// usual stb start
