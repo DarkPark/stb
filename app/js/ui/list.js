@@ -246,7 +246,7 @@ function normalize ( data ) {
 		}
 
 		if ( DEBUG ) {
-			if ( !('value' in item) ) { throw 'field "value" is missing'; }
+			//if ( !('value' in item) ) { throw 'field "value" is missing'; }
 			if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw 'item.mark must be boolean'; }
 		}
 	}
@@ -436,6 +436,11 @@ List.prototype.renderView = function ( index ) {
 		if ( this.events['move:view'] !== undefined ) {
 			// notify listeners
 			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
+		}
+
+		// there are some listeners
+		if ( this.events['select:item'] !== undefined ) {
+			this.emit('select:item', {$item: $item});
 		}
 
 		// update a linked scroll component
@@ -650,7 +655,7 @@ List.prototype.focusItem = function ( $item ) {
 		// there are some listeners
 		if ( this.events['focus:item'] !== undefined ) {
 			/**
-			 * Set focus to an element.
+			 * Set focus to a DOM element.
 			 *
 			 * @event module:stb/ui/list~List#focus:item
 			 *
@@ -659,6 +664,19 @@ List.prototype.focusItem = function ( $item ) {
 			 * @property {Element} $curr new/current focused HTML element
 			 */
 			this.emit('focus:item', {$prev: $prev, $curr: $item});
+		}
+
+		// there are some listeners
+		if ( this.events['select:item'] !== undefined ) {
+			/**
+			 * Set focus to a list item.
+			 *
+			 * @event module:stb/ui/list~List#select:item
+			 *
+			 * @type {Object}
+			 * @property {Element} $item new/current focused item
+			 */
+			this.emit('select:item', {$item: $item});
 		}
 
 		return true;
