@@ -24,7 +24,6 @@
 		"ip": "^0.3.2",
 		"node-static": "^0.7.6",
 		"open": "^0.0.5",
-		"pretty-hrtime": "^1.0.0",
 		"ssh2": "^0.4.8",
 		"tty-colors": "^0.0.6",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
