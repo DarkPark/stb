@@ -35,6 +35,7 @@ function load ( dir ) {
 // enable colors in console
 require('tty-colors');
 
+
 // general app paths
 global.paths = {
 	root:   __dirname,
@@ -43,6 +44,7 @@ global.paths = {
 	build:  path.join(__dirname, 'build'),
 	config: path.join(__dirname, 'config')
 };
+
 
 // load tasks
 load(global.paths.tasks);

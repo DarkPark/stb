@@ -15,7 +15,7 @@ var path   = require('path'),
 	title  = 'logger  '.inverse.yellow;
 
 
-gulp.task('logger', function () {
+gulp.task('logger', function ( done ) {
 	var wss;
 
 	if ( config.active ) {
@@ -41,6 +41,8 @@ gulp.task('logger', function () {
 		});
 	} else {
 		// just exit
-		log(title, 'task is disabled');
+		log(title, 'task is disabled'.grey);
+
+		done();
 	}
 });

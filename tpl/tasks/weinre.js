@@ -11,15 +11,21 @@ var path   = require('path'),
 	gulp   = require('gulp'),
 	log    = require('gulp-util').log,
 	config = require(path.join(global.paths.config, 'weinre')),
+	ip     = require('ip').address(),
 	title  = 'weinre  '.inverse;
 
 
 // start or restart service
-gulp.task('weinre', function () {
-	var spawn, weinre;
+gulp.task('weinre', function ( done ) {
+	var msg     = 'http://' + ip + ':' + config.port + '/client/#anonymous',
+		hash    = new Array(msg.length + 1).join('-'),
+		isReady = false,
+		spawn, weinre;
 
 	if ( config.active ) {
+		// prepare
 		spawn = require('child_process').spawn;
+
 		//TODO: make it work on Windows
 		weinre = spawn(path.join(global.paths.root, 'node_modules', '.bin', 'weinre'), [
 			'--httpPort',  config.port,
@@ -30,6 +36,8 @@ gulp.task('weinre', function () {
 
 		weinre.on('exit', function () {
 			log(title, 'process terminated'.red);
+
+			done();
 		});
 
 		weinre.on('error', function () {
@@ -41,20 +49,29 @@ gulp.task('weinre', function () {
 		});
 
 		weinre.stdout.on('data', function ( data ) {
-			data.toString().trim().split('\n').forEach(function ( line ) {
-				log(title, line.trim().split(' weinre: ').pop());
-			});
+			if ( !isReady ) {
+				// first invoke
+				isReady = true;
+
+				log(title, hash);
+				log(title, 'WEb INspector REmote is ready!'.bold);
+				log(title, msg.green);
+				log(title, hash);
+			} else {
+				data.toString().trim().split('\n').forEach(function ( line ) {
+					log(title, line.trim().split(' weinre: ').pop());
+				});
+			}
 		});
 
-		process.on('SIGINT', function () {
+		// make sure to stop it
+		process.on('exit', function () {
 			weinre.kill();
-			console.log(' weinre exit');
-
-			// graceful shutdown
-			process.exit();
 		});
 	} else {
 		// just exit
-		log(title, 'task is disabled');
+		log(title, 'task is disabled'.grey);
+
+		done();
 	}
 });

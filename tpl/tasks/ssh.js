@@ -14,7 +14,8 @@ var path    = require('path'),
 	config  = require(path.join(global.paths.config, 'ssh')),
 	appPort = require(path.join(global.paths.config, 'static')).port,
 	appHost = require('ip').address(),
-	title   = 'remote  '.inverse.yellow;
+	title   = 'remote  '.inverse.yellow,
+	stderr  = false;
 
 
 if ( config.active ) {
@@ -70,13 +71,16 @@ if ( config.active ) {
 								}
 							});
 						});
-						/*stream.stderr.on('data', function ( data ) {
-							data.toString().split('\n').forEach(function ( line ) {
-								if ( line ) {
-									log(title, line);
-								}
+
+						if ( stderr ) {
+							stream.stderr.on('data', function ( data ) {
+								data.toString().split('\n').forEach(function ( line ) {
+									if ( line ) {
+										log(title, line);
+									}
+								});
 							});
-						});*/
+						}
 					});
 				}).connect(profile);
 			});

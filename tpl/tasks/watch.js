@@ -7,26 +7,14 @@
 
 'use strict';
 
+/* eslint no-unused-vars: 0 */
+
 var path = require('path'),
-	gulp = require('gulp'),
-	log  = require('gulp-util').log;
+	gulp = require('gulp');
 
 
 // rebuild everything on file changes
-gulp.task('watch', function () {
-	// detect any js file change
-	gulp.watch([
-		path.join(global.paths.config, '**', '*.js'),
-		path.join(global.paths.tasks, '**', '*.js')
-	]).on('change', function (file) {
-		// clear cache
-		delete require.cache[file.path];
-		// reload
-		require(file.path);
-		// report
-		log('watch   '.bgCyan.black,  'reload ' + ('./' + path.relative(global.paths.root, file.path)).bold);
-	});
-
+gulp.task('watch', function ( done ) {
 	// img
 	gulp.watch([
 		path.join(global.paths.app, 'img', '**', '*')
@@ -35,7 +23,8 @@ gulp.task('watch', function () {
 	// webpack
 	gulp.watch([
 		path.join(global.paths.app, 'js', '**', '*.js'),
-		path.join(global.paths.config, 'app.js')
+		path.join(global.paths.config, 'app.js'),
+		path.join(global.paths.config, 'metrics.js')
 	], ['webpack:develop']);
 
 	// jade

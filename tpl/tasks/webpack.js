@@ -7,15 +7,16 @@
 
 'use strict';
 
-var path    = require('path'),
-	util    = require('util'),
-	gulp    = require('gulp'),
-	plumber = require('gulp-plumber'),
-	webpack = require('gulp-webpack'),
-	log     = require('gulp-util').log,
-	del     = require('del'),
-	pkgInfo = require(path.join(global.paths.root, 'package.json')),
-	wpkInfo = require(path.join(global.paths.root, 'node_modules', 'gulp-webpack', 'node_modules', 'webpack', 'package.json'));
+var path     = require('path'),
+	util     = require('util'),
+	gulp     = require('gulp'),
+	plumber  = require('gulp-plumber'),
+	webpack  = require('gulp-webpack'),
+	log      = require('gulp-util').log,
+	del      = require('del'),
+	pkgInfo  = require(path.join(global.paths.root, 'package.json')),
+	wpkInfo  = require(path.join(global.paths.root, 'node_modules', 'gulp-webpack', 'node_modules', 'webpack', 'package.json')),
+	warnings = false;
 
 
 /**
@@ -33,7 +34,6 @@ function report ( err, stats ) {
 	} else {
 		// general info
 		log(title, '********************************'.grey);
-		//log(title, 'target:\t'  + process.env.target.bold);
 		log(title, 'hash:\t'    + json.hash.bold);
 		log(title, 'version:\t' + json.version.bold);
 		log(title, 'time:\t'    + json.time.toString().bold + ' ms');
@@ -76,16 +76,18 @@ function report ( err, stats ) {
 			});
 		});
 
-		/*json.warnings.forEach(function ( warning, warningIndex ) {
-			log(title, ('WARNING #' + warningIndex).yellow);
-			warning.split('\n').forEach(function ( line, lineIndex ) {
-				if ( lineIndex === 0 ) {
-					log(title, line.bold);
-				} else {
-					log(title, '\t' + line.grey);
-				}
+		if ( warnings ) {
+			json.warnings.forEach(function ( warning, warningIndex ) {
+				log(title, ('WARNING #' + warningIndex).yellow);
+				warning.split('\n').forEach(function ( line, lineIndex ) {
+					if ( lineIndex === 0 ) {
+						log(title, line.bold);
+					} else {
+						log(title, '\t' + line.grey);
+					}
+				});
 			});
-		});*/
+		}
 	}
 }
 
@@ -113,11 +115,6 @@ gulp.task('webpack:develop', function () {
 			resolve: {
 				//root: path.join(global.paths.app, 'js'),
 				extensions:['', '.js']
-				/*alias: {
-					//stb: process.env.STB + '/app/js',
-					app: process.env.CWD + '/app/js',
-					//cfg: process.env.CWD + '/config'
-				}*/
 			},
 			devtool: 'source-map',
 			node: {
@@ -154,11 +151,6 @@ gulp.task('webpack:release', function () {
 			},
 			resolve: {
 				extensions:['', '.js']
-				/*alias: {
-					//stb: process.env.STB + '/app/js',
-					//app: process.env.CWD + '/app/js',
-					//cfg: process.env.CWD + '/config'
-				}*/
 			},
 			debug: false,
 			cache: false,

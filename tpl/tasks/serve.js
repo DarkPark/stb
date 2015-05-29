@@ -11,19 +11,8 @@
 var gulp = require('gulp');
 
 
-// build everything and open main entry page
-gulp.task('serve', ['static', 'weinre', 'proxy', 'logger', 'watch'], function () {
-	// read-eval-print loop
-	var repl = require('gulp-repl');
-
-	// no unnecessary prompts
-	repl.setPrompt('');
-
-	// Ctrl+C was pressed
-	repl.on('SIGINT', function () {
-		process.exit();
-	});
-});
+// start all services
+gulp.task('serve', ['static', 'weinre', 'proxy', 'watch'/*, 'logger'*/, 'repl']);
 
 
 // entry point

@@ -15,6 +15,7 @@ var path   = require('path'),
 	title  = 'static  '.inverse;
 
 
+// start serving files
 gulp.task('static', function ( done ) {
 	var files, msInit;
 
@@ -53,16 +54,15 @@ gulp.task('static', function ( done ) {
 			}).resume();
 		}).listen(config.port).on('listening', function eventListenerListening () {
 			var ip   = require('ip').address(),
-				msg  = 'Serve build directory ' + global.paths.build,
+				msg  = 'Serve static files in build directory ' + global.paths.build,
 				hash = new Array(msg.length + 1).join('-');
 
 			log(title, hash);
 			log(title, msg.bold);
+			log(title, hash);
 			log(title, 'release: ' + ('http://' + ip + ':' + config.port + '/').green);
 			log(title, 'develop: ' + ('http://' + ip + ':' + config.port + '/develop.html').green);
 			log(title, hash);
-
-			done();
 		});
 
 		if ( config.livereload ) {
@@ -78,6 +78,8 @@ gulp.task('static', function ( done ) {
 		}
 	} else {
 		// just exit
-		log(title, 'task is disabled');
+		log(title, 'task is disabled'.grey);
+
+		done();
 	}
 });

@@ -14,13 +14,15 @@ var path   = require('path'),
 	title  = 'proxy   '.inverse;
 
 
-gulp.task('proxy', function () {
+// start call redirection
+gulp.task('proxy', function ( done ) {
 	if ( config.active ) {
 		// start
 		require('code-proxy')(config);
-		log(title, 'listening ...');
 	} else {
 		// just exit
-		log(title, 'task is disabled');
+		log(title, 'task is disabled'.grey);
+
+		done();
 	}
 });
