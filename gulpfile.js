@@ -71,7 +71,7 @@ gulp.task('jsdoc', function ( done ) {
 	// run process
 	var child = require('child_process').spawn(
 		'./node_modules/.bin/jsdoc',
-		['--recurse', '--configure', 'jsdoc.json', '--destination', '../stb-pages/', 'app/js/', 'readme.md']
+		['--recurse', '--configure', 'jsdoc.json', '--destination', '../stb-pages/', 'tpl/app/js/stb/', 'readme.md']
 	);
 
 	child.on('close', done);
