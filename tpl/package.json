@@ -19,6 +19,7 @@
 		"gulp-repl": "^0.2.2",
 		"gulp-sourcemaps": "^1.5.2",
 		"gulp-util": "^3.0.4",
+		"gulp-watch": "^4.2.4",
 		"gulp-webpack": "^1.4.0",
 		"gulp-zip": "^3.0.2",
 		"ip": "^0.3.2",

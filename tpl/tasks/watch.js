@@ -9,32 +9,42 @@
 
 /* eslint no-unused-vars: 0 */
 
-var path = require('path'),
-	gulp = require('gulp');
+var path  = require('path'),
+	gulp  = require('gulp'),
+	watch = require('gulp-watch');
 
 
 // rebuild everything on file changes
+// done callback should be present to show gulp that task is not over
 gulp.task('watch', function ( done ) {
 	// img
-	gulp.watch([
+	watch([
 		path.join(global.paths.app, 'img', '**', '*')
-	], ['img:develop']);
+	], function () {
+		gulp.start('img:develop');
+	});
 
 	// webpack
-	gulp.watch([
+	watch([
 		path.join(global.paths.app, 'js', '**', '*.js'),
 		path.join(global.paths.config, 'app.js'),
 		path.join(global.paths.config, 'metrics.js')
-	], ['webpack:develop']);
+	], function () {
+		gulp.start('webpack:develop');
+	});
 
 	// jade
-	gulp.watch([
+	watch([
 		path.join(global.paths.app, 'jade', '**', '*.jade')
-	], ['jade:develop']);
+	], function () {
+		gulp.start('jade:develop');
+	});
 
 	// less
-	gulp.watch([
+	watch([
 		path.join(global.paths.app, 'less', '**', '*.{less,js}'),
 		path.join(global.paths.config, 'metrics.js')
-	], ['less:develop']);
+	], function () {
+		gulp.start('less:develop');
+	});
 });
