@@ -45,6 +45,16 @@ program
 		ncp(path.join(pathStb, '.gitattributes'), path.join(pathApp, '.gitattributes'), errorHandler);
 	});
 
+program
+	.command('update')
+	.description('update framework js/less/task files')
+	.action(function () {
+		// copy everything
+		ncp(path.join(pathStb, 'tpl', 'app', 'js',   'stb'), path.join(pathApp, 'app',   'js', 'stb'), errorHandler);
+		ncp(path.join(pathStb, 'tpl', 'app', 'less', 'stb'), path.join(pathApp, 'app', 'less', 'stb'), errorHandler);
+		ncp(path.join(pathStb, 'tpl', 'tasks'), path.join(pathApp, 'tasks'), errorHandler);
+	});
+
 // extend default help info
 program.on('--help', function () {
 	console.log('  Examples:');
