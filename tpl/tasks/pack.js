@@ -1,5 +1,5 @@
 /**
- * Pack specific build into zip archive.
+ * Pack a specific build into zip archive.
  *
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
