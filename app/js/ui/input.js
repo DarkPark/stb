@@ -278,6 +278,7 @@ Input.prototype.addChar = function ( char, index ) {
  * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.removeChar = function ( index ) {
+	var prev = this.value;
 	index = (index === undefined) ? this.$caret.index - 1 : index;
 	// non-empty string
 	if ( this.value.length > 0 ) {
@@ -299,7 +300,7 @@ Input.prototype.removeChar = function ( index ) {
 		this.value = this.value.substring(0, index) + this.value.substring(index + 1, this.value.length);
 
 		// there are some listeners
-		if ( this.events['input'] !== undefined ) {
+		if ( this.events['input'] !== undefined && prev !== this.value ) {
 			// notify listeners
 			this.emit('input', {value: this.value});
 		}
