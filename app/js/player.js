@@ -351,12 +351,13 @@ Player.prototype.mediaListener = function ( event ) {
 			self.emit('get:info', info);
 			break;
 		case app.EVENT_CONTENT_ERROR :
-			self.emit('content:error');
 			self.isPLaying = false;
+			self.emit('content:error');
 			break;
 		case app.EVENT_END_OF_FILE:
-			self.emit('content:end');
+			self.currentSec = self.totalDurationSec;
 			self.isPLaying = false;
+			self.emit('content:end');
 			break;
 		case app.EVENT_SUBTITLE_LOAD_ERROR :
 			self.subtitlePIDs.pop();
