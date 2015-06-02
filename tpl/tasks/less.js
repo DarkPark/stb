@@ -107,7 +107,7 @@ function release ( resolution ) {
 			//paths: [ path.join(__dirname, 'less', 'includes') ]
 		}))
 		.pipe(rename('release.' + resolution + '.css'))
-		.pipe(minifyCSS())
+		.pipe(minifyCSS({rebase: false}))
 		.pipe(gulp.dest(path.join(global.paths.build, 'css')));
 }
 
