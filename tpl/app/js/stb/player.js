@@ -176,15 +176,18 @@ function Player ( config ) {
 
 }
 
+
 // inheritance
 Player.prototype = Object.create(Component.prototype);
 Player.prototype.constructor = Player;
+
 
 // aspect types
 Player.prototype.ASPECT_TYPE_FIT = 0x10;
 Player.prototype.ASPECT_TYPE_BIG = 0x40;
 Player.prototype.ASPECT_TYPE_OPTIMAL = 0x50;
 Player.prototype.ASPECT_TYPE_ZOOM = 0x00;
+
 
 // aspects array
 Player.prototype.aspects = [
@@ -206,11 +209,13 @@ Player.prototype.aspects = [
 	}
 ];
 
+
 // stereo mode types
 Player.prototype.STEREO_MODE_OFF = 0;
 Player.prototype.STEREO_MODE_OVER_UNDER = 1;
 Player.prototype.STEREO_MODE_OVER_UNDER_HD = 2;
 Player.prototype.STEREO_MODE_SIDE_BY_SIDE = 3;
+
 
 // stereo modes array
 Player.prototype.stereoModes = [
@@ -231,6 +236,7 @@ Player.prototype.stereoModes = [
 		name: 'Side-by-side'
 	}
 ];
+
 
 /**
  * Default method to control player according to pressed keys.
@@ -283,8 +289,9 @@ Player.prototype.controlDefault = function ( event ) {
 	}
 };
 
+
 /**
- * Default function to listen media events
+ * Default function to listen media events.
  *
  * @param {number} event code
  */
@@ -352,18 +359,20 @@ Player.prototype.mediaListener = function ( event ) {
 			self.emit('get:info', info);
 			break;
 		case app.EVENT_CONTENT_ERROR :
-			self.emit('content:error');
 			self.isPLaying = false;
+			self.emit('content:error');
 			break;
 		case app.EVENT_END_OF_FILE:
-			self.emit('content:end');
+			self.currentSec = self.totalDurationSec;
 			self.isPLaying = false;
+			self.emit('content:end');
 			break;
 		case app.EVENT_SUBTITLE_LOAD_ERROR :
 			self.subtitlePIDs.pop();
 			break;
 	}
 };
+
 
 /**
  * Current active method to control player according to pressed keys.
@@ -379,7 +388,6 @@ Player.prototype.control = Player.prototype.controlDefault;
  *
  * @param {Object} config init parameters (subset of constructor config params)
  */
-
 Player.prototype.init = function ( config ) {
 
 	if ( DEBUG ) {
@@ -431,21 +439,25 @@ Player.prototype.init = function ( config ) {
 
 
 /**
- * Play video content from url
+ * Play media content from url.
  *
- * @param {string} url to play video content
+ * @param {string} url to play media content
  * @param {object} [config={}] parameters of playing
- * @param {string} [config.solution='auto'] solution of video content
+ * @param {string} [config.solution='auto'] solution of media content
+ * @param {string} [config.position=''] position to play media content
  * @param {string} [config.proxy=''] proxy server url
  */
 Player.prototype.play = function ( url, config ) {
-	var solution;
+	var solution, position;
 
 	if ( DEBUG ) {
 		if ( arguments.length < 1 ) {
 			throw 'wrong arguments number';
 		}
 	}
+
+	this.totalDurationSec = 0;
+	this.currentSec = 0;
 
 	config = config || {};
 
@@ -454,13 +466,13 @@ Player.prototype.play = function ( url, config ) {
 	} else {
 		solution = 'auto';
 	}
-	gSTB.Play(solution + ' ' + url, config.proxy);
+	position = '' || ' position:' + config.position;
+	gSTB.Play(solution + ' ' + url + position, config.proxy);
 };
 
 
 /**
- * Wrapper of gSTB.Stop
- *
+ * Wrapper of gSTB.Stop.
  */
 Player.prototype.stop = function () {
 	gSTB.Stop();
@@ -471,8 +483,7 @@ Player.prototype.stop = function () {
 
 
 /**
- * Play/pause of playing content
- *
+ * Play/pause of playing content.
  */
 Player.prototype.playPause = function () {
 	if ( this.isPause ) {
@@ -484,8 +495,9 @@ Player.prototype.playPause = function () {
 	this.emit('pause', {state: this.isPause});
 };
 
+
 /**
- * Rewind playing content
+ * Rewind playing content.
  *
  * @param {boolean} forward or backward
  * @param {number} [duration=null] of time to rewind
@@ -562,8 +574,9 @@ Player.prototype.rewind = function ( forward, duration ) {
 
 };
 
+
 /**
- * Change current audio track
+ * Change current audio track.
  *
  * @return {boolean} state
  */
@@ -587,8 +600,9 @@ Player.prototype.nextAudioTrack = function () {
 	return true;
 };
 
+
 /**
- * Set audio track to play by number
+ * Set audio track to play by number.
  *
  * @param {number} number of audio track to play
  */
@@ -601,9 +615,9 @@ Player.prototype.setAudioTrack = function ( number ) {
 	});
 };
 
+
 /**
- * Change current aspect
- *
+ * Change current aspect.
  */
 Player.prototype.nextAspect = function () {
 	this.activeAspect++;
@@ -618,8 +632,9 @@ Player.prototype.nextAspect = function () {
 	});
 };
 
+
 /**
- * Set video aspect by number
+ * Set video aspect by number.
  *
  * @param {number} number of aspect to set
  */
@@ -632,8 +647,9 @@ Player.prototype.setAspect = function ( number ) {
 	});
 };
 
+
 /**
- * Show/hide subtitles or change current subtitle
+ * Show/hide subtitles or change current subtitle.
  *
  * @return {boolean} state
  */
@@ -667,8 +683,9 @@ Player.prototype.nextSubtitle = function () {
 	return true;
 };
 
+
 /**
- * Set current subtitle number from subtitle list
+ * Set current subtitle number from subtitle list.
  *
  * @param {number} number of current set subtitle
  */
@@ -689,14 +706,15 @@ Player.prototype.setSubtitle = function ( number ) {
 	});
 };
 
+
 /**
- * Wrapper of gSTB.gSTB.SetSubtitles(false)
- *
+ * Wrapper of gSTB.gSTB.SetSubtitles(false).
  */
 Player.prototype.hideSubtitles = function () {
 	gSTB.SetSubtitles(false);
 	this.emit('subtitles:change', null);
 };
+
 
 /**
  * Load text subtitles from external subtitle file of srt, sub, ass formats.
@@ -713,9 +731,9 @@ Player.prototype.loadExternalSubtitle = function ( url ) {
 	}
 };
 
+
 /**
- * Change view mode
- *
+ * Change view mode.
  */
 Player.prototype.nextViewMode = function () {
 	var cur = gSTB.Get3DConversionMode();
@@ -732,8 +750,9 @@ Player.prototype.nextViewMode = function () {
 	gSTB.Set3DConversionMode(cur);
 };
 
+
 /**
- * Set view mode
+ * Set view mode.
  *
  * @param {number} number of view mode from 0 to 3
  */
@@ -747,8 +766,9 @@ Player.prototype.setViewMode = function ( number ) {
 	}
 };
 
+
 /**
- * Set position time
+ * Set position time.
  *
  * @param {number} code of pressed key
  */
@@ -831,8 +851,9 @@ Player.prototype.inputPosition = function ( code ) {
 	}, timeoutSec);
 };
 
+
 /**
- * Set position of playing current content
+ * Set position of playing current content.
  *
  * @param {number} sec to set position
  */
@@ -847,8 +868,9 @@ Player.prototype.setPosition = function ( sec ) {
 	this.emit('position:set', {sec: sec});
 };
 
+
 /**
- * Convert seconds to time object contains hours, minutes and seconds
+ * Convert seconds to time object contains hours, minutes and seconds.
  *
  * @param {number} sec to convert
  * @return{object} {{hour: *, min: *, sec: *}}
@@ -888,4 +910,6 @@ Player.prototype.parseTime = function ( sec ) {
 	return {hour: h, min: m, sec: s};
 };
 
+
+// public
 module.exports = Player;

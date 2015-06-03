@@ -281,9 +281,6 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 	// time mark
 	app.data.time.load = event.timeStamp;
 
-	// require device event listener for stb target
-	//require('./targets/stb/events');
-
 	// global handler
 	// there are some listeners
 	if ( app.events[event.type] !== undefined ) {
@@ -395,7 +392,20 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
 });
 
 
-function globalEventListenerKeydown ( event ) {
+/**
+ * The keydown event is fired when a key is pressed down.
+ * Set event.stop to true in order to prevent bubbling.
+ *
+ * Control flow:
+ *   1. Current active component on the active page.
+ *   2. Current active page itself.
+ *   3. Application.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
+ *
+ * @param {Event} event generated object with event data
+ */
+window.addEventListener('keydown', function globalEventListenerKeydown ( event ) {
 	var page = router.current;
 
 	if ( DEBUG ) {
@@ -445,23 +455,7 @@ function globalEventListenerKeydown ( event ) {
 	if ( app.data.host && keyCodes[event.code] ) {
 		event.preventDefault();
 	}
-}
-
-
-/**
- * The keydown event is fired when a key is pressed down.
- * Set event.stop to true in order to prevent bubbling.
- *
- * Control flow:
- *   1. Current active component on the active page.
- *   2. Current active page itself.
- *   3. Application.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/keydown
- *
- * @param {Event} event generated object with event data
- */
-window.addEventListener('keydown', globalEventListenerKeydown);
+});
 
 
 /**
@@ -473,7 +467,7 @@ window.addEventListener('keydown', globalEventListenerKeydown);
  * @param {Event} event generated object with event data
  * @param {string} event.char entered character
  */
-window.addEventListener('keypress', function ( event ) {
+window.addEventListener('keypress', function globalEventListenerKeypress ( event ) {
 	var page = router.current;
 
 	if ( DEBUG ) {
@@ -561,6 +555,178 @@ window.addEventListener('contextmenu', function globalEventListenerContextmenu (
 //		}
 //	}
 //});
+
+
+// Creating stbEvent instance
+window.stbEvent = {};
+
+
+/**
+ * Device media events.
+ *
+ * @event module:stb/app#media
+ * @type object
+ * @property {number} code of event
+ */
+
+
+/**
+ * Event on messages from a window.
+ *
+ * @event module:stb/app#message
+ * @type object
+ * @property {boolean} broadcast message flag
+ * @property {string} message received from window
+ * @property {object} data received from window
+ */
+
+
+/**
+ * Fires stb device media events.
+ *
+ * @param {number} event code
+ */
+window.stbEvent.onEvent = function ( event ) {
+	app.emit('media', {code: parseInt(event, 10)});
+};
+
+
+/**
+ * Fires event on broadcast messages from a window.
+ *
+ * @param {number} windowId that sent message
+ * @param {string} message text
+ * @param {object} data in sent message
+ * @fires module:/stb/app#message
+ */
+window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
+	app.emit('message', {
+		broadcast: true,
+		windowId: windowId,
+		message: message,
+		data: data
+	});
+};
+
+
+/**
+ * Fires event on messages from a window.
+ *
+ * @param {number} windowId that sent message
+ * @param {string} message text
+ * @param {object} data in sent message
+ * @fires module:/stb/app#message
+ */
+window.stbEvent.onMessage = function ( windowId, message, data ) {
+	app.emit('message', {
+		broadcast: false,
+		windowId: windowId,
+		message: message,
+		data: data
+	});
+};
+
+
+/**
+ * Event on device mount state.
+ *
+ * @event module:stb/app#mount
+ * @type object
+ * @property {boolean} state of mount device
+ */
+
+
+/**
+ * Fires device mount state event.
+ *
+ * @param {boolean} state of mount device
+ * @fires module:/stb/app#mount
+ */
+window.stbEvent.onMount = function ( state ) {
+	app.emit('device:mount', {state: state});
+};
+
+
+/**
+ * Event on callback on internet browser link clicked.
+ *
+ * @event module:stb/app#media:available
+ */
+
+
+/**
+ * Fires event of callback on internet browser link clicked to ask user what to do with link: play or download.
+ *
+ * @fires module:/stb/app#media:available
+ */
+window.stbEvent.onMediaAvailable = function () {
+	app.emit('media:available');
+};
+
+
+/**
+ * Event on internet connection state.
+ *
+ * @event module:stb/app#internet:state
+ * @type object
+ * @property {boolean} state of internet connection
+ */
+
+
+/**
+ * Fires new internet connection state event.
+ *
+ * @param {boolean} state of internet connection
+ * @fires module:/stb/app#internet:state
+ */
+window.stbEvent.onNetworkStateChange = function ( state ) {
+	app.emit('internet:state', {state: state});
+};
+
+
+/**
+ * Event on document loading progress changes.
+ *
+ * @event module:stb/app#browser:progress
+ * @type object
+ * @property {number} progress of document loading
+ */
+
+
+/**
+ * Fires document loading progress changes event.
+ *
+ * @param {number} progress of document loading
+ * fires module:/stb/app#browser:progress
+ */
+window.stbEvent.onWebBrowserProgress = function ( progress ) {
+	app.emit('browser:progress', {progress: progress});
+};
+
+
+/**
+ * Event on browser web window activation event.
+ *
+ * @event module:stb/app#window:focus
+ */
+
+
+/**
+ * Fires browser web window activation event.
+ *
+ * fires module:/stb/app#window:focus
+ */
+window.stbEvent.onWindowActivated = function () {
+	app.emit('window:focus');
+};
+
+
+// new way of string handling
+// all strings are in UTF-16
+// since stbapp 2.18
+if ( window.gSTB && gSTB.SetNativeStringMode ) {
+	gSTB.SetNativeStringMode(true);
+}
 
 
 // public
