@@ -44,6 +44,11 @@ module.exports = {
 			exec: 'killall -9 stbapp'
 		},
 
+		// paint black the screen
+		clear: {
+			exec: 'fbdump -c'
+		},
+
 		// usual stb start
 		test: {
 			exec: 'killall stbapp; /test.sh'
