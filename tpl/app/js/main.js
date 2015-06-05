@@ -7,8 +7,8 @@
 
 'use strict';
 
-var app    = require('stb/app'),
-	router = require('stb/router');
+var app    = require('./stb/app'),
+	router = require('./stb/router');
 
 
 app.addListeners({
@@ -16,18 +16,14 @@ app.addListeners({
 	load: function load () {
 		// set pages
 		router.init([
-			require('./pages/init')
+			require('./pages/init'),
+			require('./pages/main')
 		]);
 	},
 
 	// everything is ready
 	done: function done () {
 		// go to the main page when necessary
-		/* router.navigate('pageMain'); */
+		router.navigate('pageMain');
 	}
 });
-
-
-// new way of string handling
-// all strings are in UTF-16
-//gSTB.SetNativeStringMode(true);

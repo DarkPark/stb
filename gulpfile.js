@@ -7,29 +7,33 @@
 
 'use strict';
 
-var path       = require('path'),
-	gulp       = require('gulp'),
-	plumber    = require('gulp-plumber'),
-	eslint     = require('gulp-eslint'),
-	webpack    = require('gulp-webpack'),
-	report     = require('./lib/report').webpack;
+var path    = require('path'),
+	gulp    = require('gulp'),
+	plumber = require('gulp-plumber'),
+	eslint  = require('gulp-eslint'),
+	webpack = require('gulp-webpack'),
+	log     = require('gulp-util').log;
 
 
 // enable colors in console
 require('tty-colors');
 
 
+// check for potential errors and problems
 gulp.task('lint', function () {
 	return gulp
 		.src([
 			'./bin/**/*.js',
-			'./lib/**/*.js',
-			'./tasks/**/*.js',
 			'./tpl/**/*.js'
 		])
 		.pipe(plumber())
 		.pipe(eslint())
-		.pipe(eslint.format());
+		.pipe(eslint.format('stylish', function ( result ) {
+			// make nice output
+			result.split('\n').forEach(function ( line ) {
+				log('eslint  '.bgRed, line + ''.reset);
+			});
+		}));
 });
 
 
@@ -56,7 +60,7 @@ gulp.task('webpack', function () {
 					DEBUG: false
 				})
 			]
-		}, null, report))
+		}, null/*, report*/))
 		.pipe(gulp.dest('tests'));
 });
 
@@ -66,7 +70,7 @@ gulp.task('jsdoc', function ( done ) {
 	// run process
 	var child = require('child_process').spawn(
 		'./node_modules/.bin/jsdoc',
-		['--recurse', '--configure', 'jsdoc.json', '--destination', 'doc/', 'app/js/', 'readme.md']
+		['--recurse', '--configure', 'jsdoc.json', '--destination', '../stb-pages/', 'tpl/app/js/stb/', 'readme.md']
 	);
 
 	child.on('close', done);
@@ -87,7 +91,4 @@ gulp.task('jsdoc', function ( done ) {
 gulp.task('default', ['webpack', 'jsdoc'], function () {
 	gulp.watch(['./app/js/**/*.js', './tests/units/**/*.js'], ['webpack']);
 	gulp.watch(['./app/js/**/*.js'], ['jsdoc']);
-
-	// manage gulp from command line
-	//require('gulp-runtime').setPrompt('');
 });
