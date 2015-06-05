@@ -7,24 +7,23 @@
 
 'use strict';
 
-var path       = require('path'),
-	gulp       = require('gulp'),
-	plumber    = require('gulp-plumber'),
-	eslint     = require('gulp-eslint'),
-	webpack    = require('gulp-webpack'),
-	log        = require('gulp-util').log;
+var path    = require('path'),
+	gulp    = require('gulp'),
+	plumber = require('gulp-plumber'),
+	eslint  = require('gulp-eslint'),
+	webpack = require('gulp-webpack'),
+	log     = require('gulp-util').log;
 
 
 // enable colors in console
 require('tty-colors');
 
 
+// check for potential errors and problems
 gulp.task('lint', function () {
 	return gulp
 		.src([
 			'./bin/**/*.js',
-			'./lib/**/*.js',
-			'./tasks/**/*.js',
 			'./tpl/**/*.js'
 		])
 		.pipe(plumber())

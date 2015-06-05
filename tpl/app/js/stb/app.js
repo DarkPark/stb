@@ -725,6 +725,8 @@ window.stbEvent.onWindowActivated = function () {
 // all strings are in UTF-16
 // since stbapp 2.18
 if ( window.gSTB && gSTB.SetNativeStringMode ) {
+	/* eslint new-cap: 0 */
+
 	gSTB.SetNativeStringMode(true);
 }
 
