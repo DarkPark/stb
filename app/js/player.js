@@ -351,12 +351,13 @@ Player.prototype.mediaListener = function ( event ) {
 			self.emit('get:info', info);
 			break;
 		case app.EVENT_CONTENT_ERROR :
-			self.emit('content:error');
 			self.isPLaying = false;
+			self.emit('content:error');
 			break;
 		case app.EVENT_END_OF_FILE:
-			self.emit('content:end');
+			self.currentSec = self.totalDurationSec;
 			self.isPLaying = false;
+			self.emit('content:end');
 			break;
 		case app.EVENT_SUBTITLE_LOAD_ERROR :
 			self.subtitlePIDs.pop();
@@ -430,21 +431,25 @@ Player.prototype.init = function ( config ) {
 
 
 /**
- * Play video content from url
+ * Play media content from url
  *
- * @param {string} url to play video content
+ * @param {string} url to play media content
  * @param {object} [config={}] parameters of playing
- * @param {string} [config.solution='auto'] solution of video content
+ * @param {string} [config.solution='auto'] solution of media content
+ * @param {string} [config.position=''] position to play media content
  * @param {string} [config.proxy=''] proxy server url
  */
 Player.prototype.play = function ( url, config ) {
-	var solution;
+	var solution, position;
 
 	if ( DEBUG ) {
 		if ( arguments.length < 1 ) {
 			throw 'wrong arguments number';
 		}
 	}
+
+	this.totalDurationSec = 0;
+	this.currentSec = 0;
 
 	config = config || {};
 
@@ -453,7 +458,8 @@ Player.prototype.play = function ( url, config ) {
 	} else {
 		solution = 'auto';
 	}
-	gSTB.Play(solution + ' ' + url, config.proxy);
+	position = '' || ' position:' + config.position;
+	gSTB.Play(solution + ' ' + url + position, config.proxy);
 };
 
 
