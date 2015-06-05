@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"gulp": "^3.9.0",
-		"gulp-eslint": "^0.13.0",
+		"gulp-eslint": "^0.13.2",
 		"gulp-plumber": "^1.0.1",
 		"gulp-util": "^3.0.5",
 		"gulp-webpack": "^1.4.0",
