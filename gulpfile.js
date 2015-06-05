@@ -7,25 +7,23 @@
 
 'use strict';
 
-var path       = require('path'),
-	gulp       = require('gulp'),
-	plumber    = require('gulp-plumber'),
-	eslint     = require('gulp-eslint'),
-	webpack    = require('gulp-webpack'),
-	log        = require('./lib/log'),
-	report     = require('./lib/report').webpack;
+var path    = require('path'),
+	gulp    = require('gulp'),
+	plumber = require('gulp-plumber'),
+	eslint  = require('gulp-eslint'),
+	webpack = require('gulp-webpack'),
+	log     = require('gulp-util').log;
 
 
 // enable colors in console
 require('tty-colors');
 
 
+// check for potential errors and problems
 gulp.task('lint', function () {
 	return gulp
 		.src([
 			'./bin/**/*.js',
-			'./lib/**/*.js',
-			'./tasks/**/*.js',
 			'./tpl/**/*.js'
 		])
 		.pipe(plumber())
@@ -62,7 +60,7 @@ gulp.task('webpack', function () {
 					DEBUG: false
 				})
 			]
-		}, null, report))
+		}, null/*, report*/))
 		.pipe(gulp.dest('tests'));
 });
 
@@ -72,7 +70,7 @@ gulp.task('jsdoc', function ( done ) {
 	// run process
 	var child = require('child_process').spawn(
 		'./node_modules/.bin/jsdoc',
-		['--recurse', '--configure', 'jsdoc.json', '--destination', '../stb-pages/', 'app/js/', 'readme.md']
+		['--recurse', '--configure', 'jsdoc.json', '--destination', '../stb-pages/', 'tpl/app/js/stb/', 'readme.md']
 	);
 
 	child.on('close', done);
