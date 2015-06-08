@@ -24,6 +24,13 @@ gulp.task('watch', function ( done ) {
 		gulp.start('img:develop');
 	});
 
+	// font
+	watch([
+		path.join(global.paths.app, 'font', '**', '*')
+	], function () {
+		gulp.start('font:develop');
+	});
+
 	// webpack
 	watch([
 		path.join(global.paths.app, 'js', '**', '*.js'),

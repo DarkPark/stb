@@ -11,8 +11,8 @@ var gulp = require('gulp');
 
 
 // rebuild develop and release
-gulp.task('build:develop', ['lint', 'img', 'jade:develop', 'less:develop', 'webpack:develop']);
-gulp.task('build:release', ['lint', 'img', 'jade:release', 'less:release', 'webpack:release']);
+gulp.task('build:develop', ['lint', 'font', 'img', 'jade:develop', 'less:develop', 'webpack:develop']);
+gulp.task('build:release', ['lint', 'font', 'img', 'jade:release', 'less:release', 'webpack:release']);
 
 
 // full rebuild
