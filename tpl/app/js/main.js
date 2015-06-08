@@ -7,8 +7,8 @@
 
 'use strict';
 
-var app    = require('stb/app'),
-	router = require('stb/router');
+var app    = require('./stb/app'),
+	router = require('./stb/router');
 
 
 app.addListeners({

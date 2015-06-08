@@ -9,14 +9,15 @@
 
 'use strict';
 
-var vars = require('./720');
+var vars = require('./720'),
+	data = {};
 
 
 // multiply by 1.5 all vars
 Object.keys(vars).forEach(function ( name ) {
-	vars[name] = vars[name] * 1.5;
+	data[name] = vars[name] * 1.5;
 });
 
 
 // public
-module.exports = vars;
+module.exports = data;

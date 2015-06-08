@@ -1,0 +1,37 @@
+// Main entry point (release move).
+// Includes all the pages and declares global common styles.
+// Common for all graphical resolution block.
+//
+// @author Stanislav Kalashnik <sk@infomir.eu>
+// @license GNU GENERAL PUBLIC LICENSE Version 3
+
+html, body {
+	width:               unit(@width, px);
+	height:              unit(@height, px);
+	overflow:            hidden;
+	background-color:    #000;
+	color:               #fff;
+	margin:              0;
+	padding:             0;
+	font-family:         Ubuntu, sans-serif;
+	font-size:           unit(@fontSize, px);
+	-webkit-user-select: none;
+}
+
+// table cell spacing/padding reset
+table {
+	border:          0;
+	border-collapse: collapse;
+	border-spacing:  0;
+	td {
+		padding: 0
+	}
+}
+
+// meta-classes
+.maxh { height: 100% }
+.maxw { width:  100% }
+a { text-decoration: none }
+
+
+@import "components";
