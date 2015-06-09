@@ -8,5 +8,8 @@
 
 'use strict';
 
+
 // public
-module.exports = {};
+module.exports = {
+	// put your vars here
+};

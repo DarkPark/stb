@@ -1,6 +1,6 @@
 {
 	"name": "stb",
-	"version": "0.5.2",
+	"version": "1.0.0",
 	"description": "STB single page application framework.",
 	"author": {
 		"name": "Stanislav Kalashnik",
@@ -12,30 +12,17 @@
 	},
 	"bin": "./bin/stb.js",
 	"dependencies": {
-		"code-proxy": "^1.2.21",
 		"commander": "^2.8.1",
-		"del": "^1.2.0",
-		"gremlins.js": "^0.1.0",
-		"gulp": "^3.8.11",
-		"gulp-conflict": "^0.4.0",
-		"gulp-eslint": "^0.12.0",
-		"gulp-jade": "^1.0.1",
-		"gulp-livereload": "^3.8.0",
+		"ncp": "^2.0.0"
+	},
+	"devDependencies": {
+		"gulp": "^3.9.0",
+		"gulp-eslint": "^0.13.2",
 		"gulp-plumber": "^1.0.1",
-		"gulp-rename": "^1.2.0",
+		"gulp-util": "^3.0.5",
 		"gulp-webpack": "^1.4.0",
-		"ip": "^0.3.2",
 		"jsdoc": "3.3.0",
-		"less": "^2.5.1",
-		"mkdirp": "^0.5.1",
-		"node-static": "^0.7.6",
-		"open": "^0.0.5",
-		"pretty-hrtime": "^1.0.0",
-		"requirem": "^0.7.5",
-		"ssh2": "^0.4.8",
-		"tty-colors": "^0.0.6",
-		"weinre": "^2.0.0-pre-I0Z7U9OV",
-		"ws": "^0.7.2"
+		"tty-colors": "^0.0.6"
 	},
 	"keywords": [
 		"stb",
