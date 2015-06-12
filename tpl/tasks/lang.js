@@ -74,7 +74,7 @@ function po2js ( poFile, jsFile ) {
 
 	keyList = Object.keys(items);
 	overwritten = itemsSum - keyList.length;
-// sorting by key names
+	// sorting by key names
 	keyList.sort().forEach(function ( key ) {
 		if ( itemsSorted[key] ) {
 			log(title, '\toverwritten:' + key);
@@ -83,10 +83,10 @@ function po2js ( poFile, jsFile ) {
 	});
 	result.push('gettext.load(' + JSON.stringify(itemsSorted, null, 4) + ');');
 
-// and save
+	// and save
 	log(title, 'build:\t'.cyan + jsFile.bold + '\t' + keyList.length.toString().green + '\tfuzzy:' + fuzzyCount.toString()[fuzzyCount ? 'red' : 'green'] + (overwritten ? ' (total overwritten: ' + overwritten + ')' : ''));
 
-// store js file
+	// store js file
 	fs.writeFileSync(jsFile, result.join('\n'), {encoding:'utf8'});
 }
 
