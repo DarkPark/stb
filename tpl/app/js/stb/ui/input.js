@@ -77,10 +77,7 @@ function Input ( config ) {
 
 	/**
 	 * Direction of the symbols in input.
-	 *  _____________________________________
-	 * |'ltr' | for left to right languages. \
-	 * \'rtl' \ for right to left languages. |
-	 * ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+	 *
 	 * @type {string}
 	 */
 	this.direction = 'ltr';
