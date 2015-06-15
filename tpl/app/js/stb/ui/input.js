@@ -73,6 +73,15 @@ function Input ( config ) {
 	 */
 	this.type = this.TYPE_TEXT;
 
+	/**
+	 * Direction of the symbols in input.
+	 * 'ltr' - for left to right languages.
+	 * 'rtl' - for right to left languages.
+	 *
+	 * @type {string}
+	 */
+	this.direction = 'ltr';
+
 	// parent init
 	Component.call(this, config);
 
@@ -207,6 +216,17 @@ Input.prototype.init = function ( config ) {
 		// apply
 		this.$placeholder.innerText = config.placeholder;
 	}
+
+	// char direction
+	if ( config.direction !== undefined ) {
+		// apply
+		if ( DEBUG ) {
+			if ( typeof config.direction !== 'string' ) { throw 'config.direction must be a string'; }
+			if ( config.direction !== 'ltr' && config.direction !== 'rtl' ) { throw 'config.direction wrong value'; }
+		}
+		this.direction = config.direction;
+	}
+	this.$body.dir = this.direction;
 };
 
 
@@ -351,6 +371,11 @@ Input.prototype.setValue = function ( value ) {
 
 	if ( DEBUG ) {
 		if ( typeof value !== 'string' ) { throw 'value must be a string'; }
+	}
+
+	// return if no changes
+	if ( value === this.value ) {
+		return;
 	}
 
 	// non-empty string
