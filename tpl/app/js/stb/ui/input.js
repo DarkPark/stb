@@ -21,13 +21,15 @@ var Component = require('../component'),
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {string} [config.value='text'] input text value
  * @param {string} [config.placeholder='password'] placeholder text value
+ * @param {string} [config.type=Input.TYPE_TEXT] input type
+ * @param {string} [config.direction='ltr'] symbol direction ('rtl' - right to left, 'ltr' - left to right)
  *
  * @example
  * var Input = require('stb/ui/input'),
  *     input = new Input({
  *         placeholder: 'input password'
  *         events: {
- *             change: function ( event ) {
+ *             input: function ( event ) {
  *                 debug.log(event.value);
  *             }
  *         }
@@ -75,9 +77,10 @@ function Input ( config ) {
 
 	/**
 	 * Direction of the symbols in input.
-	 * 'ltr' - for left to right languages.
-	 * 'rtl' - for right to left languages.
-	 *
+	 *  _____________________________________
+	 * |'ltr' | for left to right languages. \
+	 * \'rtl' \ for right to left languages. |
+	 * ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 	 * @type {string}
 	 */
 	this.direction = 'ltr';
@@ -298,7 +301,8 @@ Input.prototype.addChar = function ( char, index ) {
  * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.removeChar = function ( index ) {
-	var prev = this.value;
+	var prevValue = this.value;
+
 	index = (index === undefined) ? this.$caret.index - 1 : index;
 	// non-empty string
 	if ( this.value.length > 0 ) {
@@ -319,8 +323,8 @@ Input.prototype.removeChar = function ( index ) {
 		// cut one char from the value
 		this.value = this.value.substring(0, index) + this.value.substring(index + 1, this.value.length);
 
-		// there are some listeners
-		if ( this.events['input'] !== undefined && prev !== this.value ) {
+		// there are some listeners and value was changed
+		if ( this.events['input'] !== undefined && prevValue !== this.value ) {
 			// notify listeners
 			this.emit('input', {value: this.value});
 		}
