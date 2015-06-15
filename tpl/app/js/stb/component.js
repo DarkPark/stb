@@ -405,11 +405,13 @@ Component.prototype.remove = function () {
  * Activate the component.
  * Notify the owner-page and apply CSS class.
  *
+ * @param {Object} data custom data which passed into handlers
+ *
  * @return {boolean} operation status
  *
  * @fires module:stb/component~Component#focus
  */
-Component.prototype.focus = function () {
+Component.prototype.focus = function ( data ) {
 	var activePage = router.current,
 		activeItem = activePage.activeComponent;
 
@@ -439,7 +441,7 @@ Component.prototype.focus = function () {
 			 *
 			 * @event module:stb/component~Component#focus
 			 */
-			activeItem.emit('focus');
+			activeItem.emit('focus', data);
 		}
 
 		debug.log('component ' + this.constructor.name + '.' + this.id + ' focus');
@@ -493,6 +495,7 @@ Component.prototype.blur = function () {
  * Make the component visible and notify subscribers.
  *
  * @param {Object} data custom data which passed into handlers
+ *
  * @return {boolean} operation status
  *
  * @fires module:stb/component~Component#show
