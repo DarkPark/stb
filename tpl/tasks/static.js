@@ -69,7 +69,7 @@ gulp.task('static', function ( done ) {
 			glr.listen({quiet: true});
 
 			// reload
-			gulp.watch([path.join(global.paths.build, '**', '*.{html,js,css}')]).on('change', function ( file ) {
+			gulp.watch([path.join(global.paths.build, '**', '*.{html,js,json,css}')]).on('change', function ( file ) {
 				// report
 				log('watch   '.bgCyan.black, 'reload ' + ('./' + path.relative(global.paths.build, file.path)).bold);
 				// reload
