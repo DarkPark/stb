@@ -7,6 +7,7 @@
 	"dependencies": {
 		"code-proxy": "^1.2.21",
 		"del": "^1.2.0",
+		"gettext-parser": "^1.1.1",
 		"gremlins.js": "^0.1.0",
 		"gulp": "^3.9.0",
 		"gulp-eslint": "^0.14.0",
@@ -25,7 +26,6 @@
 		"ip": "^0.3.2",
 		"node-static": "^0.7.6",
 		"open": "^0.0.5",
-		"pofile": "^0.2.12",
 		"ssh2": "^0.4.8",
 		"tty-colors": "^0.0.6",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
