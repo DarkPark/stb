@@ -7,6 +7,9 @@
 	"globals": {
 		"DEBUG": false,
 		"debug": false,
+		"gettext": false,
+		"ngettext": false,
+		"pgettext": false,
 		"dvbManager": false,
 		"gSTB": false,
 		"pvrManager": false,
