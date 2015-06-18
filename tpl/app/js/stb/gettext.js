@@ -8,7 +8,7 @@
 
 var Emitter = require('./emitter'),
 	gettext = new Emitter(),
-	headers = null,
+	meta    = null,
 	data    = null;
 
 
@@ -36,7 +36,7 @@ gettext.load = function ( config, callback ) {
 	}
 
 	// defaults
-	config.ext  = config.ext  || 'js';
+	config.ext  = config.ext  || 'json';
 	config.path = config.path || 'lang';
 
 	/* todo: get rid of JSON.parse in future
@@ -49,13 +49,13 @@ gettext.load = function ( config, callback ) {
 		var json;
 
 		try {
-			json    = JSON.parse(xhr.responseText);
-			headers = json.headers;
-			data    = json.data;
+			json = JSON.parse(xhr.responseText);
+			meta = json.meta;
+			data = json.data;
 			callback(null, data);
 		} catch ( error ) {
-			headers = null;
-			data    = null;
+			meta = null;
+			data = null;
 			xhr.onerror(error);
 		}
 
@@ -89,9 +89,12 @@ gettext.load = function ( config, callback ) {
  * @return {string} translated text
  *
  * @global
+ *
+ * @example
+ * console.log(gettext('some line to be localized'));
  */
 window.gettext = function ( msgId ) {
-	return data ? data[''][msgId] : msgId;
+	return data && data[''][msgId] ? data[''][msgId] : msgId;
 };
 
 
@@ -104,9 +107,12 @@ window.gettext = function ( msgId ) {
  * @return {string} translated text
  *
  * @global
+ *
+ * @example
+ * console.log(pgettext('some context', 'some text'));
  */
 window.pgettext = function ( context, msgId ) {
-	return data ? data[context][msgId] : msgId;
+	return data && data[context][msgId] ? data[context][msgId] : msgId;
 };
 
 
@@ -120,15 +126,20 @@ window.pgettext = function ( context, msgId ) {
  * @return {string} translated text
  *
  * @global
+ *
+ * @example
+ * console.log(ngettext('{0} cat', '{0} cats', 1));
  */
 window.ngettext = function ( msgId, plural, value ) {
+	/* eslint no-eval: 0 */
+
 	if ( DEBUG ) {
 		if ( Number(value) !== value ) { throw 'value must be a number'; }
 	}
 
-	if ( data && headers ) {
+	if ( data && meta ) {
 		// translation
-		return data[''][msgId][eval('var n = ' + value + '; ' + headers.plural)];
+		return data[''][msgId][eval('var n = ' + value + '; ' + meta.plural)];
 	}
 
 	// english
