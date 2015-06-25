@@ -5,19 +5,7 @@
 // @license GNU GENERAL PUBLIC LICENSE Version 3
 
 html {
-	background-color: transparent;
-	overflow:         auto;
-}
-
-body {
-	outline:        1px solid #333;
-	outline-offset: -1px;
-}
-
-// outline all divs
-div.page div {
-	//outline        : 1px dashed grey;
-	//outline-offset : -1px;
+	overflow: auto;
 }
 
 div.develop {
@@ -34,44 +22,60 @@ div.develop {
 	}
 }
 
-.component {
+// can be toggled by numpad 9
+body.develop {
 	outline:        1px dashed #005000;
 	outline-offset: -1px;
 
-	&.focus {
-		outline: 1px dashed red;
+	// outline all divs
+	div:not(.component) {
+		//outline:        1px dashed grey;
+		//outline-offset: -1px;
 	}
 
-	&.list {
-		> .item {
-			outline:        1px dashed #000000;
-			outline-offset: -1px;
+	.component {
+		outline:        1px dashed #005000;
+		outline-offset: -1px;
 
-			&.focus {
-				outline:        1px dashed orange;
+		&.focus {
+			outline: 1px dashed red;
+
+			// to show inner structure
+			div {
+				outline:        1px dashed grey;
 				outline-offset: -1px;
 			}
 		}
-	}
 
-	&.grid {
-		td.item {
-			outline:        1px dashed #000000;
-			outline-offset: -1px;
-
-			&.focus {
-				outline:        1px dashed orange;
+		&.list {
+			> .item {
+				outline:        1px dashed #000000;
 				outline-offset: -1px;
+
+				&.focus {
+					outline:        1px dashed orange;
+					outline-offset: -1px;
+				}
 			}
 		}
-	}
 
-	&.input > .body {
-		outline: 1px dashed #000;
-	}
-	&.focus.input > .body {
-		outline: 1px dashed red;
+		&.grid {
+			td.item {
+				outline:        1px dashed #000000;
+				outline-offset: -1px;
+
+				&.focus {
+					outline:        1px dashed orange;
+					outline-offset: -1px;
+				}
+			}
+		}
+
+		&.input > .body {
+			outline: 1px dashed #000;
+		}
+		&.focus.input > .body {
+			outline: 1px dashed red;
+		}
 	}
 }
-
-//@import "@{pathApp}/less/develop";
