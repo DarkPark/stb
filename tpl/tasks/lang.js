@@ -134,6 +134,8 @@ function msgmerge ( langName, potFile, poFile, callback ) {
 	}
 
 	exec(command, function ( error, stdout, stderr ) {
+		/* eslint no-unused-vars: 0 */
+
 		if ( error ) {
 			log(title, error.toString().trim().red);
 		} else {
