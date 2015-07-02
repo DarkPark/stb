@@ -11,11 +11,11 @@ var path     = require('path'),
 	util     = require('util'),
 	gulp     = require('gulp'),
 	plumber  = require('gulp-plumber'),
-	webpack  = require('gulp-webpack'),
+	webpack  = require('webpack-stream'),
 	log      = require('gulp-util').log,
 	del      = require('del'),
 	pkgInfo  = require(path.join(global.paths.root, 'package.json')),
-	wpkInfo  = require(path.join(global.paths.root, 'node_modules', 'gulp-webpack', 'node_modules', 'webpack', 'package.json')),
+	wpkInfo  = require(path.join(global.paths.root, 'node_modules', 'webpack-stream', 'node_modules', 'webpack', 'package.json')),
 	warnings = false;
 
 

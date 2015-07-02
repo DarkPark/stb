@@ -20,9 +20,9 @@
 		"gulp-eslint": "^0.15.0",
 		"gulp-plumber": "^1.0.1",
 		"gulp-util": "^3.0.5",
-		"gulp-webpack": "^1.5.0",
 		"jsdoc": "3.3.2",
-		"tty-colors": "^0.0.6"
+		"tty-colors": "^0.0.6",
+		"webpack-stream": "^2.0.0"
 	},
 	"keywords": [
 		"stb",

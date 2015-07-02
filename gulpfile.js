@@ -11,7 +11,7 @@ var path    = require('path'),
 	gulp    = require('gulp'),
 	plumber = require('gulp-plumber'),
 	eslint  = require('gulp-eslint'),
-	webpack = require('gulp-webpack'),
+	webpack = require('webpack-stream'),
 	log     = require('gulp-util').log;
 
 
