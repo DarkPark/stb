@@ -587,7 +587,11 @@ window.stbEvent = {};
  * @param {number} event code
  */
 window.stbEvent.onEvent = function ( event ) {
-	app.emit('media', {code: parseInt(event, 10)});
+	// there are some listeners
+	if ( app.events['media'] !== undefined ) {
+		// notify listeners
+		app.emit('media', {code: parseInt(event, 10)});
+	}
 };
 
 
@@ -600,12 +604,15 @@ window.stbEvent.onEvent = function ( event ) {
  * @fires module:/stb/app#message
  */
 window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
-	app.emit('message', {
-		broadcast: true,
-		windowId: windowId,
-		message: message,
-		data: data
-	});
+	if ( app.events['message'] !== undefined ) {
+		// notify listeners
+		app.emit('message', {
+			broadcast: true,
+			windowId: windowId,
+			message: message,
+			data: data
+		});
+	}
 };
 
 
@@ -618,12 +625,15 @@ window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
  * @fires module:/stb/app#message
  */
 window.stbEvent.onMessage = function ( windowId, message, data ) {
-	app.emit('message', {
-		broadcast: false,
-		windowId: windowId,
-		message: message,
-		data: data
-	});
+	if ( app.events['message'] !== undefined ) {
+		// notify listeners
+		app.emit('message', {
+			broadcast: false,
+			windowId: windowId,
+			message: message,
+			data: data
+		});
+	}
 };
 
 
@@ -643,7 +653,10 @@ window.stbEvent.onMessage = function ( windowId, message, data ) {
  * @fires module:/stb/app#mount
  */
 window.stbEvent.onMount = function ( state ) {
-	app.emit('device:mount', {state: state});
+	if ( app.events['device:mount'] !== undefined ) {
+		// notify listeners
+		app.emit('device:mount', {state: state});
+	}
 };
 
 
@@ -660,7 +673,10 @@ window.stbEvent.onMount = function ( state ) {
  * @fires module:/stb/app#media:available
  */
 window.stbEvent.onMediaAvailable = function () {
-	app.emit('media:available');
+	if ( app.events['media:available'] !== undefined ) {
+		// notify listeners
+		app.emit('media:available');
+	}
 };
 
 
@@ -680,7 +696,10 @@ window.stbEvent.onMediaAvailable = function () {
  * @fires module:/stb/app#internet:state
  */
 window.stbEvent.onNetworkStateChange = function ( state ) {
-	app.emit('internet:state', {state: state});
+	if ( app.events['internet:state'] !== undefined ) {
+		// notify listeners
+		app.emit('internet:state', {state: state});
+	}
 };
 
 
@@ -700,7 +719,10 @@ window.stbEvent.onNetworkStateChange = function ( state ) {
  * fires module:/stb/app#browser:progress
  */
 window.stbEvent.onWebBrowserProgress = function ( progress ) {
-	app.emit('browser:progress', {progress: progress});
+	if ( app.events['browser:progress'] !== undefined ) {
+		// notify listeners
+		app.emit('browser:progress', {progress: progress});
+	}
 };
 
 
@@ -717,7 +739,10 @@ window.stbEvent.onWebBrowserProgress = function ( progress ) {
  * fires module:/stb/app#window:focus
  */
 window.stbEvent.onWindowActivated = function () {
-	app.emit('window:focus');
+	if ( app.events['window:focus'] !== undefined ) {
+		// notify listeners
+		app.emit('window:focus');
+	}
 };
 
 
