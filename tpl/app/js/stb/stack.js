@@ -39,6 +39,7 @@ function Stack ( data ) {
 	this.data = data || [];
 
 	if ( DEBUG ) {
+		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
 		if ( !Array.isArray(this.data) ) { throw 'wrong data type'; }
 	}
 
