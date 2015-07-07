@@ -105,7 +105,7 @@ app.setScreen = function ( metrics ) {
 		// load CSS file base on resolution
 		linkCSS = document.createElement('link');
 		linkCSS.rel  = 'stylesheet';
-		linkCSS.href = 'css/' + (DEBUG ? 'develop.' : 'release.') + metrics.height + '.css';
+		linkCSS.href = 'css/' + (DEBUG ? 'develop.' : 'release.') + metrics.height + '.css?' + +new Date();
 		document.head.appendChild(linkCSS);
 
 		// provide global access
