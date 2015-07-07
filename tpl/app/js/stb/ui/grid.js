@@ -259,7 +259,7 @@ function normalize ( data ) {
 			}
 
 			if ( DEBUG ) {
-				if ( !('value' in item) ) { throw 'field "value" is missing'; }
+				//if ( !('value' in item) ) { throw 'field "value" is missing'; }
 				if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
 				if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
 				if ( item.colSpan <= 0 ) { throw 'item.colSpan should be positive'; }
