@@ -152,6 +152,7 @@ function xgettext ( callback ) {
 		title   = 'xgettext'.inverse,
 		params  = [
 			'xgettext',
+			'--force-po',
 			'--output="' + dstFile + '"',
 			'--language="JavaScript"',
 			'--from-code="' + config.fromCode + '"',
