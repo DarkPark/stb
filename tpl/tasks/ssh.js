@@ -65,9 +65,28 @@ if ( config.active ) {
 						});
 						stream.on('data', function ( data ) {
 							data.toString().split('\n').forEach(function ( line ) {
+								var parts = line.split(' ');
+
 								if ( line ) {
-									line = line.replace('DEBUG:: ', '');
-									log(title, line);
+									if ( line.indexOf('DEBUG::') !== -1 ) {
+										// regular output
+										log(title, line.replace('DEBUG:: ', ''));
+									} else {
+										// system/player output
+										if ( parts[0] === 'Event' ) {
+											log(title, line.bgBlue);
+										} else if ( parts[0] === 'sol' ) {
+											log(title, line.bgYellow);
+										} else if ( parts[0] === 'URL' ) {
+											log(title, line.yellow);
+										} else {
+											if ( line === 'STBPlayer Engine Created' || line === 'STBplayer - console-based player using STBengine' ) {
+												log(title, line.green);
+											} else {
+												log(title, line);
+											}
+										}
+									}
 								}
 							});
 						});
