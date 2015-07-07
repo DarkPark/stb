@@ -21,7 +21,7 @@ gulp.task('watch', function ( done ) {
 	watch([
 		path.join(global.paths.app, 'img', '**', '*')
 	], function () {
-		gulp.start('img:develop');
+		gulp.start('img');
 	});
 
 	// font
