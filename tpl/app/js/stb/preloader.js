@@ -11,7 +11,8 @@
 var Emitter   = require('./emitter'),
 	preloader = new Emitter(),
 	queueSize = 0,
-	groups    = {};
+	groups    = {},
+	verbose   = false;
 
 
 /**
@@ -54,7 +55,9 @@ function handler ( event ) {
 	if ( event.type === 'error' ) {
 		debug.log('[preloader] group "' + this.group + '" link "' + this.src + '"', 'red');
 	} else {
-		debug.log('[preloader] group "' + this.group + '" link "' + this.src + '" (' + this.width + 'x' + this.height + ')');
+		if ( verbose ) {
+			debug.log('[preloader] group "' + this.group + '" link "' + this.src + '" (' + this.width + 'x' + this.height + ')');
+		}
 	}
 
 	queueSize--;
