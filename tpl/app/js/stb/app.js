@@ -252,6 +252,7 @@ app.EVENT_DVB_ANTENNA_OFF = 43;
 // apply screen size, position and margins
 app.setScreen(require('../../../config/metrics')[screen.height]);
 
+
 // extract key codes
 for ( key in keys ) {
 	if ( key === 'volumeUp' || key === 'volumeDown' ) {
@@ -260,6 +261,7 @@ for ( key in keys ) {
 	// no need to save key names
 	keyCodes[keys[key]] = true;
 }
+
 
 /**
  * The load event is fired when a resource and its dependent resources have finished loading.
@@ -274,7 +276,7 @@ for ( key in keys ) {
  * @param {Event} event generated object with event data
  */
 window.addEventListener('load', function globalEventListenerLoad ( event ) {
-	var path;
+	//var path;
 
 	debug.event(event);
 
@@ -299,11 +301,12 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 		}
 	});
 
+	/* disable as nobody uses this and it works not as desired
 	// go to the given page if set
 	if ( location.hash ) {
 		path = router.parse(location.hash);
 		router.navigate(path.name, path.data);
-	}
+	}/**/
 
 	// time mark
 	app.data.time.done = +new Date();
