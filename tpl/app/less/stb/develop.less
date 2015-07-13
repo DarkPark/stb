@@ -40,9 +40,13 @@ body.develop {
 
 		&.focus {
 			outline: 1px dashed red;
+		}
 
-			// to show inner structure
-			div {
+		// to show inner structure
+		&.wired {
+			outline-width: 3px;
+			outline-style: dotted;
+			div, td {
 				outline:        1px dashed grey;
 				outline-offset: -1px;
 			}
