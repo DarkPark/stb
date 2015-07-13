@@ -137,7 +137,7 @@ module.exports = window.debug = {
 	 */
 	inspect: function ( data, depth ) {
 		if ( host ) {
-			log('inspect:\n' + util.inspect(data, {depth: depth || 3, colors: true}));
+			log('inspect:\n' + util.inspect(data, {depth: depth === undefined ? 3 : depth, colors: true}));
 		} else {
 			console.log(data);
 		}
