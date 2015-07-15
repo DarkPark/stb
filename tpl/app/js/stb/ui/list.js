@@ -350,6 +350,8 @@ List.prototype.init = function ( config ) {
 			if ( config.viewIndex < 0 ) { throw 'config.viewIndex should be positive'; }
 		}
 	}
+	// reset current view window position
+	this.viewIndex = null;
 
 	// set focus item
 	if ( config.focusIndex !== undefined ) {
