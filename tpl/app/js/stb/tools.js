@@ -99,7 +99,7 @@ module.exports.parseQuery = function ( query ) {
 
 
 /**
- * Parse application referrer.
+ * Determine application referrer.
  * If no referrer - return false.
  *
  * @return {string|boolean} referrer url or false
@@ -108,12 +108,13 @@ module.exports.parseQuery = function ( query ) {
  * location.href = referrer() || 'http://google.com';
  */
 module.exports.referrer = function () {
-	var parameters = module.exports.parseQuery(location.search.substring(1));
+	var queryParams = module.exports.parseQuery(location.search.substring(1));
 
-	if ( parameters['referrer'] ) {
-		// referrer в GET
-		return decodeURIComponent(parameters['referrer']);
+	if ( queryParams.referrer ) {
+		// referrer in GET
+		return decodeURIComponent(queryParams.referrer);
 	}
+
 	if ( document.referrer ) {
 		if ( DEBUG ) {
 			// in develop mode, document.referrer refers to the application url
@@ -123,5 +124,6 @@ module.exports.referrer = function () {
 		}
 		return document.referrer;
 	}
+
 	return false;
 };
