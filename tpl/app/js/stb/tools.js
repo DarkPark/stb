@@ -108,15 +108,17 @@ module.exports.parseQuery = function ( query ) {
  * location.href = referrer() || 'http://google.com';
  */
 module.exports.referrer = function () {
-	var parameters = module.exports.parseQuery(document.location.search.substring(1));
+	var parameters = module.exports.parseQuery(location.search.substring(1));
 
-	if ( parameters['referrer'] ) { // referrer в GET
+	if ( parameters['referrer'] ) {
+		// referrer в GET
 		return decodeURIComponent(parameters['referrer']);
 	}
 	if ( document.referrer ) {
-		if ( DEBUG ) { // in develop mode, document.referrer refers to the application url
-			if ( document.location.toString().split('#')[0] === document.referrer ) {
-				return 'file:///home/web/services.html';
+		if ( DEBUG ) {
+			// in develop mode, document.referrer refers to the application url
+			if ( location.href.split('#')[0] === document.referrer ) {
+				return false;
 			}
 		}
 		return document.referrer;
