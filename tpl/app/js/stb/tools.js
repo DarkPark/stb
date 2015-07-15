@@ -96,3 +96,30 @@ module.exports.parseQuery = function ( query ) {
 
 	return data;
 };
+
+
+/**
+ * Parse application referrer.
+ * If no referrer - return false.
+ *
+ * @return {string|boolean} referrer url or false
+ *
+ * @example
+ * location.href = referrer() || 'http://google.com';
+ */
+module.exports.referrer = function () {
+	var parameters = module.exports.parseQuery(document.location.search.substring(1));
+
+	if ( parameters['referrer'] ) { // referrer в GET
+		return decodeURIComponent(parameters['referrer']);
+	}
+	if ( document.referrer ) {
+		if ( DEBUG ) { // in develop mode, document.referrer refers to the application url
+			if ( document.location.toString().split('#')[0] === document.referrer ) {
+				return 'file:///home/web/services.html';
+			}
+		}
+		return document.referrer;
+	}
+	return false;
+};
