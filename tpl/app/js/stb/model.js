@@ -23,6 +23,7 @@ var Emitter = require('./emitter');
  */
 function Model ( data ) {
 	if ( DEBUG ) {
+		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
 		if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
 	}
 

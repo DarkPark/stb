@@ -285,7 +285,7 @@ router.hide = function ( page ) {
  * Do nothing if the name is invalid. Otherwise hide the current, show new and update history.
  *
  * @param {string} name page id
- * @param {Array} [data] options to pass to the page on show
+ * @param {*} [data] options to pass to the page on show
  *
  * @return {boolean} operation status
  */

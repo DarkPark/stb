@@ -189,6 +189,11 @@ function Component ( config ) {
 	// apply component id if given, generate otherwise
 	this.id = config.id || this.$node.id || 'id' + counter++;
 
+	if ( DEBUG ) {
+		// expose inner ID to global scope
+		window[self.id] = self.$node;
+	}
+
 	// apply the given children components
 	if ( config.children ) {
 		if ( DEBUG ) {
@@ -228,9 +233,10 @@ function Component ( config ) {
 		if ( DEBUG ) {
 			// middle mouse button
 			if ( event.button === 1 ) {
-				debug.inspect(self);
-				debug.log('this component is now available by window.link');
+				debug.inspect(self, 0);
+				debug.info('"window.link" or "' + self.id + '.component"', 'this component is now available in global scope');
 				window.link = self;
+				self.$node.classList.toggle('wired');
 			}
 		}
 

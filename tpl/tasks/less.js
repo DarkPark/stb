@@ -25,7 +25,7 @@ var path       = require('path'),
  * @return {Object} var list
  */
 function prepare ( resolution ) {
-	var mName   = path.join(global.paths.root, 'config', 'metrics.js'),
+	var mName   = path.join(global.paths.config, 'metrics.js'),
 		vName   = path.join(global.paths.app, 'less', 'vars', resolution + '.js'),
 		metrics = require(mName)[resolution],
 		stbVars = require(vName),

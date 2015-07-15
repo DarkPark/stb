@@ -22,6 +22,10 @@ var app       = require('./app'),
 function Player ( config ) {
 	var self = this;
 
+	if ( DEBUG ) {
+		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
+	}
+
 	/**
 	 * State of playing flag
 	 *

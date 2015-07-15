@@ -24,6 +24,9 @@ window.addEventListener('load', function developEventListenerLoad () {
 	window.$develop = document.body.appendChild(document.createElement('div'));
 	window.$develop.className = 'develop';
 
+	// apply dev css
+	document.body.classList.add('develop');
+
 	grid.init();
 
 	if ( storage.get('grid.active') ) {
@@ -136,6 +139,13 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
 					debug.inspect(error);
 				}
 			}));
+			break;
+
+		// numpad 9
+		case 105:
+			// outline components and inner structures
+			debug.log('toggle develop css layout', 'red');
+			document.body.classList.toggle('develop');
 			break;
 
 		// numpad .

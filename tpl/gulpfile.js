@@ -38,11 +38,11 @@ require('tty-colors');
 
 // general app paths
 global.paths = {
-	root:   __dirname,
-	tasks:  path.join(__dirname, 'tasks'),
-	app:    path.join(__dirname, 'app'),
-	build:  path.join(__dirname, 'build'),
-	config: path.join(__dirname, 'config')
+	root:   process.env.PATH_ROOT   || __dirname,
+	tasks:  process.env.PATH_TASKS  || path.join(__dirname, 'tasks'),
+	app:    process.env.PATH_APP    || path.join(__dirname, 'app'),
+	build:  process.env.PATH_BUILD  || path.join(__dirname, 'build'),
+	config: process.env.PATH_CONFIG || path.join(__dirname, 'config')
 };
 
 

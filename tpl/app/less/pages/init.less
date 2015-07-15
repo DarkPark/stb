@@ -5,12 +5,25 @@
 
 
 #pageInit {
-	.main {
-		display        : table-cell;
-		vertical-align : middle;
-		text-align     : center;
-		width          : unit(@width,  px);
-		height         : unit(@height, px);
-		font-size      : 150%;
+	display: table;
+
+	> .cell {
+		display: table-cell;
+		position: relative;
+		text-align: center;
+		vertical-align: middle;
+		font-size: 150%;
+
+		> .version {
+			position: absolute;
+			bottom: unit(@availBottom, px);
+			right: unit(@availRight, px);
+			font-size: 50%;
+			color: #555;
+
+			> .value {
+				color: #fff;
+			}
+		}
 	}
 }

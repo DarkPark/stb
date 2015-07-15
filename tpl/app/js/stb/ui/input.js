@@ -21,13 +21,15 @@ var Component = require('../component'),
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {string} [config.value='text'] input text value
  * @param {string} [config.placeholder='password'] placeholder text value
+ * @param {string} [config.type=Input.TYPE_TEXT] input type
+ * @param {string} [config.direction='ltr'] symbol direction ('rtl' - right to left, 'ltr' - left to right)
  *
  * @example
  * var Input = require('stb/ui/input'),
  *     input = new Input({
  *         placeholder: 'input password'
  *         events: {
- *             change: function ( event ) {
+ *             input: function ( event ) {
  *                 debug.log(event.value);
  *             }
  *         }
@@ -72,6 +74,13 @@ function Input ( config ) {
 	 * @type {number}
 	 */
 	this.type = this.TYPE_TEXT;
+
+	/**
+	 * Direction of the symbols in input.
+	 *
+	 * @type {string}
+	 */
+	this.direction = 'ltr';
 
 	// parent init
 	Component.call(this, config);
@@ -207,6 +216,17 @@ Input.prototype.init = function ( config ) {
 		// apply
 		this.$placeholder.innerText = config.placeholder;
 	}
+
+	// char direction
+	if ( config.direction !== undefined ) {
+		// apply
+		if ( DEBUG ) {
+			if ( typeof config.direction !== 'string' ) { throw 'config.direction must be a string'; }
+			if ( config.direction !== 'ltr' && config.direction !== 'rtl' ) { throw 'config.direction wrong value'; }
+		}
+		this.direction = config.direction;
+	}
+	this.$body.dir = this.direction;
 };
 
 
@@ -278,6 +298,8 @@ Input.prototype.addChar = function ( char, index ) {
  * @fires module:stb/ui/input~Input#input
  */
 Input.prototype.removeChar = function ( index ) {
+	var prevValue = this.value;
+
 	index = (index === undefined) ? this.$caret.index - 1 : index;
 	// non-empty string
 	if ( this.value.length > 0 ) {
@@ -298,8 +320,8 @@ Input.prototype.removeChar = function ( index ) {
 		// cut one char from the value
 		this.value = this.value.substring(0, index) + this.value.substring(index + 1, this.value.length);
 
-		// there are some listeners
-		if ( this.events['input'] !== undefined ) {
+		// there are some listeners and value was changed
+		if ( this.events['input'] !== undefined && prevValue !== this.value ) {
 			// notify listeners
 			this.emit('input', {value: this.value});
 		}
@@ -350,6 +372,11 @@ Input.prototype.setValue = function ( value ) {
 
 	if ( DEBUG ) {
 		if ( typeof value !== 'string' ) { throw 'value must be a string'; }
+	}
+
+	// return if no changes
+	if ( value === this.value ) {
+		return;
 	}
 
 	// non-empty string

@@ -7,6 +7,9 @@
 	"globals": {
 		"DEBUG": false,
 		"debug": false,
+		"gettext": false,
+		"ngettext": false,
+		"pgettext": false,
 		"dvbManager": false,
 		"gSTB": false,
 		"pvrManager": false,
@@ -96,6 +99,7 @@
 
 		"no-process-exit": 0,
 
+		"array-bracket-spacing": [2, "never"],
 		"brace-style": [1, "1tbs", {"allowSingleLine": true}],
 		"camelcase": 1,
 		"comma-spacing": [1, {"before": false, "after": true}],

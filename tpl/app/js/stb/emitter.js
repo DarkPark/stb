@@ -14,6 +14,10 @@
  * @constructor
  */
 function Emitter () {
+	if ( DEBUG ) {
+		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
+	}
+
 	/**
 	 * Inner hash table for event names and linked callbacks.
 	 * Manual editing should be avoided.

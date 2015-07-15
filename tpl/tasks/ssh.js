@@ -15,7 +15,26 @@ var path    = require('path'),
 	appPort = require(path.join(global.paths.config, 'static')).port,
 	appHost = require('ip').address(),
 	title   = 'remote  '.inverse.yellow,
-	stderr  = false;
+	stderr  = false,
+	msgSet  = {
+		1   : 'The player reached the end of the media content or detected a discontinuity of the stream.',
+		2   : 'Information on audio and video tracks of the media content is received. It\'s now possible to call gSTB.GetAudioPIDs etc.',
+		4   : 'Video and/or audio playback has begun.',
+		5   : 'Error when opening the content: content not found on the server or connection with the server was rejected.',
+		6   : 'Detected DualMono AC-3 sound.',
+		7   : 'The decoder has received info about the content and started to play. It\'s now possible to call gSTB.GetVideoInfo.',
+		8   : 'Error occurred while loading external subtitles.',
+		9   : 'Found new teletext subtitles in stream.',
+		32  : 'HDMI device has been connected.',
+		33  : 'HDMI device has been disconnected.',
+		34  : 'Recording task has been finished successfully. See Appendix 13. JavaScript API for PVR subsystem.',
+		35  : 'Recording task has been finished with error. See Appendix 13. JavaScript API for PVR subsystem.',
+		40  : 'Scanning DVB Channel in progress.',
+		41  : 'Scanning DVB Channel found.',
+		42  : 'DVB Channel EPG update.',
+		43  : 'DVB antenna power off.',
+		129 : 'When playing RTP-stream the numbering of RTP-packets was broken.'
+	};
 
 
 if ( config.active ) {
@@ -65,9 +84,31 @@ if ( config.active ) {
 						});
 						stream.on('data', function ( data ) {
 							data.toString().split('\n').forEach(function ( line ) {
+								var parts = line.split(' ');
+
 								if ( line ) {
-									line = line.replace('DEBUG:: ', '');
-									log(title, line);
+									if ( line.indexOf('DEBUG::') !== -1 ) {
+										// regular output
+										log(title, line.replace('DEBUG:: ', ''));
+									} else {
+										// system/player output
+										if ( parts[0] === 'Event' ) {
+											log(title, line.bgBlue);
+											if ( msgSet[parts[1]] ) {
+												log(title, msgSet[parts[1]].grey);
+											}
+										} else if ( parts[0] === 'sol' ) {
+											log(title, line.bgYellow);
+										} else if ( parts[0] === 'URL' ) {
+											log(title, line.yellow);
+										} else {
+											if ( line === 'STBPlayer Engine Created' || line === 'STBplayer - console-based player using STBengine' ) {
+												log(title, line.green);
+											} else {
+												log(title, line);
+											}
+										}
+									}
 								}
 							});
 						});
