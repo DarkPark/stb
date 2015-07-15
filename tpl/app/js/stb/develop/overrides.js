@@ -23,10 +23,10 @@ document.getElementById = function ( id ) {
 	return el;
 };
 
-document.querySelector = function ( query ) {
-	var el = querySelector.call(document, query);
+document.querySelector = function ( selector ) {
+	var el = querySelector.call(document, selector);
 
-	if ( !el ) { throw 'no element with query: ' + query; }
+	if ( !el ) { throw 'no element with selector: ' + selector; }
 
 	return el;
 };
