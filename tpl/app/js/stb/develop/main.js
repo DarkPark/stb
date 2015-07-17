@@ -43,6 +43,7 @@ require('./static');
 require('./proxy');
 require('./events');
 require('./debug');
+require('./overrides');
 
 // the application itself
 require('../../main');
