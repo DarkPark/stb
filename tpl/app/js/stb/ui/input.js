@@ -98,6 +98,9 @@ function Input ( config ) {
 		// appends hint and caret to input
 		this.$body.appendChild(this.$caret);
 		this.$body.appendChild(this.$placeholder);
+	} else {
+		// correct CSS class names for body
+		this.$node.classList.add('body');
 	}
 
 	// correct CSS class names
