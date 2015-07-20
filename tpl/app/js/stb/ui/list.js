@@ -102,9 +102,6 @@ function List ( config ) {
 	// sanitize
 	config = config || {};
 
-	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component list';
-
 	// horizontal or vertical
 	if ( config.type !== undefined ) {
 		if ( DEBUG ) {
@@ -113,6 +110,9 @@ function List ( config ) {
 		// apply
 		this.type = config.type;
 	}
+
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'list';
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
 		config.classList += ' horizontal';

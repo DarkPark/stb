@@ -22,7 +22,7 @@ function ModalBox ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component modalBox';
+	config.classList = config.classList || 'modalBox';
 
 	// parent init
 	Component.call(this, config);
@@ -34,6 +34,11 @@ function ModalBox ( config ) {
 		this.$body.className = 'body';
 		// add table-cell wrapper
 		this.$node.appendChild(document.createElement('div').appendChild(this.$body).parentNode);
+	}
+
+
+	if ( DEBUG ) {
+		if ( !this.$body.classList.contains('body') ) { throw '$body node must have "body" token in className'; }
 	}
 }
 

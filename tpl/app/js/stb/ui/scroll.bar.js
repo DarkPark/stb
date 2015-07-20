@@ -85,7 +85,7 @@ function ScrollBar ( config ) {
 	config.focusable = config.focusable || false;
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component scrollBar';
+	config.classList = config.classList || 'scrollBar';
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
 		config.classList += ' horizontal';
@@ -98,6 +98,9 @@ function ScrollBar ( config ) {
 	if ( this.$node === this.$body ) {
 		// insert thumb line
 		this.$body = this.$node.appendChild(document.createElement('div'));
+
+		// correct CSS class names
+		this.$body.className += ' thumb';
 	}
 
 	// horizontal or vertical
@@ -109,8 +112,9 @@ function ScrollBar ( config ) {
 		this.type = config.type;
 	}
 
-	// correct CSS class names
-	this.$body.className += ' thumb';
+	if ( DEBUG ) {
+		if ( !this.$body.classList.contains('thumb') ) { throw '$body node must have "thumb" token in className'; }
+	}
 
 	// component setup
 	this.init(config);

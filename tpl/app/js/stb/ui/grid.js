@@ -123,7 +123,7 @@ function Grid ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component grid';
+	config.classList = config.classList || 'grid';
 
 	// parent init
 	Component.call(this, config);

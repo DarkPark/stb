@@ -71,7 +71,7 @@ function ProgressBar ( config ) {
 	config.focusable = config.focusable || false;
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component progressBar';
+	config.classList = config.classList || 'progressBar';
 
 	// parent init
 	Component.call(this, config);
@@ -80,10 +80,15 @@ function ProgressBar ( config ) {
 	if ( this.$node === this.$body ) {
 		// insert bar line
 		this.$body = this.$node.appendChild(document.createElement('div'));
+
+		// correct CSS class names
+		this.$body.className += ' value';
 	}
 
-	// correct CSS class names
-	this.$body.className += ' value';
+
+	if ( DEBUG ) {
+		if ( !this.$body.classList.contains('value') ) { throw '$body node must have "value" token in className'; }
+	}
 
 	// component setup
 	this.init(config);

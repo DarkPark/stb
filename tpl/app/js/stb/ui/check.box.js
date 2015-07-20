@@ -50,7 +50,7 @@ function CheckBox ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component checkBox';
+	config.classList = config.classList || 'checkBox';
 
 	// correct init styles
 	if ( this.value ) {

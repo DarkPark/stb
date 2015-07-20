@@ -22,7 +22,7 @@ function ModalMessage ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component modalMessage';
+	config.classList = config.classList || 'modalBox modalMessage';
 
 	// parent init
 	ModalBox.call(this, config);

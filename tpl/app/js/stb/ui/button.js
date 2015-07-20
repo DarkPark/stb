@@ -35,7 +35,7 @@ function Button ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component button';
+	config.classList = config.classList || 'button';
 
 	// parent init
 	Component.call(this, config);

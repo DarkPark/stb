@@ -22,7 +22,7 @@ function Modal ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component modal';
+	config.classList = config.classList || 'modal';
 
 	// parent init
 	Component.call(this, config);
