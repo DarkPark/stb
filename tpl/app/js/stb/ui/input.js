@@ -62,8 +62,6 @@ function Input ( config ) {
 	 */
 	this.$caret = null;
 
-	this.$caret.index = 0;
-
 	/**
 	 * Input type, now available only text and password.
 	 * Different logic with different types.
@@ -105,13 +103,19 @@ function Input ( config ) {
 		this.$caret = this.$body.appendChild(document.createElement('div'));
 		// correct class
 		this.$caret.className = 'caret';
+	} else {
+		this.$caret = config.$caret;
 	}
+	// setup caret index
+	this.$caret.index = 0;
 
 	if ( config.$placeholder === undefined ) {
 		// $placeholder creation if not provided
 		this.$placeholder = this.$body.appendChild(document.createElement('div'));
 		// correct class
 		this.$placeholder.className = 'placeholder';
+	} else {
+		this.$placeholder = config.$placeholder;
 	}
 
 	if ( DEBUG ) {
