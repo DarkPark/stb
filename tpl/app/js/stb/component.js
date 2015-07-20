@@ -153,7 +153,7 @@ function Component ( config ) {
 		this.$body.appendChild(config.$content);
 	}
 
-	// correct CSS class names
+	// set CSS class names
 	this.$node.className += ' ' + config.classList;
 
 	// apply hierarchy
