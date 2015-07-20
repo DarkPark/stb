@@ -151,7 +151,7 @@ function Component ( config ) {
 	}
 
 	// set CSS class names
-	this.$node.className += 'component ' + (config.classList || '');
+	this.$node.className += ' component ' + (config.classList || '');
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {
