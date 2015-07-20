@@ -19,6 +19,8 @@ var Component = require('../component'),
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
+ * @param {Element} [config.$caret] DOM element/fragment to be a input caret element
+ * @param {Element} [config.$placeholder] DOM element/fragment to be a element for input placeholder
  * @param {string} [config.value='text'] input text value
  * @param {string} [config.placeholder='password'] placeholder text value
  * @param {string} [config.type=Input.TYPE_TEXT] input type
@@ -51,14 +53,14 @@ function Input ( config ) {
 	 *
 	 * @type {Element}
 	 */
-	this.$placeholder = document.createElement('div');
+	this.$placeholder = null;
 
 	/**
 	 * Caret element, which shows current cursor position.
 	 *
 	 * @type {Element}
 	 */
-	this.$caret = document.createElement('div');
+	this.$caret = null;
 
 	this.$caret.index = 0;
 
@@ -94,14 +96,22 @@ function Input ( config ) {
 		// insert text line
 		this.$body = this.$node.appendChild(document.createElement('div'));
 
-		// classes
+		// correct class
 		this.$body.className = 'body';
-		this.$caret.className = 'caret';
-		this.$placeholder.className = 'placeholder';
+	}
 
-		// appends hint and caret to input
-		this.$body.appendChild(this.$caret);
-		this.$body.appendChild(this.$placeholder);
+	if ( config.$caret === undefined ) {
+		// $caret creation if not provided
+		this.$caret = this.$body.appendChild(document.createElement('div'));
+		// correct class
+		this.$caret.className = 'caret';
+	}
+
+	if ( config.$placeholder === undefined ) {
+		// $placeholder creation if not provided
+		this.$placeholder = this.$body.appendChild(document.createElement('div'));
+		// correct class
+		this.$placeholder.className = 'placeholder';
 	}
 
 	if ( DEBUG ) {
