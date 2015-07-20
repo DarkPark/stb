@@ -14,7 +14,7 @@
 	display:          table;
 	table-layout:     fixed;
 
-	.body {
+	> .body {
 		cursor:         text;
 		display:        table-cell;
 		vertical-align: middle;
@@ -22,25 +22,25 @@
 		overflow:       hidden;
 		white-space:    nowrap;
 
-		.char, .placeholder, .caret {
+		> .char, > .placeholder, > .caret {
 			display:        inline-block;
 			vertical-align: middle;
 		}
 
-		.caret {
+		> .caret {
 			height:      80%;
 			width:       2px;
 			margin-left: -2px;
 		}
 
-		.placeholder {
+		> .placeholder {
 			color: #999;
 		}
 	}
 
 	&.focus {
-		.body {
-			.caret {
+		> .body {
+			> .caret {
 				background-color:                  #000000;
 				-webkit-animation:                 inputCursor 1s;
 				-webkit-animation-iteration-count: infinite;
