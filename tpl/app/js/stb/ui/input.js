@@ -84,7 +84,7 @@ function Input ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component input';
+	config.classList = config.classList || 'input';
 
 	// parent init
 	Component.call(this, config);
@@ -96,27 +96,23 @@ function Input ( config ) {
 
 		// correct class
 		this.$body.className = 'body';
-	}
-
-	if ( config.$caret === undefined ) {
 		// $caret creation if not provided
 		this.$caret = this.$body.appendChild(document.createElement('div'));
 		// correct class
 		this.$caret.className = 'caret';
-	} else {
-		this.$caret = config.$caret;
-	}
-	// setup caret index
-	this.$caret.index = 0;
 
-	if ( config.$placeholder === undefined ) {
 		// $placeholder creation if not provided
 		this.$placeholder = this.$body.appendChild(document.createElement('div'));
 		// correct class
 		this.$placeholder.className = 'placeholder';
 	} else {
+		// custom nodes
+		this.$caret = config.$caret;
+
 		this.$placeholder = config.$placeholder;
 	}
+	// setup caret index
+	this.$caret.index = 0;
 
 	if ( DEBUG ) {
 		if ( !this.$body.classList.contains('body') ) { throw '$body node must have "body" token in className'; }
