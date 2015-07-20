@@ -103,7 +103,7 @@ function List ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component input';
+	config.classList = config.classList || 'component list';
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
 		config.classList += ' horizontal';
