@@ -32,9 +32,6 @@ function CheckBox ( config ) {
 	// current execution context
 	var self = this;
 
-	// sanitize
-	config = config || {};
-
 	/**
 	 * Initial state.
 	 *
@@ -49,16 +46,19 @@ function CheckBox ( config ) {
 	 */
 	this.group = null;
 
-	// parent init
-	Component.call(this, config);
+	// sanitize
+	config = config || {};
 
-	// correct CSS class names
-	this.$node.classList.add('checkBox');
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component checkBox';
 
 	// correct init styles
 	if ( this.value ) {
-		this.$node.classList.add('checked');
+		config.classList += ' checked';
 	}
+
+	// parent init
+	Component.call(this, config);
 
 	// apply hierarchy
 	if ( config.group !== undefined ) {

@@ -43,11 +43,11 @@ function Panel ( config ) {
 	// can't accept focus
 	config.focusable = config.focusable || false;
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component panel';
+
 	// parent init
 	Component.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('panel');
 }
 
 

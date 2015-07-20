@@ -102,6 +102,13 @@ function List ( config ) {
 	// sanitize
 	config = config || {};
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component input';
+
+	if ( this.type === this.TYPE_HORIZONTAL ) {
+		config.classList += ' horizontal';
+	}
+
 	// parent init
 	Component.call(this, config);
 
@@ -112,13 +119,6 @@ function List ( config ) {
 		}
 		// apply
 		this.type = config.type;
-	}
-
-	// correct CSS class names
-	this.$node.classList.add('list');
-
-	if ( this.type === this.TYPE_HORIZONTAL ) {
-		this.$node.classList.add('horizontal');
 	}
 
 	// component setup

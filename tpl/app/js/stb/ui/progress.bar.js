@@ -70,6 +70,9 @@ function ProgressBar ( config ) {
 	// can't accept focus
 	config.focusable = config.focusable || false;
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component progressBar';
+
 	// parent init
 	Component.call(this, config);
 
@@ -80,8 +83,7 @@ function ProgressBar ( config ) {
 	}
 
 	// correct CSS class names
-	this.$node.classList.add('progressBar');
-	this.$body.classList.add('value');
+	this.$body.className += ' value';
 
 	// component setup
 	this.init(config);

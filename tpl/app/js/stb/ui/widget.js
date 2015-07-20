@@ -40,11 +40,11 @@ function Widget ( config ) {
 	// hidden
 	config.visible = config.visible || false;
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component widget';
+
 	// parent init
 	Component.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('widget');
 }
 
 

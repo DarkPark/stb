@@ -21,11 +21,11 @@ function Modal ( config ) {
 	// sanitize
 	config = config || {};
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component modal';
+
 	// parent init
 	Component.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('modal');
 }
 
 

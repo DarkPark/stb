@@ -21,6 +21,9 @@ function ModalBox ( config ) {
 	// sanitize
 	config = config || {};
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component modalBox';
+
 	// parent init
 	Component.call(this, config);
 
@@ -32,9 +35,6 @@ function ModalBox ( config ) {
 		// add table-cell wrapper
 		this.$node.appendChild(document.createElement('div').appendChild(this.$body).parentNode);
 	}
-
-	// correct CSS class names
-	this.$node.classList.add('modalBox');
 }
 
 

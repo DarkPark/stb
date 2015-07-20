@@ -32,12 +32,14 @@ var Emitter = require('./emitter'),
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
+ * @param {string} [config.classList='component'] classList space-separated list of classes for "className" property of this.$node
  *
  * @fires module:stb/component~Component#click
  *
  * @example
  * var component = new Component({
  *     $node: document.getElementById(id),
+ *     classList: 'component bootstrap responsive',
  *     events: {
  *         click: function () { ... }
  *     }
@@ -108,6 +110,9 @@ function Component ( config ) {
 	// sanitize
 	config = config || {};
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component';
+
 	if ( DEBUG ) {
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
 	}
@@ -149,7 +154,7 @@ function Component ( config ) {
 	}
 
 	// correct CSS class names
-	this.$node.classList.add('component');
+	this.$node.className += ' ' + config.classList;
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {

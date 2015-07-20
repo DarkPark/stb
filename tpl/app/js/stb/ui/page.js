@@ -58,11 +58,11 @@ function Page ( config ) {
 	// sanitize
 	config = config || {};
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component page';
+
 	// parent init
 	Component.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('page');
 
 	// state flag
 	this.active = this.$node.classList.contains('active');

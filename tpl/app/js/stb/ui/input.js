@@ -39,9 +39,6 @@ function Input ( config ) {
 	// current execution context
 	var self = this;
 
-	// sanitize
-	config = config || {};
-
 	/**
 	 * Text value of input.
 	 *
@@ -82,6 +79,13 @@ function Input ( config ) {
 	 */
 	this.direction = 'ltr';
 
+
+	// sanitize
+	config = config || {};
+
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component input';
+
 	// parent init
 	Component.call(this, config);
 
@@ -98,13 +102,13 @@ function Input ( config ) {
 		// appends hint and caret to input
 		this.$body.appendChild(this.$caret);
 		this.$body.appendChild(this.$placeholder);
-	} else {
-		// correct CSS class names for body
-		this.$node.classList.add('body');
 	}
 
-	// correct CSS class names
-	this.$node.classList.add('input');
+	if ( DEBUG ) {
+		if ( !this.$body.classList.contains('body') ) { throw '$body node must have "body" token in className'; }
+		if ( !this.$caret.classList.contains('caret') ) { throw '$caret node must have "caret" token in className'; }
+		if ( !this.$placeholder.classList.contains('placeholder') ) { throw '$placeholder node must have "placeholder" token in className'; }
+	}
 
 	// component setup
 	this.init(config);

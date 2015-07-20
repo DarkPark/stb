@@ -84,6 +84,13 @@ function ScrollBar ( config ) {
 	// can't accept focus
 	config.focusable = config.focusable || false;
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component scrollBar';
+
+	if ( this.type === this.TYPE_HORIZONTAL ) {
+		config.classList += ' horizontal';
+	}
+
 	// parent init
 	Component.call(this, config);
 
@@ -103,12 +110,7 @@ function ScrollBar ( config ) {
 	}
 
 	// correct CSS class names
-	this.$node.classList.add('scrollBar');
-	this.$body.classList.add('thumb');
-
-	if ( this.type === this.TYPE_HORIZONTAL ) {
-		this.$node.classList.add('horizontal');
-	}
+	this.$body.className += ' thumb';
 
 	// component setup
 	this.init(config);

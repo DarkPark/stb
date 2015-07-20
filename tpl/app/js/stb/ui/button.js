@@ -34,11 +34,11 @@ function Button ( config ) {
 	// sanitize
 	config = config || {};
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component button';
+
 	// parent init
 	Component.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('button');
 
 	// not a custom content
 	if ( this.$node === this.$body ) {

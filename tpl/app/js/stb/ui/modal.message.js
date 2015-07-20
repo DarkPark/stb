@@ -21,11 +21,11 @@ function ModalMessage ( config ) {
 	// sanitize
 	config = config || {};
 
+	// set default className if classList property empty or undefined
+	config.classList = config.classList || 'component modalMessage';
+
 	// parent init
 	ModalBox.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('modalMessage');
 
 	this.$header  = this.$body.appendChild(document.createElement('div'));
 	this.$content = this.$body.appendChild(document.createElement('div'));
