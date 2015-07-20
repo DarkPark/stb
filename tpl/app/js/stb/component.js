@@ -110,9 +110,6 @@ function Component ( config ) {
 	// sanitize
 	config = config || {};
 
-	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'component';
-
 	if ( DEBUG ) {
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
 	}
@@ -154,7 +151,7 @@ function Component ( config ) {
 	}
 
 	// set CSS class names
-	this.$node.className += ' ' + config.classList;
+	this.$node.className += 'component ' + (config.classList || '');
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {
