@@ -20,7 +20,7 @@
  * format('This is a {0} and a {1}', 'cat', 'dog');
  * format('This is a {0} and a {1} and another {0}', 'cat', 'dog');
  */
-module.exports.format = function ( format ) {
+module.exports = function ( format ) {
 	var args = Array.prototype.slice.call(arguments, 1);
 
 	return format.replace(/{(\d+)}/g, function ( match, number ) {
