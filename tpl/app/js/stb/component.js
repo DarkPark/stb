@@ -32,14 +32,14 @@ var Emitter = require('./emitter'),
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
- * @param {string} [config.classList] classList space-separated list of classes for "className" property of this.$node
+ * @param {string} [config.className] space-separated list of classes for "className" property of this.$node
  *
  * @fires module:stb/component~Component#click
  *
  * @example
  * var component = new Component({
  *     $node: document.getElementById(id),
- *     classList: 'bootstrap responsive',
+ *     className: 'bootstrap responsive',
  *     events: {
  *         click: function () { ... }
  *     }
@@ -151,7 +151,7 @@ function Component ( config ) {
 	}
 
 	// set CSS class names
-	this.$node.className += ' component ' + (config.classList || '');
+	this.$node.className += ' component ' + (config.className || '');
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {

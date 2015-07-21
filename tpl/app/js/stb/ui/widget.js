@@ -41,7 +41,7 @@ function Widget ( config ) {
 	config.visible = config.visible || false;
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'widget';
+	config.className = config.className || 'widget';
 
 	// parent init
 	Component.call(this, config);

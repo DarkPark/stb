@@ -22,7 +22,7 @@ function ModalBox ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'modalBox';
+	config.className = config.className || 'modalBox';
 
 	// parent init
 	Component.call(this, config);

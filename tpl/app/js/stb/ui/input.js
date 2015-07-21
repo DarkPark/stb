@@ -84,7 +84,7 @@ function Input ( config ) {
 	config = config || {};
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'input';
+	config.className = config.className || 'input';
 
 	// parent init
 	Component.call(this, config);

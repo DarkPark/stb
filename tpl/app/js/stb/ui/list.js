@@ -112,10 +112,10 @@ function List ( config ) {
 	}
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'list';
+	config.className = config.className || 'list';
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
-		config.classList += ' horizontal';
+		config.className += ' horizontal';
 	}
 
 	// parent init

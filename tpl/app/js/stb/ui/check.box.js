@@ -50,11 +50,11 @@ function CheckBox ( config ) {
 	this.group = null;
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'checkBox';
+	config.className = config.className || 'checkBox';
 
 	// correct init styles
 	if ( this.value ) {
-		config.classList += ' checked';
+		config.className += ' checked';
 	}
 
 	// parent init

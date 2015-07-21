@@ -85,10 +85,10 @@ function ScrollBar ( config ) {
 	config.focusable = config.focusable || false;
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'scrollBar';
+	config.className = config.className || 'scrollBar';
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
-		config.classList += ' horizontal';
+		config.className += ' horizontal';
 	}
 
 	// parent init

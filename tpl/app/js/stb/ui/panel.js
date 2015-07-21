@@ -44,7 +44,7 @@ function Panel ( config ) {
 	config.focusable = config.focusable || false;
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'panel';
+	config.className = config.className || 'panel';
 
 	// parent init
 	Component.call(this, config);

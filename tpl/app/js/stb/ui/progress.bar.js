@@ -71,7 +71,7 @@ function ProgressBar ( config ) {
 	config.focusable = config.focusable || false;
 
 	// set default className if classList property empty or undefined
-	config.classList = config.classList || 'progressBar';
+	config.className = config.className || 'progressBar';
 
 	// parent init
 	Component.call(this, config);
