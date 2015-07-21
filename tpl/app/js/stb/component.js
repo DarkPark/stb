@@ -32,14 +32,14 @@ var Emitter = require('./emitter'),
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
- * @param {string} [config.classList='component'] classList space-separated list of classes for "className" property of this.$node
+ * @param {string} [config.classList] classList space-separated list of classes for "className" property of this.$node
  *
  * @fires module:stb/component~Component#click
  *
  * @example
  * var component = new Component({
  *     $node: document.getElementById(id),
- *     classList: 'component bootstrap responsive',
+ *     classList: 'bootstrap responsive',
  *     events: {
  *         click: function () { ... }
  *     }
