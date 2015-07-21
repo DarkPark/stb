@@ -81,17 +81,6 @@ function Component ( config ) {
 	 */
 	this.$body = null;
 
-	if ( DEBUG ) {
-		/**
-		 * Link to the page owner component.
-		 * It can differ from the direct parent.
-		 * Should be used only in debug.
-		 *
-		 * @type {Page}
-		 */
-		//this.page = null;
-	}
-
 	/**
 	 * Link to the parent component which has this component as a child.
 	 *
@@ -112,6 +101,7 @@ function Component ( config ) {
 
 	if ( DEBUG ) {
 		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+		if ( 'className' in config && (typeof config.className !== 'string' || config.className.length === 0) ) { throw 'wrong or empty config.className'; }
 	}
 
 	// parent init
@@ -161,15 +151,6 @@ function Component ( config ) {
 		// apply
 		config.parent.add(this);
 	}
-
-	// set link to the page owner component
-	//if ( config.page !== undefined ) {
-	//	if ( DEBUG ) {
-	//		if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
-	//	}
-    //	// apply
-	//	this.page = config.page;
-	//}
 
 	// apply given visibility
 	if ( config.visible === false ) {
@@ -264,37 +245,6 @@ Component.prototype.constructor = Component;
 
 
 /**
- * Default method to move focus according to pressed keys.
- *
- * @todo remove or implement
- *
- * @param {Event} event generated event source of movement
- */
-/*Component.prototype.navigateDefault = function ( event ) {
-	switch ( event.code ) {
-		case keys.up:
-		case keys.down:
-		case keys.right:
-		case keys.left:
-			// notify listeners
-			this.emit('overflow');
-			break;
-	}
-};*/
-
-
-/**
- * Current active method to move focus according to pressed keys.
- * Can be redefined to provide custom navigation.
- *
- * @todo remove or implement
- *
- * @type {function}
- */
-/*Component.prototype.navigate = Component.prototype.navigateDefault;*/
-
-
-/**
  * Add a new component as a child.
  *
  * @param {...Component} [child] variable number of elements to append
@@ -322,11 +272,6 @@ Component.prototype.add = function ( child ) {
 		this.children.push(child);
 		child.parent = this;
 
-		//if ( DEBUG ) {
-		//	// apply page for this and all children recursively
-		//	child.setPage(this.page);
-		//}
-
 		// correct DOM parent/child connection if necessary
 		if ( child.$node !== undefined && child.$node.parentNode === null ) {
 			this.$body.appendChild(child.$node);
@@ -350,25 +295,12 @@ Component.prototype.add = function ( child ) {
 };
 
 
-//if ( DEBUG ) {
-//	Component.prototype.setPage = function ( page ) {
-//		this.page = page;
-//
-//		this.children.forEach(function ( child ) {
-//			child.setPage(page);
-//		});
-//	};
-//}
-
-
 /**
  * Delete this component and clear all associated events.
  *
  * @fires module:stb/component~Component#remove
  */
 Component.prototype.remove = function () {
-	var page = router.current;
-
 	// really inserted somewhere
 	if ( this.parent ) {
 		if ( DEBUG ) {
@@ -376,7 +308,7 @@ Component.prototype.remove = function () {
 		}
 
 		// active at the moment
-		if ( page.activeComponent === this ) {
+		if ( router.current.activeComponent === this ) {
 			this.blur();
 			this.parent.focus();
 		}
@@ -413,7 +345,7 @@ Component.prototype.remove = function () {
  * Activate the component.
  * Notify the owner-page and apply CSS class.
  *
- * @param {Object} data custom data which passed into handlers
+ * @param {Object} [data] custom data which passed into handlers
  *
  * @return {boolean} operation status
  *
@@ -422,13 +354,6 @@ Component.prototype.remove = function () {
 Component.prototype.focus = function ( data ) {
 	var activePage = router.current,
 		activeItem = activePage.activeComponent;
-
-	//if ( DEBUG ) {
-	//	if ( this.page !== activePage ) {
-	//		console.log(this, this.page, activePage);
-	//		throw 'attempt to focus an invisible component';
-	//	}
-	//}
 
 	// this is a visual component on a page
 	// not already focused and can accept focus
