@@ -16,7 +16,7 @@ var path  = require('path'),
 
 // rebuild everything on file changes
 // done callback should be present to show gulp that task is not over
-gulp.task('watch', function ( done ) {
+gulp.task('watch', function () {
 	// img
 	watch([
 		path.join(global.paths.app, 'img', '**', '*')
