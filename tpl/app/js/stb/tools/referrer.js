@@ -22,7 +22,7 @@ module.exports = function () {
 	var queryParams = parseQuery(location.search.substring(1));
 
 	if ( queryParams.referrer ) {
-		// referrer in GETnk
+		// referrer in GET
 		return decodeURIComponent(queryParams.referrer);
 	}
 

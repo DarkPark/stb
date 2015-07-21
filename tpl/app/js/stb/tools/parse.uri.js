@@ -14,7 +14,7 @@
  *
  * @param {string} str string to parse
  *
- * @return {string} result data
+ * @return {Object.<string, string>} result data
  */
 function parseUri ( str ) {
 	var o   = parseUri.options,

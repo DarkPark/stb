@@ -12,7 +12,7 @@
  *
  * @param {string} query string to parse
  *
- * @return {Object} result data
+ * @return {Object.<string, string>} result data
  *
  * @example
  * console.log(parseQuery(document.location.search.substring(1)));
