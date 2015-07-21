@@ -27,7 +27,7 @@ function Model ( data ) {
 		if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
 	}
 
-	// parent init
+	// parent constructor call
 	Emitter.call(this);
 
 	/**

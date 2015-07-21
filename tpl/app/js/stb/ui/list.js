@@ -118,7 +118,7 @@ function List ( config ) {
 		config.className += ' horizontal';
 	}
 
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
 
 	// component setup

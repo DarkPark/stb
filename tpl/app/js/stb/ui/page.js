@@ -61,7 +61,7 @@ function Page ( config ) {
 	// set default className if classList property empty or undefined
 	config.className = config.className || 'page';
 
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
 
 	// state flag

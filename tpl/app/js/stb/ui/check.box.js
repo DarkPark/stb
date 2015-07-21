@@ -57,7 +57,7 @@ function CheckBox ( config ) {
 		config.className += ' checked';
 	}
 
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
 
 	// apply hierarchy

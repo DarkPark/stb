@@ -19,7 +19,7 @@ var Emitter = require('./emitter');
 function Collection ( data ) {
 	var model, i;
 
-	// parent init
+	// parent constructor call
 	Emitter.call(this);
 
 	/**

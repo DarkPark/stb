@@ -91,7 +91,7 @@ function ScrollBar ( config ) {
 		config.className += ' horizontal';
 	}
 
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
 
 	// create $body if not provided

@@ -151,7 +151,7 @@ function Player ( config ) {
 	// sanitize
 	config = config || {};
 
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
 
 	// correct CSS class names

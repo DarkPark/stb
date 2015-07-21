@@ -24,7 +24,7 @@ function ModalBox ( config ) {
 	// set default className if classList property empty or undefined
 	config.className = config.className || 'modalBox';
 
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
 
 	// create $body if not provided

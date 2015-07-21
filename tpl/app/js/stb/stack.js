@@ -43,7 +43,7 @@ function Stack ( data ) {
 		if ( !Array.isArray(this.data) ) { throw 'wrong data type'; }
 	}
 
-	// parent init
+	// parent constructor call
 	Emitter.call(this);
 }
 

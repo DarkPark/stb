@@ -37,7 +37,7 @@ function Button ( config ) {
 	// set default className if classList property empty or undefined
 	config.className = config.className || 'button';
 
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
 
 	// not a custom content

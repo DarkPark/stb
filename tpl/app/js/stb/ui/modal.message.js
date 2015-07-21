@@ -24,7 +24,7 @@ function ModalMessage ( config ) {
 	// set default className if classList property empty or undefined
 	config.className = config.className || 'modalBox modalMessage';
 
-	// parent init
+	// parent constructor call
 	ModalBox.call(this, config);
 
 	this.$header  = this.$body.appendChild(document.createElement('div'));

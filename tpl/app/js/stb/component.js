@@ -104,7 +104,7 @@ function Component ( config ) {
 		if ( 'className' in config && (typeof config.className !== 'string' || config.className.length === 0) ) { throw 'wrong or empty config.className'; }
 	}
 
-	// parent init
+	// parent constructor call
 	Emitter.call(this, config.data);
 
 	// outer handle
