@@ -26,7 +26,7 @@ var Emitter = require('./emitter'),
  * @param {Element} [config.id] component unique identifier (generated if not set)
  * @param {Element} [config.$node] DOM element/fragment to be a component outer container
  * @param {Element} [config.$body] DOM element/fragment to be a component inner container (by default is the same as $node)
- * @param {Element} [config.$content] DOM element/fragment to be appended to the $body
+ * //@param {Element} [config.$content] DOM element/fragment to be appended to the $body
  * @param {Component} [config.parent] link to the parent component which has this component as a child
  * @param {Array.<Component>} [config.children=[]] list of components in this component
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
@@ -50,6 +50,18 @@ var Emitter = require('./emitter'),
 function Component ( config ) {
 	// current execution context
 	var self = this;
+
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+		if ( config.className && (typeof config.className !== 'string' || config.className.length === 0) ) { throw 'wrong or empty config.className'; }
+		if ( config.$node     && !(config.$node instanceof Element) ) { throw 'wrong config.$node type'; }
+		if ( config.$body     && !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
+		if ( config.parent    && !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
+		if ( config.children  && !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
+	}
 
 	/**
 	 * Component visibility state flag.
@@ -95,60 +107,23 @@ function Component ( config ) {
 	 */
 	this.children = [];
 
-
-	// sanitize
-	config = config || {};
-
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
-		if ( 'className' in config && (typeof config.className !== 'string' || config.className.length === 0) ) { throw 'wrong or empty config.className'; }
-	}
-
 	// parent constructor call
 	Emitter.call(this, config.data);
 
-	// outer handle
-	if ( config.$node !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.$node instanceof Element) ) { throw 'wrong config.$node type'; }
-		}
-		// apply
-		this.$node = config.$node;
-	} else {
-		// empty div in case nothing is given
-		this.$node = document.createElement('div');
-	}
+	// [outer handle]
+	// empty div in case nothing is given
+	this.$node = config.$node || document.createElement('div');
 
-	// inner handle
-	if ( config.$body !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
-		}
-		// apply
-		this.$body = config.$body;
-	} else {
-		// inner and outer handlers are identical
-		this.$body = this.$node;
-	}
-
-	// inject given content into inner component part
-	if ( config.$content !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.$content instanceof Element) ) { throw 'wrong config.$content type'; }
-		}
-		// apply
-		this.$body.appendChild(config.$content);
-	}
+	// [inner handle]
+	// the same as outer handler in case nothing is given
+	this.$body = config.$body || this.$node;
 
 	// set CSS class names
 	this.$node.className += ' component ' + (config.className || '');
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
-		}
-		// apply
+		// add to parent component
 		config.parent.add(this);
 	}
 
@@ -170,18 +145,10 @@ function Component ( config ) {
 	}
 
 	// apply component id if given, generate otherwise
-	this.id = config.id || this.$node.id || 'id' + counter++;
-
-	if ( DEBUG ) {
-		// expose inner ID to global scope
-		window[self.id] = self.$node;
-	}
+	this.id = config.id || this.$node.id || 'cid' + counter++;
 
 	// apply the given children components
 	if ( config.children ) {
-		if ( DEBUG ) {
-			if ( !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
-		}
 		// apply
 		this.add.apply(this, config.children);
 	}
@@ -227,15 +194,14 @@ function Component ( config ) {
 	});
 
 	if ( DEBUG ) {
+		// expose inner ID to global scope
+		window[self.id] = self.$node;
+
 		// expose a link
 		this.$node.component = this.$body.component = this;
 		this.$node.title = 'component ' + this.constructor.name + '.' + this.id + ' (outer)';
 		this.$body.title = 'component ' + this.constructor.name + '.' + this.id + ' (inner)';
 	}
-
-	// @todo remove or implement
-	// navigation by keyboard
-	//this.addListener('keydown', this.navigateDefault);
 }
 
 
