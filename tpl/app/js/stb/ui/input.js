@@ -107,12 +107,16 @@ function Input ( config ) {
 		this.$placeholder.className = 'placeholder';
 	} else {
 		if ( DEBUG ) {
+			if ( !config.$body ) { throw 'config.$body node must be provided'; }
+			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
 			if ( !config.$caret ) { throw 'config.$caret node must be provided'; }
 			if ( !(config.$caret instanceof Element) ) { throw 'wrong config.$caret type'; }
 			if ( !config.$placeholder ) { throw '$placeholder node must be provided'; }
 			if ( !(config.$placeholder instanceof Element) ) { throw 'wrong config.$placeholder type'; }
 		}
 		// custom nodes
+		this.$body = config.$body;
+
 		this.$caret = config.$caret;
 
 		this.$placeholder = config.$placeholder;
