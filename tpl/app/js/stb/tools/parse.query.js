@@ -18,7 +18,7 @@
  * console.log(parseQuery(document.location.search.substring(1)));
  * console.log(parseQuery('param=value&another_param=another_value'));
  */
-module.exports.parseQuery = function ( query ) {
+module.exports = function ( query ) {
 	var data = {};
 
 	// parse and fill the data
