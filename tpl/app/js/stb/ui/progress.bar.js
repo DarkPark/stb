@@ -83,13 +83,6 @@ function ProgressBar ( config ) {
 
 		// correct CSS class name
 		this.$body.className = 'value';
-	} else {
-		if ( DEBUG ) {
-			if ( !config.$body ) { throw 'config.$body node must be provided'; }
-			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
-		}
-		// custom nodes
-		this.$body = config.$body;
 	}
 
 
