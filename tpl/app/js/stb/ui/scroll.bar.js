@@ -99,8 +99,15 @@ function ScrollBar ( config ) {
 		// insert thumb line
 		this.$body = this.$node.appendChild(document.createElement('div'));
 
-		// correct CSS class names
-		this.$body.className += ' thumb';
+		// correct CSS class name
+		this.$body.className = 'thumb';
+	} else {
+		if ( DEBUG ) {
+			if ( !config.$body ) { throw 'config.$body node must be provided'; }
+			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
+		}
+		// custom nodes
+		this.$body = config.$body;
 	}
 
 	// horizontal or vertical

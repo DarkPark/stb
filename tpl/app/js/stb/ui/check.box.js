@@ -32,6 +32,9 @@ function CheckBox ( config ) {
 	// current execution context
 	var self = this;
 
+	// sanitize
+	config = config || {};
+
 	/**
 	 * Initial state.
 	 *
@@ -45,9 +48,6 @@ function CheckBox ( config ) {
 	 * @type {string}
 	 */
 	this.group = null;
-
-	// sanitize
-	config = config || {};
 
 	// set default className if classList property empty or undefined
 	config.classList = config.classList || 'checkBox';
