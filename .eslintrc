@@ -95,7 +95,7 @@
 		"no-use-before-define": [1, "nofunc"],
 		"no-mixed-requires": 0,
 		"no-new-require": 0,
-		"no-path-concat": 1,
+		"no-path-concat": 0,
 
 		"no-process-exit": 0,
 
