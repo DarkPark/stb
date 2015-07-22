@@ -18,7 +18,7 @@ var getElementById = document.getElementById,
 document.getElementById = function ( id ) {
 	var el = getElementById.call(document, id);
 
-	if ( !el ) { throw 'no element with id ' + id; }
+	if ( !el ) { throw new Error(__filename + ': ' + 'no element with id ' + id); }
 
 	return el;
 };
@@ -26,7 +26,7 @@ document.getElementById = function ( id ) {
 document.querySelector = function ( selector ) {
 	var el = querySelector.call(document, selector);
 
-	if ( !el ) { throw 'no element with selector: ' + selector; }
+	if ( !el ) { throw new Error(__filename + ': ' + 'no element with selector: ' + selector); }
 
 	return el;
 };

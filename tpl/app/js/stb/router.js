@@ -127,7 +127,7 @@ router.init = function ( pages ) {
 
 	if ( pages !== undefined ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(pages) ) { throw 'wrong pages type'; }
+			if ( !Array.isArray(pages) ) { throw new Error(__filename + ': ' + 'wrong pages type'); }
 		}
 
 		// reset page list
@@ -295,8 +295,8 @@ router.navigate = function ( name, data ) {
 
 	if ( DEBUG ) {
 		if ( router.pages.length > 0 ) {
-			if ( !pageTo || typeof pageTo !== 'object' ) { throw 'wrong pageTo type'; }
-			if ( !('active' in pageTo) ) { throw 'missing field "active" in pageTo'; }
+			if ( !pageTo || typeof pageTo !== 'object' ) { throw new Error(__filename + ': ' + 'wrong pageTo type'); }
+			if ( !('active' in pageTo) ) { throw new Error(__filename + ': ' + 'missing field "active" in pageTo'); }
 		}
 	}
 

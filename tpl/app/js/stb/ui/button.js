@@ -46,7 +46,7 @@ function Button ( config ) {
 
 		if ( config.icon ) {
 			if ( DEBUG ) {
-				if ( typeof config.icon !== 'string' || config.icon.length === 0 ) { throw 'wrong or empty config.icon'; }
+				if ( typeof config.icon !== 'string' || config.icon.length === 0 ) { throw new Error(__filename + ': ' + 'wrong or empty config.icon'); }
 			}
 
 			// insert icon
@@ -56,7 +56,7 @@ function Button ( config ) {
 
 		if ( config.value !== undefined ) {
 			if ( DEBUG ) {
-				if ( typeof config.value !== 'string' || config.value.length === 0 ) { throw 'wrong or empty config.value'; }
+				if ( typeof config.value !== 'string' || config.value.length === 0 ) { throw new Error(__filename + ': ' + 'wrong or empty config.value'); }
 			}
 
 			// insert caption placeholder

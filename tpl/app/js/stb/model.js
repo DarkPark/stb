@@ -23,8 +23,8 @@ var Emitter = require('./emitter');
  */
 function Model ( data ) {
 	if ( DEBUG ) {
-		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
-		if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
+		if ( typeof this !== 'object' ) { throw new Error(__filename + ': ' + 'must be constructed via new'); }
+		if ( data !== undefined && typeof data !== 'object' ) { throw new Error(__filename + ': ' + 'wrong data type'); }
 	}
 
 	// parent constructor call
@@ -69,7 +69,7 @@ Model.prototype.clear = function () {
 	var data = this.data;
 
 	if ( DEBUG ) {
-		if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+		if ( typeof data !== 'object' ) { throw new Error(__filename + ': ' + 'wrong data type'); }
 	}
 
 	// is there any data?
@@ -111,7 +111,7 @@ Model.prototype.clear = function () {
  */
 Model.prototype.init = function ( data ) {
 	if ( DEBUG ) {
-		if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+		if ( typeof data !== 'object' ) { throw new Error(__filename + ': ' + 'wrong data type'); }
 	}
 
 	// valid input
@@ -144,7 +144,7 @@ Model.prototype.init = function ( data ) {
  */
 Model.prototype.has = function ( name ) {
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': ' + 'wrong this.data type'); }
 	}
 
 	// hasOwnProperty method is not available directly in case of Object.create(null)
@@ -161,7 +161,7 @@ Model.prototype.has = function ( name ) {
  */
 Model.prototype.get = function ( name ) {
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': ' + 'wrong this.data type'); }
 	}
 
 	return this.data[name];
@@ -194,7 +194,7 @@ Model.prototype.set = function ( name, value ) {
 		emitData  = {name: name, curr: value};
 
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': ' + 'wrong this.data type'); }
 	}
 
 	if ( isAttrSet ) {
@@ -242,7 +242,7 @@ Model.prototype.unset = function ( name ) {
 		emitData;
 
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': ' + 'wrong this.data type'); }
 	}
 
 	if ( isAttrSet ) {

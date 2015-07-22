@@ -291,7 +291,7 @@ module.exports = window.debug = {
 				diff += 'ms';
 				log(name + ':\t' + diff.bgBlue);
 			} else {
-				throw 'no started timer for "' + name + '"';
+				throw new Error(__filename + ': ' + 'no started timer for "' + name + '"');
 			}
 		} else {
 			console.timeEnd(name);

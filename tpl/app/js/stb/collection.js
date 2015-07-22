@@ -43,7 +43,7 @@ function Collection ( data ) {
 	// apply list of items
 	if ( data !== undefined ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+			if ( !Array.isArray(data) ) { throw new Error(__filename + ': ' + 'wrong data type'); }
 		}
 
 		this.data = data;

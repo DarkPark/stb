@@ -63,7 +63,7 @@ function CheckBox ( config ) {
 	// apply hierarchy
 	if ( config.group !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.group !== 'string' || config.group.length === 0 ) { throw 'wrong or empty config.group'; }
+			if ( typeof config.group !== 'string' || config.group.length === 0 ) { throw new Error(__filename + ': ' + 'wrong or empty config.group'); }
 		}
 
 		// save
@@ -109,7 +109,7 @@ CheckBox.prototype.set = function ( value ) {
 	var i, l;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
 	}
 
 	if ( this.value !== value ) {

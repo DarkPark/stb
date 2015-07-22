@@ -24,15 +24,14 @@ var Emitter = require('./emitter'),
  *
  * @param {Object} [config={}] init parameters
  * @param {Element} [config.id] component unique identifier (generated if not set)
+ * @param {string} [config.className] space-separated list of classes for "className" property of this.$node
  * @param {Element} [config.$node] DOM element/fragment to be a component outer container
  * @param {Element} [config.$body] DOM element/fragment to be a component inner container (by default is the same as $node)
- * //@param {Element} [config.$content] DOM element/fragment to be appended to the $body
  * @param {Component} [config.parent] link to the parent component which has this component as a child
  * @param {Array.<Component>} [config.children=[]] list of components in this component
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
- * @param {string} [config.className] space-separated list of classes for "className" property of this.$node
  *
  * @fires module:stb/component~Component#click
  *
@@ -55,12 +54,14 @@ function Component ( config ) {
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
-		if ( config.className && (typeof config.className !== 'string' || config.className.length === 0) ) { throw 'wrong or empty config.className'; }
-		if ( config.$node     && !(config.$node instanceof Element) ) { throw 'wrong config.$node type'; }
-		if ( config.$body     && !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
-		if ( config.parent    && !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
-		if ( config.children  && !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': ' + 'component: wrong config type'); }
+		// init parameters checks
+		if ( config.id        && typeof config.id !== 'string'         ) { throw new Error(__filename + ': ' + 'component: wrong or empty config.id'); }
+		if ( config.className && typeof config.className !== 'string'  ) { throw new Error(__filename + ': ' + 'component: wrong or empty config.className'); }
+		if ( config.$node     && !(config.$node instanceof Element)    ) { throw new Error(__filename + ': ' + 'component: wrong config.$node type'); }
+		if ( config.$body     && !(config.$body instanceof Element)    ) { throw new Error(__filename + ': ' + 'component: wrong config.$body type'); }
+		if ( config.parent    && !(config.parent instanceof Component) ) { throw new Error(__filename + ': ' + 'component: wrong config.parent type'); }
+		if ( config.children  && !Array.isArray(config.children)       ) { throw new Error(__filename + ': ' + 'component: wrong config.children type'); }
 	}
 
 	/**
@@ -231,7 +232,7 @@ Component.prototype.add = function ( child ) {
 		child = arguments[i];
 
 		if ( DEBUG ) {
-			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+			if ( !(child instanceof Component) ) { throw new Error(__filename + ': ' + 'component: wrong child type'); }
 		}
 
 		// apply
@@ -270,7 +271,7 @@ Component.prototype.remove = function () {
 	// really inserted somewhere
 	if ( this.parent ) {
 		if ( DEBUG ) {
-			if ( !(this.parent instanceof Component) ) { throw 'wrong this.parent type'; }
+			if ( !(this.parent instanceof Component) ) { throw new Error(__filename + ': ' + 'component: wrong this.parent type'); }
 		}
 
 		// active at the moment
@@ -284,7 +285,7 @@ Component.prototype.remove = function () {
 	// remove all children
 	this.children.forEach(function ( child ) {
 		if ( DEBUG ) {
-			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+			if ( !(child instanceof Component) ) { throw new Error(__filename + ': ' + 'component: wrong child type'); }
 		}
 
 		child.remove();

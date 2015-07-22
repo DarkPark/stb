@@ -38,7 +38,7 @@ function ModalBox ( config ) {
 
 
 	if ( DEBUG ) {
-		if ( !this.$body.classList.contains('body') ) { throw '$body node must have "body" token in className'; }
+		if ( !this.$body.classList.contains('body') ) { throw new Error(__filename + ': ' + '$body node must have "body" token in className'); }
 	}
 }
 
