@@ -111,16 +111,17 @@ function Component ( config ) {
 	// parent constructor call
 	Emitter.call(this, config.data);
 
-	// [outer handle]
-	// empty div in case nothing is given
+	// outer handle - empty div in case nothing is given
 	this.$node = config.$node || document.createElement('div');
 
-	// [inner handle]
-	// the same as outer handler in case nothing is given
+	// inner handle - the same as outer handler in case nothing is given
 	this.$body = config.$body || this.$node;
 
 	// set CSS class names
 	this.$node.className += ' component ' + (config.className || '');
+
+	// apply component id if given, generate otherwise
+	this.id = config.id || this.$node.id || 'cid' + counter++;
 
 	// apply hierarchy
 	if ( config.parent !== undefined ) {
@@ -134,8 +135,9 @@ function Component ( config ) {
 		this.hide();
 	}
 
-	// can't accept focus
+	// apply focus handling method
 	if ( config.focusable === false ) {
+		// can't accept focus
 		this.focusable = false;
 	}
 
@@ -144,9 +146,6 @@ function Component ( config ) {
 		// no need in assert here (it is done inside the addListeners)
 		this.addListeners(config.events);
 	}
-
-	// apply component id if given, generate otherwise
-	this.id = config.id || this.$node.id || 'cid' + counter++;
 
 	// apply the given children components
 	if ( config.children ) {
@@ -173,12 +172,6 @@ function Component ( config ) {
 				 */
 				self.emit('click', {event: event});
 			}
-
-			// not prevented
-			//if ( !event.stop ) {
-			//	// activate if possible
-			//	self.focus();
-			//}
 		}
 
 		if ( DEBUG ) {
