@@ -49,7 +49,7 @@ gulp.task('jade:release', function () {
 		.src(path.join(global.paths.app, 'jade', 'main.jade'))
 		.pipe(plumber())
 		.pipe(jade({
-			pretty: '\t',
+			pretty: false,
 			locals: {
 				develop: false,
 				title:   '[release] ' + pkgInfo.name,
