@@ -106,5 +106,11 @@ Button.prototype.constructor = Button;
 Button.prototype.clickDuration = 200;
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentButton = Button;
+}
+
+
 // public
 module.exports = Button;

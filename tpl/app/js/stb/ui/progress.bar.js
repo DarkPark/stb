@@ -216,5 +216,11 @@ ProgressBar.prototype.init = function ( config ) {
 };
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentProgressBar = ProgressBar;
+}
+
+
 // public
 module.exports = ProgressBar;

@@ -34,5 +34,11 @@ Modal.prototype = Object.create(Component.prototype);
 Modal.prototype.constructor = Modal;
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentModal = Modal;
+}
+
+
 // public
 module.exports = Modal;

@@ -463,5 +463,11 @@ Input.prototype.setValue = function ( value ) {
 };
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentInput = Input;
+}
+
+
 // public
 module.exports = Input;

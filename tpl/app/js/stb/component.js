@@ -452,5 +452,11 @@ Component.prototype.hide = function () {
 };
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.Component = Component;
+}
+
+
 // public
 module.exports = Component;

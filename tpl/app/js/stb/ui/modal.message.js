@@ -46,5 +46,11 @@ ModalMessage.prototype = Object.create(ModalBox.prototype);
 ModalMessage.prototype.constructor = ModalMessage;
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentModalMessage = ModalMessage;
+}
+
+
 // public
 module.exports = ModalMessage;

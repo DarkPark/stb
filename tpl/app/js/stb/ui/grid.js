@@ -774,5 +774,11 @@ Grid.prototype.markItem = function ( $item, state ) {
 };
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentGrid = Grid;
+}
+
+
 // public
 module.exports = Grid;
