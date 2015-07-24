@@ -6,18 +6,22 @@
 
 'use strict';
 
-var Component = require('../component');
+var Component = require('../component'),
+	keys      = require('../keys');
 
 
 /**
  * Base button implementation.
+ *
+ * Has global options:
+ *     Button.prototype.clickDuration - time to apply "click" class, does not apply if 0
  *
  * @constructor
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {string} [config.value] button caption text (generated if not set)
- * @param {string} [config.icon=false] button icon name
+ * @param {string} [config.icon] button icon name
  *
  * @example
  * var Button = require('stb/ui/button'),
@@ -34,41 +38,37 @@ function Button ( config ) {
 	// sanitize
 	config = config || {};
 
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': ' + 'component: wrong config type'); }
+		// init parameters checks
+		if ( config.icon      && typeof config.icon      !== 'string' ) { throw new Error(__filename + ': ' + 'wrong or empty config.icon'); }
+		if ( config.value     && typeof config.value     !== 'string' ) { throw new Error(__filename + ': ' + 'wrong or empty config.value'); }
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': ' + 'wrong or empty config.className'); }
+	}
+
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'button';
+	config.className = 'button ' + (config.className || '');
 
 	// parent constructor call
 	Component.call(this, config);
 
-	// not a custom content
-	if ( this.$node === this.$body ) {
-		// so everything should be prepared here
+	if ( config.icon ) {
+		// insert icon
+		this.$icon = this.$body.appendChild(document.createElement('div'));
+		this.$icon.className = 'icon ' + config.icon;
+	}
 
-		if ( config.icon ) {
-			if ( DEBUG ) {
-				if ( typeof config.icon !== 'string' || config.icon.length === 0 ) { throw new Error(__filename + ': ' + 'wrong or empty config.icon'); }
-			}
+	// insert caption placeholder
+	this.$text = this.$body.appendChild(document.createElement('div'));
+	this.$text.classList.add('text');
 
-			// insert icon
-			this.$icon = this.$node.appendChild(document.createElement('div'));
-			this.$icon.className = 'icon ' + config.icon;
-		}
-
-		if ( config.value !== undefined ) {
-			if ( DEBUG ) {
-				if ( typeof config.value !== 'string' || config.value.length === 0 ) { throw new Error(__filename + ': ' + 'wrong or empty config.value'); }
-			}
-
-			// insert caption placeholder
-			this.$body = this.$node.appendChild(document.createElement('div'));
-			this.$body.classList.add('text');
-			// fill it
-			this.$body.innerText = config.value;
-		}
+	if ( config.value ) {
+		// fill it
+		this.$text.innerText = config.value;
 	}
 
 	this.addListener('keydown', function ( event ) {
-		if ( event.code === 13 ) {
+		if ( event.code === keys.ok ) {
 			// there are some listeners
 			if ( self.events['click'] !== undefined ) {
 				/**
@@ -84,19 +84,26 @@ function Button ( config ) {
 		}
 	});
 
-	this.addListener('click', function () {
-		//console.log(this);
-		self.$node.classList.add('click');
-		setTimeout(function () {
-			self.$node.classList.remove('click');
-		}, 200);
-	});
+	if ( this.clickDuration ) {
+		// apply "click" class only if necessary
+		this.addListener('click', function () {
+			self.$node.classList.add('click');
+
+			setTimeout(function () {
+				self.$node.classList.remove('click');
+			}, this.clickDuration);
+		});
+	}
 }
 
 
 // inheritance
 Button.prototype = Object.create(Component.prototype);
 Button.prototype.constructor = Button;
+
+
+// global options
+Button.prototype.clickDuration = 200;
 
 
 // public
