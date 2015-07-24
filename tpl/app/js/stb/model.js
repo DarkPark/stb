@@ -341,5 +341,11 @@ Model.prototype.unset = function ( name ) {
 //};
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.Model = Model;
+}
+
+
 // public
 module.exports = Model;

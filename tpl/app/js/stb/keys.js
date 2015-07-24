@@ -63,3 +63,9 @@ module.exports = {
 	audio        : 2071, // Alt+G
 	keyboard     : 2076  // Alt+L
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.keys = keys;
+}

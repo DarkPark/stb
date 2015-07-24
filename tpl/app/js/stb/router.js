@@ -373,5 +373,11 @@ router.back = function () {
 };
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.router = router;
+}
+
+
 // public
 module.exports = router;

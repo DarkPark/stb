@@ -897,5 +897,11 @@ Player.prototype.parseTime = function ( sec ) {
 };
 
 
+if ( DEBUG ) {
+	// expose to the global scope
+	window.Player = Player;
+}
+
+
 // public
 module.exports = Player;
