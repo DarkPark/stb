@@ -23,7 +23,7 @@ function Player ( config ) {
 	var self = this;
 
 	if ( DEBUG ) {
-		if ( typeof this !== 'object' ) { throw new Error(__filename + ': ' + 'must be constructed via new'); }
+		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
 	}
 
 	/**
@@ -163,7 +163,7 @@ function Player ( config ) {
 	// custom control method
 	if ( config.control !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.control !== 'function' ) { throw new Error(__filename + ': ' + 'wrong config.control type'); }
+			if ( typeof config.control !== 'function' ) { throw new Error(__filename + ': wrong config.control type'); }
 		}
 		// apply
 		this.control = config.control;
@@ -393,10 +393,10 @@ Player.prototype.control = Player.prototype.controlDefault;
 Player.prototype.init = function ( config ) {
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': ' + 'wrong config type'); }
-		if ( config.rewindTimeout && typeof config.rewindTimeout !== 'number' ) { throw new Error(__filename + ': ' + 'wrong timeout type'); }
-		if ( config.inputPositionTimeout && typeof config.inputPositionTimeout !== 'number' ) { throw new Error(__filename + ': ' + 'wrong timeout type'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( config.rewindTimeout && typeof config.rewindTimeout !== 'number' ) { throw new Error(__filename + ': wrong timeout type'); }
+		if ( config.inputPositionTimeout && typeof config.inputPositionTimeout !== 'number' ) { throw new Error(__filename + ': wrong timeout type'); }
 	}
 
 	// allow input playback position
@@ -445,7 +445,7 @@ Player.prototype.play = function ( url, config ) {
 	var solution, position;
 
 	if ( DEBUG ) {
-		if ( arguments.length < 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
+		if ( arguments.length < 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	this.totalDurationSec = 0;
@@ -498,7 +498,7 @@ Player.prototype.rewind = function ( forward, duration ) {
 	var self = this;
 
 	if ( DEBUG ) {
-		if ( arguments.length < 1 || typeof forward !== 'boolean' ) { throw new Error(__filename + ': ' + 'wrong direction type'); }
+		if ( arguments.length < 1 || typeof forward !== 'boolean' ) { throw new Error(__filename + ': wrong direction type'); }
 	}
 
 
@@ -682,7 +682,7 @@ Player.prototype.nextSubtitle = function () {
 Player.prototype.setSubtitle = function ( number ) {
 
 	if ( DEBUG ) {
-		if ( !number || Number(number) !== number ) { throw new Error(__filename + ': ' + 'wrong subtitle number type'); }
+		if ( !number || Number(number) !== number ) { throw new Error(__filename + ': wrong subtitle number type'); }
 	}
 
 	gSTB.SetSubtitlePID(this.subtitlePIDs[number].pid);
@@ -847,7 +847,7 @@ Player.prototype.inputPosition = function ( code ) {
  */
 Player.prototype.setPosition = function ( sec ) {
 	if ( DEBUG ) {
-		if ( sec < 0 ) { throw new Error(__filename + ': ' + 'Time must be positive'); }
+		if ( sec < 0 ) { throw new Error(__filename + ': Time must be positive'); }
 	}
 
 	gSTB.SetPosTime(sec);

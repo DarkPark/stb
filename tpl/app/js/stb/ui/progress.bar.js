@@ -87,7 +87,7 @@ function ProgressBar ( config ) {
 
 
 	if ( DEBUG ) {
-		if ( !this.$body.classList.contains('value') ) { throw new Error(__filename + ': ' + '$body node must have "value" token in className'); }
+		if ( !this.$body.classList.contains('value') ) { throw new Error(__filename + ': $body node must have "value" token in className'); }
 	}
 
 	// component setup
@@ -114,13 +114,13 @@ ProgressBar.prototype.set = function ( value ) {
 	var prevValue = this.value;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	// value changed but in the given range
 	if ( this.value !== value && value <= this.max && value >= this.min ) {
 		if ( DEBUG ) {
-			if ( Number(value) !== value ) { throw new Error(__filename + ': ' + 'value must be a number'); }
+			if ( Number(value) !== value ) { throw new Error(__filename + ': value must be a number'); }
 		}
 
 		// set new value
@@ -161,6 +161,7 @@ ProgressBar.prototype.set = function ( value ) {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
@@ -172,14 +173,14 @@ ProgressBar.prototype.set = function ( value ) {
  */
 ProgressBar.prototype.init = function ( config ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': ' + 'wrong config type'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 	}
 
 	// set max progress value
 	if ( config.max !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.max) !== config.max ) { throw new Error(__filename + ': ' + 'config.max value must be a number'); }
+			if ( Number(config.max) !== config.max ) { throw new Error(__filename + ': config.max value must be a number'); }
 		}
 		// apply
 		this.max = config.max;
@@ -188,22 +189,22 @@ ProgressBar.prototype.init = function ( config ) {
 	// set min progress value
 	if ( config.min !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.min) !== config.min ) { throw new Error(__filename + ': ' + 'config.min value must be a number'); }
+			if ( Number(config.min) !== config.min ) { throw new Error(__filename + ': config.min value must be a number'); }
 		}
 		// apply
 		this.min = config.min;
 	}
 
 	if ( DEBUG ) {
-		if ( this.min >= this.max ) { throw new Error(__filename + ': ' + 'this.min value must be less than this.max'); }
+		if ( this.min >= this.max ) { throw new Error(__filename + ': this.min value must be less than this.max'); }
 	}
 
 	// set actual progress value
 	if ( config.value !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.value) !== config.value ) { throw new Error(__filename + ': ' + 'config.value must be a number'); }
-			if ( config.value > this.max ) { throw new Error(__filename + ': ' + 'config.value more than config.maximum'); }
-			if ( config.value < this.min ) { throw new Error(__filename + ': ' + 'config.value less than config.minimum'); }
+			if ( Number(config.value) !== config.value ) { throw new Error(__filename + ': config.value must be a number'); }
+			if ( config.value > this.max ) { throw new Error(__filename + ': config.value more than config.maximum'); }
+			if ( config.value < this.min ) { throw new Error(__filename + ': config.value less than config.minimum'); }
 		}
 		// apply
 		this.value = config.value;

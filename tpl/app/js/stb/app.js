@@ -77,12 +77,12 @@ app.setScreen = function ( metrics ) {
 	var linkCSS;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	if ( metrics ) {
 		if ( DEBUG ) {
-			if ( typeof metrics !== 'object' ) { throw new Error(__filename + ': ' + 'wrong metrics type'); }
+			if ( typeof metrics !== 'object' ) { throw new Error(__filename + ': wrong metrics type'); }
 		}
 
 		// calculate and extend
@@ -412,7 +412,7 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 	var page = router.current;
 
 	if ( DEBUG ) {
-		if ( page === null || page === undefined ) { throw new Error(__filename + ': ' + 'app should have at least one page'); }
+		if ( page === null || page === undefined ) { throw new Error(__filename + ': app should have at least one page'); }
 	}
 
 	// filter phantoms
@@ -474,7 +474,7 @@ window.addEventListener('keypress', function globalEventListenerKeypress ( event
 	var page = router.current;
 
 	if ( DEBUG ) {
-		if ( page === null || page === undefined ) { throw new Error(__filename + ': ' + 'app should have at least one page'); }
+		if ( page === null || page === undefined ) { throw new Error(__filename + ': app should have at least one page'); }
 	}
 
 	//debug.event(event);

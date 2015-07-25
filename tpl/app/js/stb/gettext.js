@@ -31,8 +31,8 @@ gettext.load = function ( config, callback ) {
 	var xhr = new XMLHttpRequest();
 
 	if ( DEBUG ) {
-		if ( !config.name || typeof config.name !== 'string' ) { throw new Error(__filename + ': ' + 'config.name must be a nonempty string'); }
-		if ( typeof callback !== 'function' ) { throw new Error(__filename + ': ' + 'wrong callback type'); }
+		if ( !config.name || typeof config.name !== 'string' ) { throw new Error(__filename + ': config.name must be a nonempty string'); }
+		if ( typeof callback !== 'function' ) { throw new Error(__filename + ': wrong callback type'); }
 	}
 
 	// defaults
@@ -134,7 +134,7 @@ window.ngettext = function ( msgId, plural, value ) {
 	/* eslint no-eval: 0 */
 
 	if ( DEBUG ) {
-		if ( Number(value) !== value ) { throw new Error(__filename + ': ' + 'value must be a number'); }
+		if ( Number(value) !== value ) { throw new Error(__filename + ': value must be a number'); }
 	}
 
 	if ( data && meta ) {

@@ -134,7 +134,7 @@ function Grid ( config ) {
 	// custom navigation method
 	if ( config.navigate !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': ' + 'wrong config.navigate type'); }
+			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
 		}
 		// apply
 		this.navigate = config.navigate;
@@ -172,8 +172,8 @@ Grid.prototype.constructor = Grid;
  */
 Grid.prototype.renderItemDefault = function ( $item, data ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( !($item instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong $item type'); }
+		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
 	}
 
 	$item.innerText = data.value;
@@ -234,8 +234,8 @@ function normalize ( data ) {
 	var i, j, item;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( !Array.isArray(data) ) { throw new Error(__filename + ': ' + 'wrong data type'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// rows
@@ -259,13 +259,13 @@ function normalize ( data ) {
 			}
 
 			if ( DEBUG ) {
-				//if ( !('value' in item) ) { throw new Error(__filename + ': ' + 'field "value" is missing'); }
-				if ( Number(item.colSpan) !== item.colSpan ) { throw new Error(__filename + ': ' + 'item.colSpan must be a number'); }
-				if ( Number(item.rowSpan) !== item.rowSpan ) { throw new Error(__filename + ': ' + 'item.rowSpan must be a number'); }
-				if ( item.colSpan <= 0 ) { throw new Error(__filename + ': ' + 'item.colSpan should be positive'); }
-				if ( item.rowSpan <= 0 ) { throw new Error(__filename + ': ' + 'item.rowSpan should be positive'); }
-				if ( ('focus' in item) && Boolean(item.focus) !== item.focus ) { throw new Error(__filename + ': ' + 'item.focus must be boolean'); }
-				if ( ('disable' in item) && Boolean(item.disable) !== item.disable ) { throw new Error(__filename + ': ' + 'item.disable must be boolean'); }
+				//if ( !('value' in item) ) { throw new Error(__filename + ': field "value" is missing'); }
+				if ( Number(item.colSpan) !== item.colSpan ) { throw new Error(__filename + ': item.colSpan must be a number'); }
+				if ( Number(item.rowSpan) !== item.rowSpan ) { throw new Error(__filename + ': item.rowSpan must be a number'); }
+				if ( item.colSpan <= 0 ) { throw new Error(__filename + ': item.colSpan should be positive'); }
+				if ( item.rowSpan <= 0 ) { throw new Error(__filename + ': item.rowSpan should be positive'); }
+				if ( ('focus' in item) && Boolean(item.focus) !== item.focus ) { throw new Error(__filename + ': item.focus must be boolean'); }
+				if ( ('disable' in item) && Boolean(item.disable) !== item.disable ) { throw new Error(__filename + ': item.disable must be boolean'); }
 			}
 		}
 	}
@@ -288,8 +288,8 @@ function fill ( map, x, y, dX, dY, value ) {
 	var i, j;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 6 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( !Array.isArray(map) ) { throw new Error(__filename + ': ' + 'wrong map type'); }
+		if ( arguments.length !== 6 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(map) ) { throw new Error(__filename + ': wrong map type'); }
 	}
 
 	// rows
@@ -327,8 +327,8 @@ function map ( data ) {
 		i, j, item;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( !Array.isArray(data) ) { throw new Error(__filename + ': ' + 'wrong data type'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// rows
@@ -383,8 +383,8 @@ Grid.prototype.init = function ( config ) {
 		};
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': ' + 'wrong config type'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 	}
 
 	// apply cycle behaviour
@@ -394,7 +394,7 @@ Grid.prototype.init = function ( config ) {
 	// apply data
 	if ( config.data !== undefined ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) || !Array.isArray(config.data[0]) ) { throw new Error(__filename + ': ' + 'wrong config.data type'); }
+			if ( !Array.isArray(config.data) || !Array.isArray(config.data[0]) ) { throw new Error(__filename + ': wrong config.data type'); }
 		}
 
 		// new data is different
@@ -408,7 +408,7 @@ Grid.prototype.init = function ( config ) {
 	// custom render method
 	if ( config.render !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': ' + 'wrong config.render type'); }
+			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
 		}
 
 		// new render is different
@@ -523,8 +523,8 @@ Grid.prototype.move = function ( direction ) {
 		cycle    = false;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( Number(direction) !== direction ) { throw new Error(__filename + ': ' + 'direction must be a number'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
 	}
 
 	// shift till full stop
@@ -683,20 +683,20 @@ Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	// different element
 	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
 		if ( DEBUG ) {
-			if ( !($item instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong $item type'); }
-			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw new Error(__filename + ': ' + 'wrong $item parent element'); }
+			if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
 		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
 			if ( DEBUG ) {
-				if ( !($prev instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong $prev type'); }
+				if ( !($prev instanceof Element) ) { throw new Error(__filename + ': wrong $prev type'); }
 			}
 
 			// style
@@ -756,10 +756,10 @@ Grid.prototype.focusItem = function ( $item ) {
  */
 Grid.prototype.markItem = function ( $item, state ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( !($item instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong $item type'); }
-		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw new Error(__filename + ': ' + 'wrong $item parent element'); }
-		if ( Boolean(state) !== state ) { throw new Error(__filename + ': ' + 'state must be boolean'); }
+		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
+		if ( Boolean(state) !== state ) { throw new Error(__filename + ': state must be boolean'); }
 	}
 
 	// correct CSS

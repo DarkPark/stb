@@ -51,11 +51,11 @@ function Button ( config ) {
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': ' + 'component: wrong config type'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': component: wrong config type'); }
 		// init parameters checks
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': ' + 'wrong or empty config.className'); }
-		if ( config.icon      && typeof config.icon      !== 'string' ) { throw new Error(__filename + ': ' + 'wrong or empty config.icon'); }
-		if ( config.value     && typeof config.value     !== 'string' ) { throw new Error(__filename + ': ' + 'wrong or empty config.value'); }
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.icon      && typeof config.icon      !== 'string' ) { throw new Error(__filename + ': wrong or empty config.icon'); }
+		if ( config.value     && typeof config.value     !== 'string' ) { throw new Error(__filename + ': wrong or empty config.value'); }
 	}
 
 	// set default className if classList property empty or undefined

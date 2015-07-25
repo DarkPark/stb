@@ -300,7 +300,7 @@ module.exports = window.debug = {
 
 			delete timeMarks[name];
 		} else {
-			throw new Error(__filename + ': ' + 'no started timer for "' + name + '"');
+			throw new Error(__filename + ': no started timer for "' + name + '"');
 		}
 	}
 

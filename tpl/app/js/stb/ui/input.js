@@ -107,10 +107,10 @@ function Input ( config ) {
 		this.$placeholder.className = 'placeholder';
 	} else {
 		if ( DEBUG ) {
-			if ( !config.$caret ) { throw new Error(__filename + ': ' + 'config.$caret node must be provided'); }
-			if ( !(config.$caret instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong config.$caret type'); }
-			if ( !config.$placeholder ) { throw new Error(__filename + ': ' + '$placeholder node must be provided'); }
-			if ( !(config.$placeholder instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong config.$placeholder type'); }
+			if ( !config.$caret ) { throw new Error(__filename + ': config.$caret node must be provided'); }
+			if ( !(config.$caret instanceof Element) ) { throw new Error(__filename + ': wrong config.$caret type'); }
+			if ( !config.$placeholder ) { throw new Error(__filename + ': $placeholder node must be provided'); }
+			if ( !(config.$placeholder instanceof Element) ) { throw new Error(__filename + ': wrong config.$placeholder type'); }
 		}
 		// custom nodes
 		this.$caret = config.$caret;
@@ -121,9 +121,9 @@ function Input ( config ) {
 	this.$caret.index = 0;
 
 	if ( DEBUG ) {
-		if ( !this.$body.classList.contains('body') ) { throw new Error(__filename + ': ' + '$body node must have "body" token in className'); }
-		if ( !this.$caret.classList.contains('caret') ) { throw new Error(__filename + ': ' + '$caret node must have "caret" token in className'); }
-		if ( !this.$placeholder.classList.contains('placeholder') ) { throw new Error(__filename + ': ' + '$placeholder node must have "placeholder" token in className'); }
+		if ( !this.$body.classList.contains('body') ) { throw new Error(__filename + ': $body node must have "body" token in className'); }
+		if ( !this.$caret.classList.contains('caret') ) { throw new Error(__filename + ': $caret node must have "caret" token in className'); }
+		if ( !this.$placeholder.classList.contains('placeholder') ) { throw new Error(__filename + ': $placeholder node must have "placeholder" token in className'); }
 	}
 
 	// component setup
@@ -133,7 +133,7 @@ function Input ( config ) {
 	// todo: reassign this.navigate in init
 	if ( config.navigate !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': ' + 'wrong config.navigate type'); }
+			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
 		}
 		// apply
 		this.navigate = config.navigate;
@@ -214,8 +214,8 @@ Input.prototype.init = function ( config ) {
 	// type passed
 	if ( config.type !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.type) !== config.type ) { throw new Error(__filename + ': ' + 'config.type must be a number'); }
-			if ( config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw new Error(__filename + ': ' + 'config.type must be one of the TYPE_* constant'); }
+			if ( Number(config.type) !== config.type ) { throw new Error(__filename + ': config.type must be a number'); }
+			if ( config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw new Error(__filename + ': config.type must be one of the TYPE_* constant'); }
 		}
 		// apply
 		this.type = config.type;
@@ -224,7 +224,7 @@ Input.prototype.init = function ( config ) {
 	// default value passed
 	if ( config.value !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.value !== 'string' ) { throw new Error(__filename + ': ' + 'config.value must be a string'); }
+			if ( typeof config.value !== 'string' ) { throw new Error(__filename + ': config.value must be a string'); }
 		}
 		// apply
 		this.setValue(config.value);
@@ -233,8 +233,8 @@ Input.prototype.init = function ( config ) {
 	// hint
 	if ( config.placeholder !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.placeholder !== 'string' ) { throw new Error(__filename + ': ' + 'config.placeholder must be a string'); }
-			if ( config.placeholder.length === 0 ) { throw new Error(__filename + ': ' + 'config.placeholder must be not an empty string'); }
+			if ( typeof config.placeholder !== 'string' ) { throw new Error(__filename + ': config.placeholder must be a string'); }
+			if ( config.placeholder.length === 0 ) { throw new Error(__filename + ': config.placeholder must be not an empty string'); }
 		}
 		// apply
 		this.$placeholder.innerText = config.placeholder;
@@ -244,8 +244,8 @@ Input.prototype.init = function ( config ) {
 	if ( config.direction !== undefined ) {
 		// apply
 		if ( DEBUG ) {
-			if ( typeof config.direction !== 'string' ) { throw new Error(__filename + ': ' + 'config.direction must be a string'); }
-			if ( config.direction !== 'ltr' && config.direction !== 'rtl' ) { throw new Error(__filename + ': ' + 'config.direction wrong value'); }
+			if ( typeof config.direction !== 'string' ) { throw new Error(__filename + ': config.direction must be a string'); }
+			if ( config.direction !== 'ltr' && config.direction !== 'rtl' ) { throw new Error(__filename + ': config.direction wrong value'); }
 		}
 		this.direction = config.direction;
 	}
@@ -269,9 +269,9 @@ Input.prototype.addChar = function ( char, index ) {
 	index = (index === undefined) ? this.$caret.index : index;
 
 	if ( DEBUG ) {
-		if ( index < 0 ) { throw new Error(__filename + ': ' + 'index must be more than 0 or equal to 0'); }
-		if ( typeof char !== 'string' ) { throw new Error(__filename + ': ' + 'char must be a string'); }
-		if ( char.length !== 1 ) { throw new Error(__filename + ': ' + 'char must be a string with length = 1'); }
+		if ( index < 0 ) { throw new Error(__filename + ': index must be more than 0 or equal to 0'); }
+		if ( typeof char !== 'string' ) { throw new Error(__filename + ': char must be a string'); }
+		if ( char.length !== 1 ) { throw new Error(__filename + ': char must be a string with length = 1'); }
 	}
 
 	// remove hint
@@ -327,8 +327,8 @@ Input.prototype.removeChar = function ( index ) {
 	// non-empty string
 	if ( this.value.length > 0 ) {
 		if ( DEBUG ) {
-			if ( index < 0 ) { throw new Error(__filename + ': ' + 'index must be a positive value'); }
-			if ( index > this.value.length ) { throw new Error(__filename + ': ' + 'index must be a less than or equal to total length'); }
+			if ( index < 0 ) { throw new Error(__filename + ': index must be a positive value'); }
+			if ( index > this.value.length ) { throw new Error(__filename + ': index must be a less than or equal to total length'); }
 		}
 
 		if ( this.$caret.index === index && index < this.value.length ) {
@@ -394,7 +394,7 @@ Input.prototype.setValue = function ( value ) {
 		$char, diff;
 
 	if ( DEBUG ) {
-		if ( typeof value !== 'string' ) { throw new Error(__filename + ': ' + 'value must be a string'); }
+		if ( typeof value !== 'string' ) { throw new Error(__filename + ': value must be a string'); }
 	}
 
 	// return if no changes

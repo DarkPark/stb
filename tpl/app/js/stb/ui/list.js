@@ -105,7 +105,7 @@ function List ( config ) {
 	// horizontal or vertical
 	if ( config.type !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.type) !== config.type ) { throw new Error(__filename + ': ' + 'config.type must be a number'); }
+			if ( Number(config.type) !== config.type ) { throw new Error(__filename + ': config.type must be a number'); }
 		}
 		// apply
 		this.type = config.type;
@@ -127,7 +127,7 @@ function List ( config ) {
 	// custom navigation method
 	if ( config.navigate !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': ' + 'wrong config.navigate type'); }
+			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
 		}
 		// apply
 		this.navigate = config.navigate;
@@ -229,8 +229,8 @@ function normalize ( data ) {
 	var i, item;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( !Array.isArray(data) ) { throw new Error(__filename + ': ' + 'wrong data type'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// rows
@@ -246,8 +246,8 @@ function normalize ( data ) {
 		}
 
 		if ( DEBUG ) {
-			//if ( !('value' in item) ) { throw new Error(__filename + ': ' + 'field "value" is missing'); }
-			if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw new Error(__filename + ': ' + 'item.mark must be boolean'); }
+			//if ( !('value' in item) ) { throw new Error(__filename + ': field "value" is missing'); }
+			if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw new Error(__filename + ': item.mark must be boolean'); }
 		}
 	}
 
@@ -286,8 +286,8 @@ List.prototype.init = function ( config ) {
 		item, i;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': ' + 'wrong config type'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 	}
 
 	// apply cycle behaviour
@@ -299,7 +299,7 @@ List.prototype.init = function ( config ) {
 	// apply list of items
 	if ( config.data !== undefined ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': ' + 'wrong config.data type'); }
+			if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
 		}
 		// prepare user data
 		this.data = normalize(config.data);
@@ -308,7 +308,7 @@ List.prototype.init = function ( config ) {
 	// custom render method
 	if ( config.render !== undefined ) {
 		if ( DEBUG ) {
-			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': ' + 'wrong config.render type'); }
+			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
 		}
 		// apply
 		this.renderItem = config.render;
@@ -317,8 +317,8 @@ List.prototype.init = function ( config ) {
 	// list items amount on page
 	if ( config.size !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.size) !== config.size ) { throw new Error(__filename + ': ' + 'config.size must be a number'); }
-			if ( config.size <= 0 ) { throw new Error(__filename + ': ' + 'config.size should be positive'); }
+			if ( Number(config.size) !== config.size ) { throw new Error(__filename + ': config.size must be a number'); }
+			if ( config.size <= 0 ) { throw new Error(__filename + ': config.size should be positive'); }
 		}
 		// apply
 		this.size = config.size;
@@ -346,8 +346,8 @@ List.prototype.init = function ( config ) {
 	// view window position
 	if ( config.viewIndex !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.viewIndex) !== config.viewIndex ) { throw new Error(__filename + ': ' + 'config.viewIndex must be a number'); }
-			if ( config.viewIndex < 0 ) { throw new Error(__filename + ': ' + 'config.viewIndex should be positive'); }
+			if ( Number(config.viewIndex) !== config.viewIndex ) { throw new Error(__filename + ': config.viewIndex must be a number'); }
+			if ( config.viewIndex < 0 ) { throw new Error(__filename + ': config.viewIndex should be positive'); }
 		}
 	}
 	// reset current view window position
@@ -356,9 +356,9 @@ List.prototype.init = function ( config ) {
 	// set focus item
 	if ( config.focusIndex !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': ' + 'config.focusIndex must be a number'); }
-			if ( config.focusIndex < 0 ) { throw new Error(__filename + ': ' + 'config.focusIndex should be positive'); }
-			if ( config.focusIndex > this.data.length - 1 ) { throw new Error(__filename + ': ' + 'config.focusIndex should be less than data size'); }
+			if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': config.focusIndex must be a number'); }
+			if ( config.focusIndex < 0 ) { throw new Error(__filename + ': config.focusIndex should be positive'); }
+			if ( config.focusIndex > this.data.length - 1 ) { throw new Error(__filename + ': config.focusIndex should be less than data size'); }
 		}
 
 		// jump to the necessary item
@@ -394,10 +394,10 @@ List.prototype.renderView = function ( index ) {
 	var $item, i, itemData, prevIndex, currIndex;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( Number(index) !== index ) { throw new Error(__filename + ': ' + 'index must be a number'); }
-		if ( index < 0 ) { throw new Error(__filename + ': ' + 'index should be more than zero'); }
-		if ( index >= this.data.length ) { throw new Error(__filename + ': ' + 'index should be less than data size'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
+		if ( index < 0 ) { throw new Error(__filename + ': index should be more than zero'); }
+		if ( index >= this.data.length ) { throw new Error(__filename + ': index should be less than data size'); }
 	}
 
 	// has the view window position changed
@@ -489,8 +489,8 @@ List.prototype.renderView = function ( index ) {
  */
 List.prototype.move = function ( direction ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( Number(direction) !== direction ) { throw new Error(__filename + ': ' + 'direction must be a number'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
 	}
 
 	if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
@@ -614,20 +614,20 @@ List.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	// different element
 	if ( $item !== undefined && $prev !== $item ) {
 		if ( DEBUG ) {
-			if ( !($item instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong $item type'); }
-			if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': ' + 'wrong $item parent element'); }
+			if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+			if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
 		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
 			if ( DEBUG ) {
-				if ( !($prev instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong $prev type'); }
+				if ( !($prev instanceof Element) ) { throw new Error(__filename + ': wrong $prev type'); }
 			}
 
 			// style
@@ -698,9 +698,9 @@ List.prototype.focusIndex = function ( index ) {
 	var viewIndex = this.viewIndex || 0;
 
 	if ( DEBUG ) {
-		if ( Number(index) !== index ) { throw new Error(__filename + ': ' + 'index must be a number'); }
-		if ( index < 0 ) { throw new Error(__filename + ': ' + 'index should be positive'); }
-		if ( index > this.data.length - 1 ) { throw new Error(__filename + ': ' + 'index should be less than data size'); }
+		if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
+		if ( index < 0 ) { throw new Error(__filename + ': index should be positive'); }
+		if ( index > this.data.length - 1 ) { throw new Error(__filename + ': index should be less than data size'); }
 	}
 
 	// determine direction
@@ -735,10 +735,10 @@ List.prototype.focusIndex = function ( index ) {
  */
 List.prototype.markItem = function ( $item, state ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
-		if ( !($item instanceof Element) ) { throw new Error(__filename + ': ' + 'wrong $item type'); }
-		if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': ' + 'wrong $item parent element'); }
-		if ( Boolean(state) !== state ) { throw new Error(__filename + ': ' + 'state must be boolean'); }
+		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+		if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
+		if ( Boolean(state) !== state ) { throw new Error(__filename + ': state must be boolean'); }
 	}
 
 	// correct CSS
