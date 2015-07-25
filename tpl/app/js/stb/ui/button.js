@@ -25,11 +25,23 @@ var Component = require('../component'),
  *
  * @example
  * var Button = require('stb/ui/button'),
- *     button = new Button({
- *         $node: document.getElementById(id),
- *         icon: 'menu'
- *         value: 'Apply changes'
- *     });
+ *     btnSimple, btnIcon, btnDetached;
+ *
+ * btnSimple = new Button({
+ *     $node: document.getElementById('btnSimple'),
+ *     value: 'Simple button'
+ * });
+ *
+ * btnIcon = new Button({
+ *     $node: document.getElementById('btnIcon'),
+ *     icon: 'menu'
+ *     value: 'Button with icon'
+ * });
+ *
+ * btnDetached = new Button({
+ *     value: 'Button not added to the page',
+ *     className: 'wide'
+ * });
  */
 function Button ( config ) {
 	// current execution context
@@ -102,7 +114,7 @@ Button.prototype = Object.create(Component.prototype);
 Button.prototype.constructor = Button;
 
 
-// global options
+// time to apply "click" class, does not apply if 0
 Button.prototype.clickDuration = 200;
 
 
