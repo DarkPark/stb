@@ -68,6 +68,19 @@ function Grid ( config ) {
 	// current execution context
 	var self = this;
 
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string'   ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+	}
+
+	// set default className if classList property empty or undefined
+	config.className = 'grid ' + (config.className || '');
+
 	/**
 	 * List of DOM elements representing the component cells.
 	 * Necessary for navigation calculations.
@@ -118,13 +131,6 @@ function Grid ( config ) {
 	 */
 	this.focusY = 0;
 
-
-	// sanitize
-	config = config || {};
-
-	// set default className if classList property empty or undefined
-	config.className = config.className || 'grid';
-
 	// parent constructor call
 	Component.call(this, config);
 
@@ -132,10 +138,7 @@ function Grid ( config ) {
 	this.init(config);
 
 	// custom navigation method
-	if ( config.navigate !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
-		}
+	if ( config.navigate ) {
 		// apply
 		this.navigate = config.navigate;
 	}
@@ -385,6 +388,8 @@ Grid.prototype.init = function ( config ) {
 	if ( DEBUG ) {
 		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( config.data && (!Array.isArray(config.data) || !Array.isArray(config.data[0])) ) { throw new Error(__filename + ': wrong config.data type'); }
+		if ( config.render && typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
 	}
 
 	// apply cycle behaviour
@@ -392,13 +397,10 @@ Grid.prototype.init = function ( config ) {
 	if ( config.cycleY !== undefined ) { this.cycleY = config.cycleY; }
 
 	// apply data
-	if ( config.data !== undefined ) {
-		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) || !Array.isArray(config.data[0]) ) { throw new Error(__filename + ': wrong config.data type'); }
-		}
-
+	if ( config.data ) {
 		// new data is different
 		if ( this.data !== config.data ) {
+			// apply
 			this.data = config.data;
 			// need to redraw table
 			draw = true;
@@ -406,13 +408,10 @@ Grid.prototype.init = function ( config ) {
 	}
 
 	// custom render method
-	if ( config.render !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
-		}
-
+	if ( config.render ) {
 		// new render is different
 		if ( this.renderItem !== config.render ) {
+			// apply
 			this.renderItem = config.render;
 			// need to redraw table
 			draw = true;
