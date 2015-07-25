@@ -21,6 +21,7 @@ var Component = require('../component'),
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {Element} [config.$caret] DOM element/fragment to be a input caret element
  * @param {Element} [config.$placeholder] DOM element/fragment to be a element for input placeholder
+ * @param {function} [config.navigate] method to move focus according to pressed keys
  * @param {string} [config.value='text'] input text value
  * @param {string} [config.placeholder='password'] placeholder text value
  * @param {string} [config.type=Input.TYPE_TEXT] input type
@@ -40,6 +41,16 @@ var Component = require('../component'),
 function Input ( config ) {
 	// current execution context
 	var self = this;
+
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string'   ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+	}
 
 	/**
 	 * Text value of input.
@@ -79,12 +90,8 @@ function Input ( config ) {
 	 */
 	this.direction = 'ltr';
 
-
-	// sanitize
-	config = config || {};
-
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'input';
+	config.className = 'input ' + (config.className || '');
 
 	// parent constructor call
 	Component.call(this, config);
@@ -130,11 +137,7 @@ function Input ( config ) {
 	this.init(config);
 
 	// custom navigation method
-	// todo: reassign this.navigate in init
-	if ( config.navigate !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
-		}
+	if ( config.navigate ) {
 		// apply
 		this.navigate = config.navigate;
 	}
@@ -211,31 +214,29 @@ Input.prototype.navigate = Input.prototype.navigateDefault;
  * @param {Object} config init parameters (subset of constructor config params)
  */
 Input.prototype.init = function ( config ) {
+	if ( DEBUG ) {
+		if ( config.type && Number(config.type) !== config.type ) { throw new Error(__filename + ': config.type must be a number'); }
+		if ( config.type && config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw new Error(__filename + ': config.type must be one of the TYPE_* constant'); }
+		if ( config.value && typeof config.value !== 'string' ) { throw new Error(__filename + ': config.value must be a string'); }
+		if ( config.placeholder && typeof config.placeholder !== 'string' ) { throw new Error(__filename + ': config.placeholder must be a string'); }
+		if ( config.direction && typeof config.direction !== 'string' ) { throw new Error(__filename + ': config.direction must be a string'); }
+		if ( config.direction && config.direction !== 'ltr' && config.direction !== 'rtl' ) { throw new Error(__filename + ': config.direction wrong value'); }
+	}
+
 	// type passed
 	if ( config.type !== undefined ) {
-		if ( DEBUG ) {
-			if ( Number(config.type) !== config.type ) { throw new Error(__filename + ': config.type must be a number'); }
-			if ( config.type !== this.TYPE_TEXT && config.type !== this.TYPE_PASSWORD ) { throw new Error(__filename + ': config.type must be one of the TYPE_* constant'); }
-		}
 		// apply
 		this.type = config.type;
 	}
 
 	// default value passed
-	if ( config.value !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.value !== 'string' ) { throw new Error(__filename + ': config.value must be a string'); }
-		}
+	if ( config.value ) {
 		// apply
 		this.setValue(config.value);
 	}
 
 	// hint
-	if ( config.placeholder !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.placeholder !== 'string' ) { throw new Error(__filename + ': config.placeholder must be a string'); }
-			if ( config.placeholder.length === 0 ) { throw new Error(__filename + ': config.placeholder must be not an empty string'); }
-		}
+	if ( config.placeholder ) {
 		// apply
 		this.$placeholder.innerText = config.placeholder;
 	}
@@ -243,10 +244,6 @@ Input.prototype.init = function ( config ) {
 	// char direction
 	if ( config.direction !== undefined ) {
 		// apply
-		if ( DEBUG ) {
-			if ( typeof config.direction !== 'string' ) { throw new Error(__filename + ': config.direction must be a string'); }
-			if ( config.direction !== 'ltr' && config.direction !== 'rtl' ) { throw new Error(__filename + ': config.direction wrong value'); }
-		}
 		this.direction = config.direction;
 	}
 	this.$body.dir = this.direction;
