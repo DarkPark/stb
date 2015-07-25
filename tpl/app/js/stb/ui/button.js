@@ -64,6 +64,7 @@ function Button ( config ) {
 	// parent constructor call
 	Component.call(this, config);
 
+	// optional dom
 	if ( config.icon ) {
 		// insert icon
 		this.$icon = this.$body.appendChild(document.createElement('div'));
