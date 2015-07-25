@@ -36,7 +36,7 @@ function CheckBox ( config ) {
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': component: wrong config type'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 		// init parameters checks
 		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
 		if ( config.group     && typeof config.group     !== 'string' ) { throw new Error(__filename + ': wrong or empty config.group'); }
