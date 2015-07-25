@@ -1,5 +1,5 @@
 /**
- * @module stb/ui/check.box
+ * @module "stb/ui/check.box"
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
@@ -8,7 +8,7 @@
 
 var Component = require('../component'),
 	keys      = require('../keys'),
-	groups    = {};
+	groups    = {};  // set of groups with linked components
 
 
 /**
@@ -35,22 +35,18 @@ function CheckBox ( config ) {
 	// sanitize
 	config = config || {};
 
-	/**
-	 * Initial state.
-	 *
-	 * @type {boolean}
-	 */
-	this.value = !!config.value;
-
-	/**
-	 * Group name to work synchronously with other checkboxes.
-	 *
-	 * @type {string}
-	 */
-	this.group = null;
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': component: wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.group     && typeof config.group     !== 'string' ) { throw new Error(__filename + ': wrong or empty config.group'); }
+	}
 
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'checkBox';
+	config.className = 'checkBox ' + (config.className || '');
+
+	// state
+	this.value = !!config.value;
 
 	// correct init styles
 	if ( this.value ) {
@@ -60,12 +56,11 @@ function CheckBox ( config ) {
 	// parent constructor call
 	Component.call(this, config);
 
-	// apply hierarchy
-	if ( config.group !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.group !== 'string' || config.group.length === 0 ) { throw new Error(__filename + ': ' + 'wrong or empty config.group'); }
-		}
+	// group name to work synchronously with other checkboxes
+	this.group = null;
 
+	// apply hierarchy
+	if ( config.group ) {
 		// save
 		this.group = config.group;
 
@@ -103,13 +98,13 @@ CheckBox.prototype.constructor = CheckBox;
  * @param {boolean} value new value to set
  * @return {boolean} operation status
  *
- * @fires module:stb/ui/check.box~CheckBox#change
+ * @fires module:"stb/ui/check.box~CheckBox#change"
  */
 CheckBox.prototype.set = function ( value ) {
 	var i, l;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': ' + 'wrong arguments number'); }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	if ( this.value !== value ) {
@@ -143,6 +138,7 @@ CheckBox.prototype.set = function ( value ) {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
