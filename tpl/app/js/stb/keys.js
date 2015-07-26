@@ -67,5 +67,5 @@ module.exports = {
 
 if ( DEBUG ) {
 	// expose to the global scope
-	window.keys = keys;
+	window.keys = module.exports;
 }
