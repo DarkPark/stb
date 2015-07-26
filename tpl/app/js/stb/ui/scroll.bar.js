@@ -19,6 +19,7 @@ var Component = require('../component');
  * @param {number} [config.value=0] initial thumb position
  * @param {number} [config.realSize=100] actual scroll size
  * @param {number} [config.viewSize=10] visible area size
+ * @param {number} [config.type] direction
  *
  * @example
  * var ScrollBar = require('stb/ui/scroll.bar'),
@@ -38,6 +39,13 @@ var Component = require('../component');
 function ScrollBar ( config ) {
 	// sanitize
 	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.type      && Number(config.type) !== config.type  ) { throw new Error(__filename + ': config.type must be a number'); }
+	}
 
 	/**
 	 * Visible area size.
@@ -85,7 +93,7 @@ function ScrollBar ( config ) {
 	config.focusable = config.focusable || false;
 
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'scrollBar';
+	config.className = 'scrollBar ' + (config.className || '');
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
 		config.className += ' horizontal';
@@ -104,10 +112,7 @@ function ScrollBar ( config ) {
 	}
 
 	// horizontal or vertical
-	if ( config.type !== undefined ) {
-		if ( DEBUG ) {
-			if ( Number(config.type) !== config.type ) { throw new Error(__filename + ': config.type must be a number'); }
-		}
+	if ( config.type ) {
 		// apply
 		this.type = config.type;
 	}
