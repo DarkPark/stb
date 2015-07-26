@@ -50,6 +50,16 @@ function List ( config ) {
 	// current execution context
 	var self = this;
 
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.type      && Number(config.type) !== config.type  ) { throw new Error(__filename + ': config.type must be a number'); }
+	}
+
 	/**
 	 * Link to the currently focused DOM element.
 	 *
@@ -99,20 +109,14 @@ function List ( config ) {
 	 */
 	this.scroll = null;
 
-	// sanitize
-	config = config || {};
-
 	// horizontal or vertical
 	if ( config.type !== undefined ) {
-		if ( DEBUG ) {
-			if ( Number(config.type) !== config.type ) { throw new Error(__filename + ': config.type must be a number'); }
-		}
 		// apply
 		this.type = config.type;
 	}
 
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'list';
+	config.className = 'list ' + (config.className || '');
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
 		config.className += ' horizontal';
