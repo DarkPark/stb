@@ -39,6 +39,15 @@ var Component = require('../component');
  * });
  */
 function Page ( config ) {
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+	}
+
 	/**
 	 * Page visibility/active state flag.
 	 *
@@ -55,11 +64,8 @@ function Page ( config ) {
 	 */
 	this.activeComponent = null;
 
-	// sanitize
-	config = config || {};
-
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'page';
+	config.className = 'page ' + (config.className || '');
 
 	// parent constructor call
 	Component.call(this, config);
