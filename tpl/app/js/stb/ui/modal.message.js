@@ -21,8 +21,14 @@ function ModalMessage ( config ) {
 	// sanitize
 	config = config || {};
 
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+	}
+
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'modalBox modalMessage';
+	config.className = 'modalMessage ' + (config.className || '');
 
 	// parent constructor call
 	ModalBox.call(this, config);
