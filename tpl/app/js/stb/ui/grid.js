@@ -66,7 +66,7 @@ var Component = require('../component'),
  */
 function Grid ( config ) {
 	// current execution context
-	var self = this;
+	//var self = this;
 
 	// sanitize
 	config = config || {};
@@ -75,11 +75,8 @@ function Grid ( config ) {
 		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 		// init parameters checks
 		if ( config.className && typeof config.className !== 'string'   ) { throw new Error(__filename + ': wrong or empty config.className'); }
-		if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+		//if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
 	}
-
-	// set default className if classList property empty or undefined
-	config.className = 'grid ' + (config.className || '');
 
 	/**
 	 * List of DOM elements representing the component cells.
@@ -131,6 +128,9 @@ function Grid ( config ) {
 	 */
 	this.focusY = 0;
 
+	// set default className if classList property empty or undefined
+	config.className = 'grid ' + (config.className || '');
+
 	// parent constructor call
 	Component.call(this, config);
 
@@ -138,26 +138,26 @@ function Grid ( config ) {
 	this.init(config);
 
 	// custom navigation method
-	if ( config.navigate ) {
-		// apply
-		this.navigate = config.navigate;
-	}
+	//if ( config.navigate ) {
+	//	// apply
+	//	this.navigate = config.navigate;
+	//}
 
 	// navigation by keyboard
-	this.addListener('keydown', this.navigate);
+	//this.addListener('keydown', this.navigate);
 
 	// navigation by mouse
-	this.$body.addEventListener('mousewheel', function ( event ) {
-		// scrolling by Y axis
-		if ( event.wheelDeltaY ) {
-			self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
-		}
-
-		// scrolling by X axis
-		if ( event.wheelDeltaX ) {
-			self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
-		}
-	});
+	//this.$body.addEventListener('mousewheel', function ( event ) {
+	//	// scrolling by Y axis
+	//	if ( event.wheelDeltaY ) {
+	//		self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+	//	}
+	//
+	//	// scrolling by X axis
+	//	if ( event.wheelDeltaX ) {
+	//		self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+	//	}
+	//});
 }
 
 
@@ -193,28 +193,77 @@ Grid.prototype.renderItem = Grid.prototype.renderItemDefault;
 
 
 /**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+Grid.prototype.defaultEvents = {
+	/**
+	 * Default method to handle mouse wheel events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	mousewheel: function ( event ) {
+		// scrolling by Y axis
+		if ( event.wheelDeltaY ) {
+			this.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+		}
+
+		// scrolling by X axis
+		if ( event.wheelDeltaX ) {
+			this.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+		}
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		switch ( event.code ) {
+			case keys.up:
+			case keys.down:
+			case keys.right:
+			case keys.left:
+				// cursor move only on arrow keys
+				this.move(event.code);
+				break;
+			case keys.ok:
+				// there are some listeners
+				if ( this.events['click:item'] !== undefined ) {
+					// notify listeners
+					this.emit('click:item', {$item: this.$focusItem, event: event});
+				}
+				break;
+		}
+	}
+};
+
+
+/**
  * Default method to move focus according to pressed keys.
  *
  * @param {Event} event generated event source of movement
  */
-Grid.prototype.navigateDefault = function ( event ) {
-	switch ( event.code ) {
-		case keys.up:
-		case keys.down:
-		case keys.right:
-		case keys.left:
-			// cursor move only on arrow keys
-			this.move(event.code);
-			break;
-		case keys.ok:
-			// there are some listeners
-			if ( this.events['click:item'] !== undefined ) {
-				// notify listeners
-				this.emit('click:item', {$item: this.$focusItem, event: event});
-			}
-			break;
-	}
-};
+//Grid.prototype.navigateDefault = function ( event ) {
+//	switch ( event.code ) {
+//		case keys.up:
+//		case keys.down:
+//		case keys.right:
+//		case keys.left:
+//			// cursor move only on arrow keys
+//			this.move(event.code);
+//			break;
+//		case keys.ok:
+//			// there are some listeners
+//			if ( this.events['click:item'] !== undefined ) {
+//				// notify listeners
+//				this.emit('click:item', {$item: this.$focusItem, event: event});
+//			}
+//			break;
+//	}
+//};
 
 
 /**
@@ -223,7 +272,7 @@ Grid.prototype.navigateDefault = function ( event ) {
  *
  * @type {function}
  */
-Grid.prototype.navigate = Grid.prototype.navigateDefault;
+//Grid.prototype.navigate = Grid.prototype.navigateDefault;
 
 
 /**

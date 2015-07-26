@@ -48,7 +48,8 @@ var Emitter = require('./emitter'),
  */
 function Component ( config ) {
 	// current execution context
-	var self = this;
+	var self = this,
+		name;
 
 	// sanitize
 	config = config || {};
@@ -141,9 +142,25 @@ function Component ( config ) {
 		this.focusable = false;
 	}
 
+	// a descendant defined own events
+	if ( this.defaultEvents ) {
+		// sanitize
+		config.events = config.events || {};
+
+		if ( DEBUG ) {
+			if ( typeof config.events !== 'object' ) { throw new Error(__filename + ': wrong config.events type'); }
+			if ( typeof this.defaultEvents !== 'object' ) { throw new Error(__filename + ': wrong this.defaultEvents type'); }
+		}
+
+		for ( name in this.defaultEvents ) {
+			// overwrite default events with user-defined
+			config.events[name] = config.events[name] || this.defaultEvents[name];
+		}
+	}
+
 	// apply given events
-	if ( config.events !== undefined ) {
-		// no need in assert here (it is done inside the addListeners)
+	if ( config.events ) {
+		// apply
 		this.addListeners(config.events);
 	}
 
@@ -202,6 +219,14 @@ function Component ( config ) {
 // inheritance
 Component.prototype = Object.create(Emitter.prototype);
 Component.prototype.constructor = Component;
+
+
+/**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+Component.prototype.defaultEvents = null;
 
 
 /**

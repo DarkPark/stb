@@ -40,7 +40,7 @@ var Component = require('../component'),
  */
 function Input ( config ) {
 	// current execution context
-	var self = this;
+	//var self = this;
 
 	// sanitize
 	config = config || {};
@@ -49,7 +49,7 @@ function Input ( config ) {
 		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 		// init parameters checks
 		if ( config.className && typeof config.className !== 'string'   ) { throw new Error(__filename + ': wrong or empty config.className'); }
-		if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+		//if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
 	}
 
 	/**
@@ -137,17 +137,17 @@ function Input ( config ) {
 	this.init(config);
 
 	// custom navigation method
-	if ( config.navigate ) {
-		// apply
-		this.navigate = config.navigate;
-	}
+	//if ( config.navigate ) {
+	//	// apply
+	//	this.navigate = config.navigate;
+	//}
 
 	// navigation by keyboard
-	this.addListener('keydown', this.navigate);
+	//this.addListener('keydown', this.navigate);
 
-	this.addListener('keypress', function ( event ) {
-		self.addChar(String.fromCharCode(event.keyCode), self.$caret.index);
-	});
+	//this.addListener('keypress', function ( event ) {
+	//	self.addChar(String.fromCharCode(event.keyCode), self.$caret.index);
+	//});
 }
 
 
@@ -161,42 +161,97 @@ Input.prototype.TYPE_PASSWORD = 1;
 
 
 /**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+Input.prototype.defaultEvents = {
+	/**
+	 * Default method to handle keyboard keypress events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keypress: function ( event ) {
+		this.addChar(String.fromCharCode(event.keyCode), this.$caret.index);
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		switch ( event.code ) {
+			case keys['delete']:
+				this.removeChar(this.$caret.index);
+				break;
+
+			case keys.back:
+				this.removeChar(this.$caret.index - 1);
+				break;
+
+			case keys.left:
+				this.setCaretPosition(this.$caret.index - 1);
+				break;
+
+			case keys.right:
+				this.setCaretPosition(this.$caret.index + 1);
+				break;
+
+			case keys.end:
+			case keys.down:
+				this.setCaretPosition(this.value.length);
+				break;
+
+			case keys.home:
+			case keys.up:
+				this.setCaretPosition(0);
+				break;
+
+			default:
+				break;
+		}
+	}
+};
+
+
+/**
  * Default method to move focus according to pressed keys.
  *
  * @param {Event} event generated event source of movement
  */
-Input.prototype.navigateDefault = function ( event ) {
-	switch ( event.code ) {
-		case keys['delete']:
-			this.removeChar(this.$caret.index);
-			break;
-
-		case keys.back:
-			this.removeChar(this.$caret.index - 1);
-			break;
-
-		case keys.left:
-			this.setCaretPosition(this.$caret.index - 1);
-			break;
-
-		case keys.right:
-			this.setCaretPosition(this.$caret.index + 1);
-			break;
-
-		case keys.end:
-		case keys.down:
-			this.setCaretPosition(this.value.length);
-			break;
-
-		case keys.home:
-		case keys.up:
-			this.setCaretPosition(0);
-			break;
-
-		default:
-			break;
-	}
-};
+//Input.prototype.navigateDefault = function ( event ) {
+//	switch ( event.code ) {
+//		case keys['delete']:
+//			this.removeChar(this.$caret.index);
+//			break;
+//
+//		case keys.back:
+//			this.removeChar(this.$caret.index - 1);
+//			break;
+//
+//		case keys.left:
+//			this.setCaretPosition(this.$caret.index - 1);
+//			break;
+//
+//		case keys.right:
+//			this.setCaretPosition(this.$caret.index + 1);
+//			break;
+//
+//		case keys.end:
+//		case keys.down:
+//			this.setCaretPosition(this.value.length);
+//			break;
+//
+//		case keys.home:
+//		case keys.up:
+//			this.setCaretPosition(0);
+//			break;
+//
+//		default:
+//			break;
+//	}
+//};
 
 
 /**
@@ -205,7 +260,7 @@ Input.prototype.navigateDefault = function ( event ) {
  *
  * @type {function}
  */
-Input.prototype.navigate = Input.prototype.navigateDefault;
+//Input.prototype.navigate = Input.prototype.navigateDefault;
 
 
 /**

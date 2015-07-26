@@ -29,9 +29,6 @@ var Component = require('../component'),
  *     });
  */
 function CheckBox ( config ) {
-	// current execution context
-	var self = this;
-
 	// sanitize
 	config = config || {};
 
@@ -71,24 +68,40 @@ function CheckBox ( config ) {
 			groups[config.group].push(this);
 		}
 	}
-
-	// invert on mouse click or enter
-	this.addListeners({
-		click: function () {
-			self.set(!self.value);
-		},
-		keydown: function ( event ) {
-			if ( event.code === keys.ok ) {
-				self.set(!self.value);
-			}
-		}
-	});
 }
 
 
 // inheritance
 CheckBox.prototype = Object.create(Component.prototype);
 CheckBox.prototype.constructor = CheckBox;
+
+
+/**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+CheckBox.prototype.defaultEvents = {
+	/**
+	 * Default method to handle mouse click events.
+	 */
+	click: function () {
+		// invert state
+		this.set(!this.value);
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		// emulate click
+		if ( event.code === keys.ok ) {
+			this.set(!this.value);
+		}
+	}
+};
 
 
 /**

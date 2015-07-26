@@ -129,29 +129,29 @@ function List ( config ) {
 	this.init(config);
 
 	// custom navigation method
-	if ( config.navigate !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
-		}
-		// apply
-		this.navigate = config.navigate;
-	}
+	//if ( config.navigate !== undefined ) {
+	//	if ( DEBUG ) {
+	//		if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+	//	}
+	//	// apply
+	//	this.navigate = config.navigate;
+	//}
 
 	// navigation by keyboard
-	this.addListener('keydown', this.navigate);
+	//this.addListener('keydown', this.navigate);
 
 	// navigation by mouse
-	this.$body.addEventListener('mousewheel', function ( event ) {
-		// scrolling by Y axis
-		if ( self.type === self.TYPE_VERTICAL && event.wheelDeltaY ) {
-			self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
-		}
-
-		// scrolling by X axis
-		if ( self.type === self.TYPE_HORIZONTAL && event.wheelDeltaX ) {
-			self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
-		}
-	});
+	//this.$body.addEventListener('mousewheel', function ( event ) {
+	//	// scrolling by Y axis
+	//	if ( self.type === self.TYPE_VERTICAL && event.wheelDeltaY ) {
+	//		self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+	//	}
+	//
+	//	// scrolling by X axis
+	//	if ( self.type === self.TYPE_HORIZONTAL && event.wheelDeltaX ) {
+	//		self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+	//	}
+	//});
 }
 
 
@@ -185,32 +185,85 @@ List.prototype.renderItem = List.prototype.renderItemDefault;
 
 
 /**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+List.prototype.defaultEvents = {
+	/**
+	 * Default method to handle mouse wheel events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	mousewheel: function ( event ) {
+		// scrolling by Y axis
+		if ( this.type === this.TYPE_VERTICAL && event.wheelDeltaY ) {
+			this.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+		}
+
+		// scrolling by X axis
+		if ( this.type === this.TYPE_HORIZONTAL && event.wheelDeltaX ) {
+			this.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+		}
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		switch ( event.code ) {
+			case keys.up:
+			case keys.down:
+			case keys.right:
+			case keys.left:
+			case keys.pageUp:
+			case keys.pageDown:
+			case keys.home:
+			case keys.end:
+				// cursor move only on arrow keys
+				this.move(event.code);
+				break;
+			case keys.ok:
+				// there are some listeners
+				if ( this.events['click:item'] !== undefined ) {
+					// notify listeners
+					this.emit('click:item', {$item: this.$focusItem, event: event});
+				}
+				break;
+		}
+	}
+};
+
+
+/**
  * Default method to move focus according to pressed keys.
  *
  * @param {Event} event generated event source of movement
  */
-List.prototype.navigateDefault = function ( event ) {
-	switch ( event.code ) {
-		case keys.up:
-		case keys.down:
-		case keys.right:
-		case keys.left:
-		case keys.pageUp:
-		case keys.pageDown:
-		case keys.home:
-		case keys.end:
-			// cursor move only on arrow keys
-			this.move(event.code);
-			break;
-		case keys.ok:
-			// there are some listeners
-			if ( this.events['click:item'] !== undefined ) {
-				// notify listeners
-				this.emit('click:item', {$item: this.$focusItem, event: event});
-			}
-			break;
-	}
-};
+//List.prototype.navigateDefault = function ( event ) {
+//	switch ( event.code ) {
+//		case keys.up:
+//		case keys.down:
+//		case keys.right:
+//		case keys.left:
+//		case keys.pageUp:
+//		case keys.pageDown:
+//		case keys.home:
+//		case keys.end:
+//			// cursor move only on arrow keys
+//			this.move(event.code);
+//			break;
+//		case keys.ok:
+//			// there are some listeners
+//			if ( this.events['click:item'] !== undefined ) {
+//				// notify listeners
+//				this.emit('click:item', {$item: this.$focusItem, event: event});
+//			}
+//			break;
+//	}
+//};
 
 
 /**
@@ -219,7 +272,7 @@ List.prototype.navigateDefault = function ( event ) {
  *
  * @type {function}
  */
-List.prototype.navigate = List.prototype.navigateDefault;
+//List.prototype.navigate = List.prototype.navigateDefault;
 
 
 /**

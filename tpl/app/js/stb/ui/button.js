@@ -45,7 +45,7 @@ var Component = require('../component'),
  */
 function Button ( config ) {
 	// current execution context
-	var self = this;
+	//var self = this;
 
 	// sanitize
 	config = config || {};
@@ -79,34 +79,6 @@ function Button ( config ) {
 		// fill it
 		this.$text.innerText = config.value;
 	}
-
-	this.addListener('keydown', function ( event ) {
-		if ( event.code === keys.ok ) {
-			// there are some listeners
-			if ( self.events['click'] !== undefined ) {
-				/**
-				 * Mouse click event emulation.
-				 *
-				 * @event module:stb/ui/button~Button#click
-				 *
-				 * @type {Object}
-				 * @property {Event} event click event data
-				 */
-				self.emit('click', {event: event});
-			}
-		}
-	});
-
-	if ( this.clickDuration ) {
-		// apply "click" class only if necessary
-		this.addListener('click', function () {
-			self.$node.classList.add('click');
-
-			setTimeout(function () {
-				self.$node.classList.remove('click');
-			}, this.clickDuration);
-		});
-	}
 }
 
 
@@ -117,6 +89,51 @@ Button.prototype.constructor = Button;
 
 // time to apply "click" class, does not apply if 0
 Button.prototype.clickDuration = 200;
+
+
+/**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+Button.prototype.defaultEvents = {
+	/**
+	 * Default method to handle mouse click events.
+	 */
+	click: function () {
+		// current execution context
+		var self = this;
+
+		this.$node.classList.add('click');
+
+		setTimeout(function () {
+			self.$node.classList.remove('click');
+		}, this.clickDuration);
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		if ( event.code === keys.ok ) {
+			// emulate click
+			// there are some listeners
+			if ( this.events['click'] !== undefined ) {
+				/**
+				 * Mouse click event emulation.
+				 *
+				 * @event module:stb/ui/button~Button#click
+				 *
+				 * @type {Object}
+				 * @property {Event} event click event data
+				 */
+				this.emit('click', {event: event});
+			}
+		}
+	}
+};
 
 
 if ( DEBUG ) {
