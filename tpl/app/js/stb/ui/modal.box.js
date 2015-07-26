@@ -21,8 +21,14 @@ function ModalBox ( config ) {
 	// sanitize
 	config = config || {};
 
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+	}
+
 	// set default className if classList property empty or undefined
-	config.className = config.className || 'modalBox';
+	config.className = 'modalBox ' + (config.className || '');
 
 	// parent constructor call
 	Component.call(this, config);
@@ -34,11 +40,6 @@ function ModalBox ( config ) {
 		this.$body.className = 'body';
 		// add table-cell wrapper
 		this.$node.appendChild(document.createElement('div').appendChild(this.$body).parentNode);
-	}
-
-
-	if ( DEBUG ) {
-		if ( !this.$body.classList.contains('body') ) { throw new Error(__filename + ': $body node must have "body" token in className'); }
 	}
 }
 
