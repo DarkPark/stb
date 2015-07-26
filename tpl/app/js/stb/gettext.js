@@ -147,11 +147,5 @@ window.ngettext = function ( msgId, plural, value ) {
 };
 
 
-if ( DEBUG ) {
-	// expose to the global scope
-	window.gettext = gettext;
-}
-
-
 // public
 module.exports = gettext;
