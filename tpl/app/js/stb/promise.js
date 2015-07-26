@@ -8,6 +8,7 @@
 
 'use strict';
 
+/* eslint-disable */
 
 /**
  * Base Promise implementation.
