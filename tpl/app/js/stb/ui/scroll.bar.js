@@ -95,6 +95,12 @@ function ScrollBar ( config ) {
 	// set default className if classList property empty or undefined
 	config.className = 'scrollBar ' + (config.className || '');
 
+	// horizontal or vertical
+	if ( config.type ) {
+		// apply
+		this.type = config.type;
+	}
+
 	if ( this.type === this.TYPE_HORIZONTAL ) {
 		config.className += ' horizontal';
 	}
@@ -102,24 +108,11 @@ function ScrollBar ( config ) {
 	// parent constructor call
 	Component.call(this, config);
 
-	// create $body if not provided
-	if ( this.$node === this.$body ) {
-		// insert thumb line
-		this.$body = this.$node.appendChild(document.createElement('div'));
+	// insert thumb line
+	this.$thumb = this.$body.appendChild(document.createElement('div'));
 
-		// correct CSS class name
-		this.$body.className = 'thumb';
-	}
-
-	// horizontal or vertical
-	if ( config.type ) {
-		// apply
-		this.type = config.type;
-	}
-
-	if ( DEBUG ) {
-		if ( !this.$body.classList.contains('thumb') ) { throw new Error(__filename + ': $body node must have "thumb" token in className'); }
-	}
+	// correct CSS class name
+	this.$thumb.className = 'thumb';
 
 	// component setup
 	this.init(config);
@@ -169,9 +162,9 @@ ScrollBar.prototype.init = function ( config ) {
 
 	// show or hide thumb
 	if ( this.viewSize >= this.realSize ) {
-		this.$body.classList.add('hidden');
+		this.$thumb.classList.add('hidden');
 	} else {
-		this.$body.classList.remove('hidden');
+		this.$thumb.classList.remove('hidden');
 	}
 
 	// set thumb position
@@ -182,13 +175,13 @@ ScrollBar.prototype.init = function ( config ) {
 
 	// set thumb size
 	if ( this.type === this.TYPE_VERTICAL ) {
-		this.$body.style.height = (this.viewSize / this.realSize * 100) + '%';
+		this.$thumb.style.height = (this.viewSize / this.realSize * 100) + '%';
 	} else {
-		this.$body.style.width = (this.viewSize / this.realSize * 100) + '%';
+		this.$thumb.style.width = (this.viewSize / this.realSize * 100) + '%';
 	}
 
 	// geometry
-	this.thumbRect = this.$body.getBoundingClientRect();
+	this.thumbRect = this.$thumb.getBoundingClientRect();
 	this.trackRect = this.$node.getBoundingClientRect();
 };
 
@@ -217,14 +210,14 @@ ScrollBar.prototype.scrollTo = function ( value ) {
 		if ( this.thumbRect.height === 0 || this.thumbRect.width === 0 ) {
 			// apply
 			this.trackRect = this.$node.getBoundingClientRect();
-			this.thumbRect = this.$body.getBoundingClientRect();
+			this.thumbRect = this.$thumb.getBoundingClientRect();
 		}
 
 		// set scroll bar width
 		if ( this.type === this.TYPE_VERTICAL ) {
-			this.$body.style.marginTop = ((this.trackRect.height - this.thumbRect.height) * value / (this.realSize - this.viewSize)) + 'px';
+			this.$thumb.style.marginTop = ((this.trackRect.height - this.thumbRect.height) * value / (this.realSize - this.viewSize)) + 'px';
 		} else {
-			this.$body.style.marginLeft = ((this.trackRect.width - this.thumbRect.width) * value / (this.realSize - this.viewSize)) + 'px';
+			this.$thumb.style.marginLeft = ((this.trackRect.width - this.thumbRect.width) * value / (this.realSize - this.viewSize)) + 'px';
 		}
 
 		// there are some listeners
