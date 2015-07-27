@@ -411,7 +411,7 @@ List.prototype.init = function ( config ) {
 	this.viewIndex = null;
 
 	// set focus item
-	if ( config.focusIndex ) {
+	if ( config.focusIndex !== undefined ) {
 		if ( DEBUG ) {
 			if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': config.focusIndex must be a number'); }
 			if ( config.focusIndex < 0 ) { throw new Error(__filename + ': config.focusIndex should be positive'); }
