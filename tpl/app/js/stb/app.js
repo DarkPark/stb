@@ -534,30 +534,37 @@ window.addEventListener('contextmenu', function globalEventListenerContextmenu (
 });
 
 
-///**
-// * The wheel event is fired when a wheel button of a pointing device (usually a mouse) is rotated.
-// * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/wheel
-// */
-//window.addEventListener('wheel', function globalEventListenerWheel ( event ) {
-//	var page = router.current;
-//
-//	debug.event(event);
-//
-//	event.preventDefault();
-//	event.stopPropagation();
-//
-//	// local handler
-//	if ( page ) {
-//		if ( page.activeComponent && page.activeComponent !== page ) {
-//			page.activeComponent.emit(event.type, event);
-//		}
-//
-//		if ( !event.stop ) {
-//			// not prevented
-//			page.emit(event.type, event);
-//		}
-//	}
-//});
+/**
+ * The wheel event is fired when a wheel button of a pointing device (usually a mouse) is rotated.
+ * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/wheel
+ */
+window.addEventListener('mousewheel', function globalEventListenerWheel ( event ) {
+	var page = router.current;
+
+	if ( DEBUG ) {
+		if ( page === null || page === undefined ) { throw new Error(__filename + ': app should have at least one page'); }
+	}
+
+	debug.event(event);
+
+	// current component handler
+	if ( page.activeComponent && page.activeComponent !== page ) {
+		// component is available and not page itself
+		if ( page.activeComponent.events[event.type] ) {
+			// there are some listeners
+			page.activeComponent.emit(event.type, event);
+		}
+	}
+
+	// page handler
+	if ( !event.stop ) {
+		// not prevented
+		if ( page.events[event.type] ) {
+			// there are some listeners
+			page.emit(event.type, event);
+		}
+	}
+});
 
 
 // Creating stbEvent instance
