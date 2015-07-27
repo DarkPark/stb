@@ -161,7 +161,7 @@ function Player ( config ) {
 	this.init(config);
 
 	// custom control method
-	if ( config.control !== undefined ) {
+	if ( config.control ) {
 		if ( DEBUG ) {
 			if ( typeof config.control !== 'function' ) { throw new Error(__filename + ': wrong config.control type'); }
 		}

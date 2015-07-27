@@ -24,7 +24,7 @@ var Emitter = require('./emitter');
 function Model ( data ) {
 	if ( DEBUG ) {
 		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
-		if ( data !== undefined && typeof data !== 'object' ) { throw new Error(__filename + ': wrong data type'); }
+		if ( data && typeof data !== 'object' ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// parent constructor call
@@ -78,7 +78,7 @@ Model.prototype.clear = function () {
 		this.data = {};
 
 		// there are some listeners
-		if ( this.events['clear'] !== undefined ) {
+		if ( this.events['clear'] ) {
 			// notify listeners
 			this.emit('clear', {data: data});
 		}
@@ -124,7 +124,7 @@ Model.prototype.init = function ( data ) {
 		this.data = data;
 
 		// there are some listeners
-		if ( this.events['init'] !== undefined ) {
+		if ( this.events['init'] ) {
 			// notify listeners
 			this.emit('init', {data: data});
 		}
@@ -207,7 +207,7 @@ Model.prototype.set = function ( name, value ) {
 			this.data[name] = value;
 
 			// there are some listeners
-			if ( this.events['change'] !== undefined ) {
+			if ( this.events['change'] ) {
 				// notify listeners
 				this.emit('change', emitData);
 			}
@@ -219,7 +219,7 @@ Model.prototype.set = function ( name, value ) {
 		this.data[name] = value;
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			// notify listeners
 			this.emit('change', emitData);
 		}
@@ -253,7 +253,7 @@ Model.prototype.unset = function ( name ) {
 		delete this.data[name];
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			// notify listeners
 			this.emit('change', emitData);
 		}

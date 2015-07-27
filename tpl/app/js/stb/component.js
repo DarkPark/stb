@@ -125,7 +125,7 @@ function Component ( config ) {
 	this.id = config.id || this.$node.id || 'cid' + counter++;
 
 	// apply hierarchy
-	if ( config.parent !== undefined ) {
+	if ( config.parent ) {
 		// add to parent component
 		config.parent.add(this);
 	}
@@ -178,7 +178,7 @@ function Component ( config ) {
 			self.focus();
 
 			// there are some listeners
-			if ( self.events['click'] !== undefined ) {
+			if ( self.events['click'] ) {
 				/**
 				 * Mouse click event.
 				 *
@@ -258,12 +258,12 @@ Component.prototype.add = function ( child ) {
 		child.parent = this;
 
 		// correct DOM parent/child connection if necessary
-		if ( child.$node !== undefined && child.$node.parentNode === null ) {
+		if ( child.$node && child.$node.parentNode === null ) {
 			this.$body.appendChild(child.$node);
 		}
 
 		// there are some listeners
-		if ( this.events['add'] !== undefined ) {
+		if ( this.events['add'] ) {
 			/**
 			 * A child component is added.
 			 *
@@ -313,7 +313,7 @@ Component.prototype.remove = function () {
 	this.$node.parentNode.removeChild(this.$node);
 
 	// there are some listeners
-	if ( this.events['remove'] !== undefined ) {
+	if ( this.events['remove'] ) {
 		/**
 		 * Delete this component.
 		 *
@@ -353,7 +353,7 @@ Component.prototype.focus = function ( data ) {
 		activeItem.$node.classList.add('focus');
 
 		// there are some listeners
-		if ( activeItem.events['focus'] !== undefined ) {
+		if ( activeItem.events['focus'] ) {
 			/**
 			 * Make this component focused.
 			 *
@@ -390,7 +390,7 @@ Component.prototype.blur = function () {
 		activePage.activeComponent = null;
 
 		// there are some listeners
-		if ( this.events['blur'] !== undefined ) {
+		if ( this.events['blur'] ) {
 			/**
 			 * Remove focus from this component.
 			 *
@@ -427,7 +427,7 @@ Component.prototype.show = function ( data ) {
 		this.visible = true;
 
 		// there are some listeners
-		if ( this.events['show'] !== undefined ) {
+		if ( this.events['show'] ) {
 			/**
 			 * Make the component visible.
 			 *
@@ -460,7 +460,7 @@ Component.prototype.hide = function () {
 		this.visible = false;
 
 		// there are some listeners
-		if ( this.events['hide'] !== undefined ) {
+		if ( this.events['hide'] ) {
 			/**
 			 * Make the component hidden.
 			 *

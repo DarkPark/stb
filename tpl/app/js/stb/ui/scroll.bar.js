@@ -149,7 +149,7 @@ ScrollBar.prototype.init = function ( config ) {
 	}
 
 	// set actual scroll size
-	if ( config.realSize !== undefined ) {
+	if ( config.realSize ) {
 		if ( DEBUG ) {
 			if ( Number(config.realSize) !== config.realSize ) { throw new Error(__filename + ': config.realSize value must be a number'); }
 		}
@@ -158,7 +158,7 @@ ScrollBar.prototype.init = function ( config ) {
 	}
 
 	// set visible area size
-	if ( config.viewSize !== undefined ) {
+	if ( config.viewSize ) {
 		if ( DEBUG ) {
 			if ( Number(config.viewSize) !== config.viewSize ) { throw new Error(__filename + ': config.viewSize value must be a number'); }
 			if ( config.viewSize <= 0 ) { throw new Error(__filename + ': config.viewSize value must be greater than 0'); }
@@ -175,7 +175,7 @@ ScrollBar.prototype.init = function ( config ) {
 	}
 
 	// set thumb position
-	if ( config.value !== undefined ) {
+	if ( config.value ) {
 		// apply
 		this.scrollTo(config.value);
 	}
@@ -228,7 +228,7 @@ ScrollBar.prototype.scrollTo = function ( value ) {
 		}
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			/**
 			 * Update scroll value.
 			 *
@@ -246,7 +246,7 @@ ScrollBar.prototype.scrollTo = function ( value ) {
 			value = this.realSize;
 
 			// there are some listeners
-			if ( this.events['done'] !== undefined ) {
+			if ( this.events['done'] ) {
 				/**
 				 * Set scroll to its maximum value.
 				 *

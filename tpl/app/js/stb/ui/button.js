@@ -120,7 +120,7 @@ Button.prototype.defaultEvents = {
 		if ( event.code === keys.ok ) {
 			// emulate click
 			// there are some listeners
-			if ( this.events['click'] !== undefined ) {
+			if ( this.events['click'] ) {
 				/**
 				 * Mouse click event emulation.
 				 *

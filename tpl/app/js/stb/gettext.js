@@ -60,7 +60,7 @@ gettext.load = function ( config, callback ) {
 		}
 
 		// there are some listeners
-		if ( gettext.events['load'] !== undefined ) {
+		if ( gettext.events['load'] ) {
 			// notify listeners
 			gettext.emit('load');
 		}
@@ -70,7 +70,7 @@ gettext.load = function ( config, callback ) {
 		callback(error);
 
 		// there are some listeners
-		if ( gettext.events['error'] !== undefined ) {
+		if ( gettext.events['error'] ) {
 			// notify listeners
 			gettext.emit('error');
 		}

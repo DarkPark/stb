@@ -285,7 +285,7 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 
 	// global handler
 	// there are some listeners
-	if ( app.events[event.type] !== undefined ) {
+	if ( app.events[event.type] ) {
 		// notify listeners
 		app.emit(event.type, event);
 	}
@@ -295,7 +295,7 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 		debug.log('component ' + page.constructor.name + '.' + page.id + ' load', 'green');
 
 		// there are some listeners
-		if ( page.events[event.type] !== undefined ) {
+		if ( page.events[event.type] ) {
 			// notify listeners
 			page.emit(event.type, event);
 		}
@@ -313,7 +313,7 @@ window.addEventListener('load', function globalEventListenerLoad ( event ) {
 
 	// everything is ready
 	// and there are some listeners
-	if ( app.events['done'] !== undefined ) {
+	if ( app.events['done'] ) {
 		// notify listeners
 		app.emit('done', event);
 	}
@@ -336,7 +336,7 @@ window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 
 	// global handler
 	// there are some listeners
-	if ( app.events[event.type] !== undefined ) {
+	if ( app.events[event.type] ) {
 		// notify listeners
 		app.emit(event.type, event);
 	}
@@ -344,7 +344,7 @@ window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 	// local handler on each page
 	router.pages.forEach(function forEachPages ( page ) {
 		// there are some listeners
-		if ( page.events[event.type] !== undefined ) {
+		if ( page.events[event.type] ) {
 			// notify listeners
 			page.emit(event.type, event);
 		}
@@ -430,7 +430,7 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 	// current component handler
 	if ( page.activeComponent && page.activeComponent !== page ) {
 		// component is available and not page itself
-		if ( page.activeComponent.events[event.type] !== undefined ) {
+		if ( page.activeComponent.events[event.type] ) {
 			// there are some listeners
 			page.activeComponent.emit(event.type, event);
 		}
@@ -439,7 +439,7 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 	// page handler
 	if ( !event.stop ) {
 		// not prevented
-		if ( page.events[event.type] !== undefined ) {
+		if ( page.events[event.type] ) {
 			// there are some listeners
 			page.emit(event.type, event);
 		}
@@ -448,7 +448,7 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 	// global app handler
 	if ( !event.stop ) {
 		// not prevented
-		if ( app.events[event.type] !== undefined ) {
+		if ( app.events[event.type] ) {
 			// there are some listeners
 			app.emit(event.type, event);
 		}
@@ -482,7 +482,7 @@ window.addEventListener('keypress', function globalEventListenerKeypress ( event
 	// current component handler
 	if ( page.activeComponent && page.activeComponent !== page ) {
 		// component is available and not page itself
-		if ( page.activeComponent.events[event.type] !== undefined ) {
+		if ( page.activeComponent.events[event.type] ) {
 			// there are some listeners
 			page.activeComponent.emit(event.type, event);
 		}
@@ -591,7 +591,7 @@ window.stbEvent = {};
  */
 window.stbEvent.onEvent = function ( event ) {
 	// there are some listeners
-	if ( app.events['media'] !== undefined ) {
+	if ( app.events['media'] ) {
 		// notify listeners
 		app.emit('media', {code: parseInt(event, 10)});
 	}
@@ -607,7 +607,7 @@ window.stbEvent.onEvent = function ( event ) {
  * @fires module:/stb/app#message
  */
 window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
-	if ( app.events['message'] !== undefined ) {
+	if ( app.events['message'] ) {
 		// notify listeners
 		app.emit('message', {
 			broadcast: true,
@@ -628,7 +628,7 @@ window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
  * @fires module:/stb/app#message
  */
 window.stbEvent.onMessage = function ( windowId, message, data ) {
-	if ( app.events['message'] !== undefined ) {
+	if ( app.events['message'] ) {
 		// notify listeners
 		app.emit('message', {
 			broadcast: false,
@@ -656,7 +656,7 @@ window.stbEvent.onMessage = function ( windowId, message, data ) {
  * @fires module:/stb/app#mount
  */
 window.stbEvent.onMount = function ( state ) {
-	if ( app.events['device:mount'] !== undefined ) {
+	if ( app.events['device:mount'] ) {
 		// notify listeners
 		app.emit('device:mount', {state: state});
 	}
@@ -676,7 +676,7 @@ window.stbEvent.onMount = function ( state ) {
  * @fires module:/stb/app#media:available
  */
 window.stbEvent.onMediaAvailable = function () {
-	if ( app.events['media:available'] !== undefined ) {
+	if ( app.events['media:available'] ) {
 		// notify listeners
 		app.emit('media:available');
 	}
@@ -699,7 +699,7 @@ window.stbEvent.onMediaAvailable = function () {
  * @fires module:/stb/app#internet:state
  */
 window.stbEvent.onNetworkStateChange = function ( state ) {
-	if ( app.events['internet:state'] !== undefined ) {
+	if ( app.events['internet:state'] ) {
 		// notify listeners
 		app.emit('internet:state', {state: state});
 	}
@@ -722,7 +722,7 @@ window.stbEvent.onNetworkStateChange = function ( state ) {
  * fires module:/stb/app#browser:progress
  */
 window.stbEvent.onWebBrowserProgress = function ( progress ) {
-	if ( app.events['browser:progress'] !== undefined ) {
+	if ( app.events['browser:progress'] ) {
 		// notify listeners
 		app.emit('browser:progress', {progress: progress});
 	}
@@ -742,7 +742,7 @@ window.stbEvent.onWebBrowserProgress = function ( progress ) {
  * fires module:/stb/app#window:focus
  */
 window.stbEvent.onWindowActivated = function () {
-	if ( app.events['window:focus'] !== undefined ) {
+	if ( app.events['window:focus'] ) {
 		// notify listeners
 		app.emit('window:focus');
 	}

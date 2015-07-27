@@ -231,7 +231,7 @@ Grid.prototype.defaultEvents = {
 				break;
 			case keys.ok:
 				// there are some listeners
-				if ( this.events['click:item'] !== undefined ) {
+				if ( this.events['click:item'] ) {
 					// notify listeners
 					this.emit('click:item', {$item: this.$focusItem, event: event});
 				}
@@ -257,7 +257,7 @@ Grid.prototype.defaultEvents = {
 //			break;
 //		case keys.ok:
 //			// there are some listeners
-//			if ( this.events['click:item'] !== undefined ) {
+//			if ( this.events['click:item'] ) {
 //				// notify listeners
 //				this.emit('click:item', {$item: this.$focusItem, event: event});
 //			}
@@ -427,7 +427,7 @@ Grid.prototype.init = function ( config ) {
 				self.focusItem(this);
 
 				// there are some listeners
-				if ( self.events['click:item'] !== undefined ) {
+				if ( self.events['click:item'] ) {
 					// notify listeners
 					self.emit('click:item', {$item: this, event: event});
 				}
@@ -545,7 +545,7 @@ Grid.prototype.init = function ( config ) {
 	this.$body.appendChild(this.$table);
 
 	// apply focus
-	if ( $focusItem !== undefined ) {
+	if ( $focusItem ) {
 		// focus item was given in data
 		this.focusItem($focusItem);
 	} else {
@@ -671,7 +671,7 @@ Grid.prototype.move = function ( direction ) {
 
 	if ( cycle ) {
 		// there are some listeners
-		if ( this.events['cycle'] !== undefined ) {
+		if ( this.events['cycle'] ) {
 			/**
 			 * Jump to the opposite side.
 			 *
@@ -686,7 +686,7 @@ Grid.prototype.move = function ( direction ) {
 
 	if ( overflow ) {
 		// there are some listeners
-		if ( this.events['overflow'] !== undefined ) {
+		if ( this.events['overflow'] ) {
 			/**
 			 * Attempt to go beyond the edge of the grid.
 			 *
@@ -735,7 +735,7 @@ Grid.prototype.focusItem = function ( $item ) {
 	}
 
 	// different element
-	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
+	if ( $item && $prev !== $item && $item.data.disable !== true ) {
 		if ( DEBUG ) {
 			if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
 			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
@@ -751,7 +751,7 @@ Grid.prototype.focusItem = function ( $item ) {
 			$prev.classList.remove('focus');
 
 			// there are some listeners
-			if ( this.events['blur:item'] !== undefined ) {
+			if ( this.events['blur:item'] ) {
 				/**
 				 * Remove focus from an element.
 				 *
@@ -775,7 +775,7 @@ Grid.prototype.focusItem = function ( $item ) {
 		$item.classList.add('focus');
 
 		// there are some listeners
-		if ( this.events['focus:item'] !== undefined ) {
+		if ( this.events['focus:item'] ) {
 			/**
 			 * Set focus to an element.
 			 *

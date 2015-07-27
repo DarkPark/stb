@@ -136,7 +136,7 @@ CheckBox.prototype.set = function ( value ) {
 		this.$node.classList.toggle('checked');
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			/**
 			 * Update progress value.
 			 *

@@ -141,7 +141,7 @@ Emitter.prototype = {
 		}
 
 		// the event exists and should have some callbacks
-		if ( this.events[name] !== undefined ) {
+		if ( this.events[name] ) {
 			// rework the callback list to exclude the given one
 			this.events[name] = this.events[name].filter(function callbacksFilter ( fn ) { return fn !== callback; });
 			// event has no more callbacks so clean it
@@ -174,7 +174,7 @@ Emitter.prototype = {
 			this.events = {};
 		} else if ( name ) {
 			if ( DEBUG ) {
-				if ( this.events[name] !== undefined ) { throw new Error(__filename + ': event is not removed'); }
+				if ( this.events[name] ) { throw new Error(__filename + ': event is not removed'); }
 			}
 
 			// only name is given so remove all callbacks for the given event
@@ -197,7 +197,7 @@ Emitter.prototype = {
 	 * obj.emit('click', {src:panel1, dst:panel2});
 	 *
 	 * // it's a good idea to emit event only when there are some listeners
-	 * if ( this.events['click'] !== undefined ) {
+	 * if ( this.events['click'] ) {
 	 *     this.emit('click', {event: event});
 	 * }
 	 */
@@ -211,7 +211,7 @@ Emitter.prototype = {
 		}
 
 		// the event exists and should have some callbacks
-		if ( event !== undefined ) {
+		if ( event ) {
 			if ( DEBUG ) {
 				if ( !Array.isArray(event) ) { throw new Error(__filename + ': wrong event type'); }
 			}

@@ -279,7 +279,7 @@ Input.prototype.init = function ( config ) {
 	}
 
 	// type passed
-	if ( config.type !== undefined ) {
+	if ( config.type ) {
 		// apply
 		this.type = config.type;
 	}
@@ -297,7 +297,7 @@ Input.prototype.init = function ( config ) {
 	}
 
 	// char direction
-	if ( config.direction !== undefined ) {
+	if ( config.direction ) {
 		// apply
 		this.direction = config.direction;
 	}
@@ -357,7 +357,7 @@ Input.prototype.addChar = function ( char, index ) {
 	}
 
 	// there are some listeners
-	if ( this.events['input'] !== undefined ) {
+	if ( this.events['input'] ) {
 		// notify listeners
 		this.emit('input', {value: this.value});
 	}
@@ -396,7 +396,7 @@ Input.prototype.removeChar = function ( index ) {
 		this.value = this.value.substring(0, index) + this.value.substring(index + 1, this.value.length);
 
 		// there are some listeners and value was changed
-		if ( this.events['input'] !== undefined && prevValue !== this.value ) {
+		if ( this.events['input'] && prevValue !== this.value ) {
 			// notify listeners
 			this.emit('input', {value: this.value});
 		}
@@ -508,7 +508,7 @@ Input.prototype.setValue = function ( value ) {
 	}
 
 	// there are some listeners
-	if ( this.events['input'] !== undefined ) {
+	if ( this.events['input'] ) {
 		// notify listeners
 		this.emit('input', {value: this.value});
 	}

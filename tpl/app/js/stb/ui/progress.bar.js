@@ -137,7 +137,7 @@ ProgressBar.prototype.set = function ( value ) {
 
 		if ( value === 100 ) {
 			// there are some listeners
-			if ( this.events['done'] !== undefined ) {
+			if ( this.events['done'] ) {
 				/**
 				 * Set progress to its maximum value.
 				 *
@@ -151,7 +151,7 @@ ProgressBar.prototype.set = function ( value ) {
 		this.$body.style.width = value + '%';
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			/**
 			 * Update progress value.
 			 *
@@ -184,7 +184,7 @@ ProgressBar.prototype.init = function ( config ) {
 	}
 
 	// set max progress value
-	if ( config.max !== undefined ) {
+	if ( config.max ) {
 		if ( DEBUG ) {
 			if ( Number(config.max) !== config.max ) { throw new Error(__filename + ': config.max value must be a number'); }
 		}
@@ -193,7 +193,7 @@ ProgressBar.prototype.init = function ( config ) {
 	}
 
 	// set min progress value
-	if ( config.min !== undefined ) {
+	if ( config.min ) {
 		if ( DEBUG ) {
 			if ( Number(config.min) !== config.min ) { throw new Error(__filename + ': config.min value must be a number'); }
 		}
@@ -206,7 +206,7 @@ ProgressBar.prototype.init = function ( config ) {
 	}
 
 	// set actual progress value
-	if ( config.value !== undefined ) {
+	if ( config.value ) {
 		if ( DEBUG ) {
 			if ( Number(config.value) !== config.value ) { throw new Error(__filename + ': config.value must be a number'); }
 			if ( config.value > this.max ) { throw new Error(__filename + ': config.value more than config.maximum'); }

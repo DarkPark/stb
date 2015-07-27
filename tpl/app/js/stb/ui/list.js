@@ -110,7 +110,7 @@ function List ( config ) {
 	this.scroll = null;
 
 	// horizontal or vertical
-	if ( config.type !== undefined ) {
+	if ( config.type ) {
 		// apply
 		this.type = config.type;
 	}
@@ -129,7 +129,7 @@ function List ( config ) {
 	this.init(config);
 
 	// custom navigation method
-	//if ( config.navigate !== undefined ) {
+	//if ( config.navigate ) {
 	//	if ( DEBUG ) {
 	//		if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
 	//	}
@@ -227,7 +227,7 @@ List.prototype.defaultEvents = {
 				break;
 			case keys.ok:
 				// there are some listeners
-				if ( this.events['click:item'] !== undefined ) {
+				if ( this.events['click:item'] ) {
 					// notify listeners
 					this.emit('click:item', {$item: this.$focusItem, event: event});
 				}
@@ -257,7 +257,7 @@ List.prototype.defaultEvents = {
 //			break;
 //		case keys.ok:
 //			// there are some listeners
-//			if ( this.events['click:item'] !== undefined ) {
+//			if ( this.events['click:item'] ) {
 //				// notify listeners
 //				this.emit('click:item', {$item: this.$focusItem, event: event});
 //			}
@@ -330,11 +330,11 @@ List.prototype.init = function ( config ) {
 		 * @fires module:stb/ui/list~List#click:item
 		 */
 		onClick = function ( event ) {
-			if ( this.data !== undefined ) {
+			if ( this.data ) {
 				self.focusItem(this);
 
 				// there are some listeners
-				if ( self.events['click:item'] !== undefined ) {
+				if ( self.events['click:item'] ) {
 					// notify listeners
 					self.emit('click:item', {$item: this, event: event});
 				}
@@ -354,7 +354,7 @@ List.prototype.init = function ( config ) {
 	if ( config.scroll !== undefined ) { this.scroll = config.scroll; }
 
 	// apply list of items
-	if ( config.data !== undefined ) {
+	if ( config.data ) {
 		if ( DEBUG ) {
 			if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
 		}
@@ -363,7 +363,7 @@ List.prototype.init = function ( config ) {
 	}
 
 	// custom render method
-	if ( config.render !== undefined ) {
+	if ( config.render ) {
 		if ( DEBUG ) {
 			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
 		}
@@ -372,7 +372,7 @@ List.prototype.init = function ( config ) {
 	}
 
 	// list items amount on page
-	if ( config.size !== undefined ) {
+	if ( config.size ) {
 		if ( DEBUG ) {
 			if ( Number(config.size) !== config.size ) { throw new Error(__filename + ': config.size must be a number'); }
 			if ( config.size <= 0 ) { throw new Error(__filename + ': config.size should be positive'); }
@@ -401,7 +401,7 @@ List.prototype.init = function ( config ) {
 	}
 
 	// view window position
-	if ( config.viewIndex !== undefined ) {
+	if ( config.viewIndex ) {
 		if ( DEBUG ) {
 			if ( Number(config.viewIndex) !== config.viewIndex ) { throw new Error(__filename + ': config.viewIndex must be a number'); }
 			if ( config.viewIndex < 0 ) { throw new Error(__filename + ': config.viewIndex should be positive'); }
@@ -411,7 +411,7 @@ List.prototype.init = function ( config ) {
 	this.viewIndex = null;
 
 	// set focus item
-	if ( config.focusIndex !== undefined ) {
+	if ( config.focusIndex ) {
 		if ( DEBUG ) {
 			if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': config.focusIndex must be a number'); }
 			if ( config.focusIndex < 0 ) { throw new Error(__filename + ': config.focusIndex should be positive'); }
@@ -471,7 +471,7 @@ List.prototype.renderView = function ( index ) {
 			itemData = this.data[index];
 
 			// real item or stub
-			if ( itemData !== undefined ) {
+			if ( itemData ) {
 				// correct inner data/index and render
 				$item.data  = itemData;
 				$item.index = index;
@@ -492,13 +492,13 @@ List.prototype.renderView = function ( index ) {
 		}
 
 		// there are some listeners
-		if ( this.events['move:view'] !== undefined ) {
+		if ( this.events['move:view'] ) {
 			// notify listeners
 			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
 		}
 
 		// there are some listeners
-		if ( this.events['select:item'] !== undefined ) {
+		if ( this.events['select:item'] ) {
 			this.emit('select:item', {$item: $item});
 		}
 
@@ -565,13 +565,13 @@ List.prototype.move = function ( direction ) {
 				this.move(keys.end);
 
 				// there are some listeners
-				if ( this.events['cycle'] !== undefined ) {
+				if ( this.events['cycle'] ) {
 					// notify listeners
 					this.emit('cycle', {direction: direction});
 				}
 			} else {
 				// there are some listeners
-				if ( this.events['overflow'] !== undefined ) {
+				if ( this.events['overflow'] ) {
 					// notify listeners
 					this.emit('overflow', {direction: direction});
 				}
@@ -593,13 +593,13 @@ List.prototype.move = function ( direction ) {
 				this.move(keys.home);
 
 				// there are some listeners
-				if ( this.events['cycle'] !== undefined ) {
+				if ( this.events['cycle'] ) {
 					// notify listeners
 					this.emit('cycle', {direction: direction});
 				}
 			} else {
 				// there are some listeners
-				if ( this.events['overflow'] !== undefined ) {
+				if ( this.events['overflow'] ) {
 					// notify listeners
 					this.emit('overflow', {direction: direction});
 				}
@@ -675,7 +675,7 @@ List.prototype.focusItem = function ( $item ) {
 	}
 
 	// different element
-	if ( $item !== undefined && $prev !== $item ) {
+	if ( $item && $prev !== $item ) {
 		if ( DEBUG ) {
 			if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
 			if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
@@ -691,7 +691,7 @@ List.prototype.focusItem = function ( $item ) {
 			$prev.classList.remove('focus');
 
 			// there are some listeners
-			if ( this.events['blur:item'] !== undefined ) {
+			if ( this.events['blur:item'] ) {
 				/**
 				 * Remove focus from an element.
 				 *
@@ -712,7 +712,7 @@ List.prototype.focusItem = function ( $item ) {
 		$item.classList.add('focus');
 
 		// there are some listeners
-		if ( this.events['focus:item'] !== undefined ) {
+		if ( this.events['focus:item'] ) {
 			/**
 			 * Set focus to a DOM element.
 			 *
@@ -726,7 +726,7 @@ List.prototype.focusItem = function ( $item ) {
 		}
 
 		// there are some listeners
-		if ( this.events['select:item'] !== undefined ) {
+		if ( this.events['select:item'] ) {
 			/**
 			 * Set focus to a list item.
 			 *

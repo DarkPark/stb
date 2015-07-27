@@ -17,7 +17,7 @@ var app     = require('../app'),
 app.data.debug = true;
 
 // STB device or emulation?
-app.data.host = (window.gSTB !== undefined);
+app.data.host = !!window.gSTB;
 
 // platform?
 if ( app.data.host ) {

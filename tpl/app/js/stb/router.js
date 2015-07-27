@@ -125,7 +125,7 @@ router.ids = {};
 router.init = function ( pages ) {
 	var i, l, item;
 
-	if ( pages !== undefined ) {
+	if ( pages ) {
 		if ( DEBUG ) {
 			if ( !Array.isArray(pages) ) { throw new Error(__filename + ': wrong pages type'); }
 		}
@@ -148,7 +148,7 @@ router.init = function ( pages ) {
 		}
 
 		// there are some listeners
-		if ( this.events['init'] !== undefined ) {
+		if ( this.events['init'] ) {
 			// notify listeners
 			this.emit('init', {pages: pages});
 		}
@@ -234,7 +234,7 @@ router.show = function ( page, data ) {
 		this.current = page;
 
 		// there are some listeners
-		if ( page.events['show'] !== undefined ) {
+		if ( page.events['show'] ) {
 			// notify listeners
 			page.emit('show', {page: page, data: data});
 		}
@@ -265,7 +265,7 @@ router.hide = function ( page ) {
 		this.current = null;
 
 		// there are some listeners
-		if ( page.events['hide'] !== undefined ) {
+		if ( page.events['hide'] ) {
 			// notify listeners
 			page.emit('hide', {page: page});
 		}
@@ -312,7 +312,7 @@ router.navigate = function ( name, data ) {
 		this.show(pageTo, data);
 
 		// there are some listeners
-		if ( this.events['navigate'] !== undefined ) {
+		if ( this.events['navigate'] ) {
 			// notify listeners
 			this.emit('navigate', {from: pageFrom, to: pageTo});
 		}
@@ -359,7 +359,7 @@ router.back = function () {
 			this.show(pageTo);
 
 			// there are some listeners
-			if ( this.events['navigate'] !== undefined ) {
+			if ( this.events['navigate'] ) {
 				// notify listeners
 				this.emit('navigate', {from: pageFrom, to: pageTo});
 			}
