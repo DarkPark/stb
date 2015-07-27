@@ -175,7 +175,7 @@ ScrollBar.prototype.init = function ( config ) {
 	}
 
 	// set thumb position
-	if ( config.value ) {
+	if ( config.value !== undefined ) {
 		// apply
 		this.scrollTo(config.value);
 	}

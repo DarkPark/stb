@@ -401,7 +401,7 @@ List.prototype.init = function ( config ) {
 	}
 
 	// view window position
-	if ( config.viewIndex ) {
+	if ( config.viewIndex !== undefined ) {
 		if ( DEBUG ) {
 			if ( Number(config.viewIndex) !== config.viewIndex ) { throw new Error(__filename + ': config.viewIndex must be a number'); }
 			if ( config.viewIndex < 0 ) { throw new Error(__filename + ': config.viewIndex should be positive'); }
