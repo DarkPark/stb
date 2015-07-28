@@ -20,7 +20,7 @@
 		"gulp-repl": "^0.3.0",
 		"gulp-sourcemaps": "^1.5.2",
 		"gulp-util": "^3.0.5",
-		"gulp-watch": "^4.3.3",
+		"gulp-watch": "^4.3.4",
 		"gulp-zip": "^3.0.2",
 		"ip": "^0.3.2",
 		"node-static": "^0.7.7",
