@@ -48,7 +48,7 @@ var Component = require('../component'),
  */
 function List ( config ) {
 	// current execution context
-	var self = this;
+	//var self = this;
 
 	// sanitize
 	config = config || {};
@@ -351,7 +351,7 @@ List.prototype.init = function ( config ) {
 	if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
 
 	// apply ScrollBar link
-	if ( config.scroll !== undefined ) { this.scroll = config.scroll; }
+	if ( config.scroll ) { this.scroll = config.scroll; }
 
 	// apply list of items
 	if ( config.data ) {

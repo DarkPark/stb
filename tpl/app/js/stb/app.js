@@ -536,7 +536,10 @@ window.addEventListener('contextmenu', function globalEventListenerContextmenu (
 
 /**
  * The wheel event is fired when a wheel button of a pointing device (usually a mouse) is rotated.
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/Reference/Events/wheel
+ *
+ * @param {Event} event generated object with event data
  */
 window.addEventListener('mousewheel', function globalEventListenerWheel ( event ) {
 	var page = router.current;
