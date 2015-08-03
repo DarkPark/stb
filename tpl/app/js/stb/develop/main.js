@@ -13,15 +13,11 @@ var app     = require('../app'),
 	metrics = require('../../../../config/metrics');
 
 
-// export to globals for easy debugging
-window.app    = app;
-window.router = require('../router');
-
 // set global mode
 app.data.debug = true;
 
 // STB device or emulation?
-app.data.host = (window.gSTB !== undefined);
+app.data.host = !!window.gSTB;
 
 // platform?
 if ( app.data.host ) {

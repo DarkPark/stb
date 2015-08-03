@@ -18,7 +18,7 @@ var parseQuery = require('./parse.query');
  * @example
  * location.href = referrer() || 'http://google.com';
  */
-module.exports.referrer = function () {
+module.exports = function () {
 	var queryParams = parseQuery(location.search.substring(1));
 
 	if ( queryParams.referrer ) {
@@ -27,11 +27,9 @@ module.exports.referrer = function () {
 	}
 
 	if ( document.referrer ) {
-		if ( DEBUG ) {
-			// in develop mode, document.referrer refers to the application url
-			if ( location.href.split('#')[0] === document.referrer ) {
-				return false;
-			}
+		// if in app was used location.reload method, document.referrer === app link, and must return false
+		if ( location.href.split('#')[0] === document.referrer ) {
+			return false;
 		}
 		return document.referrer;
 	}

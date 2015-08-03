@@ -64,7 +64,7 @@ function handler ( event ) {
 	groups[this.group]--;
 
 	// one link is done
-	if ( preloader.events['link'] !== undefined ) {
+	if ( preloader.events['link'] ) {
 		// notify listeners
 		preloader.emit('link', {url: this.src, group: this.group});
 	}
@@ -73,7 +73,7 @@ function handler ( event ) {
 	if ( groups[this.group] === 0 ) {
 		debug.log('[preloader] group "' + this.group + '" loaded');
 		// one link is done
-		if ( preloader.events['group'] !== undefined ) {
+		if ( preloader.events['group'] ) {
 			// notify listeners
 			preloader.emit('group', {name: this.group});
 		}
@@ -83,7 +83,7 @@ function handler ( event ) {
 	if ( queueSize === 0 ) {
 		debug.log('[preloader] done');
 		// all links are done
-		if ( preloader.events['done'] !== undefined ) {
+		if ( preloader.events['done'] ) {
 			// notify listeners
 			preloader.emit('done');
 		}
@@ -111,7 +111,7 @@ function handler ( event ) {
  */
 preloader.add = function ( links ) {
 	if ( DEBUG ) {
-		if ( !Array.isArray(links) ) { throw 'wrong argument links'; }
+		if ( !Array.isArray(links) ) { throw new Error(__filename + ': wrong argument links'); }
 	}
 
 	// walk through all the given links
@@ -121,9 +121,9 @@ preloader.add = function ( links ) {
 			group = item.group || '';
 
 		if ( DEBUG ) {
-			if ( typeof url !== 'string' ) { throw 'wrong url type'; }
-			if ( typeof group !== 'string' ) { throw 'wrong group type'; }
-			if ( url.trim() === '' ) { throw 'empty url'; }
+			if ( typeof url !== 'string' ) { throw new Error(__filename + ': wrong url type'); }
+			if ( typeof group !== 'string' ) { throw new Error(__filename + ': wrong group type'); }
+			if ( url.trim() === '' ) { throw new Error(__filename + ': empty url'); }
 		}
 
 		// increase counters
@@ -137,6 +137,12 @@ preloader.add = function ( links ) {
 	});
 
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.preloader = preloader;
+}
 
 
 // public

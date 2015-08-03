@@ -1,5 +1,5 @@
 /**
- * @module stb/ui/check.box
+ * @module "stb/ui/check.box"
  * @author Stanislav Kalashnik <sk@infomir.eu>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
@@ -8,7 +8,7 @@
 
 var Component = require('../component'),
 	keys      = require('../keys'),
-	groups    = {};
+	groups    = {};  // set of groups with linked components
 
 
 /**
@@ -29,43 +29,35 @@ var Component = require('../component'),
  *     });
  */
 function CheckBox ( config ) {
-	// current execution context
-	var self = this;
-
 	// sanitize
 	config = config || {};
 
-	/**
-	 * Initial state.
-	 *
-	 * @type {boolean}
-	 */
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.group     && typeof config.group     !== 'string' ) { throw new Error(__filename + ': wrong or empty config.group'); }
+	}
+
+	// set default className if classList property empty or undefined
+	config.className = 'checkBox ' + (config.className || '');
+
+	// state
 	this.value = !!config.value;
-
-	/**
-	 * Group name to work synchronously with other checkboxes.
-	 *
-	 * @type {string}
-	 */
-	this.group = null;
-
-	// parent init
-	Component.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('checkBox');
 
 	// correct init styles
 	if ( this.value ) {
-		this.$node.classList.add('checked');
+		config.className += ' checked';
 	}
 
-	// apply hierarchy
-	if ( config.group !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.group !== 'string' || config.group.length === 0 ) { throw 'wrong or empty config.group'; }
-		}
+	// parent constructor call
+	Component.call(this, config);
 
+	// group name to work synchronously with other checkboxes
+	this.group = null;
+
+	// apply hierarchy
+	if ( config.group ) {
 		// save
 		this.group = config.group;
 
@@ -76,18 +68,6 @@ function CheckBox ( config ) {
 			groups[config.group].push(this);
 		}
 	}
-
-	// invert on mouse click or enter
-	this.addListeners({
-		click: function () {
-			self.set(!self.value);
-		},
-		keydown: function ( event ) {
-			if ( event.code === keys.ok ) {
-				self.set(!self.value);
-			}
-		}
-	});
 }
 
 
@@ -97,19 +77,47 @@ CheckBox.prototype.constructor = CheckBox;
 
 
 /**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+CheckBox.prototype.defaultEvents = {
+	/**
+	 * Default method to handle mouse click events.
+	 */
+	click: function () {
+		// invert state
+		this.set(!this.value);
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		// emulate click
+		if ( event.code === keys.ok ) {
+			this.set(!this.value);
+		}
+	}
+};
+
+
+/**
  * Set the given state.
  * Does nothing in case the value is already as necessary.
  *
  * @param {boolean} value new value to set
  * @return {boolean} operation status
  *
- * @fires module:stb/ui/check.box~CheckBox#change
+ * @fires module:"stb/ui/check.box~CheckBox#change"
  */
 CheckBox.prototype.set = function ( value ) {
 	var i, l;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	if ( this.value !== value ) {
@@ -128,7 +136,7 @@ CheckBox.prototype.set = function ( value ) {
 		this.$node.classList.toggle('checked');
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			/**
 			 * Update progress value.
 			 *
@@ -143,8 +151,15 @@ CheckBox.prototype.set = function ( value ) {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentCheckBox = CheckBox;
+}
 
 
 // public

@@ -23,11 +23,11 @@ var Emitter = require('./emitter');
  */
 function Model ( data ) {
 	if ( DEBUG ) {
-		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
-		if ( data !== undefined && typeof data !== 'object' ) { throw 'wrong data type'; }
+		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
+		if ( data && typeof data !== 'object' ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
-	// parent init
+	// parent constructor call
 	Emitter.call(this);
 
 	/**
@@ -69,7 +69,7 @@ Model.prototype.clear = function () {
 	var data = this.data;
 
 	if ( DEBUG ) {
-		if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+		if ( typeof data !== 'object' ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// is there any data?
@@ -78,7 +78,7 @@ Model.prototype.clear = function () {
 		this.data = {};
 
 		// there are some listeners
-		if ( this.events['clear'] !== undefined ) {
+		if ( this.events['clear'] ) {
 			// notify listeners
 			this.emit('clear', {data: data});
 		}
@@ -86,6 +86,7 @@ Model.prototype.clear = function () {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
@@ -111,7 +112,7 @@ Model.prototype.clear = function () {
  */
 Model.prototype.init = function ( data ) {
 	if ( DEBUG ) {
-		if ( typeof data !== 'object' ) { throw 'wrong data type'; }
+		if ( typeof data !== 'object' ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// valid input
@@ -123,7 +124,7 @@ Model.prototype.init = function ( data ) {
 		this.data = data;
 
 		// there are some listeners
-		if ( this.events['init'] !== undefined ) {
+		if ( this.events['init'] ) {
 			// notify listeners
 			this.emit('init', {data: data});
 		}
@@ -131,6 +132,7 @@ Model.prototype.init = function ( data ) {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
@@ -144,7 +146,7 @@ Model.prototype.init = function ( data ) {
  */
 Model.prototype.has = function ( name ) {
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': wrong this.data type'); }
 	}
 
 	// hasOwnProperty method is not available directly in case of Object.create(null)
@@ -161,7 +163,7 @@ Model.prototype.has = function ( name ) {
  */
 Model.prototype.get = function ( name ) {
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': wrong this.data type'); }
 	}
 
 	return this.data[name];
@@ -194,7 +196,7 @@ Model.prototype.set = function ( name, value ) {
 		emitData  = {name: name, curr: value};
 
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': wrong this.data type'); }
 	}
 
 	if ( isAttrSet ) {
@@ -205,7 +207,7 @@ Model.prototype.set = function ( name, value ) {
 			this.data[name] = value;
 
 			// there are some listeners
-			if ( this.events['change'] !== undefined ) {
+			if ( this.events['change'] ) {
 				// notify listeners
 				this.emit('change', emitData);
 			}
@@ -217,7 +219,7 @@ Model.prototype.set = function ( name, value ) {
 		this.data[name] = value;
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			// notify listeners
 			this.emit('change', emitData);
 		}
@@ -225,6 +227,7 @@ Model.prototype.set = function ( name, value ) {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
@@ -242,7 +245,7 @@ Model.prototype.unset = function ( name ) {
 		emitData;
 
 	if ( DEBUG ) {
-		if ( typeof this.data !== 'object' ) { throw 'wrong this.data type'; }
+		if ( typeof this.data !== 'object' ) { throw new Error(__filename + ': wrong this.data type'); }
 	}
 
 	if ( isAttrSet ) {
@@ -250,7 +253,7 @@ Model.prototype.unset = function ( name ) {
 		delete this.data[name];
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			// notify listeners
 			this.emit('change', emitData);
 		}
@@ -258,6 +261,7 @@ Model.prototype.unset = function ( name ) {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
@@ -339,6 +343,12 @@ Model.prototype.unset = function ( name ) {
 //	} catch(e){ console.log(e); }
 //	return data;
 //};
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.Model = Model;
+}
 
 
 // public

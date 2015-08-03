@@ -21,17 +21,29 @@ function Modal ( config ) {
 	// sanitize
 	config = config || {};
 
-	// parent init
-	Component.call(this, config);
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+	}
 
-	// correct CSS class names
-	this.$node.classList.add('modal');
+	// set default className if classList property empty or undefined
+	config.className = 'modal ' + (config.className || '');
+
+	// parent constructor call
+	Component.call(this, config);
 }
 
 
 // inheritance
 Modal.prototype = Object.create(Component.prototype);
 Modal.prototype.constructor = Modal;
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentModal = Modal;
+}
 
 
 // public

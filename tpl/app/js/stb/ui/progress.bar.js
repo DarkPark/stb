@@ -39,6 +39,12 @@ function ProgressBar ( config ) {
 	// sanitize
 	config = config || {};
 
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+	}
+
 	/**
 	 * Max progress value.
 	 *
@@ -70,18 +76,17 @@ function ProgressBar ( config ) {
 	// can't accept focus
 	config.focusable = config.focusable || false;
 
-	// parent init
+	// set default className if classList property empty or undefined
+	config.className = 'progressBar ' + (config.className || '');
+
+	// parent constructor call
 	Component.call(this, config);
 
-	// create $body if not provided
-	if ( this.$node === this.$body ) {
-		// insert bar line
-		this.$body = this.$node.appendChild(document.createElement('div'));
-	}
+	// insert bar line
+	this.$value = this.$body.appendChild(document.createElement('div'));
 
-	// correct CSS class names
-	this.$node.classList.add('progressBar');
-	this.$body.classList.add('value');
+	// correct CSS class name
+	this.$value.className = 'value';
 
 	// component setup
 	this.init(config);
@@ -107,15 +112,12 @@ ProgressBar.prototype.set = function ( value ) {
 	var prevValue = this.value;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( arguments.length !== 1  ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( Number(value) !== value ) { throw new Error(__filename + ': value must be a number'); }
 	}
 
 	// value changed but in the given range
 	if ( this.value !== value && value <= this.max && value >= this.min ) {
-		if ( DEBUG ) {
-			if ( Number(value) !== value ) { throw 'value must be a number'; }
-		}
-
 		// set new value
 		this.value = value;
 
@@ -124,7 +126,7 @@ ProgressBar.prototype.set = function ( value ) {
 
 		if ( value === 100 ) {
 			// there are some listeners
-			if ( this.events['done'] !== undefined ) {
+			if ( this.events['done'] ) {
 				/**
 				 * Set progress to its maximum value.
 				 *
@@ -135,10 +137,10 @@ ProgressBar.prototype.set = function ( value ) {
 		}
 
 		// set progress bar width
-		this.$body.style.width = value + '%';
+		this.$value.style.width = value + '%';
 
 		// there are some listeners
-		if ( this.events['change'] !== undefined ) {
+		if ( this.events['change'] ) {
 			/**
 			 * Update progress value.
 			 *
@@ -154,6 +156,7 @@ ProgressBar.prototype.set = function ( value ) {
 		return true;
 	}
 
+	// nothing was done
 	return false;
 };
 
@@ -165,15 +168,16 @@ ProgressBar.prototype.set = function ( value ) {
  */
 ProgressBar.prototype.init = function ( config ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 	}
 
 	// set max progress value
 	if ( config.max !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.max) !== config.max ) { throw 'config.max value must be a number'; }
+			if ( Number(config.max) !== config.max ) { throw new Error(__filename + ': config.max value must be a number'); }
 		}
+
 		// apply
 		this.max = config.max;
 	}
@@ -181,23 +185,25 @@ ProgressBar.prototype.init = function ( config ) {
 	// set min progress value
 	if ( config.min !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.min) !== config.min ) { throw 'config.min value must be a number'; }
+			if ( Number(config.min) !== config.min ) { throw new Error(__filename + ': config.min value must be a number'); }
 		}
+
 		// apply
 		this.min = config.min;
 	}
 
 	if ( DEBUG ) {
-		if ( this.min >= this.max ) { throw 'this.min value must be less than this.max'; }
+		if ( this.min >= this.max ) { throw new Error(__filename + ': this.min value must be less than this.max'); }
 	}
 
 	// set actual progress value
 	if ( config.value !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.value) !== config.value ) { throw 'config.value must be a number'; }
-			if ( config.value > this.max ) { throw 'config.value more than config.maximum'; }
-			if ( config.value < this.min ) { throw 'config.value less than config.minimum'; }
+			if ( Number(config.value) !== config.value ) { throw new Error(__filename + ': config.value must be a number'); }
+			if ( config.value > this.max ) { throw new Error(__filename + ': config.value more than config.maximum'); }
+			if ( config.value < this.min ) { throw new Error(__filename + ': config.value less than config.minimum'); }
 		}
+
 		// apply
 		this.value = config.value;
 	}
@@ -205,8 +211,14 @@ ProgressBar.prototype.init = function ( config ) {
 	this.step = Math.abs(this.max - this.min) / 100;
 
 	// init bar size, (this.min - this.value) - calculate distance from start
-	this.$body.style.width = (Math.abs(this.min - this.value) / this.step) + '%';
+	this.$value.style.width = (Math.abs(this.min - this.value) / this.step) + '%';
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentProgressBar = ProgressBar;
+}
 
 
 // public

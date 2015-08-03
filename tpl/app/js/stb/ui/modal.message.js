@@ -21,11 +21,17 @@ function ModalMessage ( config ) {
 	// sanitize
 	config = config || {};
 
-	// parent init
-	ModalBox.call(this, config);
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+	}
 
-	// correct CSS class names
-	this.$node.classList.add('modalMessage');
+	// set default className if classList property empty or undefined
+	config.className = 'modalMessage ' + (config.className || '');
+
+	// parent constructor call
+	ModalBox.call(this, config);
 
 	this.$header  = this.$body.appendChild(document.createElement('div'));
 	this.$content = this.$body.appendChild(document.createElement('div'));
@@ -44,6 +50,12 @@ function ModalMessage ( config ) {
 // inheritance
 ModalMessage.prototype = Object.create(ModalBox.prototype);
 ModalMessage.prototype.constructor = ModalMessage;
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentModalMessage = ModalMessage;
+}
 
 
 // public

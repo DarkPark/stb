@@ -8,6 +8,7 @@
 
 'use strict';
 
+/* eslint-disable */
 
 /**
  * Base Promise implementation.
@@ -28,8 +29,8 @@
  */
 function Promise ( fn ) {
 	if ( DEBUG ) {
-		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
-		if ( typeof fn !== 'function' ) { throw 'argument should be a function'; }
+		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
+		if ( typeof fn !== 'function' ) { throw new Error(__filename + ': argument should be a function'); }
 	}
 
 	this.state = null;

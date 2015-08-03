@@ -39,11 +39,11 @@ function Stack ( data ) {
 	this.data = data || [];
 
 	if ( DEBUG ) {
-		if ( typeof this !== 'object' ) { throw 'must be constructed via new'; }
-		if ( !Array.isArray(this.data) ) { throw 'wrong data type'; }
+		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
+		if ( !Array.isArray(this.data) ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
-	// parent init
+	// parent constructor call
 	Emitter.call(this);
 }
 
@@ -85,7 +85,7 @@ Stack.prototype.push = function ( data ) {
 	this.current = data;
 
 	// there are some listeners
-	if ( this.events['push'] !== undefined ) {
+	if ( this.events['push'] ) {
 		// notify listeners
 		this.emit('push', {prev: prev, curr: this.current});
 	}
@@ -124,7 +124,7 @@ Stack.prototype.pop = function () {
 		this.current = this.data.length > 0 ? this.data[this.data.length - 1] : null;
 
 		// there are some listeners
-		if ( this.events['pop'] !== undefined ) {
+		if ( this.events['pop'] ) {
 			// notify listeners
 			this.emit('pop', {prev: prev, curr: this.current});
 		}
@@ -132,6 +132,12 @@ Stack.prototype.pop = function () {
 
 	return prev;
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.Stack = Stack;
+}
 
 
 // public

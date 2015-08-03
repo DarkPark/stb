@@ -20,10 +20,15 @@
  * format('This is a {0} and a {1}', 'cat', 'dog');
  * format('This is a {0} and a {1} and another {0}', 'cat', 'dog');
  */
-module.exports.format = function ( format ) {
-	var args = Array.prototype.slice.call(arguments, 1);
+module.exports = function ( format ) {
+	var args = Array.prototype.slice.call(arguments, 1),
+		expr = /{(\d+)}/g;
 
-	return format.replace(/{(\d+)}/g, function ( match, number ) {
+	if ( DEBUG ) {
+		if ( !expr.test(format) ) { throw new Error(__filename + ': format string does not have substitutions: ' + format); }
+	}
+
+	return format.replace(expr, function ( match, number ) {
 		return args[number] !== undefined ? args[number] : match;
 	});
 };

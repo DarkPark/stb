@@ -10,14 +10,11 @@
 
 /* eslint new-cap: 0 */
 
-var host   = require('../app').data.host,
-	config = require('../../../../config/logger'),
-	util   = require('util'),
-	buffer = [],
-	/**
-	 * Storage for timers (time, timeEnd).
-	 */
-	timeCounters = {},
+var host      = require('../app').data.host,
+	config    = require('../../../../config/logger'),
+	util      = require('util'),
+	buffer    = [],
+	timeMarks = {},  // storage for timers (debug.time, debug.timeEnd)
 	socket;
 
 
@@ -235,30 +232,39 @@ module.exports = window.debug = {
 	 * Start specific timer.
 	 * Use to calculate time of some actions.
 	 *
-	 * @param {string} name timer name
+	 * @param {string} [name=''] timer group name
+	 * @param {string} [title=''] timer individual mark caption
 	 *
 	 * @example
-	 * debug.time('function1');
+	 * debug.time('request');
 	 * // some processing...
-	 * debug.timeEnd('function1');
-	 * // print time execution, like 'function1: 934ms'
+	 * debug.time('request');
+	 * // prints 'time: +20ms'
+	 * // some processing...
+	 * debug.time('request', 'ready');
+	 * // prints 'time (ready): +40ms'
+	 * // some processing...
+	 * debug.time('request', 'done');
+	 * // prints 'time (done): +60ms'
 	 */
-	time: function ( name ) {
-		var time, key;
+	time: function ( name, title ) {
+		var time = +new Date();
 
-		if ( host ) {
-			if ( !name ) {
-				return;
-			}
+		// sanitize
+		name  = name  || '';
+		title = title || '';
 
-			time = new Date().getTime();
-
-			key = 'KEY:' + name;
-
-			timeCounters[key] = time;
+		// is this mark exist
+		if ( timeMarks[name] ) {
+			// already set
+			debug.log((name || 'time') + (title ? ' (' + title + ')' : '') + ': +' + (time - timeMarks[name].last) + 'ms', 'blue');
 		} else {
-			console.time(name);
+			// create a new mark
+			timeMarks[name] = {init: time};
 		}
+
+		// update with the current value
+		timeMarks[name].last = time;
 	},
 
 
@@ -266,35 +272,35 @@ module.exports = window.debug = {
 	 * End specific timer.
 	 * Use to calculate time of some actions.
 	 *
-	 * @param {string} name timer name
+	 * @param {string} [name=''] timer name
+	 * @param {string} [title='total'] timer mark caption
 	 *
 	 * @example
-	 * debug.time('function1');
+	 * debug.time();
 	 * // some processing...
-	 * debug.timeEnd('function1');
-	 * // print time execution, like 'function1: 934ms'
+	 * debug.timeEnd();
+	 * // prints 'time (total): 934ms'
+	 *
+	 * @example
+	 * debug.time('request');
+	 * // some processing...
+	 * debug.timeEnd('request', 'done');
+	 * // prints 'request (done): 934ms'
 	 */
-	timeEnd: function ( name ) {
-		var key, diff, timeCounter;
+	timeEnd: function ( name, title ) {
+		var time = +new Date();
 
-		if ( host ) {
-			if ( !name ) {
-				return;
-			}
+		// sanitize
+		name  = name  || '';
+		title = title || 'total';
 
-			key = 'KEY:' + name;
-			timeCounter = timeCounters[key];
+		// is this mark exist
+		if ( timeMarks[name] ) {
+			debug.log((name || 'time') + ' (' + title + '): ' + (time - timeMarks[name].init) + 'ms', 'blue');
 
-			if ( timeCounter ) {
-				diff = +new Date() - timeCounter;
-				timeCounters[key] = null;
-				diff += 'ms';
-				log(name + ':\t' + diff.bgBlue);
-			} else {
-				throw 'no started timer for "' + name + '"';
-			}
+			delete timeMarks[name];
 		} else {
-			console.timeEnd(name);
+			throw new Error(__filename + ': no started timer for "' + name + '"');
 		}
 	}
 

@@ -52,6 +52,21 @@ body.develop {
 			}
 		}
 
+		// current version of webkit doesn't show outline for table elements
+		// fix to compensate it and show at least table cells
+		&.button {
+			outline: none;
+
+			.text, .icon {
+				outline:        1px dashed #005000;
+				outline-offset: -1px;
+			}
+
+			&.focus .text, &.focus .icon {
+				outline: 1px dashed red;
+			}
+		}
+
 		&.list {
 			> .item {
 				outline:        1px dashed #000000;

@@ -40,20 +40,32 @@ function Panel ( config ) {
 	// sanitize
 	config = config || {};
 
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+	}
+
 	// can't accept focus
 	config.focusable = config.focusable || false;
 
-	// parent init
-	Component.call(this, config);
+	// set default className if classList property empty or undefined
+	config.className = 'panel ' + (config.className || '');
 
-	// correct CSS class names
-	this.$node.classList.add('panel');
+	// parent constructor call
+	Component.call(this, config);
 }
 
 
 // inheritance
 Panel.prototype = Object.create(Component.prototype);
 Panel.prototype.constructor = Panel;
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentPanel = Panel;
+}
 
 
 // public

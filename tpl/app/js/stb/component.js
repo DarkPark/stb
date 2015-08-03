@@ -24,20 +24,22 @@ var Emitter = require('./emitter'),
  *
  * @param {Object} [config={}] init parameters
  * @param {Element} [config.id] component unique identifier (generated if not set)
+ * @param {string} [config.className] space-separated list of classes for "className" property of this.$node
  * @param {Element} [config.$node] DOM element/fragment to be a component outer container
  * @param {Element} [config.$body] DOM element/fragment to be a component inner container (by default is the same as $node)
- * @param {Element} [config.$content] DOM element/fragment to be appended to the $body
  * @param {Component} [config.parent] link to the parent component which has this component as a child
  * @param {Array.<Component>} [config.children=[]] list of components in this component
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
+ * @param {boolean} [config.propagate=false] allow to emit events to the parent component
  *
  * @fires module:stb/component~Component#click
  *
  * @example
  * var component = new Component({
  *     $node: document.getElementById(id),
+ *     className: 'bootstrap responsive',
  *     events: {
  *         click: function () { ... }
  *     }
@@ -47,7 +49,22 @@ var Emitter = require('./emitter'),
  */
 function Component ( config ) {
 	// current execution context
-	var self = this;
+	var self = this,
+		name;
+
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.id        && typeof config.id !== 'string'         ) { throw new Error(__filename + ': wrong or empty config.id'); }
+		if ( config.className && typeof config.className !== 'string'  ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.$node     && !(config.$node instanceof Element)    ) { throw new Error(__filename + ': wrong config.$node type'); }
+		if ( config.$body     && !(config.$body instanceof Element)    ) { throw new Error(__filename + ': wrong config.$body type'); }
+		if ( config.parent    && !(config.parent instanceof Component) ) { throw new Error(__filename + ': wrong config.parent type'); }
+		if ( config.children  && !Array.isArray(config.children)       ) { throw new Error(__filename + ': wrong config.children type'); }
+	}
 
 	/**
 	 * Component visibility state flag.
@@ -79,17 +96,6 @@ function Component ( config ) {
 	 */
 	this.$body = null;
 
-	if ( DEBUG ) {
-		/**
-		 * Link to the page owner component.
-		 * It can differ from the direct parent.
-		 * Should be used only in debug.
-		 *
-		 * @type {Page}
-		 */
-		//this.page = null;
-	}
-
 	/**
 	 * Link to the parent component which has this component as a child.
 	 *
@@ -104,70 +110,34 @@ function Component ( config ) {
 	 */
 	this.children = [];
 
+	/**
+	 * allow to emit events to the parent component
+	 *
+	 * @readonly
+	 * @type {boolean}
+	 */
+	this.propagate = !!config.propagate;
 
-	// sanitize
-	config = config || {};
-
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
-	}
-
-	// parent init
+	// parent constructor call
 	Emitter.call(this, config.data);
 
-	// outer handle
-	if ( config.$node !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.$node instanceof Element) ) { throw 'wrong config.$node type'; }
-		}
-		// apply
-		this.$node = config.$node;
-	} else {
-		// empty div in case nothing is given
-		this.$node = document.createElement('div');
-	}
+	// outer handle - empty div in case nothing is given
+	this.$node = config.$node || document.createElement('div');
 
-	// inner handle
-	if ( config.$body !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.$body instanceof Element) ) { throw 'wrong config.$body type'; }
-		}
-		// apply
-		this.$body = config.$body;
-	} else {
-		// inner and outer handlers are identical
-		this.$body = this.$node;
-	}
+	// inner handle - the same as outer handler in case nothing is given
+	this.$body = config.$body || this.$node;
 
-	// inject given content into inner component part
-	if ( config.$content !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.$content instanceof Element) ) { throw 'wrong config.$content type'; }
-		}
-		// apply
-		this.$body.appendChild(config.$content);
-	}
+	// set CSS class names
+	this.$node.className += ' component ' + (config.className || '');
 
-	// correct CSS class names
-	this.$node.classList.add('component');
+	// apply component id if given, generate otherwise
+	this.id = config.id || this.$node.id || 'cid' + counter++;
 
 	// apply hierarchy
-	if ( config.parent !== undefined ) {
-		if ( DEBUG ) {
-			if ( !(config.parent instanceof Component) ) { throw 'wrong config.parent type'; }
-		}
-		// apply
+	if ( config.parent ) {
+		// add to parent component
 		config.parent.add(this);
 	}
-
-	// set link to the page owner component
-	//if ( config.page !== undefined ) {
-	//	if ( DEBUG ) {
-	//		if ( !(config.page instanceof Component) ) { throw 'wrong config.page type'; }
-	//	}
-    //	// apply
-	//	this.page = config.page;
-	//}
 
 	// apply given visibility
 	if ( config.visible === false ) {
@@ -175,30 +145,36 @@ function Component ( config ) {
 		this.hide();
 	}
 
-	// can't accept focus
+	// apply focus handling method
 	if ( config.focusable === false ) {
+		// can't accept focus
 		this.focusable = false;
 	}
 
-	// apply given events
-	if ( config.events !== undefined ) {
-		// no need in assert here (it is done inside the addListeners)
-		this.addListeners(config.events);
+	// a descendant defined own events
+	if ( this.defaultEvents ) {
+		// sanitize
+		config.events = config.events || {};
+
+		if ( DEBUG ) {
+			if ( typeof config.events !== 'object' ) { throw new Error(__filename + ': wrong config.events type'); }
+			if ( typeof this.defaultEvents !== 'object' ) { throw new Error(__filename + ': wrong this.defaultEvents type'); }
+		}
+
+		for ( name in this.defaultEvents ) {
+			// overwrite default events with user-defined
+			config.events[name] = config.events[name] || this.defaultEvents[name];
+		}
 	}
 
-	// apply component id if given, generate otherwise
-	this.id = config.id || this.$node.id || 'id' + counter++;
-
-	if ( DEBUG ) {
-		// expose inner ID to global scope
-		window[self.id] = self.$node;
+	// apply given events
+	if ( config.events ) {
+		// apply
+		this.addListeners(config.events);
 	}
 
 	// apply the given children components
 	if ( config.children ) {
-		if ( DEBUG ) {
-			if ( !Array.isArray(config.children) ) { throw 'wrong config.children type'; }
-		}
 		// apply
 		this.add.apply(this, config.children);
 	}
@@ -211,7 +187,7 @@ function Component ( config ) {
 			self.focus();
 
 			// there are some listeners
-			if ( self.events['click'] !== undefined ) {
+			if ( self.events['click'] ) {
 				/**
 				 * Mouse click event.
 				 *
@@ -222,12 +198,6 @@ function Component ( config ) {
 				 */
 				self.emit('click', {event: event});
 			}
-
-			// not prevented
-			//if ( !event.stop ) {
-			//	// activate if possible
-			//	self.focus();
-			//}
 		}
 
 		if ( DEBUG ) {
@@ -244,15 +214,14 @@ function Component ( config ) {
 	});
 
 	if ( DEBUG ) {
+		// expose inner ID to global scope
+		window[self.id] = self.$node;
+
 		// expose a link
 		this.$node.component = this.$body.component = this;
 		this.$node.title = 'component ' + this.constructor.name + '.' + this.id + ' (outer)';
 		this.$body.title = 'component ' + this.constructor.name + '.' + this.id + ' (inner)';
 	}
-
-	// @todo remove or implement
-	// navigation by keyboard
-	//this.addListener('keydown', this.navigateDefault);
 }
 
 
@@ -262,34 +231,11 @@ Component.prototype.constructor = Component;
 
 
 /**
- * Default method to move focus according to pressed keys.
+ * List of all default event callbacks.
  *
- * @todo remove or implement
- *
- * @param {Event} event generated event source of movement
+ * @type {Object.<string, function>}
  */
-/*Component.prototype.navigateDefault = function ( event ) {
-	switch ( event.code ) {
-		case keys.up:
-		case keys.down:
-		case keys.right:
-		case keys.left:
-			// notify listeners
-			this.emit('overflow');
-			break;
-	}
-};*/
-
-
-/**
- * Current active method to move focus according to pressed keys.
- * Can be redefined to provide custom navigation.
- *
- * @todo remove or implement
- *
- * @type {function}
- */
-/*Component.prototype.navigate = Component.prototype.navigateDefault;*/
+Component.prototype.defaultEvents = null;
 
 
 /**
@@ -313,25 +259,20 @@ Component.prototype.add = function ( child ) {
 		child = arguments[i];
 
 		if ( DEBUG ) {
-			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+			if ( !(child instanceof Component) ) { throw new Error(__filename + ': wrong child type'); }
 		}
 
 		// apply
 		this.children.push(child);
 		child.parent = this;
 
-		//if ( DEBUG ) {
-		//	// apply page for this and all children recursively
-		//	child.setPage(this.page);
-		//}
-
 		// correct DOM parent/child connection if necessary
-		if ( child.$node !== undefined && child.$node.parentNode === null ) {
+		if ( child.$node && child.$node.parentNode === null ) {
 			this.$body.appendChild(child.$node);
 		}
 
 		// there are some listeners
-		if ( this.events['add'] !== undefined ) {
+		if ( this.events['add'] ) {
 			/**
 			 * A child component is added.
 			 *
@@ -348,33 +289,20 @@ Component.prototype.add = function ( child ) {
 };
 
 
-//if ( DEBUG ) {
-//	Component.prototype.setPage = function ( page ) {
-//		this.page = page;
-//
-//		this.children.forEach(function ( child ) {
-//			child.setPage(page);
-//		});
-//	};
-//}
-
-
 /**
  * Delete this component and clear all associated events.
  *
  * @fires module:stb/component~Component#remove
  */
 Component.prototype.remove = function () {
-	var page = router.current;
-
 	// really inserted somewhere
 	if ( this.parent ) {
 		if ( DEBUG ) {
-			if ( !(this.parent instanceof Component) ) { throw 'wrong this.parent type'; }
+			if ( !(this.parent instanceof Component) ) { throw new Error(__filename + ': wrong this.parent type'); }
 		}
 
 		// active at the moment
-		if ( page.activeComponent === this ) {
+		if ( router.current.activeComponent === this ) {
 			this.blur();
 			this.parent.focus();
 		}
@@ -384,7 +312,7 @@ Component.prototype.remove = function () {
 	// remove all children
 	this.children.forEach(function ( child ) {
 		if ( DEBUG ) {
-			if ( !(child instanceof Component) ) { throw 'wrong child type'; }
+			if ( !(child instanceof Component) ) { throw new Error(__filename + ': wrong child type'); }
 		}
 
 		child.remove();
@@ -394,7 +322,7 @@ Component.prototype.remove = function () {
 	this.$node.parentNode.removeChild(this.$node);
 
 	// there are some listeners
-	if ( this.events['remove'] !== undefined ) {
+	if ( this.events['remove'] ) {
 		/**
 		 * Delete this component.
 		 *
@@ -411,7 +339,7 @@ Component.prototype.remove = function () {
  * Activate the component.
  * Notify the owner-page and apply CSS class.
  *
- * @param {Object} data custom data which passed into handlers
+ * @param {Object} [data] custom data which passed into handlers
  *
  * @return {boolean} operation status
  *
@@ -420,13 +348,6 @@ Component.prototype.remove = function () {
 Component.prototype.focus = function ( data ) {
 	var activePage = router.current,
 		activeItem = activePage.activeComponent;
-
-	//if ( DEBUG ) {
-	//	if ( this.page !== activePage ) {
-	//		console.log(this, this.page, activePage);
-	//		throw 'attempt to focus an invisible component';
-	//	}
-	//}
 
 	// this is a visual component on a page
 	// not already focused and can accept focus
@@ -441,7 +362,7 @@ Component.prototype.focus = function ( data ) {
 		activeItem.$node.classList.add('focus');
 
 		// there are some listeners
-		if ( activeItem.events['focus'] !== undefined ) {
+		if ( activeItem.events['focus'] ) {
 			/**
 			 * Make this component focused.
 			 *
@@ -478,7 +399,7 @@ Component.prototype.blur = function () {
 		activePage.activeComponent = null;
 
 		// there are some listeners
-		if ( this.events['blur'] !== undefined ) {
+		if ( this.events['blur'] ) {
 			/**
 			 * Remove focus from this component.
 			 *
@@ -515,7 +436,7 @@ Component.prototype.show = function ( data ) {
 		this.visible = true;
 
 		// there are some listeners
-		if ( this.events['show'] !== undefined ) {
+		if ( this.events['show'] ) {
 			/**
 			 * Make the component visible.
 			 *
@@ -548,7 +469,7 @@ Component.prototype.hide = function () {
 		this.visible = false;
 
 		// there are some listeners
-		if ( this.events['hide'] !== undefined ) {
+		if ( this.events['hide'] ) {
 			/**
 			 * Make the component hidden.
 			 *
@@ -563,6 +484,12 @@ Component.prototype.hide = function () {
 	// nothing was done
 	return true;
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.Component = Component;
+}
 
 
 // public

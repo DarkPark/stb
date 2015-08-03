@@ -48,7 +48,17 @@ var Component = require('../component'),
  */
 function List ( config ) {
 	// current execution context
-	var self = this;
+	//var self = this;
+
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.type      && Number(config.type) !== config.type  ) { throw new Error(__filename + ': config.type must be a number'); }
+	}
 
 	/**
 	 * Link to the currently focused DOM element.
@@ -99,55 +109,49 @@ function List ( config ) {
 	 */
 	this.scroll = null;
 
-	// sanitize
-	config = config || {};
-
-	// parent init
-	Component.call(this, config);
-
 	// horizontal or vertical
-	if ( config.type !== undefined ) {
-		if ( DEBUG ) {
-			if ( Number(config.type) !== config.type ) { throw 'config.type must be a number'; }
-		}
+	if ( config.type ) {
 		// apply
 		this.type = config.type;
 	}
 
-	// correct CSS class names
-	this.$node.classList.add('list');
+	// set default className if classList property empty or undefined
+	config.className = 'list ' + (config.className || '');
 
 	if ( this.type === this.TYPE_HORIZONTAL ) {
-		this.$node.classList.add('horizontal');
+		config.className += ' horizontal';
 	}
+
+	// parent constructor call
+	Component.call(this, config);
 
 	// component setup
 	this.init(config);
 
 	// custom navigation method
-	if ( config.navigate !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
-		}
-		// apply
-		this.navigate = config.navigate;
-	}
+	//if ( config.navigate ) {
+	//	if ( DEBUG ) {
+	//		if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+	//	}
+	//	// apply
+	//	this.navigate = config.navigate;
+	//}
 
 	// navigation by keyboard
-	this.addListener('keydown', this.navigate);
+	//this.addListener('keydown', this.navigate);
 
 	// navigation by mouse
-	this.$body.addEventListener('mousewheel', function ( event ) {
-		// scrolling by Y axis
-		if ( self.type === self.TYPE_VERTICAL && event.wheelDeltaY ) {
-			self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
-		}
-
-		// scrolling by X axis
-		if ( self.type === self.TYPE_HORIZONTAL && event.wheelDeltaX ) {
-			self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
-		}
-	});
+	//this.$body.addEventListener('mousewheel', function ( event ) {
+	//	// scrolling by Y axis
+	//	if ( self.type === self.TYPE_VERTICAL && event.wheelDeltaY ) {
+	//		self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+	//	}
+	//
+	//	// scrolling by X axis
+	//	if ( self.type === self.TYPE_HORIZONTAL && event.wheelDeltaX ) {
+	//		self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+	//	}
+	//});
 }
 
 
@@ -181,32 +185,85 @@ List.prototype.renderItem = List.prototype.renderItemDefault;
 
 
 /**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+List.prototype.defaultEvents = {
+	/**
+	 * Default method to handle mouse wheel events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	mousewheel: function ( event ) {
+		// scrolling by Y axis
+		if ( this.type === this.TYPE_VERTICAL && event.wheelDeltaY ) {
+			this.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+		}
+
+		// scrolling by X axis
+		if ( this.type === this.TYPE_HORIZONTAL && event.wheelDeltaX ) {
+			this.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+		}
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		switch ( event.code ) {
+			case keys.up:
+			case keys.down:
+			case keys.right:
+			case keys.left:
+			case keys.pageUp:
+			case keys.pageDown:
+			case keys.home:
+			case keys.end:
+				// cursor move only on arrow keys
+				this.move(event.code);
+				break;
+			case keys.ok:
+				// there are some listeners
+				if ( this.events['click:item'] ) {
+					// notify listeners
+					this.emit('click:item', {$item: this.$focusItem, event: event});
+				}
+				break;
+		}
+	}
+};
+
+
+/**
  * Default method to move focus according to pressed keys.
  *
  * @param {Event} event generated event source of movement
  */
-List.prototype.navigateDefault = function ( event ) {
-	switch ( event.code ) {
-		case keys.up:
-		case keys.down:
-		case keys.right:
-		case keys.left:
-		case keys.pageUp:
-		case keys.pageDown:
-		case keys.home:
-		case keys.end:
-			// cursor move only on arrow keys
-			this.move(event.code);
-			break;
-		case keys.ok:
-			// there are some listeners
-			if ( this.events['click:item'] !== undefined ) {
-				// notify listeners
-				this.emit('click:item', {$item: this.$focusItem, event: event});
-			}
-			break;
-	}
-};
+//List.prototype.navigateDefault = function ( event ) {
+//	switch ( event.code ) {
+//		case keys.up:
+//		case keys.down:
+//		case keys.right:
+//		case keys.left:
+//		case keys.pageUp:
+//		case keys.pageDown:
+//		case keys.home:
+//		case keys.end:
+//			// cursor move only on arrow keys
+//			this.move(event.code);
+//			break;
+//		case keys.ok:
+//			// there are some listeners
+//			if ( this.events['click:item'] ) {
+//				// notify listeners
+//				this.emit('click:item', {$item: this.$focusItem, event: event});
+//			}
+//			break;
+//	}
+//};
 
 
 /**
@@ -215,7 +272,7 @@ List.prototype.navigateDefault = function ( event ) {
  *
  * @type {function}
  */
-List.prototype.navigate = List.prototype.navigateDefault;
+//List.prototype.navigate = List.prototype.navigateDefault;
 
 
 /**
@@ -229,8 +286,8 @@ function normalize ( data ) {
 	var i, item;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// rows
@@ -246,8 +303,8 @@ function normalize ( data ) {
 		}
 
 		if ( DEBUG ) {
-			//if ( !('value' in item) ) { throw 'field "value" is missing'; }
-			if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw 'item.mark must be boolean'; }
+			//if ( !('value' in item) ) { throw new Error(__filename + ': field "value" is missing'); }
+			if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw new Error(__filename + ': item.mark must be boolean'); }
 		}
 	}
 
@@ -273,11 +330,11 @@ List.prototype.init = function ( config ) {
 		 * @fires module:stb/ui/list~List#click:item
 		 */
 		onClick = function ( event ) {
-			if ( this.data !== undefined ) {
+			if ( this.data ) {
 				self.focusItem(this);
 
 				// there are some listeners
-				if ( self.events['click:item'] !== undefined ) {
+				if ( self.events['click:item'] ) {
 					// notify listeners
 					self.emit('click:item', {$item: this, event: event});
 				}
@@ -286,39 +343,39 @@ List.prototype.init = function ( config ) {
 		item, i;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 	}
 
 	// apply cycle behaviour
 	if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
 
 	// apply ScrollBar link
-	if ( config.scroll !== undefined ) { this.scroll = config.scroll; }
+	if ( config.scroll ) { this.scroll = config.scroll; }
 
 	// apply list of items
-	if ( config.data !== undefined ) {
+	if ( config.data ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) ) { throw 'wrong config.data type'; }
+			if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
 		}
 		// prepare user data
 		this.data = normalize(config.data);
 	}
 
 	// custom render method
-	if ( config.render !== undefined ) {
+	if ( config.render ) {
 		if ( DEBUG ) {
-			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
+			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
 		}
 		// apply
 		this.renderItem = config.render;
 	}
 
 	// list items amount on page
-	if ( config.size !== undefined ) {
+	if ( config.size ) {
 		if ( DEBUG ) {
-			if ( Number(config.size) !== config.size ) { throw 'config.size must be a number'; }
-			if ( config.size <= 0 ) { throw 'config.size should be positive'; }
+			if ( Number(config.size) !== config.size ) { throw new Error(__filename + ': config.size must be a number'); }
+			if ( config.size <= 0 ) { throw new Error(__filename + ': config.size should be positive'); }
 		}
 		// apply
 		this.size = config.size;
@@ -346,8 +403,8 @@ List.prototype.init = function ( config ) {
 	// view window position
 	if ( config.viewIndex !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.viewIndex) !== config.viewIndex ) { throw 'config.viewIndex must be a number'; }
-			if ( config.viewIndex < 0 ) { throw 'config.viewIndex should be positive'; }
+			if ( Number(config.viewIndex) !== config.viewIndex ) { throw new Error(__filename + ': config.viewIndex must be a number'); }
+			if ( config.viewIndex < 0 ) { throw new Error(__filename + ': config.viewIndex should be positive'); }
 		}
 	}
 	// reset current view window position
@@ -356,9 +413,9 @@ List.prototype.init = function ( config ) {
 	// set focus item
 	if ( config.focusIndex !== undefined ) {
 		if ( DEBUG ) {
-			if ( Number(config.focusIndex) !== config.focusIndex ) { throw 'config.focusIndex must be a number'; }
-			if ( config.focusIndex < 0 ) { throw 'config.focusIndex should be positive'; }
-			if ( config.focusIndex > this.data.length - 1 ) { throw 'config.focusIndex should be less than data size'; }
+			if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': config.focusIndex must be a number'); }
+			if ( config.focusIndex < 0 ) { throw new Error(__filename + ': config.focusIndex should be positive'); }
+			if ( config.focusIndex > this.data.length - 1 ) { throw new Error(__filename + ': config.focusIndex should be less than data size'); }
 		}
 
 		// jump to the necessary item
@@ -394,10 +451,10 @@ List.prototype.renderView = function ( index ) {
 	var $item, i, itemData, prevIndex, currIndex;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( Number(index) !== index ) { throw 'index must be a number'; }
-		if ( index < 0 ) { throw 'index should be more than zero'; }
-		if ( index >= this.data.length ) { throw 'index should be less than data size'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
+		if ( index < 0 ) { throw new Error(__filename + ': index should be more than zero'); }
+		if ( index >= this.data.length ) { throw new Error(__filename + ': index should be less than data size'); }
 	}
 
 	// has the view window position changed
@@ -414,7 +471,7 @@ List.prototype.renderView = function ( index ) {
 			itemData = this.data[index];
 
 			// real item or stub
-			if ( itemData !== undefined ) {
+			if ( itemData ) {
 				// correct inner data/index and render
 				$item.data  = itemData;
 				$item.index = index;
@@ -435,13 +492,13 @@ List.prototype.renderView = function ( index ) {
 		}
 
 		// there are some listeners
-		if ( this.events['move:view'] !== undefined ) {
+		if ( this.events['move:view'] ) {
 			// notify listeners
 			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
 		}
 
 		// there are some listeners
-		if ( this.events['select:item'] !== undefined ) {
+		if ( this.events['select:item'] ) {
 			this.emit('select:item', {$item: $item});
 		}
 
@@ -489,8 +546,8 @@ List.prototype.renderView = function ( index ) {
  */
 List.prototype.move = function ( direction ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( Number(direction) !== direction ) { throw 'direction must be a number'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
 	}
 
 	if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
@@ -508,13 +565,13 @@ List.prototype.move = function ( direction ) {
 				this.move(keys.end);
 
 				// there are some listeners
-				if ( this.events['cycle'] !== undefined ) {
+				if ( this.events['cycle'] ) {
 					// notify listeners
 					this.emit('cycle', {direction: direction});
 				}
 			} else {
 				// there are some listeners
-				if ( this.events['overflow'] !== undefined ) {
+				if ( this.events['overflow'] ) {
 					// notify listeners
 					this.emit('overflow', {direction: direction});
 				}
@@ -536,13 +593,13 @@ List.prototype.move = function ( direction ) {
 				this.move(keys.home);
 
 				// there are some listeners
-				if ( this.events['cycle'] !== undefined ) {
+				if ( this.events['cycle'] ) {
 					// notify listeners
 					this.emit('cycle', {direction: direction});
 				}
 			} else {
 				// there are some listeners
-				if ( this.events['overflow'] !== undefined ) {
+				if ( this.events['overflow'] ) {
 					// notify listeners
 					this.emit('overflow', {direction: direction});
 				}
@@ -614,27 +671,27 @@ List.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	// different element
-	if ( $item !== undefined && $prev !== $item ) {
+	if ( $item && $prev !== $item ) {
 		if ( DEBUG ) {
-			if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
-			if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+			if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+			if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
 		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
 			if ( DEBUG ) {
-				if ( !($prev instanceof Element) ) { throw 'wrong $prev type'; }
+				if ( !($prev instanceof Element) ) { throw new Error(__filename + ': wrong $prev type'); }
 			}
 
 			// style
 			$prev.classList.remove('focus');
 
 			// there are some listeners
-			if ( this.events['blur:item'] !== undefined ) {
+			if ( this.events['blur:item'] ) {
 				/**
 				 * Remove focus from an element.
 				 *
@@ -655,7 +712,7 @@ List.prototype.focusItem = function ( $item ) {
 		$item.classList.add('focus');
 
 		// there are some listeners
-		if ( this.events['focus:item'] !== undefined ) {
+		if ( this.events['focus:item'] ) {
 			/**
 			 * Set focus to a DOM element.
 			 *
@@ -669,7 +726,7 @@ List.prototype.focusItem = function ( $item ) {
 		}
 
 		// there are some listeners
-		if ( this.events['select:item'] !== undefined ) {
+		if ( this.events['select:item'] ) {
 			/**
 			 * Set focus to a list item.
 			 *
@@ -698,9 +755,9 @@ List.prototype.focusIndex = function ( index ) {
 	var viewIndex = this.viewIndex || 0;
 
 	if ( DEBUG ) {
-		if ( Number(index) !== index ) { throw 'index must be a number'; }
-		if ( index < 0 ) { throw 'index should be positive'; }
-		if ( index > this.data.length - 1 ) { throw 'index should be less than data size'; }
+		if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
+		if ( index < 0 ) { throw new Error(__filename + ': index should be positive'); }
+		if ( index > this.data.length - 1 ) { throw new Error(__filename + ': index should be less than data size'); }
 	}
 
 	// determine direction
@@ -735,10 +792,10 @@ List.prototype.focusIndex = function ( index ) {
  */
 List.prototype.markItem = function ( $item, state ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
-		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
-		if ( $item.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
-		if ( Boolean(state) !== state ) { throw 'state must be boolean'; }
+		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+		if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
+		if ( Boolean(state) !== state ) { throw new Error(__filename + ': state must be boolean'); }
 	}
 
 	// correct CSS
@@ -751,6 +808,12 @@ List.prototype.markItem = function ( $item, state ) {
 	// apply flag
 	$item.data.mark = state;
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentList = List;
+}
 
 
 // public

@@ -19,7 +19,7 @@ var Emitter = require('./emitter');
 function Collection ( data ) {
 	var model, i;
 
-	// parent init
+	// parent constructor call
 	Emitter.call(this);
 
 	/**
@@ -41,9 +41,9 @@ function Collection ( data ) {
 	}
 
 	// apply list of items
-	if ( data !== undefined ) {
+	if ( data ) {
 		if ( DEBUG ) {
-			if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+			if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
 		}
 
 		this.data = data;

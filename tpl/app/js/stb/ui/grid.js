@@ -66,7 +66,17 @@ var Component = require('../component'),
  */
 function Grid ( config ) {
 	// current execution context
-	var self = this;
+	//var self = this;
+
+	// sanitize
+	config = config || {};
+
+	if ( DEBUG ) {
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		// init parameters checks
+		if ( config.className && typeof config.className !== 'string'   ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		//if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+	}
 
 	/**
 	 * List of DOM elements representing the component cells.
@@ -118,43 +128,36 @@ function Grid ( config ) {
 	 */
 	this.focusY = 0;
 
+	// set default className if classList property empty or undefined
+	config.className = 'grid ' + (config.className || '');
 
-	// sanitize
-	config = config || {};
-
-	// parent init
+	// parent constructor call
 	Component.call(this, config);
-
-	// correct CSS class names
-	this.$node.classList.add('grid');
 
 	// component setup
 	this.init(config);
 
 	// custom navigation method
-	if ( config.navigate !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.navigate !== 'function' ) { throw 'wrong config.navigate type'; }
-		}
-		// apply
-		this.navigate = config.navigate;
-	}
+	//if ( config.navigate ) {
+	//	// apply
+	//	this.navigate = config.navigate;
+	//}
 
 	// navigation by keyboard
-	this.addListener('keydown', this.navigate);
+	//this.addListener('keydown', this.navigate);
 
 	// navigation by mouse
-	this.$body.addEventListener('mousewheel', function ( event ) {
-		// scrolling by Y axis
-		if ( event.wheelDeltaY ) {
-			self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
-		}
-
-		// scrolling by X axis
-		if ( event.wheelDeltaX ) {
-			self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
-		}
-	});
+	//this.$body.addEventListener('mousewheel', function ( event ) {
+	//	// scrolling by Y axis
+	//	if ( event.wheelDeltaY ) {
+	//		self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+	//	}
+	//
+	//	// scrolling by X axis
+	//	if ( event.wheelDeltaX ) {
+	//		self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+	//	}
+	//});
 }
 
 
@@ -172,8 +175,8 @@ Grid.prototype.constructor = Grid;
  */
 Grid.prototype.renderItemDefault = function ( $item, data ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
-		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
+		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
 	}
 
 	$item.innerText = data.value;
@@ -190,28 +193,77 @@ Grid.prototype.renderItem = Grid.prototype.renderItemDefault;
 
 
 /**
+ * List of all default event callbacks.
+ *
+ * @type {Object.<string, function>}
+ */
+Grid.prototype.defaultEvents = {
+	/**
+	 * Default method to handle mouse wheel events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	mousewheel: function ( event ) {
+		// scrolling by Y axis
+		if ( event.wheelDeltaY ) {
+			this.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+		}
+
+		// scrolling by X axis
+		if ( event.wheelDeltaX ) {
+			this.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+		}
+	},
+
+	/**
+	 * Default method to handle keyboard keydown events.
+	 *
+	 * @param {Event} event generated event
+	 */
+	keydown: function ( event ) {
+		switch ( event.code ) {
+			case keys.up:
+			case keys.down:
+			case keys.right:
+			case keys.left:
+				// cursor move only on arrow keys
+				this.move(event.code);
+				break;
+			case keys.ok:
+				// there are some listeners
+				if ( this.events['click:item'] ) {
+					// notify listeners
+					this.emit('click:item', {$item: this.$focusItem, event: event});
+				}
+				break;
+		}
+	}
+};
+
+
+/**
  * Default method to move focus according to pressed keys.
  *
  * @param {Event} event generated event source of movement
  */
-Grid.prototype.navigateDefault = function ( event ) {
-	switch ( event.code ) {
-		case keys.up:
-		case keys.down:
-		case keys.right:
-		case keys.left:
-			// cursor move only on arrow keys
-			this.move(event.code);
-			break;
-		case keys.ok:
-			// there are some listeners
-			if ( this.events['click:item'] !== undefined ) {
-				// notify listeners
-				this.emit('click:item', {$item: this.$focusItem, event: event});
-			}
-			break;
-	}
-};
+//Grid.prototype.navigateDefault = function ( event ) {
+//	switch ( event.code ) {
+//		case keys.up:
+//		case keys.down:
+//		case keys.right:
+//		case keys.left:
+//			// cursor move only on arrow keys
+//			this.move(event.code);
+//			break;
+//		case keys.ok:
+//			// there are some listeners
+//			if ( this.events['click:item'] ) {
+//				// notify listeners
+//				this.emit('click:item', {$item: this.$focusItem, event: event});
+//			}
+//			break;
+//	}
+//};
 
 
 /**
@@ -220,7 +272,7 @@ Grid.prototype.navigateDefault = function ( event ) {
  *
  * @type {function}
  */
-Grid.prototype.navigate = Grid.prototype.navigateDefault;
+//Grid.prototype.navigate = Grid.prototype.navigateDefault;
 
 
 /**
@@ -234,8 +286,8 @@ function normalize ( data ) {
 	var i, j, item;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// rows
@@ -259,13 +311,13 @@ function normalize ( data ) {
 			}
 
 			if ( DEBUG ) {
-				//if ( !('value' in item) ) { throw 'field "value" is missing'; }
-				if ( Number(item.colSpan) !== item.colSpan ) { throw 'item.colSpan must be a number'; }
-				if ( Number(item.rowSpan) !== item.rowSpan ) { throw 'item.rowSpan must be a number'; }
-				if ( item.colSpan <= 0 ) { throw 'item.colSpan should be positive'; }
-				if ( item.rowSpan <= 0 ) { throw 'item.rowSpan should be positive'; }
-				if ( ('focus' in item) && Boolean(item.focus) !== item.focus ) { throw 'item.focus must be boolean'; }
-				if ( ('disable' in item) && Boolean(item.disable) !== item.disable ) { throw 'item.disable must be boolean'; }
+				//if ( !('value' in item) ) { throw new Error(__filename + ': field "value" is missing'); }
+				if ( Number(item.colSpan) !== item.colSpan ) { throw new Error(__filename + ': item.colSpan must be a number'); }
+				if ( Number(item.rowSpan) !== item.rowSpan ) { throw new Error(__filename + ': item.rowSpan must be a number'); }
+				if ( item.colSpan <= 0 ) { throw new Error(__filename + ': item.colSpan should be positive'); }
+				if ( item.rowSpan <= 0 ) { throw new Error(__filename + ': item.rowSpan should be positive'); }
+				if ( ('focus' in item) && Boolean(item.focus) !== item.focus ) { throw new Error(__filename + ': item.focus must be boolean'); }
+				if ( ('disable' in item) && Boolean(item.disable) !== item.disable ) { throw new Error(__filename + ': item.disable must be boolean'); }
 			}
 		}
 	}
@@ -288,8 +340,8 @@ function fill ( map, x, y, dX, dY, value ) {
 	var i, j;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 6 ) { throw 'wrong arguments number'; }
-		if ( !Array.isArray(map) ) { throw 'wrong map type'; }
+		if ( arguments.length !== 6 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(map) ) { throw new Error(__filename + ': wrong map type'); }
 	}
 
 	// rows
@@ -327,8 +379,8 @@ function map ( data ) {
 		i, j, item;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( !Array.isArray(data) ) { throw 'wrong data type'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
 	}
 
 	// rows
@@ -375,7 +427,7 @@ Grid.prototype.init = function ( config ) {
 				self.focusItem(this);
 
 				// there are some listeners
-				if ( self.events['click:item'] !== undefined ) {
+				if ( self.events['click:item'] ) {
 					// notify listeners
 					self.emit('click:item', {$item: this, event: event});
 				}
@@ -383,8 +435,10 @@ Grid.prototype.init = function ( config ) {
 		};
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( typeof config !== 'object' ) { throw 'wrong config type'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( config.data && (!Array.isArray(config.data) || !Array.isArray(config.data[0])) ) { throw new Error(__filename + ': wrong config.data type'); }
+		if ( config.render && typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
 	}
 
 	// apply cycle behaviour
@@ -392,13 +446,10 @@ Grid.prototype.init = function ( config ) {
 	if ( config.cycleY !== undefined ) { this.cycleY = config.cycleY; }
 
 	// apply data
-	if ( config.data !== undefined ) {
-		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) || !Array.isArray(config.data[0]) ) { throw 'wrong config.data type'; }
-		}
-
+	if ( config.data ) {
 		// new data is different
 		if ( this.data !== config.data ) {
+			// apply
 			this.data = config.data;
 			// need to redraw table
 			draw = true;
@@ -406,13 +457,10 @@ Grid.prototype.init = function ( config ) {
 	}
 
 	// custom render method
-	if ( config.render !== undefined ) {
-		if ( DEBUG ) {
-			if ( typeof config.render !== 'function' ) { throw 'wrong config.render type'; }
-		}
-
+	if ( config.render ) {
 		// new render is different
 		if ( this.renderItem !== config.render ) {
+			// apply
 			this.renderItem = config.render;
 			// need to redraw table
 			draw = true;
@@ -497,7 +545,7 @@ Grid.prototype.init = function ( config ) {
 	this.$body.appendChild(this.$table);
 
 	// apply focus
-	if ( $focusItem !== undefined ) {
+	if ( $focusItem ) {
 		// focus item was given in data
 		this.focusItem($focusItem);
 	} else {
@@ -523,8 +571,8 @@ Grid.prototype.move = function ( direction ) {
 		cycle    = false;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
-		if ( Number(direction) !== direction ) { throw 'direction must be a number'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
 	}
 
 	// shift till full stop
@@ -623,7 +671,7 @@ Grid.prototype.move = function ( direction ) {
 
 	if ( cycle ) {
 		// there are some listeners
-		if ( this.events['cycle'] !== undefined ) {
+		if ( this.events['cycle'] ) {
 			/**
 			 * Jump to the opposite side.
 			 *
@@ -638,7 +686,7 @@ Grid.prototype.move = function ( direction ) {
 
 	if ( overflow ) {
 		// there are some listeners
-		if ( this.events['overflow'] !== undefined ) {
+		if ( this.events['overflow'] ) {
 			/**
 			 * Attempt to go beyond the edge of the grid.
 			 *
@@ -683,27 +731,27 @@ Grid.prototype.focusItem = function ( $item ) {
 	var $prev = this.$focusItem;
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw 'wrong arguments number'; }
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	// different element
-	if ( $item !== undefined && $prev !== $item && $item.data.disable !== true ) {
+	if ( $item && $prev !== $item && $item.data.disable !== true ) {
 		if ( DEBUG ) {
-			if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
-			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
+			if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+			if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
 		}
 
 		// some item is focused already
 		if ( $prev !== null ) {
 			if ( DEBUG ) {
-				if ( !($prev instanceof Element) ) { throw 'wrong $prev type'; }
+				if ( !($prev instanceof Element) ) { throw new Error(__filename + ': wrong $prev type'); }
 			}
 
 			// style
 			$prev.classList.remove('focus');
 
 			// there are some listeners
-			if ( this.events['blur:item'] !== undefined ) {
+			if ( this.events['blur:item'] ) {
 				/**
 				 * Remove focus from an element.
 				 *
@@ -727,7 +775,7 @@ Grid.prototype.focusItem = function ( $item ) {
 		$item.classList.add('focus');
 
 		// there are some listeners
-		if ( this.events['focus:item'] !== undefined ) {
+		if ( this.events['focus:item'] ) {
 			/**
 			 * Set focus to an element.
 			 *
@@ -756,10 +804,10 @@ Grid.prototype.focusItem = function ( $item ) {
  */
 Grid.prototype.markItem = function ( $item, state ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw 'wrong arguments number'; }
-		if ( !($item instanceof Element) ) { throw 'wrong $item type'; }
-		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw 'wrong $item parent element'; }
-		if ( Boolean(state) !== state ) { throw 'state must be boolean'; }
+		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+		if ( $item.parentNode.parentNode.parentNode.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
+		if ( Boolean(state) !== state ) { throw new Error(__filename + ': state must be boolean'); }
 	}
 
 	// correct CSS
@@ -772,6 +820,12 @@ Grid.prototype.markItem = function ( $item, state ) {
 	// apply flag
 	$item.data.mark = state;
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentGrid = Grid;
+}
 
 
 // public
