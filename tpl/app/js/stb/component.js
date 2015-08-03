@@ -32,6 +32,7 @@ var Emitter = require('./emitter'),
  * @param {Object.<string, function>} [config.events={}] list of event callbacks
  * @param {boolean} [config.visible=true] component initial visibility state flag
  * @param {boolean} [config.focusable=true] component can accept focus or not
+ * @param {boolean} [config.propagate=false] allow to emit events to the parent component
  *
  * @fires module:stb/component~Component#click
  *
@@ -108,6 +109,14 @@ function Component ( config ) {
 	 * @type {Component[]}
 	 */
 	this.children = [];
+
+	/**
+	 * allow to emit events to the parent component
+	 *
+	 * @readonly
+	 * @type {boolean}
+	 */
+	this.propagate = !!config.propagate;
 
 	// parent constructor call
 	Emitter.call(this, config.data);

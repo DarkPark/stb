@@ -343,6 +343,8 @@ window.addEventListener('unload', function globalEventListenerUnload ( event ) {
 
 	// local handler on each page
 	router.pages.forEach(function forEachPages ( page ) {
+		debug.log('component ' + page.constructor.name + '.' + page.id + ' unload', 'red');
+
 		// there are some listeners
 		if ( page.events[event.type] ) {
 			// notify listeners
@@ -433,6 +435,16 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 		if ( page.activeComponent.events[event.type] ) {
 			// there are some listeners
 			page.activeComponent.emit(event.type, event);
+		}
+
+		// bubbling
+		if (
+			!event.stop &&
+			page.activeComponent.propagate &&
+			page.activeComponent.parent &&
+			page.activeComponent.parent.events[event.type]
+		) {
+			page.activeComponent.parent.emit(event.type, event);
 		}
 	}
 
