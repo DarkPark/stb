@@ -25,7 +25,7 @@ module.exports = function ( format ) {
 		expr = /{(\d+)}/g;
 
 	if ( DEBUG ) {
-		if ( !expr.test(format) ) { throw new Error(__filename + ': format string does not have substitutions'); }
+		if ( !expr.test(format) ) { throw new Error(__filename + ': format string does not have substitutions: ' + format); }
 	}
 
 	return format.replace(expr, function ( match, number ) {
