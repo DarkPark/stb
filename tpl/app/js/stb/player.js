@@ -20,7 +20,7 @@ var app       = require('./app'),
  * @param {object} [config={}] init parameters
  */
 function Player ( config ) {
-	//var self = this;
+	var self = this;
 
 	if ( DEBUG ) {
 		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
