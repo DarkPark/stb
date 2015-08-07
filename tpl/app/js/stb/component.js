@@ -393,9 +393,11 @@ Component.prototype.blur = function () {
 	var activePage = router.current,
 		activeItem = activePage.activeComponent;
 
+	// apply visuals anyway
+	this.$node.classList.remove('focus');
+
 	// this is the active component
 	if ( this === activeItem ) {
-		this.$node.classList.remove('focus');
 		activePage.activeComponent = null;
 
 		// there are some listeners
@@ -412,6 +414,8 @@ Component.prototype.blur = function () {
 
 		return true;
 	}
+
+	debug.log('component ' + this.constructor.name + '.' + this.id + ' attempt to blur without link to a page', 'red');
 
 	// nothing was done
 	return false;
