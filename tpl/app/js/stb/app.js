@@ -109,7 +109,7 @@ app.setScreen = function ( metrics ) {
 		document.head.appendChild(linkCSS);
 
 		// provide global access
-		this.data.screen = metrics;
+		this.data.metrics = metrics;
 
 		return true;
 	}
@@ -610,12 +610,22 @@ window.stbEvent = {};
  * Fires stb device media events.
  *
  * @param {number} event code
+ * @param {string} info associated data in **JSON** format
  */
-window.stbEvent.onEvent = function ( event ) {
+window.stbEvent.onEvent = function ( event, info ) {
 	// there are some listeners
 	if ( app.events['media'] ) {
+		// additional data
+		if ( info ) {
+			try {
+				info = JSON.parse(info);
+			} catch ( e ) {
+				debug.log(e);
+			}
+		}
+
 		// notify listeners
-		app.emit('media', {code: parseInt(event, 10)});
+		app.emit('media', {code: parseInt(event, 10), info: info});
 	}
 };
 
