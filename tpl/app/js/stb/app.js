@@ -411,10 +411,11 @@ window.addEventListener('error', function globalEventListenerError ( event ) {
  * @param {Event} event generated object with event data
  */
 window.addEventListener('keydown', function globalEventListenerKeydown ( event ) {
-	var page = router.current;
+	var page = router.current,
+		activeComponent;
 
 	if ( DEBUG ) {
-		if ( page === null || page === undefined ) { throw new Error(__filename + ': app should have at least one page'); }
+		if ( !page ) { throw new Error(__filename + ': app should have at least one page'); }
 	}
 
 	// filter phantoms
@@ -429,22 +430,25 @@ window.addEventListener('keydown', function globalEventListenerKeydown ( event )
 
 	debug.event(event);
 
+	// page.activeComponent can be set to null in event handles
+	activeComponent = page.activeComponent;
+
 	// current component handler
-	if ( page.activeComponent && page.activeComponent !== page ) {
+	if ( activeComponent && activeComponent !== page ) {
 		// component is available and not page itself
-		if ( page.activeComponent.events[event.type] ) {
+		if ( activeComponent.events[event.type] ) {
 			// there are some listeners
-			page.activeComponent.emit(event.type, event);
+			activeComponent.emit(event.type, event);
 		}
 
 		// bubbling
 		if (
 			!event.stop &&
-			page.activeComponent.propagate &&
-			page.activeComponent.parent &&
-			page.activeComponent.parent.events[event.type]
+			activeComponent.propagate &&
+			activeComponent.parent &&
+			activeComponent.parent.events[event.type]
 		) {
-			page.activeComponent.parent.emit(event.type, event);
+			activeComponent.parent.emit(event.type, event);
 		}
 	}
 
