@@ -53,15 +53,15 @@ module.exports = window.grid = {
 		this.ctx = this.$canvas.getContext('2d');
 
 		// apply size
-		this.ctx.canvas.width  = data.screen.width;
-		this.ctx.canvas.height = data.screen.height;
+		this.ctx.canvas.width  = data.metrics.width;
+		this.ctx.canvas.height = data.metrics.height;
 
 		// safe zone center
-		this.centerX = data.screen.availWidth  / 2 + data.screen.availLeft;
-		this.centerY = data.screen.availHeight / 2 + data.screen.availTop;
+		this.centerX = data.metrics.availWidth  / 2 + data.metrics.availLeft;
+		this.centerY = data.metrics.availHeight / 2 + data.metrics.availTop;
 
-		this.snaps.push({x: data.screen.availLeft,  y: data.screen.availTop});
-		this.snaps.push({x: data.screen.width - data.screen.availRight, y: data.screen.height - data.screen.availBottom});
+		this.snaps.push({x: data.metrics.availLeft,  y: data.metrics.availTop});
+		this.snaps.push({x: data.metrics.width - data.metrics.availRight, y: data.metrics.height - data.metrics.availBottom});
 		this.snaps.push({x: this.centerX, y: this.centerY});
 
 		this.ctx.lineWidth = this.lineWidth;
@@ -181,14 +181,14 @@ module.exports = window.grid = {
 			self = this;  // current execution context
 
 		// remove all
-		ctx.clearRect(0, 0, data.screen.width, data.screen.height);
+		ctx.clearRect(0, 0, data.metrics.width, data.metrics.height);
 
 		// safe zone center
 		this.drawCross({x: this.centerX, y: this.centerY}, {color: 'grey'});
 
 		// draw safe zone borders
 		ctx.strokeStyle = 'red';
-		ctx.strokeRect(data.screen.availLeft, data.screen.availTop, data.screen.availWidth, data.screen.availHeight);
+		ctx.strokeRect(data.metrics.availLeft, data.metrics.availTop, data.metrics.availWidth, data.metrics.availHeight);
 
 		// all clicked crosses
 		this.points.forEach(function ( point ) {
@@ -265,10 +265,10 @@ module.exports = window.grid = {
 		ctx.beginPath();
 		// horizontal line
 		ctx.moveTo(0, point.y);
-		ctx.lineTo(data.screen.width, point.y);
+		ctx.lineTo(data.metrics.width, point.y);
 		// vertical line
 		ctx.moveTo(point.x, 0);
-		ctx.lineTo(point.x, data.screen.height);
+		ctx.lineTo(point.x, data.metrics.height);
 		// draw
 		ctx.stroke();
 

@@ -115,13 +115,25 @@ At runtime the development mode has a set of useful function available via keybo
  Numpad 4 | reload the page in 1080p
  Numpad 5 | draw debug grid with indicators
  Numpad 6 | stress-testing based on gremlins.js for the emulation mode
- Numpad 7 | SpyJS tracing/debugging/profiling activation and deactivation
+ Numpad 7 | Spy-js tracing/debugging/profiling activation and deactivation
  Numpad 8 | FireBug Lite console activation
 
 
 Illustrations of most approaches and components can be found in the [demo application](https://github.com/DarkPark/stb-demo).
 
 Help files generated from JSDocs comments in framework modules are available [online](http://darkpark.github.io/stb/).
+
+
+## Spy-js use with WebStorm
+
+1. Make sure you have folder "tmp" in your home directory.
+1. Menu > Run > Edit configuration > add new spy-js configuration.
+1. Clear "URL to trace" field.
+1. Disable "Automatically configure system proxy" option.
+1. Run this configuration.
+1. Run stb application with similar command `gulp default ssh:develop`.
+1. Activate spy-js with Numpad 7 key.
+
 
 ## Structure
 
