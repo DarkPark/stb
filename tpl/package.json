@@ -6,7 +6,7 @@
 	"repository": {},
 	"dependencies": {
 		"code-proxy": "^1.2.21",
-		"del": "^1.2.0",
+		"del": "^2.0.0",
 		"gettext-parser": "^1.1.1",
 		"gremlins.js": "^0.1.0",
 		"gulp": "^3.9.0",
@@ -20,16 +20,16 @@
 		"gulp-repl": "^0.3.0",
 		"gulp-sourcemaps": "^1.5.2",
 		"gulp-util": "^3.0.5",
-		"gulp-watch": "^4.3.4",
+		"gulp-watch": "^4.3.5",
 		"gulp-zip": "^3.0.2",
 		"ip": "^0.3.2",
 		"node-static": "^0.7.7",
 		"open": "^0.0.5",
-		"ssh2": "^0.4.10",
+		"ssh2": "^0.4.11",
 		"tty-colors": "^0.0.6",
 		"webpack-stream": "^2.1.0",
 		"weinre": "^2.0.0-pre-I0Z7U9OV",
-		"ws": "^0.7.2"
+		"ws": "^0.8.0"
 	},
 	"license": "GPL-3.0"
 }
