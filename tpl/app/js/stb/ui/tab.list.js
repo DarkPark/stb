@@ -76,29 +76,5 @@ if ( DEBUG ) {
 }
 
 
-/**
- * Set top active tab.
- *
- * @param {number} index tab index to show
- * @param {object} [data] data for tab
- *
- * @return {boolean} apply result
- *
- * @fires module:stb/ui/tab.item~TabItem#activate
- * @fires module:stb/ui/tab.list~TabList#item:change
- */
-TabList.prototype.activate = function ( index, data ) {
-
-	if ( DEBUG ) {
-		if ( this.children.length === 0 ) { throw new Error(__filename + ': no children in tab list'); }
-		if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
-		if ( index < 0 ) { throw new Error(__filename + ': index can not be less then 0'); }
-		if ( index >= this.children.length ) { throw new Error(__filename + ': index can not be more then children count'); }
-	}
-
-	return this.children[index].activate(data);
-};
-
-
 // public
 module.exports = TabList;
