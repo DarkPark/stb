@@ -17,11 +17,11 @@ var path    = require('path'),
 
 
 // remove all html files
-gulp.task('jade:clean', function ( done ) {
-	del([
+gulp.task('jade:clean', function () {
+	return del([
 		path.join(global.paths.build, 'index.html'),
 		path.join(global.paths.build, 'develop.html')
-	], done);
+	]);
 });
 
 

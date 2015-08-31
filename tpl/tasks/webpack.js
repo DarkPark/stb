@@ -93,11 +93,11 @@ function report ( err, stats ) {
 
 
 // remove all js and map files
-gulp.task('webpack:clean', function ( done ) {
-	del([
+gulp.task('webpack:clean', function () {
+	return del([
 		path.join(global.paths.build, 'js', 'release.*'),
 		path.join(global.paths.build, 'js', 'develop.*')
-	], done);
+	]);
 });
 
 

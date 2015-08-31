@@ -14,8 +14,8 @@ var path    = require('path'),
 
 
 // remove all font files
-gulp.task('font:clean', function ( done ) {
-	del([path.join(global.paths.build, 'font', '**', '*')], done);
+gulp.task('font:clean', function () {
+	return del([path.join(global.paths.build, 'font', '**', '*')]);
 });
 
 
