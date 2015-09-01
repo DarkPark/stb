@@ -113,7 +113,7 @@ TabItem.prototype.activate = function ( data ) {
 	}
 
 	if ( this.parent.events['item:change'] ) {
-		this.emit('item:change', {prev: prev, curr: this});
+		this.parent.emit('item:change', {prev: prev, curr: this});
 	}
 
 	return true;
