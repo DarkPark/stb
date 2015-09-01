@@ -35,15 +35,9 @@ function LayerList ( config ) {
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) {
-			throw new Error(__filename + ': wrong config type');
-		}
-		if ( config.className && typeof config.className !== 'string' ) {
-			throw new Error(__filename + ': wrong or empty config.className');
-		}
-		if ( config.current && config.current.constructor.name !== 'LayerItem' ) {
-			throw new Error(__filename + ': wrong config.current type');
-		}
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.current && config.current.constructor.name !== 'LayerItem' ) { throw new Error(__filename + ': wrong config.current type'); }
 	}
 
 	// can't accept focus
