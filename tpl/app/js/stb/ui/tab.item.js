@@ -48,8 +48,12 @@ function TabItem ( config ) {
 	this.isActive = false;
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( typeof config !== 'object' ) {
+			throw new Error(__filename + ': wrong config type');
+		}
+		if ( config.className && typeof config.className !== 'string' ) {
+			throw new Error(__filename + ': wrong or empty config.className');
+		}
 	}
 
 	// can't accept focus
@@ -92,8 +96,12 @@ TabItem.prototype.activate = function ( data ) {
 	}
 
 	if ( DEBUG ) {
-		if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
-		if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': no parent for tab item'); }
+		if ( !this.parent ) {
+			throw new Error(__filename + ': no parent for tab item');
+		}
+		if ( this.parent.constructor.name !== 'TabList' ) {
+			throw new Error(__filename + ': no parent for tab item');
+		}
 	}
 
 	if ( this.parent.current ) {
