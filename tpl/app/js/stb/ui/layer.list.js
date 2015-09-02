@@ -18,7 +18,7 @@ var Component = require('../component');
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  *
  * @example
- * var LayerList = require('stb/ui/tab.list'),
+ * var LayerList = require('stb/ui/layer.list'),
  *     ll = new LayerList({
  *         $node: window.someElementId,
  *         children: [

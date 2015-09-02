@@ -82,8 +82,8 @@ if ( DEBUG ) {
  *
  * @return {boolean} apply result
  *
- * @fires module:stb/ui/tab.item~LayerItem#move:up
- * @fires module:stb/ui/tab.list~LayerList#item:change
+ * @fires module:stb/ui/layer.item~LayerItem#move:up
+ * @fires module:stb/ui/layer.list~LayerList#item:change
  */
 LayerItem.prototype.moveUp = function ( data ) {
 	if ( DEBUG ) {
@@ -116,8 +116,8 @@ LayerItem.prototype.moveUp = function ( data ) {
  *
  * @return {boolean} apply result
  *
- * @fires module:stb/ui/tab.item~LayerItem#move:down
- * @fires module:stb/ui/tab.list~LayerList#item:change
+ * @fires module:stb/ui/layer.item~LayerItem#move:down
+ * @fires module:stb/ui/layer.list~LayerList#item:change
  */
 LayerItem.prototype.moveDown = function ( data ) {
 	if ( DEBUG ) {
@@ -154,8 +154,8 @@ LayerItem.prototype.moveDown = function ( data ) {
  *
  * @return {boolean} apply result
  *
- * @fires module:stb/ui/tab.item~LayerItem#move:top
- * @fires module:stb/ui/tab.list~LayerList#item:change
+ * @fires module:stb/ui/layer.item~LayerItem#move:top
+ * @fires module:stb/ui/layer.list~LayerList#item:change
  */
 LayerItem.prototype.moveTop = function ( data ) {
 	if ( DEBUG ) {
@@ -189,8 +189,8 @@ LayerItem.prototype.moveTop = function ( data ) {
  *
  * @return {boolean} apply result
  *
- * @fires module:stb/ui/tab.item~LayerItem#move:bottom
- * @fires module:stb/ui/tab.list~LayerList#item:change
+ * @fires module:stb/ui/layer.item~LayerItem#move:bottom
+ * @fires module:stb/ui/layer.list~LayerList#item:change
  */
 LayerItem.prototype.moveBottom = function ( data ) {
 	if ( DEBUG ) {
