@@ -99,12 +99,12 @@ LayerItem.prototype.moveUp = function ( data ) {
 		}
 
 
-		if ( this.events['move:down'] ) {
-			this.emit('move:down', {data: data});
+		if ( this.events['move:up'] ) {
+			this.emit('move:up', {data: data});
 		}
 
 		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:down', component: this});
+			this.parent.emit('item:change', {state: 'move:up', component: this});
 		}
 		return true;
 	}
@@ -132,12 +132,12 @@ LayerItem.prototype.moveDown = function ( data ) {
 	if ( this.$node.previousSibling ) {
 		this.parent.$body.insertBefore(this.$node, this.$node.previousSibling);
 
-		if ( this.events['move:up'] ) {
-			this.emit('move:up', {data: data});
+		if ( this.events['move:down'] ) {
+			this.emit('move:down', {data: data});
 		}
 
 		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:up', component: this});
+			this.parent.emit('item:change', {state: 'move:down', component: this});
 		}
 
 		return true;
@@ -166,12 +166,12 @@ LayerItem.prototype.moveTop = function ( data ) {
 	if ( this.$node !== this.parent.$body.lastChild ) {
 		this.parent.$body.appendChild(this.$node);
 
-		if ( this.events['move:bottom'] ) {
-			this.emit('move:bottom', {data: data});
+		if ( this.events['move:top'] ) {
+			this.emit('move:top', {data: data});
 		}
 
 		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:bottom', component: this});
+			this.parent.emit('item:change', {state: 'move:top', component: this});
 		}
 
 		return true;
@@ -201,12 +201,12 @@ LayerItem.prototype.moveBottom = function ( data ) {
 	if ( this.$node !== this.parent.$body.firstChild ) {
 		this.parent.$body.insertBefore(this.$node, this.parent.$body.firstChild);
 
-		if ( this.events['move:top'] ) {
-			this.emit('move:top', {data: data});
+		if ( this.events['move:bottom'] ) {
+			this.emit('move:bottom', {data: data});
 		}
 
 		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:top', component: this});
+			this.parent.emit('item:change', {state: 'move:bottom', component: this});
 		}
 
 		return true;
