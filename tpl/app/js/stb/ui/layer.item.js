@@ -100,7 +100,6 @@ LayerItem.prototype.moveUp = function ( data ) {
 
 	if ( typeof this.zIndex === 'number' ) {
 		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
-			debug.info({old: this.zIndex, ne: this.zIndex + 1}, 'index changed');
 			this.parent.map[this.zIndex] = this.parent.map[this.zIndex + 1];
 			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
 			++this.zIndex;
@@ -202,15 +201,25 @@ LayerItem.prototype.moveDown = function ( data ) {
  * @fires module:stb/ui/layer.list~LayerList#item:change
  */
 LayerItem.prototype.moveTop = function ( data ) {
+	var i, size;
+
 	if ( DEBUG ) {
 		if ( !this.parent ) { throw new Error(__filename + ': no parent for layer item'); }
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
 	if ( typeof this.parent.zIndex === 'number' ) {
+		// z-index was provided
+
 		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
-			this.parent.map[this.zIndex] = this.parent.map[this.parent.children.length - 1 + this.parent.zIndex];
-			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			// not on the top
+
+			// cycle through the layers that are above the current layer
+			for ( i = this.zIndex, size = this.parent.zIndex + this.parent.children.length - 1; i < size; ++i ) {
+				this.parent.map[i] = this.parent.map[i + 1];
+				this.parent.map[i].$node.style.zIndex = i;
+				this.parent.map[i].zIndex = i;
+			}
 			this.zIndex = this.parent.children.length - 1 + this.parent.zIndex;
 			this.$node.style.zIndex = this.zIndex;
 			this.parent.map[this.zIndex] = this;
@@ -255,16 +264,25 @@ LayerItem.prototype.moveTop = function ( data ) {
  * @fires module:stb/ui/layer.list~LayerList#item:change
  */
 LayerItem.prototype.moveBottom = function ( data ) {
+	var i, size;
+
 	if ( DEBUG ) {
 		if ( !this.parent ) { throw new Error(__filename + ': no parent for layer item'); }
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
 	if ( typeof this.parent.zIndex === 'number' ) {
+		// z-index was provided
+
 		if ( this.zIndex > this.parent.zIndex ) {
-			debug.info({old: this.zIndex, ne: this.parent.zIndex}, 'index changed');
-			this.parent.map[this.zIndex] = this.parent.map[this.parent.zIndex];
-			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			// not on the bottom
+
+			// cycle through the layers that are below the current layer
+			for ( i = this.zIndex, size = this.parent.zIndex; i > size; --i ) {
+				this.parent.map[i] = this.parent.map[i - 1];
+				this.parent.map[i].$node.style.zIndex = i;
+				this.parent.map[i].zIndex = i;
+			}
 			this.zIndex = this.parent.zIndex;
 			this.$node.style.zIndex = this.zIndex;
 			this.parent.map[this.zIndex] = this;
