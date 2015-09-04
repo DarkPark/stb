@@ -20,8 +20,8 @@ var path    = require('path'),
 
 
 // remove all pack zip files
-gulp.task('pack:clean', function ( done ) {
-	del([path.join(global.paths.root, util.format(zipName, '*', '*', '*'))], done);
+gulp.task('pack:clean', function () {
+	return del([path.join(global.paths.root, util.format(zipName, '*', '*', '*'))]);
 });
 
 

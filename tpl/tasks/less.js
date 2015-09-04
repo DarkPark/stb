@@ -113,8 +113,8 @@ function release ( resolution ) {
 
 
 // remove all css files
-gulp.task('less:clean', function ( done ) {
-	del([path.join(global.paths.build, 'css', '**')], done);
+gulp.task('less:clean', function () {
+	return del([path.join(global.paths.build, 'css', '**')]);
 });
 
 

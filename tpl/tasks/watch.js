@@ -28,7 +28,7 @@ gulp.task('watch', function ( done ) {
 	watch([
 		path.join(global.paths.app, 'font', '**', '*')
 	], function () {
-		gulp.start('font:develop');
+		gulp.start('font');
 	});
 
 	// webpack

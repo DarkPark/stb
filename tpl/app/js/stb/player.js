@@ -7,8 +7,8 @@
 
 /* eslint new-cap: 0 */
 
-var app       = require('./app'),
-	keys      = require('./keys'),
+var app = require('./app'),
+	keys = require('./keys'),
 	Component = require('./component');
 
 
@@ -23,7 +23,9 @@ function Player ( config ) {
 	var self = this;
 
 	if ( DEBUG ) {
-		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
+		if ( typeof this !== 'object' ) {
+			throw new Error(__filename + ': must be constructed via new');
+		}
 	}
 
 	/**
@@ -32,6 +34,14 @@ function Player ( config ) {
 	 * @type {boolean}
 	 */
 	this.isPLaying = false;
+
+	/**
+	 * Current playing content url
+	 *
+	 * @type {string}
+	 */
+	this.playUrl = '';
+
 
 	/**
 	 * Play/pause condition
@@ -310,6 +320,8 @@ Player.prototype.mediaListener = function ( event ) {
 		info = {},
 		duration,
 		currentTime,
+		hdmiEventDelay,
+		hdmiStorageData,
 		audioStr, subtitleStr;
 
 	debug.log('Device event: ' + event.code);
@@ -380,6 +392,46 @@ Player.prototype.mediaListener = function ( event ) {
 		case app.EVENT_SUBTITLE_LOAD_ERROR :
 			self.subtitlePIDs.pop();
 			break;
+		case app.EVENT_HDMI_DISCONNECT:
+			hdmiEventDelay = parseInt(JSON.parse(gSTB.GetEnv('{"varList":["hdmi_event_delay"]}')).result.hdmi_event_delay, 10);
+
+			if ( hdmiEventDelay === 0 ) {
+				return;
+			}
+
+
+			self.hdmiEventTimeout = setTimeout(function () {
+				if ( self.isPLaying ) {
+					stbStorage.setItem('standByPlayback', JSON.stringify({
+						url: self.playUrl,
+						position: self.currentSec
+					}));
+				}
+				gSTB.StandBy(true);
+				self.hdmiEventTimeout = null;
+			}, hdmiEventDelay);
+			break;
+		case app.EVENT_HDMI_CONNECT:
+			hdmiEventDelay = parseInt(JSON.parse(gSTB.GetEnv('{"varList":["hdmi_event_delay"]}')).result.hdmi_event_delay, 10);
+
+			if ( hdmiEventDelay === 0 ) {
+				return;
+			}
+
+			if ( self.hdmiEventTimeout ) {
+				clearTimeout(self.hdmiEventTimeout);
+				self.hdmiEventTimeout = null;
+				return;
+			}
+			gSTB.StandBy(false);
+			hdmiStorageData = JSON.parse(stbStorage.getItem('standByPlayback'));
+			if ( hdmiEventDelay ) {
+				self.play(hdmiStorageData.url, {
+					position: hdmiStorageData.position
+				});
+				stbStorage.removeItem('standByPlayback');
+			}
+			break;
 	}
 };
 
@@ -401,10 +453,18 @@ Player.prototype.mediaListener = function ( event ) {
 Player.prototype.init = function ( config ) {
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		if ( config.rewindTimeout && typeof config.rewindTimeout !== 'number' ) { throw new Error(__filename + ': wrong timeout type'); }
-		if ( config.inputPositionTimeout && typeof config.inputPositionTimeout !== 'number' ) { throw new Error(__filename + ': wrong timeout type'); }
+		if ( arguments.length !== 1 ) {
+			throw new Error(__filename + ': wrong arguments number');
+		}
+		if ( typeof config !== 'object' ) {
+			throw new Error(__filename + ': wrong config type');
+		}
+		if ( config.rewindTimeout && typeof config.rewindTimeout !== 'number' ) {
+			throw new Error(__filename + ': wrong timeout type');
+		}
+		if ( config.inputPositionTimeout && typeof config.inputPositionTimeout !== 'number' ) {
+			throw new Error(__filename + ': wrong timeout type');
+		}
 	}
 
 	// allow input playback position
@@ -453,11 +513,14 @@ Player.prototype.play = function ( url, config ) {
 	var solution, position;
 
 	if ( DEBUG ) {
-		if ( arguments.length < 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( arguments.length < 1 ) {
+			throw new Error(__filename + ': wrong arguments number');
+		}
 	}
 
 	this.totalDurationSec = 0;
 	this.currentSec = 0;
+	this.playUrl = url;
 
 	config = config || {};
 
@@ -506,7 +569,9 @@ Player.prototype.rewind = function ( forward, duration ) {
 	var self = this;
 
 	if ( DEBUG ) {
-		if ( arguments.length < 1 || typeof forward !== 'boolean' ) { throw new Error(__filename + ': wrong direction type'); }
+		if ( arguments.length < 1 || typeof forward !== 'boolean' ) {
+			throw new Error(__filename + ': wrong direction type');
+		}
 	}
 
 
@@ -660,13 +725,13 @@ Player.prototype.nextSubtitle = function () {
 
 	if ( this.currentSubtitle === null ) {
 		this.currentSubtitle = 0;
-	} else if ( this.currentSubtitle < this.subtitlePIDs.length - 1) {
+	} else if ( this.currentSubtitle < this.subtitlePIDs.length - 1 ) {
 		this.currentSubtitle++;
 	} else {
 		this.currentSubtitle = null;
 	}
 
-	if (this.currentSubtitle !== null) {
+	if ( this.currentSubtitle !== null ) {
 		gSTB.SetSubtitlePID(this.subtitlePIDs[this.currentSubtitle].pid);
 		gSTB.SetSubtitles(true);
 		this.emit('subtitles:change', {
@@ -690,7 +755,9 @@ Player.prototype.nextSubtitle = function () {
 Player.prototype.setSubtitle = function ( number ) {
 
 	if ( DEBUG ) {
-		if ( !number || Number(number) !== number ) { throw new Error(__filename + ': wrong subtitle number type'); }
+		if ( !number || Number(number) !== number ) {
+			throw new Error(__filename + ': wrong subtitle number type');
+		}
 	}
 
 	gSTB.SetSubtitlePID(this.subtitlePIDs[number].pid);
@@ -855,7 +922,9 @@ Player.prototype.inputPosition = function ( code ) {
  */
 Player.prototype.setPosition = function ( sec ) {
 	if ( DEBUG ) {
-		if ( sec < 0 ) { throw new Error(__filename + ': Time must be positive'); }
+		if ( sec < 0 ) {
+			throw new Error(__filename + ': Time must be positive');
+		}
 	}
 
 	gSTB.SetPosTime(sec);

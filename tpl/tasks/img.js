@@ -14,8 +14,8 @@ var path    = require('path'),
 
 
 // remove all images
-gulp.task('img:clean', function ( done ) {
-	del([path.join(global.paths.build, 'img', '**', '*')], done);
+gulp.task('img:clean', function () {
+	return del([path.join(global.paths.build, 'img', '**', '*')]);
 });
 
 
