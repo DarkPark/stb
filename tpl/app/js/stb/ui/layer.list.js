@@ -31,6 +31,7 @@ var Component = require('../component');
  * page.add(ll);
  */
 function LayerList ( config ) {
+	var self = this;
 	// sanitize
 	config = config || {};
 
@@ -38,6 +39,33 @@ function LayerList ( config ) {
 		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
 		if ( config.current && config.current.constructor.name !== 'LayerItem' ) { throw new Error(__filename + ': wrong config.current type'); }
+	}
+
+	/**
+	 * If you need z-index layer logic, provide config.zIndex to the constructor
+	 * @type {(boolean|number)}
+	 */
+	this.zIndex = false;
+
+	/**
+	 * Hash table for
+	 * @type {Array}
+	 */
+	this.map = {};
+
+	// navigation
+	if ( typeof config.zIndex === 'number' ) {
+		// apply
+		this.zIndex = config.zIndex;
+
+		if ( config.children ) {
+			// if children provided setup their z-index
+			config.children.forEach((function ( item, index ) {
+				item.zIndex = index + self.zIndex;
+				item.$node.style.zIndex = item.zIndex;
+				self.map[item.zIndex] = item;
+			}))
+		}
 	}
 
 	// can't accept focus
@@ -48,6 +76,15 @@ function LayerList ( config ) {
 
 	// parent constructor call
 	Component.call(this, config);
+
+	if ( typeof this.zIndex === 'number' ) {
+		// setup z-index property to each children
+		this.addListener('add', function ( event ) {
+			event.item.zIndex = this.children.length + this.zIndex;
+			event.item.$node.style.zIndex = event.item.zIndex;
+			self.map[event.item.zIndex] = event.item;
+		})
+	}
 }
 
 

@@ -49,6 +49,13 @@ function LayerItem ( config ) {
 		}
 	}
 
+
+	/**
+	 * Component z-index value.
+	 * @type {(boolean|number)}
+	 */
+	this.zIndex = false;
+
 	// can't accept focus
 	config.focusable = config.focusable || false;
 
@@ -91,7 +98,26 @@ LayerItem.prototype.moveUp = function ( data ) {
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
-	if ( this.$node.nextSibling ) {
+	if ( typeof this.zIndex === 'number' ) {
+		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
+			debug.info({old: this.zIndex, ne: this.zIndex + 1}, 'index changed');
+			this.parent.map[this.zIndex] = this.parent.map[this.zIndex + 1];
+			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			++this.zIndex;
+			this.$node.style.zIndex = this.zIndex;
+			this.parent.map[this.zIndex] = this;
+
+			if ( this.events['move:up'] ) {
+				this.emit('move:up', {data: data});
+			}
+
+			if ( this.parent.events['item:change'] ) {
+				this.emit('item:change', {component: this});
+			}
+
+			return true;
+		}
+	} else if ( this.$node.nextSibling ) {
 		if ( this.$node.nextSibling === this.parent.$body.lastChild ) {
 			this.parent.$body.appendChild(this.$node);
 		} else {
@@ -129,7 +155,25 @@ LayerItem.prototype.moveDown = function ( data ) {
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
-	if ( this.$node.previousSibling ) {
+	if ( typeof this.parent.zIndex === 'number' ) {
+		if ( this.zIndex > this.parent.zIndex ) {
+			this.parent.map[this.zIndex] = this.parent.map[this.zIndex - 1];
+			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			--this.zIndex;
+			this.$node.style.zIndex = this.zIndex;
+			this.parent.map[this.zIndex] = this;
+
+			if ( this.events['move:up'] ) {
+				this.emit('move:up', {data: data});
+			}
+
+			if ( this.parent.events['item:change'] ) {
+				this.emit('item:change', {component: this});
+			}
+
+			return true;
+		}
+	} else if ( this.$node.previousSibling ) {
 		this.parent.$body.insertBefore(this.$node, this.$node.previousSibling);
 
 		if ( this.events['move:down'] ) {
@@ -163,7 +207,25 @@ LayerItem.prototype.moveTop = function ( data ) {
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
-	if ( this.$node !== this.parent.$body.lastChild ) {
+	if ( typeof this.parent.zIndex === 'number' ) {
+		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
+			this.parent.map[this.zIndex] = this.parent.map[this.parent.children.length - 1 + this.parent.zIndex];
+			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			this.zIndex = this.parent.children.length - 1 + this.parent.zIndex;
+			this.$node.style.zIndex = this.zIndex;
+			this.parent.map[this.zIndex] = this;
+
+			if ( this.events['move:up'] ) {
+				this.emit('move:up', {data: data});
+			}
+
+			if ( this.parent.events['item:change'] ) {
+				this.emit('item:change', {component: this});
+			}
+
+			return true;
+		}
+	} else if ( this.$node !== this.parent.$body.lastChild ) {
 		this.parent.$body.appendChild(this.$node);
 
 		if ( this.events['move:top'] ) {
@@ -198,7 +260,26 @@ LayerItem.prototype.moveBottom = function ( data ) {
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
-	if ( this.$node !== this.parent.$body.firstChild ) {
+	if ( typeof this.parent.zIndex === 'number' ) {
+		if ( this.zIndex > this.parent.zIndex ) {
+			debug.info({old: this.zIndex, ne: this.parent.zIndex}, 'index changed');
+			this.parent.map[this.zIndex] = this.parent.map[this.parent.zIndex];
+			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			this.zIndex = this.parent.zIndex;
+			this.$node.style.zIndex = this.zIndex;
+			this.parent.map[this.zIndex] = this;
+
+			if ( this.events['move:up'] ) {
+				this.emit('move:up', {data: data});
+			}
+
+			if ( this.parent.events['item:change'] ) {
+				this.emit('item:change', {component: this});
+			}
+
+			return true;
+		}
+	} else if ( this.$node !== this.parent.$body.firstChild ) {
 		this.parent.$body.insertBefore(this.$node, this.parent.$body.firstChild);
 
 		if ( this.events['move:bottom'] ) {
