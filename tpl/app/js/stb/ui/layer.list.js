@@ -16,6 +16,7 @@ var Component = require('../component');
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
+ * @param {number} [config.zIndex] if you need z-index layer logic, provide config.zIndex to the constructor
  *
  * @example
  * var LayerList = require('stb/ui/layer.list'),
@@ -42,13 +43,13 @@ function LayerList ( config ) {
 	}
 
 	/**
-	 * If you need z-index layer logic, provide config.zIndex to the constructor
+	 * z-index value.
 	 * @type {(boolean|number)}
 	 */
 	this.zIndex = false;
 
 	/**
-	 * Hash table for
+	 * Hash table for z-index layers.
 	 * @type {Array}
 	 */
 	this.map = {};
