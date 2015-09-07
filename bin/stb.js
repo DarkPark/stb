@@ -48,9 +48,9 @@ program
 program
 	.command('update')
 	.description('update framework js/less/task files')
-	.option('-j, --javascript', 'Proceed with application javascript files')
-	.option('-l, --less', 'Proceed with application less files')
-	.option('-t, --tasks', 'Proceed with application tasks files')
+	.option('-j, --javascript', 'proceed with application javascript files')
+	.option('-l, --less', 'proceed with application less files')
+	.option('-t, --tasks', 'proceed with application tasks files')
 	.action(function ( options ) {
 		if ( options.javascript ) {
 			ncp(path.join(pathStb, 'tpl', 'app', 'js',   'stb'), path.join(pathApp, 'app',   'js', 'stb'), errorHandler);
