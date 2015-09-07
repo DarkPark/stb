@@ -33,12 +33,14 @@ gulp.task('watch', function ( done ) {
 
 	// webpack
 	watch([
-		path.join(global.paths.app, 'js', '**', '*.js'),
-		path.join(global.paths.config, 'app.js'),
-		path.join(global.paths.config, 'metrics.js')
+		path.join(global.paths.app, 'js', '**', '*.js')
+		//path.join(global.paths.config, 'app.js'),
+		//path.join(global.paths.config, 'metrics.js')
 	], function () {
 		gulp.start('webpack:develop');
 	});
+	// temporary workaround
+	gulp.watch([path.join(global.paths.config, 'app.js'), path.join(global.paths.config, 'metrics.js')], ['webpack:develop']);
 
 	// jade
 	watch([
@@ -49,9 +51,11 @@ gulp.task('watch', function ( done ) {
 
 	// less
 	watch([
-		path.join(global.paths.app, 'less', '**', '*.{less,js}'),
-		path.join(global.paths.config, 'metrics.js')
+		path.join(global.paths.app, 'less', '**', '*.{less,js}')
+		//path.join(global.paths.config, 'metrics.js')
 	], function () {
 		gulp.start('less:develop');
 	});
+	// temporary workaround
+	gulp.watch(path.join(global.paths.config, 'metrics.js'), ['less:develop']);
 });
