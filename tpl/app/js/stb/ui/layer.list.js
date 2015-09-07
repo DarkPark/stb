@@ -60,12 +60,12 @@ function LayerList ( config ) {
 		this.zIndex = config.zIndex;
 
 		if ( config.children ) {
-			// if children provided setup their z-index
-			config.children.forEach((function ( item, index ) {
+			// if children provided, setup their z-index
+			config.children.forEach(function ( item, index ) {
 				item.zIndex = index + self.zIndex;
 				item.$node.style.zIndex = item.zIndex;
 				self.map[item.zIndex] = item;
-			}))
+			});
 		}
 	}
 
@@ -81,8 +81,9 @@ function LayerList ( config ) {
 	if ( typeof this.zIndex === 'number' ) {
 		// setup z-index property to each children
 		this.addListener('add', function ( event ) {
-			event.item.zIndex = this.children.length + this.zIndex;
+			event.item.zIndex = this.children.length + this.zIndex - 1;
 			event.item.$node.style.zIndex = event.item.zIndex;
+			debug.info(event.item.zIndex, 'adding layer with z index');
 			self.map[event.item.zIndex] = event.item;
 		})
 	}
