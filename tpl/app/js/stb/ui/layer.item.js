@@ -41,12 +41,8 @@ function LayerItem ( config ) {
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) {
-			throw new Error(__filename + ': wrong config type');
-		}
-		if ( config.className && typeof config.className !== 'string' ) {
-			throw new Error(__filename + ': wrong or empty config.className');
-		}
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
 	}
 
 
@@ -99,6 +95,7 @@ LayerItem.prototype.moveUp = function ( data ) {
 	}
 
 	if ( typeof this.zIndex === 'number' ) {
+		// z-index was provided
 		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
 			this.parent.map[this.zIndex] = this.parent.map[this.zIndex + 1];
 			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
@@ -111,13 +108,17 @@ LayerItem.prototype.moveUp = function ( data ) {
 			}
 
 			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {component: this});
+				this.emit('item:change', {state: 'move:up', component: this});
 			}
 
 			return true;
 		}
 	} else if ( this.$node.nextSibling ) {
+		// logic with DOM level manipulation
+		// not in the end
+
 		if ( this.$node.nextSibling === this.parent.$body.lastChild ) {
+			// penultimate element
 			this.parent.$body.appendChild(this.$node);
 		} else {
 			this.parent.$body.insertBefore(this.$node, this.$node.nextSibling.nextSibling);
@@ -131,8 +132,10 @@ LayerItem.prototype.moveUp = function ( data ) {
 		if ( this.parent.events['item:change'] ) {
 			this.parent.emit('item:change', {state: 'move:up', component: this});
 		}
+
 		return true;
 	}
+
 	return false;
 };
 
@@ -154,7 +157,8 @@ LayerItem.prototype.moveDown = function ( data ) {
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
-	if ( typeof this.parent.zIndex === 'number' ) {
+	if ( typeof this.zIndex === 'number' ) {
+		// z-index was provided
 		if ( this.zIndex > this.parent.zIndex ) {
 			this.parent.map[this.zIndex] = this.parent.map[this.zIndex - 1];
 			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
@@ -167,12 +171,15 @@ LayerItem.prototype.moveDown = function ( data ) {
 			}
 
 			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {component: this});
+				this.emit('item:change', {state: 'move:down', component: this});
 			}
 
 			return true;
 		}
 	} else if ( this.$node.previousSibling ) {
+		// logic with DOM level manipulation
+		// not in the start
+
 		this.parent.$body.insertBefore(this.$node, this.$node.previousSibling);
 
 		if ( this.events['move:down'] ) {
@@ -185,6 +192,7 @@ LayerItem.prototype.moveDown = function ( data ) {
 
 		return true;
 	}
+
 	return false;
 };
 
@@ -208,33 +216,38 @@ LayerItem.prototype.moveTop = function ( data ) {
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
-	if ( typeof this.parent.zIndex === 'number' ) {
+	if ( typeof this.zIndex === 'number' ) {
 		// z-index was provided
+		debug.info([this.zIndex, this.parent.children.length, this.parent.zIndex]);
 
-		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
+		if ( this.zIndex < ( this.parent.children.length + this.parent.zIndex - 1 ) ) {
 			// not on the top
 
-			// cycle through the layers that are above the current layer
+			// loop through the layers which are upper then current
 			for ( i = this.zIndex, size = this.parent.zIndex + this.parent.children.length - 1; i < size; ++i ) {
+				debug.log('moving layer from ' + (i + 1) + ' to ' + i + ' zIndex');
 				this.parent.map[i] = this.parent.map[i + 1];
 				this.parent.map[i].$node.style.zIndex = i;
 				this.parent.map[i].zIndex = i;
 			}
-			this.zIndex = this.parent.children.length - 1 + this.parent.zIndex;
+			this.zIndex = this.parent.children.length + this.parent.zIndex - 1;
 			this.$node.style.zIndex = this.zIndex;
 			this.parent.map[this.zIndex] = this;
 
-			if ( this.events['move:up'] ) {
-				this.emit('move:up', {data: data});
+			if ( this.events['move:top'] ) {
+				this.emit('move:top', {data: data});
 			}
 
 			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {component: this});
+				this.emit('item:change', {state: 'move:top', component: this});
 			}
 
 			return true;
 		}
 	} else if ( this.$node !== this.parent.$body.lastChild ) {
+		// logic with DOM level manipulation
+		// not in the end
+
 		this.parent.$body.appendChild(this.$node);
 
 		if ( this.events['move:top'] ) {
@@ -248,7 +261,7 @@ LayerItem.prototype.moveTop = function ( data ) {
 		return true;
 	}
 
-	return true;
+	return false;
 };
 
 
@@ -271,14 +284,15 @@ LayerItem.prototype.moveBottom = function ( data ) {
 		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
 	}
 
-	if ( typeof this.parent.zIndex === 'number' ) {
+	if ( typeof this.zIndex === 'number' ) {
 		// z-index was provided
 
 		if ( this.zIndex > this.parent.zIndex ) {
-			// not on the bottom
+			// not on the top
 
-			// cycle through the layers that are below the current layer
+			// loop through the layers which are below then current
 			for ( i = this.zIndex, size = this.parent.zIndex; i > size; --i ) {
+				debug.log('moving layer from ' + (i - 1) + ' to ' + i + ' zIndex');
 				this.parent.map[i] = this.parent.map[i - 1];
 				this.parent.map[i].$node.style.zIndex = i;
 				this.parent.map[i].zIndex = i;
@@ -287,17 +301,20 @@ LayerItem.prototype.moveBottom = function ( data ) {
 			this.$node.style.zIndex = this.zIndex;
 			this.parent.map[this.zIndex] = this;
 
-			if ( this.events['move:up'] ) {
-				this.emit('move:up', {data: data});
+			if ( this.events['move:bottom'] ) {
+				this.emit('move:bottom', {data: data});
 			}
 
 			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {component: this});
+				this.emit('item:change', {state: 'move:bottom', component: this});
 			}
 
 			return true;
 		}
 	} else if ( this.$node !== this.parent.$body.firstChild ) {
+		// logic with DOM level manipulation
+		// not at the start
+
 		this.parent.$body.insertBefore(this.$node, this.parent.$body.firstChild);
 
 		if ( this.events['move:bottom'] ) {
