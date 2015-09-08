@@ -48,11 +48,24 @@ program
 program
 	.command('update')
 	.description('update framework js/less/task files')
-	.action(function () {
-		// copy everything
-		ncp(path.join(pathStb, 'tpl', 'app', 'js',   'stb'), path.join(pathApp, 'app',   'js', 'stb'), errorHandler);
-		ncp(path.join(pathStb, 'tpl', 'app', 'less', 'stb'), path.join(pathApp, 'app', 'less', 'stb'), errorHandler);
-		ncp(path.join(pathStb, 'tpl', 'tasks'), path.join(pathApp, 'tasks'), errorHandler);
+	.option('-j, --javascript', 'proceed with application javascript files')
+	.option('-l, --less', 'proceed with application less files')
+	.option('-t, --tasks', 'proceed with application tasks files')
+	.action(function ( options ) {
+		if ( options.javascript ) {
+			ncp(path.join(pathStb, 'tpl', 'app', 'js',   'stb'), path.join(pathApp, 'app',   'js', 'stb'), errorHandler);
+			console.log('+ javascript files');
+		}
+
+		if ( options.less ) {
+			ncp(path.join(pathStb, 'tpl', 'app', 'less', 'stb'), path.join(pathApp, 'app', 'less', 'stb'), errorHandler);
+			console.log('+ less files');
+		}
+
+		if ( options.tasks ) {
+			ncp(path.join(pathStb, 'tpl', 'tasks'), path.join(pathApp, 'tasks'), errorHandler);
+			console.log('+ tasks files');
+		}
 	});
 
 // extend default help info
