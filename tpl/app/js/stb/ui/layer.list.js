@@ -33,6 +33,7 @@ var Component = require('../component');
  */
 function LayerList ( config ) {
 	var self = this;
+
 	// sanitize
 	config = config || {};
 
@@ -85,7 +86,7 @@ function LayerList ( config ) {
 			event.item.$node.style.zIndex = event.item.zIndex;
 			debug.info(event.item.zIndex, 'adding layer with z index');
 			self.map[event.item.zIndex] = event.item;
-		})
+		});
 	}
 }
 

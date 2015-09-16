@@ -174,9 +174,9 @@ router.init = function ( pages ) {
  */
 router.parse = function ( hash ) {
 	var page = {
-			name : '',
-			data : []
-		};
+		name: '',
+		data: []
+	};
 
 	// get and decode all parts
 	page.data = hash.split('/').map(decodeURIComponent);

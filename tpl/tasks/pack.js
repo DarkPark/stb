@@ -35,9 +35,10 @@ gulp.task('pack:develop', function () {
 			path.join(global.paths.build, 'font', '**', '*'),
 			path.join(global.paths.build, 'img', '**', '*'),
 			path.join(global.paths.build, 'css', 'develop.*'),
-			path.join(global.paths.build, 'js',  'develop.*'),
+			path.join(global.paths.build, 'js', 'develop.*'),
 			path.join(global.paths.build, 'develop.html')
-		], {base: global.paths.build})
+		],
+		{base: global.paths.build})
 		.pipe(plumber())
 		.pipe(zip(outName))
 		.pipe(gulp.dest(global.paths.root));
@@ -54,9 +55,10 @@ gulp.task('pack:release', function () {
 			path.join(global.paths.build, 'font', '**', '*'),
 			path.join(global.paths.build, 'img', '**', '*'),
 			path.join(global.paths.build, 'css', 'release.*'),
-			path.join(global.paths.build, 'js',  'release.*'),
+			path.join(global.paths.build, 'js', 'release.*'),
 			path.join(global.paths.build, 'index.html')
-		], {base: global.paths.build})
+		],
+		{base: global.paths.build})
 		.pipe(plumber())
 		.pipe(zip(outName))
 		.pipe(gulp.dest(global.paths.root));
