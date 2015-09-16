@@ -6,7 +6,7 @@
 	"repository": {},
 	"dependencies": {
 		"code-proxy": "^1.2.21",
-		"del": "^2.0.0",
+		"del": "^2.0.2",
 		"gettext-parser": "^1.1.1",
 		"gremlins.js": "^0.1.0",
 		"gulp": "^3.9.0",
@@ -22,7 +22,7 @@
 		"gulp-util": "^3.0.5",
 		"gulp-watch": "^4.3.5",
 		"gulp-zip": "^3.0.2",
-		"ip": "^0.3.2",
+		"ip": "^1.0.0",
 		"node-static": "^0.7.7",
 		"open": "^0.0.5",
 		"ssh2": "^0.4.11",

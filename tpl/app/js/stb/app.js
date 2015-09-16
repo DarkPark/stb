@@ -597,6 +597,15 @@ window.stbEvent = {};
  * @param {string} info associated data in **JSON** format
  */
 window.stbEvent.onEvent = function ( event, info ) {
+	// proxy to all frames
+	Array.prototype.forEach.call(window.frames, function ( frame ) {
+		// necessary global object is present
+		if ( frame.stbEvent && frame.stbEvent.onEvent ) {
+			// proxy call
+			frame.stbEvent.onEvent(event, info);
+		}
+	});
+
 	// there are some listeners
 	if ( app.events['media'] ) {
 		// additional data
@@ -623,6 +632,15 @@ window.stbEvent.onEvent = function ( event, info ) {
  * @fires module:/stb/app#message
  */
 window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
+	// proxy to all frames
+	Array.prototype.forEach.call(window.frames, function ( frame ) {
+		// necessary global object is present
+		if ( frame.stbEvent && frame.stbEvent.onBroadcastMessage ) {
+			// proxy call
+			frame.stbEvent.onBroadcastMessage(windowId, message, data);
+		}
+	});
+
 	if ( app.events['message'] ) {
 		// notify listeners
 		app.emit('message', {
@@ -644,6 +662,15 @@ window.stbEvent.onBroadcastMessage = function ( windowId, message, data ) {
  * @fires module:/stb/app#message
  */
 window.stbEvent.onMessage = function ( windowId, message, data ) {
+	// proxy to all frames
+	Array.prototype.forEach.call(window.frames, function ( frame ) {
+		// necessary global object is present
+		if ( frame.stbEvent && frame.stbEvent.onMessage ) {
+			// proxy call
+			frame.stbEvent.onMessage(windowId, message, data);
+		}
+	});
+
 	if ( app.events['message'] ) {
 		// notify listeners
 		app.emit('message', {
@@ -672,6 +699,15 @@ window.stbEvent.onMessage = function ( windowId, message, data ) {
  * @fires module:/stb/app#mount
  */
 window.stbEvent.onMount = function ( state ) {
+	// proxy to all frames
+	Array.prototype.forEach.call(window.frames, function ( frame ) {
+		// necessary global object is present
+		if ( frame.stbEvent && frame.stbEvent.onMount ) {
+			// proxy call
+			frame.stbEvent.onMount(state);
+		}
+	});
+
 	if ( app.events['device:mount'] ) {
 		// notify listeners
 		app.emit('device:mount', {state: state});
@@ -691,10 +727,19 @@ window.stbEvent.onMount = function ( state ) {
  *
  * @fires module:/stb/app#media:available
  */
-window.stbEvent.onMediaAvailable = function () {
+window.stbEvent.onMediaAvailable = function ( mime, url ) {
+	// proxy to all frames
+	Array.prototype.forEach.call(window.frames, function ( frame ) {
+		// necessary global object is present
+		if ( frame.stbEvent && frame.stbEvent.onMediaAvailable ) {
+			// proxy call
+			frame.stbEvent.onMediaAvailable(mime, url);
+		}
+	});
+
 	if ( app.events['media:available'] ) {
 		// notify listeners
-		app.emit('media:available');
+		app.emit('media:available', {mime: mime, url: url});
 	}
 };
 
@@ -738,6 +783,15 @@ window.stbEvent.onNetworkStateChange = function ( state ) {
  * fires module:/stb/app#browser:progress
  */
 window.stbEvent.onWebBrowserProgress = function ( progress ) {
+	// proxy to all frames
+	Array.prototype.forEach.call(window.frames, function ( frame ) {
+		// necessary global object is present
+		if ( frame.stbEvent && frame.stbEvent.onWebBrowserProgress ) {
+			// proxy call
+			frame.stbEvent.onWebBrowserProgress(progress);
+		}
+	});
+
 	if ( app.events['browser:progress'] ) {
 		// notify listeners
 		app.emit('browser:progress', {progress: progress});
@@ -758,6 +812,15 @@ window.stbEvent.onWebBrowserProgress = function ( progress ) {
  * fires module:/stb/app#window:focus
  */
 window.stbEvent.onWindowActivated = function () {
+	// proxy to all frames
+	Array.prototype.forEach.call(window.frames, function ( frame ) {
+		// necessary global object is present
+		if ( frame.stbEvent && frame.stbEvent.onWindowActivated ) {
+			// proxy call
+			frame.stbEvent.onWindowActivated();
+		}
+	});
+
 	if ( app.events['window:focus'] ) {
 		// notify listeners
 		app.emit('window:focus');
