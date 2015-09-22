@@ -99,6 +99,7 @@ LayerItem.prototype.moveUp = function ( data ) {
 		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
 			this.parent.map[this.zIndex] = this.parent.map[this.zIndex + 1];
 			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			this.parent.map[this.zIndex].zIndex = this.zIndex;
 			++this.zIndex;
 			this.$node.style.zIndex = this.zIndex;
 			this.parent.map[this.zIndex] = this;
@@ -162,6 +163,7 @@ LayerItem.prototype.moveDown = function ( data ) {
 		if ( this.zIndex > this.parent.zIndex ) {
 			this.parent.map[this.zIndex] = this.parent.map[this.zIndex - 1];
 			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
+			this.parent.map[this.zIndex].zIndex = this.zIndex;
 			--this.zIndex;
 			this.$node.style.zIndex = this.zIndex;
 			this.parent.map[this.zIndex] = this;
