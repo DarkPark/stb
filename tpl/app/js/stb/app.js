@@ -725,6 +725,9 @@ window.stbEvent.onMount = function ( state ) {
 /**
  * Fires event of callback on internet browser link clicked to ask user what to do with link: play or download.
  *
+ * @param {string} mime file type
+ * @param {string} url resource link
+ *
  * @fires module:/stb/app#media:available
  */
 window.stbEvent.onMediaAvailable = function ( mime, url ) {
