@@ -20,7 +20,7 @@
 		"gulp-eslint": "^1.0.0",
 		"gulp-plumber": "^1.0.1",
 		"gulp-util": "^3.0.5",
-		"jsdoc": "3.3.2",
+		"jsdoc": "^3.3.3",
 		"tty-colors": "^0.0.6",
 		"webpack-stream": "^2.0.0"
 	},
