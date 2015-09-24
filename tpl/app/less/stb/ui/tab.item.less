@@ -6,11 +6,13 @@
 
 .component.tabItem {
 	position: absolute;
-	visibility: hidden;
 	width: inherit;
 	height: inherit;
+	display:block;
+	visibility: inherit;
 
-	&.active {
-		visibility: inherit;
+	&.hidden {
+		display:block;
+		visibility: hidden;
 	}
 }
