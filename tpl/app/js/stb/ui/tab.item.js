@@ -11,6 +11,7 @@ var Component = require('../component');
 
 /**
  * Tab item implementation.
+ * This component has redefined methods 'show' and 'hide', use them to show/hide tab.
  *
  * @constructor
  * @extends Component
@@ -39,13 +40,6 @@ var Component = require('../component');
 function TabItem ( config ) {
 	// sanitize
 	config = config || {};
-
-	/**
-	 * Tab state.
-	 *
-	 * @type {boolean}
-	 */
-	this.isActive = false;
 
 	if ( DEBUG ) {
 		if ( typeof config !== 'object' ) {
@@ -79,52 +73,91 @@ if ( DEBUG ) {
 
 
 /**
- * Set top active tab.
+ * Make the tab visible, i.e. set active tab, and notify subscribers.
+ * Hide previous visible tab if exists.
  *
- * @param {object} [data] data for tab
+ * @param {Object} data custom data which passed into handlers
  *
  * @return {boolean} apply result
  *
- * @fires module:stb/ui/tab.item~TabItem#activate
- * @fires module:stb/ui/tab.list~TabList#item:change
+ * @fires module:stb/component~Component#show
  */
-TabItem.prototype.activate = function ( data ) {
-	var prev = null;
+Component.prototype.show = function ( data ) {
+	var prev;
 
-	if ( this.isActive ) {
-		return false;
-	}
-
-	if ( DEBUG ) {
-		if ( !this.parent ) {
-			throw new Error(__filename + ': no parent for tab item');
+	// is it hidden
+	if ( !this.visible ) {
+		if ( DEBUG ) {
+			if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
+			if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': no parent for tab item'); }
 		}
-		if ( this.parent.constructor.name !== 'TabList' ) {
-			throw new Error(__filename + ': no parent for tab item');
+
+		if ( this.parent.current ) {
+			prev = this.parent.current;
+			prev.hide();
 		}
+		// correct style
+		this.$node.classList.remove('hidden');
+		// flag
+		this.visible = true;
+		// make link
+		this.parent.current = this;
+
+		// there are some listeners
+		if ( this.events['show'] ) {
+			/**
+			 * Make the component visible.
+			 *
+			 * @event module:stb/component~Component#show
+			 */
+			this.emit('show', data);
+		}
+
+		return true;
 	}
 
-	if ( this.parent.current ) {
-		prev = this.parent.current;
-		prev.isActive = false;
-		prev.$node.classList.remove('active');
+	// nothing was done
+	return false;
+};
+
+
+/**
+ * Make the tab hidden and notify subscribers.
+ *
+ * @return {boolean} apply result
+ *
+ * @fires module:stb/component~Component#hide
+ */
+Component.prototype.hide = function () {
+	// is it visible
+	if ( this.visible ) {
+		if ( DEBUG ) {
+			if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
+			if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': no parent for tab item'); }
+		}
+
+		// correct style
+		this.$node.classList.add('hidden');
+		// flag
+		this.visible = false;
+		// remove link
+		this.parent.current = null;
+
+		// there are some listeners
+		if ( this.events['hide'] ) {
+			/**
+			 * Make the component hidden.
+			 *
+			 * @event module:stb/component~Component#hide
+			 */
+			this.emit('hide');
+		}
+
+		return true;
 	}
 
-	this.isActive = true;
-
-	this.$node.classList.add('active');
-
-	this.parent.current = this;
-
-	if ( this.events['activate'] ) {
-		this.emit('activate', {data: data});
-	}
-
-	if ( this.parent.events['item:change'] ) {
-		this.parent.emit('item:change', {prev: prev, curr: this});
-	}
-
-	return true;
+	// nothing was done
+	return false;
 };
 
 
