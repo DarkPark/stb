@@ -425,7 +425,7 @@ Component.prototype.blur = function () {
 /**
  * Make the component visible and notify subscribers.
  *
- * @param {Object} data custom data which passed into handlers
+ * @param {Object} [data] custom data which passed into handlers
  *
  * @return {boolean} operation status
  *
