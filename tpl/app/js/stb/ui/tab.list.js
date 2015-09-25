@@ -76,6 +76,42 @@ TabList.prototype = Object.create(Component.prototype);
 TabList.prototype.constructor = TabList;
 
 
+/**
+ * Insert tab into specific index.
+ * If index not provided, insert tab into the end.
+ *
+ * @param tab
+ * @param index
+ */
+TabList.prototype.insert = function ( tab, index ) {
+	var prevIndex;
+
+	if ( DEBUG ) {
+		if ( tab.constructor.name !== 'TabItem' ) { throw 'not a tab'; }
+	}
+
+	prevIndex = this.children.indexOf(tab);
+
+	if ( prevIndex !== -1 ) {
+		this.children.splice(prevIndex, 1);
+		this.$body.removeChild(tab.$node);
+	}
+
+	debug.log('insert tab into ' + index);
+
+	if ( index === this.children.length ) {
+		this.$body.appendChild(tab.$node);
+	} else {
+		this.$body.insertBefore(tab.$node, this.$body.children[index]);
+	}
+	this.children.splice(index, 0, tab);
+
+	if ( !tab.parent ) {
+		tab.parent = this;
+	}
+};
+
+
 if ( DEBUG ) {
 	// expose to the global scope
 	window.ComponentTabList = TabList;
