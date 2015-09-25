@@ -19,11 +19,11 @@ var Component = require('../component');
  *
  * @example
  * var TabList = require('stb/ui/tab.list'),
- *     tabs = new TabList({
+ *     tabList = new TabList({
  *         $node: window.someElementId,
  *         children: [
- *             new Panel({
- *                 $node: document.anotherElementId
+ *             new TabItem({
+ *                 $node: window.anotherElementId
  *             })
  *         ],
  *         events: {
@@ -36,12 +36,17 @@ var Component = require('../component');
  *         }
  *     });
  *
- * page.add(tabs);
+ * page.add(tabList);
  */
 function TabList ( config ) {
 	// sanitize
 	config = config || {};
 
+	/**
+	 * Active at the moment tab item.
+	 *
+	 * @type {TabItem}
+	 */
 	this.current = null;
 
 	if ( DEBUG ) {
@@ -59,8 +64,9 @@ function TabList ( config ) {
 	// parent constructor call
 	Component.call(this, config);
 
+	// make some tab active
 	if ( config.current ) {
-		config.current.activate();
+		config.current.show();
 	}
 }
 
