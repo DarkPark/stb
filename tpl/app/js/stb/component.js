@@ -289,6 +289,39 @@ Component.prototype.add = function ( child ) {
 };
 
 
+/* @todo: consider activation in future */
+///**
+// * Insert component into the specific position.
+// *
+// * @param {Component} child component instance to insert
+// * @param {number} index insertion position
+// */
+//Component.prototype.insert = function ( child, index ) {
+//	var prevIndex = this.children.indexOf(child);
+//
+//	if ( DEBUG ) {
+//		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+//		if ( !(child instanceof Component) ) { throw new Error(__filename + ': wrong child type'); }
+//	}
+//
+//	if ( prevIndex !== -1 ) {
+//		this.children.splice(prevIndex, 1);
+//		this.$body.removeChild(child.$node);
+//	}
+//
+//	if ( index === this.children.length ) {
+//		this.$body.appendChild(child.$node);
+//	} else {
+//		this.$body.insertBefore(child.$node, this.$body.children[index]);
+//	}
+//	this.children.splice(index, 0, child);
+//
+//	if ( !child.parent ) {
+//		child.parent = this;
+//	}
+//};
+
+
 /**
  * Delete this component and clear all associated events.
  *
