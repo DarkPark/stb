@@ -279,7 +279,7 @@ Component.prototype.add = function ( child ) {
 			 * @event module:stb/component~Component#add
 			 *
 			 * @type {Object}
-			 * @property {Component} child new component added
+			 * @property {Component} item new component added
 			 */
 			this.emit('add', {item: child});
 		}
