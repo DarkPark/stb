@@ -17,6 +17,6 @@ if ( config.livereload ) {
 	// load external script
 	document.head.appendChild(dom.tag('script', {
 		type: 'text/javascript',
-		src: '//' + location.hostname + ':35729/livereload.js'
+		src: '//' + location.hostname + ':' + (config.livereload === true ? 35729 : config.livereload) + '/livereload.js'
 	}));
 }

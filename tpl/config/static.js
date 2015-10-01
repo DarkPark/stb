@@ -23,5 +23,7 @@ module.exports = {
 	logging: true,
 
 	// enable automatic reload on file changes mode
+	// set boolean value "true" to work on the default port 35729
+	// or specify some custom port value
 	livereload: true
 };

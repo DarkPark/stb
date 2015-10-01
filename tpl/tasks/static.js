@@ -66,7 +66,7 @@ gulp.task('static', function ( done ) {
 		});
 
 		if ( config.livereload ) {
-			glr.listen({quiet: true});
+			glr.listen({quiet: true, port: config.livereload === true ? 35729 : config.livereload});
 
 			// reload
 			gulp.watch([path.join(global.paths.build, '**', '*.{html,js,json,css}')]).on('change', function ( file ) {
