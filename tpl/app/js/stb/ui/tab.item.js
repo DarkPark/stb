@@ -79,7 +79,6 @@ TabItem.prototype.constructor = TabItem;
  * @return {boolean} operation status
  *
  * @fires module:stb/ui/tab.item~TabItem#show
- * @fires module:stb/ui/tab.list~TabList#item:change
  */
 TabItem.prototype.show = function ( data ) {
 	var prev = null;
@@ -101,10 +100,10 @@ TabItem.prototype.show = function ( data ) {
 		Component.prototype.show.call(this, data);
 		this.parent.current = this;
 
-		// there are some listeners
-		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {prev: prev, curr: this});
-		}
+		/*// there are some listeners
+		if ( this.parent.events['switch'] ) {
+			this.parent.emit('switch', {prev: prev, curr: this});
+		}*/
 
 		return true;
 	}
