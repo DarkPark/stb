@@ -16,59 +16,35 @@ var Component = require('../component');
  * @extends Component
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
- * @param {number} [config.zIndex] if you need z-index layer logic, provide config.zIndex to the constructor
  *
  * @example
  * var LayerList = require('stb/ui/layer.list'),
- *     ll = new LayerList({
+ *     layerList = new LayerList({
  *         $node: window.someElementId,
  *         children: [
  *             new LayerItem({
- *                 $node: document.anotherElementId
+ *                 $node: window.anotherElementId
  *             })
  *         ]
  *     });
  *
- * page.add(ll);
+ * page.add(layerList);
  */
 function LayerList ( config ) {
-	var self = this;
-
 	// sanitize
 	config = config || {};
 
 	if ( DEBUG ) {
 		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-		if ( config.current && config.current.constructor.name !== 'LayerItem' ) { throw new Error(__filename + ': wrong config.current type'); }
 	}
 
 	/**
-	 * z-index value.
-	 * @type {(boolean|number)}
-	 */
-	this.zIndex = false;
-
-	/**
-	 * Hash table for z-index layers.
+	 * z-index to layer items map.
+	 *
 	 * @type {Array}
 	 */
-	this.map = {};
-
-	// navigation
-	if ( typeof config.zIndex === 'number' ) {
-		// apply
-		this.zIndex = config.zIndex;
-
-		if ( config.children ) {
-			// if children provided, setup their z-index
-			config.children.forEach(function ( item, index ) {
-				item.zIndex = index + self.zIndex;
-				item.$node.style.zIndex = item.zIndex;
-				self.map[item.zIndex] = item;
-			});
-		}
-	}
+	this.map = [];
 
 	// can't accept focus
 	config.focusable = config.focusable || false;
@@ -78,22 +54,32 @@ function LayerList ( config ) {
 
 	// parent constructor call
 	Component.call(this, config);
-
-	if ( typeof this.zIndex === 'number' ) {
-		// setup z-index property to each children
-		this.addListener('add', function ( event ) {
-			event.item.zIndex = this.children.length + this.zIndex - 1;
-			event.item.$node.style.zIndex = event.item.zIndex;
-			debug.info(event.item.zIndex, 'adding layer with z index');
-			self.map[event.item.zIndex] = event.item;
-		});
-	}
 }
 
 
 // inheritance
 LayerList.prototype = Object.create(Component.prototype);
 LayerList.prototype.constructor = LayerList;
+
+
+/**
+ * Add a new component(s) as a child.
+ */
+LayerList.prototype.add = function () {
+	var i, child;
+
+	// parent invoke
+	Component.prototype.add.apply(this, arguments);
+
+	// walk through all the given elements
+	for ( i = 0; i < arguments.length; i++ ) {
+		child = arguments[i];
+
+		// rework map and indexes
+		child.$node.style.zIndex = this.map.length;
+		this.map[this.map.length] = child;
+	}
+};
 
 
 if ( DEBUG ) {
