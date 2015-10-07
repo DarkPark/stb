@@ -772,41 +772,43 @@ Grid.prototype.move = function ( direction ) {
 
 	if ( overflow ) {
 		//
-		newData = this.provider.get(direction, function ( error, data ) {
-			if ( error ) {
-				/**
-				 * Provider get error while take new data
-				 *
-				 * @event module:stb/ui/grid~Grid#data:error
-				 */
-				self.emit('data:error', error);
-			}
-
-			if ( data ) {
-				self.data = self.translate(data);
-				for ( i = 0; i < self.sizeY - 1; i++ ) {
-					for ( j = 0; j < self.sizeX; j++ ) {
-						self.renderItem(self.map[i][j], self.data[i][j]);
-					}
+		if (this.provider) {
+			newData = this.provider.get(direction, function ( error, data ) {
+				if ( error ) {
+					/**
+					 * Provider get error while take new data
+					 *
+					 * @event module:stb/ui/grid~Grid#data:error
+					 */
+					self.emit('data:error', error);
 				}
-				/**
-				 * Provider get new data and reinit grid
-				 *
-				 * @event module:stb/ui/grid~Grid#data:ready
-				 */
-				self.emit('data:ready');
-			}
 
-		});
-		/**
-		 * Provider request new data
-		 *
-		 * @event module:stb/ui/grid~Grid#data:get
-		 *
-		 * @type {Object}
-		 * @property {boolean} fresh status of data to response
-		 */
-		this.emit('data:get', {fresh: newData});
+				if ( data ) {
+					self.data = self.translate(data);
+					for ( i = 0; i < self.sizeY - 1; i++ ) {
+						for ( j = 0; j < self.sizeX; j++ ) {
+							self.renderItem(self.map[i][j], self.data[i][j]);
+						}
+					}
+					/**
+					 * Provider get new data and reinit grid
+					 *
+					 * @event module:stb/ui/grid~Grid#data:ready
+					 */
+					self.emit('data:ready');
+				}
+
+			});
+			/**
+			 * Provider request new data
+			 *
+			 * @event module:stb/ui/grid~Grid#data:get
+			 *
+			 * @type {Object}
+			 * @property {boolean} fresh status of data to response
+			 */
+			this.emit('data:get', {fresh: newData});
+		}
 
 		// there are some listeners
 		if ( this.events['overflow'] ) {
