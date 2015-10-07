@@ -46,6 +46,9 @@ var Component = require('../component'),
  * @param {function} [config.navigate] method to move focus according to pressed keys
  * @param {boolean}  [config.cycleX=true] allow or not to jump to the opposite side of line when there is nowhere to go next
  * @param {boolean}  [config.cycleY=true] allow or not to jump to the opposite side of column when there is nowhere to go next
+ * @param {object}   [config.provider] data provider
+ * @param {number}   [config.sizeX] grid columns count
+ * @param {number}   [config.sizeX] grid rows count
  *
  * @fires module:stb/ui/grid~Grid#click:item
  *
@@ -72,9 +75,9 @@ function Grid ( config ) {
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( typeof config !== 'object' ) {	throw new Error(__filename + ': wrong config type'); }
 		// init parameters checks
-		if ( config.className && typeof config.className !== 'string'   ) { throw new Error(__filename + ': wrong or empty config.className'); }
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
 		//if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
 	}
 
@@ -175,7 +178,7 @@ Grid.prototype.constructor = Grid;
  */
 Grid.prototype.renderItemDefault = function ( $item, data ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( arguments.length !== 2 ) {	throw new Error(__filename + ': wrong arguments number'); }
 		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
 	}
 
@@ -410,7 +413,7 @@ Grid.prototype.init = function ( config ) {
 		draw = false,
 		i, j,
 		$row, $item, $tbody, $focusItem,
-		itemData,
+		itemData, newData,
 		/**
 		 * Cell mouse click handler.
 		 *
@@ -432,6 +435,121 @@ Grid.prototype.init = function ( config ) {
 					self.emit('click:item', {$item: this, event: event});
 				}
 			}
+		},
+		/**
+		 * Construct grid when receive new data
+		 *
+		 * @param {Array} data to render
+		 */
+		construct = function ( data ) {
+
+			// apply data
+			if ( data ) {
+				// new data is different
+				if ( self.data !== data ) {
+					// apply
+					self.data = data;
+					// need to redraw table
+					draw = true;
+				}
+			}
+
+			// custom render method
+			if ( config.render ) {
+				// new render is different
+				if ( self.renderItem !== config.render ) {
+					// apply
+					self.renderItem = config.render;
+					// need to redraw table
+					draw = true;
+				}
+			}
+
+			if ( !draw ) {
+				// do not redraw table
+				return;
+			}
+
+			// export pointer to inner table
+			self.$table = document.createElement('table');
+			$tbody = document.createElement('tbody');
+
+			// prepare user data
+			self.data = normalize(self.data);
+
+			// rows
+			for ( i = 0; i < self.data.length; i++ ) {
+				// dom
+				$row = $tbody.insertRow();
+
+				// cols
+				for ( j = 0; j < self.data[i].length; j++ ) {
+					// dom
+					$item = $row.insertCell(-1);
+					// additional params
+					$item.className = 'item';
+
+					// shortcut
+					itemData = self.data[i][j];
+
+					// for map
+					itemData.$item = $item;
+
+					// merge columns
+					$item.colSpan = itemData.colSpan;
+
+					// merge rows
+					$item.rowSpan = itemData.rowSpan;
+
+					// active cell
+					if ( itemData.focus ) {
+						// store and clean
+						$focusItem = $item;
+					}
+
+					// disabled cell
+					if ( itemData.disable ) {
+						// apply CSS
+						$item.classList.add('disable');
+					}
+
+					// marked cell
+					if ( itemData.mark ) {
+						// apply CSS
+						$item.classList.add('mark');
+					}
+
+					// visualize
+					self.renderItem($item, itemData);
+
+					// save data link
+					$item.data = itemData;
+
+					// manual focusing
+					$item.addEventListener('click', onItemClick);
+				}
+				// row is ready
+				$tbody.appendChild($row);
+			}
+
+			// navigation map filling
+			self.map = map(self.data);
+
+			// clear all table
+			self.$body.innerText = null;
+
+			// everything is ready
+			self.$table.appendChild($tbody);
+			self.$body.appendChild(self.$table);
+
+			// apply focus
+			if ( $focusItem ) {
+				// focus item was given in data
+				self.focusItem($focusItem);
+			} else {
+				// just the first cell
+				self.focusItem(self.map[0][0]);
+			}
 		};
 
 	if ( DEBUG ) {
@@ -442,117 +560,91 @@ Grid.prototype.init = function ( config ) {
 	}
 
 	// apply cycle behaviour
-	if ( config.cycleX !== undefined ) { this.cycleX = config.cycleX; }
-	if ( config.cycleY !== undefined ) { this.cycleY = config.cycleY; }
+	if ( config.cycleX !== undefined ) {
+		this.cycleX = config.cycleX;
+	}
+	if ( config.cycleY !== undefined ) {
+		this.cycleY = config.cycleY;
+	}
 
-	// apply data
-	if ( config.data ) {
-		// new data is different
-		if ( this.data !== config.data ) {
-			// apply
-			this.data = config.data;
-			// need to redraw table
-			draw = true;
+
+	if ( config.provider ) {
+		if ( DEBUG ) {
+			if ( !config.sizeX || !config.sizeY ) {	throw new Error(__filename + ': wrong grid data size');	}
 		}
+
+		this.provider = config.provider;
+		this.sizeX = config.sizeX;
+		this.sizeY = config.sizeY;
 	}
 
-	// custom render method
-	if ( config.render ) {
-		// new render is different
-		if ( this.renderItem !== config.render ) {
-			// apply
-			this.renderItem = config.render;
-			// need to redraw table
-			draw = true;
-		}
+	if ( config.translate ) {
+		this.translate = config.translate;
 	}
 
-	if ( !draw ) {
-		// do not redraw table
-		return;
-	}
-
-	// export pointer to inner table
-	this.$table = document.createElement('table');
-	$tbody      = document.createElement('tbody');
-
-	// prepare user data
-	this.data = normalize(this.data);
-
-	// rows
-	for ( i = 0; i < this.data.length; i++ ) {
-		// dom
-		$row = $tbody.insertRow();
-
-		// cols
-		for ( j = 0; j < this.data[i].length; j++ ) {
-			// dom
-			$item = $row.insertCell(-1);
-			// additional params
-			$item.className = 'item';
-
-			// shortcut
-			itemData = this.data[i][j];
-
-			// for map
-			itemData.$item = $item;
-
-			// merge columns
-			$item.colSpan = itemData.colSpan;
-
-			// merge rows
-			$item.rowSpan = itemData.rowSpan;
-
-			// active cell
-			if ( itemData.focus ) {
-				// store and clean
-				$focusItem = $item;
+	if ( config.provider ) {
+		newData = this.provider.get(null, function ( error, data ) {
+			if ( error ) {
+				/**
+				 * Provider get error while take new data
+				 *
+				 * @event module:stb/ui/grid~Grid#data:error
+				 */
+				self.emit('data:error', error);
 			}
+			construct(self.translate(data));
 
-			// disabled cell
-			if ( itemData.disable ) {
-				// apply CSS
-				$item.classList.add('disable');
-			}
-
-			// marked cell
-			if ( itemData.mark ) {
-				// apply CSS
-				$item.classList.add('mark');
-			}
-
-			// visualize
-			this.renderItem($item, itemData);
-
-			// save data link
-			$item.data = itemData;
-
-			// manual focusing
-			$item.addEventListener('click', onItemClick);
-		}
-		// row is ready
-		$tbody.appendChild($row);
-	}
-
-	// navigation map filling
-	this.map = map(this.data);
-
-	// clear all table
-	this.$body.innerText = null;
-
-	// everything is ready
-	this.$table.appendChild($tbody);
-	this.$body.appendChild(this.$table);
-
-	// apply focus
-	if ( $focusItem ) {
-		// focus item was given in data
-		this.focusItem($focusItem);
+			/**
+			 * Provider get new data and reinit grid
+			 *
+			 * @event module:stb/ui/grid~Grid#data:ready
+			 */
+			self.emit('data:ready');
+		});
+		/**
+		 * Provider request new data
+		 *
+		 * @event module:stb/ui/grid~Grid#data:get
+		 *
+		 * @type {Object}
+		 * @property {boolean} fresh status of data to response
+		 */
+		this.emit('data:get', {fresh: newData});
 	} else {
-		// just the first cell
-		this.focusItem(this.map[0][0]);
+		construct(config.data);
 	}
+
+
 };
+
+/**
+ * Default translate function
+ *
+ * @param {Array} data to translate
+ * @return {Array} data to use as grid data
+ */
+Grid.prototype.defaultTranslate = function ( data ) {
+	var result = [],
+		i, j, arr;
+
+	for ( i = 0; i < this.sizeY; i++ ) {
+		arr = [];
+		for ( j = 0; j < this.sizeX; j++ ) {
+			arr[j] = data[i * this.sizeX + j];
+		}
+		result[i] = arr;
+	}
+	return result;
+};
+
+
+/**
+ * Method to translate given array to array adapted to use as grid data
+ * Can be redefined to provide custom translate.
+ *
+ * @type {function}
+ */
+Grid.prototype.translate = Grid.prototype.defaultTranslate;
 
 
 /**
@@ -562,13 +654,18 @@ Grid.prototype.init = function ( config ) {
  *
  * @fires module:stb/ui/grid~Grid#cycle
  * @fires module:stb/ui/grid~Grid#overflow
+ * @fires module:stb/ui/grid~Grid#data:get
+ * @fires module:stb/ui/grid~Grid#data:ready
+ * @fires module:stb/ui/grid~Grid#data:error
  */
 Grid.prototype.move = function ( direction ) {
-	var x        = this.focusX,
-		y        = this.focusY,
-		move     = true,
+	var self = this,
+		x = this.focusX,
+		y = this.focusY,
+		move = true,
 		overflow = false,
-		cycle    = false;
+		cycle = false,
+		newData, i, j;
 
 	if ( DEBUG ) {
 		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
@@ -588,10 +685,9 @@ Grid.prototype.move = function ( direction ) {
 						// jump to the last row
 						y = this.map.length - 1;
 						cycle = true;
-					} else {
-						// grid edge
-						overflow = true;
 					}
+					// grid edge
+					overflow = true;
 				}
 				break;
 
@@ -620,13 +716,11 @@ Grid.prototype.move = function ( direction ) {
 						// jump to the first column
 						x = 0;
 						cycle = true;
-					} else {
-						// grid edge
-						overflow = true;
 					}
+					// grid edge
+					overflow = true;
 				}
 				break;
-
 			case keys.left:
 				if ( x > 0 ) {
 					// can go one step left
@@ -636,10 +730,10 @@ Grid.prototype.move = function ( direction ) {
 						// jump to the last column
 						x = this.map[y].length - 1;
 						cycle = true;
-					} else {
-						// grid edge
-						overflow = true;
 					}
+					// grid edge
+					overflow = true;
+
 				}
 				break;
 		}
@@ -669,22 +763,51 @@ Grid.prototype.move = function ( direction ) {
 		}
 	}
 
-	if ( cycle ) {
-		// there are some listeners
-		if ( this.events['cycle'] ) {
-			/**
-			 * Jump to the opposite side.
-			 *
-			 * @event module:stb/ui/grid~Grid#cycle
-			 *
-			 * @type {Object}
-			 * @property {number} direction key code initiator of movement
-			 */
-			this.emit('cycle', {direction: direction});
-		}
-	}
+	this.focusItem(this.map[y][x]);
+
+	// correct coordinates
+	// focusItem set approximate values
+	this.focusX = x;
+	this.focusY = y;
 
 	if ( overflow ) {
+		//
+		newData = this.provider.get(direction, function ( error, data ) {
+			if ( error ) {
+				/**
+				 * Provider get error while take new data
+				 *
+				 * @event module:stb/ui/grid~Grid#data:error
+				 */
+				self.emit('data:error', error);
+			}
+
+			if ( data ) {
+				self.data = self.translate(data);
+				for ( i = 0; i < self.sizeY - 1; i++ ) {
+					for ( j = 0; j < self.sizeX; j++ ) {
+						self.renderItem(self.map[i][j], self.data[i][j]);
+					}
+				}
+				/**
+				 * Provider get new data and reinit grid
+				 *
+				 * @event module:stb/ui/grid~Grid#data:ready
+				 */
+				self.emit('data:ready');
+			}
+
+		});
+		/**
+		 * Provider request new data
+		 *
+		 * @event module:stb/ui/grid~Grid#data:get
+		 *
+		 * @type {Object}
+		 * @property {boolean} fresh status of data to response
+		 */
+		this.emit('data:get', {fresh: newData});
+
 		// there are some listeners
 		if ( this.events['overflow'] ) {
 			/**
@@ -694,23 +817,19 @@ Grid.prototype.move = function ( direction ) {
 			 *
 			 * @type {Object}
 			 * @property {number} direction key code initiator of movement
+			 * @property {number} cycle ...
 			 */
-			this.emit('overflow', {direction: direction});
+			this.emit('overflow', {direction: direction, cycle: cycle});
 		}
 	}
 
 	// report
 	debug.info(this.focusX + ' : ' + x, 'X old/new');
 	debug.info(this.focusY + ' : ' + y, 'Y old/new');
-	debug.info(cycle,  'cycle');
+	debug.info(cycle, 'cycle');
 	debug.info(overflow, 'overflow');
 
-	this.focusItem(this.map[y][x]);
 
-	// correct coordinates
-	// focusItem set approximate values
-	this.focusX = x;
-	this.focusY = y;
 };
 
 
