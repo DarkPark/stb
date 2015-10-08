@@ -7,8 +7,8 @@
 
 /* eslint new-cap: 0 */
 
-var app = require('./app'),
-	keys = require('./keys'),
+var app       = require('./app'),
+	keys      = require('./keys'),
 	Component = require('./component');
 
 
@@ -34,14 +34,6 @@ function Player ( config ) {
 	 * @type {boolean}
 	 */
 	this.isPLaying = false;
-
-	/**
-	 * Current playing content url
-	 *
-	 * @type {string}
-	 */
-	this.playUrl = '';
-
 
 	/**
 	 * Play/pause condition
@@ -320,8 +312,6 @@ Player.prototype.mediaListener = function ( event ) {
 		info = {},
 		duration,
 		currentTime,
-		hdmiEventDelay,
-		hdmiStorageData,
 		audioStr, subtitleStr;
 
 	debug.log('Device event: ' + event.code);
@@ -333,13 +323,15 @@ Player.prototype.mediaListener = function ( event ) {
 				self.durationInterval = 0;
 			}
 			self.durationInterval = setInterval(function () {
-				self.currentSec = gSTB.GetPosTime();
-				currentTime = self.parseTime(self.currentSec);
-				self.currentTime = ( currentTime.hour > 0 ? currentTime.hour + ':' : '') + currentTime.min + ':' + currentTime.sec;
-				self.emit('duration', {
-					sec: self.currentSec,
-					time: self.currentTime
-				});
+				if (self.events['duration']) {
+					self.currentSec = gSTB.GetPosTime();
+					currentTime = self.parseTime(self.currentSec);
+					self.currentTime = ( currentTime.hour > 0 ? currentTime.hour + ':' : '') + currentTime.min + ':' + currentTime.sec;
+					self.emit('duration', {
+						sec: self.currentSec,
+						time: self.currentTime
+					});
+				}
 			}, 1000);
 			break;
 		case app.EVENT_GET_MEDIA_INFO :
@@ -378,59 +370,25 @@ Player.prototype.mediaListener = function ( event ) {
 				type: gSTB.Get3DConversionMode(),
 				name: self.stereoModes[gSTB.Get3DConversionMode()].name
 			};
-			self.emit('get:info', info);
+			if (self.events['get:info']) {
+				self.emit('get:info', info);
+			}
 			break;
 		case app.EVENT_CONTENT_ERROR :
 			self.isPLaying = false;
-			self.emit('content:error');
+			if (self.events['content:error']) {
+				self.emit('content:error');
+			}
 			break;
 		case app.EVENT_END_OF_FILE:
 			self.currentSec = self.totalDurationSec;
 			self.isPLaying = false;
-			self.emit('content:end');
+			if (self.events['content:end']) {
+				self.emit('content:end');
+			}
 			break;
 		case app.EVENT_SUBTITLE_LOAD_ERROR :
 			self.subtitlePIDs.pop();
-			break;
-		case app.EVENT_HDMI_DISCONNECT:
-			hdmiEventDelay = parseInt(JSON.parse(gSTB.GetEnv('{"varList":["hdmi_event_delay"]}')).result.hdmi_event_delay, 10);
-
-			if ( hdmiEventDelay === 0 ) {
-				return;
-			}
-
-
-			self.hdmiEventTimeout = setTimeout(function () {
-				if ( self.isPLaying ) {
-					stbStorage.setItem('standByPlayback', JSON.stringify({
-						url: self.playUrl,
-						position: self.currentSec
-					}));
-				}
-				gSTB.StandBy(true);
-				self.hdmiEventTimeout = null;
-			}, hdmiEventDelay);
-			break;
-		case app.EVENT_HDMI_CONNECT:
-			hdmiEventDelay = parseInt(JSON.parse(gSTB.GetEnv('{"varList":["hdmi_event_delay"]}')).result.hdmi_event_delay, 10);
-
-			if ( hdmiEventDelay === 0 ) {
-				return;
-			}
-
-			if ( self.hdmiEventTimeout ) {
-				clearTimeout(self.hdmiEventTimeout);
-				self.hdmiEventTimeout = null;
-				return;
-			}
-			gSTB.StandBy(false);
-			hdmiStorageData = JSON.parse(stbStorage.getItem('standByPlayback'));
-			if ( hdmiEventDelay ) {
-				self.play(hdmiStorageData.url, {
-					position: hdmiStorageData.position
-				});
-				stbStorage.removeItem('standByPlayback');
-			}
 			break;
 	}
 };
@@ -453,18 +411,10 @@ Player.prototype.mediaListener = function ( event ) {
 Player.prototype.init = function ( config ) {
 
 	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) {
-			throw new Error(__filename + ': wrong arguments number');
-		}
-		if ( typeof config !== 'object' ) {
-			throw new Error(__filename + ': wrong config type');
-		}
-		if ( config.rewindTimeout && typeof config.rewindTimeout !== 'number' ) {
-			throw new Error(__filename + ': wrong timeout type');
-		}
-		if ( config.inputPositionTimeout && typeof config.inputPositionTimeout !== 'number' ) {
-			throw new Error(__filename + ': wrong timeout type');
-		}
+		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( config.rewindTimeout && typeof config.rewindTimeout !== 'number' ) { throw new Error(__filename + ': wrong timeout type'); }
+		if ( config.inputPositionTimeout && typeof config.inputPositionTimeout !== 'number' ) { throw new Error(__filename + ': wrong timeout type'); }
 	}
 
 	// allow input playback position
@@ -513,14 +463,11 @@ Player.prototype.play = function ( url, config ) {
 	var solution, position;
 
 	if ( DEBUG ) {
-		if ( arguments.length < 1 ) {
-			throw new Error(__filename + ': wrong arguments number');
-		}
+		if ( arguments.length < 1 ) { throw new Error(__filename + ': wrong arguments number'); }
 	}
 
 	this.totalDurationSec = 0;
 	this.currentSec = 0;
-	this.playUrl = url;
 
 	config = config || {};
 
@@ -555,7 +502,9 @@ Player.prototype.playPause = function () {
 		gSTB.Pause();
 	}
 	this.isPause = !this.isPause;
-	this.emit('pause', {state: this.isPause});
+	if (this.events['pause']) {
+		this.emit('pause', {state: this.isPause});
+	}
 };
 
 
@@ -566,12 +515,11 @@ Player.prototype.playPause = function () {
  * @param {number} [duration=null] of time to rewind
  */
 Player.prototype.rewind = function ( forward, duration ) {
-	var self = this;
+	var self = this,
+		currentTime;
 
 	if ( DEBUG ) {
-		if ( arguments.length < 1 || typeof forward !== 'boolean' ) {
-			throw new Error(__filename + ': wrong direction type');
-		}
+		if ( arguments.length < 1 || typeof forward !== 'boolean' ) { throw new Error(__filename + ': wrong direction type'); }
 	}
 
 
@@ -579,10 +527,15 @@ Player.prototype.rewind = function ( forward, duration ) {
 	duration = duration || this.rewindHelper.duration || 15;
 
 	if ( !this.rewindHelper.isActive ) {
+		this.currentSec = gSTB.GetPosTime();
+		currentTime = self.parseTime(self.currentSec);
+		this.currentTime = ( currentTime.hour > 0 ? currentTime.hour + ':' : '') + currentTime.min + ':' + currentTime.sec;
 		this.rewindHelper.isActive = true;
 		this.rewindHelper.startTime = this.currentSec;
 		this.rewindHelper.time = this.currentSec;
-		this.emit('rewind:start');
+		if (this.events['rewind:start']) {
+			this.emit('rewind:start');
+		}
 	}
 
 	if ( forward ) {
@@ -601,7 +554,9 @@ Player.prototype.rewind = function ( forward, duration ) {
 	if ( this.rewindHelper.timeout ) {
 		clearTimeout(this.rewindHelper.timeout);
 	}
-	this.emit('rewind', {time: this.rewindHelper.time, shift: this.rewindHelper.time - this.rewindHelper.startTime});
+	if (this.events['rewind']) {
+		this.emit('rewind', {time: this.rewindHelper.time, shift: this.rewindHelper.time - this.rewindHelper.startTime});
+	}
 
 	// do gSTB.SetPosTime instantly if rewind timeout is not set
 	if ( this.rewindHelper.timeoutDuration ) {
@@ -610,13 +565,17 @@ Player.prototype.rewind = function ( forward, duration ) {
 			clearInterval(self.durationInterval);
 			self.durationInterval = 0;
 			self.rewindHelper.isActive = false;
-			self.emit('rewind:apply');
+			if (self.events['rewind:apply']) {
+				self.emit('rewind:apply');
+			}
 			self.currentSec = self.rewindHelper.time;
 			self.rewindHelper.timeout = 0;
 
 			// emit end of content instantly without setting position to the end
 			if ( self.rewindHelper.time === self.totalDurationSec ) {
-				self.emit('content:end');
+				if (self.events['content:end']) {
+					self.emit('content:end');
+				}
 				return;
 			}
 
@@ -631,7 +590,9 @@ Player.prototype.rewind = function ( forward, duration ) {
 		gSTB.SetPosTime(self.rewindHelper.time);
 		self.currentSec = self.rewindHelper.time;
 		self.rewindHelper.isActive = false;
-		self.emit('rewind:apply');
+		if (self.events['rewind:apply']) {
+			self.emit('rewind:apply');
+		}
 	}
 
 
@@ -644,7 +605,6 @@ Player.prototype.rewind = function ( forward, duration ) {
  * @return {boolean} state
  */
 Player.prototype.nextAudioTrack = function () {
-	var self = this;
 
 	if ( this.audioPIDs.length <= 1 ) {
 		return false;
@@ -656,10 +616,13 @@ Player.prototype.nextAudioTrack = function () {
 		this.currentAudioPID = 0;
 	}
 	gSTB.SetAudioPID(this.audioPIDs[this.currentAudioPID].pid);
-	self.emit('audio:track', {
-		lang: this.audioPIDs[this.currentAudioPID].lang[0],
-		pid: this.audioPIDs[this.currentAudioPID].pid
-	});
+
+	if (this.events['audio:track']) {
+		this.emit('audio:track', {
+			lang: this.audioPIDs[this.currentAudioPID].lang[0],
+			pid: this.audioPIDs[this.currentAudioPID].pid
+		});
+	}
 	return true;
 };
 
@@ -672,10 +635,12 @@ Player.prototype.nextAudioTrack = function () {
 Player.prototype.setAudioTrack = function ( number ) {
 	gSTB.SetAudioPID(this.audioPIDs[number].pid);
 	this.currentAudioPID = number;
-	this.emit('audio:track', {
-		lang: this.audioPIDs[this.currentAudioPID].lang[0],
-		pid: this.audioPIDs[this.currentAudioPID].pid
-	});
+	if (this.events['audio:track']) {
+		this.emit('audio:track', {
+			lang: this.audioPIDs[this.currentAudioPID].lang[0],
+			pid: this.audioPIDs[this.currentAudioPID].pid
+		});
+	}
 };
 
 
@@ -689,10 +654,13 @@ Player.prototype.nextAspect = function () {
 	}
 
 	gSTB.SetAspect(this.aspects[this.activeAspect].mode);
-	this.emit('aspect:change', {
-		type: this.aspects[this.activeAspect].mode,
-		name: this.aspects[this.activeAspect].name
-	});
+
+	if (this.events['aspect:change']) {
+		this.emit('aspect:change', {
+			type: this.aspects[this.activeAspect].mode,
+			name: this.aspects[this.activeAspect].name
+		});
+	}
 };
 
 
@@ -704,10 +672,12 @@ Player.prototype.nextAspect = function () {
 Player.prototype.setAspect = function ( number ) {
 	this.activeAspect = number;
 	gSTB.SetAspect(this.aspects[this.activeAspect].mode);
-	this.emit('aspect:change', {
-		type: this.aspects[this.activeAspect].type,
-		name: this.aspects[this.activeAspect].name
-	});
+	if (this.events['aspect:change']) {
+		this.emit('aspect:change', {
+			type: this.aspects[this.activeAspect].type,
+			name: this.aspects[this.activeAspect].name
+		});
+	}
 };
 
 
@@ -719,28 +689,34 @@ Player.prototype.setAspect = function ( number ) {
 Player.prototype.nextSubtitle = function () {
 
 	if ( this.subtitlePIDs.length <= 0 ) {
-		this.emit('subtitles:change', null);
+		if (this.events['subtitles:change']) {
+			this.emit('subtitles:change', null);
+		}
 		return false;
 	}
 
 	if ( this.currentSubtitle === null ) {
 		this.currentSubtitle = 0;
-	} else if ( this.currentSubtitle < this.subtitlePIDs.length - 1 ) {
+	} else if ( this.currentSubtitle < this.subtitlePIDs.length - 1) {
 		this.currentSubtitle++;
 	} else {
 		this.currentSubtitle = null;
 	}
 
-	if ( this.currentSubtitle !== null ) {
+	if (this.currentSubtitle !== null) {
 		gSTB.SetSubtitlePID(this.subtitlePIDs[this.currentSubtitle].pid);
 		gSTB.SetSubtitles(true);
-		this.emit('subtitles:change', {
-			lang: this.subtitlePIDs[this.currentSubtitle].lang[0],
-			pid: this.subtitlePIDs[this.currentSubtitle].pid
-		});
+		if (this.events['subtitles:change']) {
+			this.emit('subtitles:change', {
+				lang: this.subtitlePIDs[this.currentSubtitle].lang[0],
+				pid: this.subtitlePIDs[this.currentSubtitle].pid
+			});
+		}
 	} else {
 		gSTB.SetSubtitles(false);
-		this.emit('subtitles:change', null);
+		if (this.events['subtitles:change']) {
+			this.emit('subtitles:change', null);
+		}
 	}
 
 	return true;
@@ -755,18 +731,18 @@ Player.prototype.nextSubtitle = function () {
 Player.prototype.setSubtitle = function ( number ) {
 
 	if ( DEBUG ) {
-		if ( !number || Number(number) !== number ) {
-			throw new Error(__filename + ': wrong subtitle number type');
-		}
+		if ( !number || Number(number) !== number ) { throw new Error(__filename + ': wrong subtitle number type'); }
 	}
 
 	gSTB.SetSubtitlePID(this.subtitlePIDs[number].pid);
 	gSTB.SetSubtitles(true);
 	this.currentSubtitle = number;
-	this.emit('subtitles:change', {
-		lang: this.subtitlePIDs[this.currentSubtitle].lang[0],
-		pid: this.subtitlePIDs[this.currentSubtitle].pid
-	});
+	if (this.events['subtitles:change']) {
+		this.emit('subtitles:change', {
+			lang: this.subtitlePIDs[this.currentSubtitle].lang[0],
+			pid: this.subtitlePIDs[this.currentSubtitle].pid
+		});
+	}
 };
 
 
@@ -775,7 +751,9 @@ Player.prototype.setSubtitle = function ( number ) {
  */
 Player.prototype.hideSubtitles = function () {
 	gSTB.SetSubtitles(false);
-	this.emit('subtitles:change', null);
+	if (this.events['subtitles:change']) {
+		this.emit('subtitles:change', null);
+	}
 };
 
 
@@ -790,7 +768,9 @@ Player.prototype.loadExternalSubtitle = function ( url ) {
 		this.subtitlePIDs.push({
 			pid: 0x2000
 		});
-		this.emit('subtitles:load', null);
+		if (this.events['subtitles:load']) {
+			this.emit('subtitles:load', null);
+		}
 	}
 };
 
@@ -806,11 +786,14 @@ Player.prototype.nextViewMode = function () {
 	} else {
 		cur = 0;
 	}
-	this.emit('viewmode:change', {
-		type: this.stereoModes[cur].mode,
-		name: this.stereoModes[cur].name
-	});
 	gSTB.Set3DConversionMode(cur);
+
+	if (this.events['viewmode:change']) {
+		this.emit('viewmode:change', {
+			type: this.stereoModes[cur].mode,
+			name: this.stereoModes[cur].name
+		});
+	}
 };
 
 
@@ -822,10 +805,12 @@ Player.prototype.nextViewMode = function () {
 Player.prototype.setViewMode = function ( number ) {
 	if ( number > 0 && number <= 3 ) {
 		gSTB.Set3DConversionMode(number);
-		this.emit('viewmode:change', {
-			type: this.stereoModes[number].mode,
-			name: this.stereoModes[number].name
-		});
+		if (this.events['viewmode:change']) {
+			this.emit('viewmode:change', {
+				type: this.stereoModes[number].mode,
+				name: this.stereoModes[number].name
+			});
+		}
 	}
 };
 
@@ -841,6 +826,7 @@ Player.prototype.inputPosition = function ( code ) {
 		curr = [],
 		setSec = 0,
 		timeoutSec,
+		currentTime,
 		h, m, s;
 
 	if ( !this.allowInputPosition ) {
@@ -856,11 +842,15 @@ Player.prototype.inputPosition = function ( code ) {
 		this.setModeHelper.count = 0;
 		this.setModeHelper.active = true;
 		if ( this.setModeHelper.length === 6 ) {
-			this.emit('position:input', {
-				time: '00:00:00', start: true, sec: 0
-			});
+			if (this.events['position:input']) {
+				this.emit('position:input', {
+					time: '00:00:00', start: true, sec: 0
+				});
+			}
 		} else {
-			this.emit('position:input', {time: '00:00', start: true, sec: 0});
+			if (this.events['position:input']) {
+				this.emit('position:input', {time: '00:00', start: true, sec: 0});
+			}
 		}
 	}
 
@@ -887,10 +877,12 @@ Player.prototype.inputPosition = function ( code ) {
 			setSec = this.totalDurationSec;
 		}
 		this.setModeHelper.sec = setSec;
-		this.emit('position:input', {
-			time: self.setModeHelper.timeStr,
-			sec: setSec
-		});
+		if (this.events['position:input']) {
+			this.emit('position:input', {
+				time: self.setModeHelper.timeStr,
+				sec: setSec
+			});
+		}
 	}
 	clearTimeout(this.setModeHelper.timeout);
 	if ( this.setModeHelper.timeoutDuration ) {
@@ -906,11 +898,16 @@ Player.prototype.inputPosition = function ( code ) {
 		self.durationInterval = 0;
 
 		gSTB.SetPosTime(self.setModeHelper.sec);
-		self.emit('position:input', {
-			time: self.setModeHelper.timeStr,
-			sec: self.setModeHelper.sec,
-			end: true
-		});
+		self.currentSec = self.setModeHelper.sec;
+		currentTime = self.parseTime(self.currentSec);
+		self.currentTime = ( currentTime.hour > 0 ? currentTime.hour + ':' : '') + currentTime.min + ':' + currentTime.sec;
+		if (self.events['position:input']) {
+			self.emit('position:input', {
+				time: self.setModeHelper.timeStr,
+				sec: self.setModeHelper.sec,
+				end: true
+			});
+		}
 	}, timeoutSec);
 };
 
@@ -921,14 +918,19 @@ Player.prototype.inputPosition = function ( code ) {
  * @param {number} sec to set position
  */
 Player.prototype.setPosition = function ( sec ) {
+	var currentTime;
+
 	if ( DEBUG ) {
-		if ( sec < 0 ) {
-			throw new Error(__filename + ': Time must be positive');
-		}
+		if ( sec < 0 ) { throw new Error(__filename + ': Time must be positive'); }
 	}
 
 	gSTB.SetPosTime(sec);
-	this.emit('position:set', {sec: sec});
+	this.currentSec = sec;
+	currentTime = self.parseTime(self.currentSec);
+	this.currentTime = ( currentTime.hour > 0 ? currentTime.hour + ':' : '') + currentTime.min + ':' + currentTime.sec;
+	if (this.events['position:set']) {
+		this.emit('position:set', {sec: sec});
+	}
 };
 
 
@@ -973,6 +975,26 @@ Player.prototype.parseTime = function ( sec ) {
 	return {hour: h, min: m, sec: s};
 };
 
+/**
+ * Override emitter's addListener to emit duration event instantly
+ *
+ * @param {string} name event identifier
+ * @param {function} callback function to call on this event
+ */
+Player.prototype.addListener = function (name, callback) {
+	var currentTime;
+
+	Emitter.prototype.addListener.call(this, name, callback);
+	if (name === 'duration') {
+		this.currentSec = gSTB.GetPosTime();
+		currentTime = this.parseTime(this.currentSec);
+		this.currentTime = ( currentTime.hour > 0 ? currentTime.hour + ':' : '') + currentTime.min + ':' + currentTime.sec;
+		this.emit('duration', {
+			sec: this.currentSec,
+			time: this.currentTime
+		});
+	}
+};
 
 if ( DEBUG ) {
 	// expose to the global scope

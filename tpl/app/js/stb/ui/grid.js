@@ -585,31 +585,38 @@ Grid.prototype.init = function ( config ) {
 	if ( config.provider ) {
 		newData = this.provider.get(null, function ( error, data ) {
 			if ( error ) {
-				/**
-				 * Provider get error while take new data
-				 *
-				 * @event module:stb/ui/grid~Grid#data:error
-				 */
-				self.emit('data:error', error);
+				if ( self.events['data:error'] ) {
+					/**
+					 * Provider get error while take new data
+					 *
+					 * @event module:stb/ui/grid~Grid#data:error
+					 */
+					self.emit('data:error', error);
+				}
 			}
 			construct(self.translate(data));
 
-			/**
-			 * Provider get new data and reinit grid
-			 *
-			 * @event module:stb/ui/grid~Grid#data:ready
-			 */
-			self.emit('data:ready');
+			if ( self.events['data:ready'] ) {
+				/**
+				 * Provider get new data and reinit grid
+				 *
+				 * @event module:stb/ui/grid~Grid#data:ready
+				 */
+				self.emit('data:ready');
+			}
 		});
-		/**
-		 * Provider request new data
-		 *
-		 * @event module:stb/ui/grid~Grid#data:get
-		 *
-		 * @type {Object}
-		 * @property {boolean} fresh status of data to response
-		 */
-		this.emit('data:get', {fresh: newData});
+
+		if ( this.events['data:get'] ) {
+			/**
+			 * Provider request new data
+			 *
+			 * @event module:stb/ui/grid~Grid#data:get
+			 *
+			 * @type {Object}
+			 * @property {boolean} fresh status of data to response
+			 */
+			this.emit('data:get', {fresh: newData});
+		}
 	} else {
 		construct(config.data);
 	}
@@ -775,12 +782,15 @@ Grid.prototype.move = function ( direction ) {
 		if (this.provider) {
 			newData = this.provider.get(direction, function ( error, data ) {
 				if ( error ) {
-					/**
-					 * Provider get error while take new data
-					 *
-					 * @event module:stb/ui/grid~Grid#data:error
-					 */
-					self.emit('data:error', error);
+
+					if ( self.events['data:error'] ) {
+						/**
+						 * Provider get error while take new data
+						 *
+						 * @event module:stb/ui/grid~Grid#data:error
+						 */
+						self.emit('data:error', error);
+					}
 				}
 
 				if ( data ) {
@@ -790,24 +800,30 @@ Grid.prototype.move = function ( direction ) {
 							self.renderItem(self.map[i][j], self.data[i][j]);
 						}
 					}
-					/**
-					 * Provider get new data and reinit grid
-					 *
-					 * @event module:stb/ui/grid~Grid#data:ready
-					 */
-					self.emit('data:ready');
+
+					if ( self.events['data:ready'] ) {
+						/**
+						 * Provider get new data and reinit grid
+						 *
+						 * @event module:stb/ui/grid~Grid#data:ready
+						 */
+						self.emit('data:ready');
+					}
 				}
 
 			});
-			/**
-			 * Provider request new data
-			 *
-			 * @event module:stb/ui/grid~Grid#data:get
-			 *
-			 * @type {Object}
-			 * @property {boolean} fresh status of data to response
-			 */
-			this.emit('data:get', {fresh: newData});
+
+			if ( this.events['data:get'] ) {
+				/**
+				 * Provider request new data
+				 *
+				 * @event module:stb/ui/grid~Grid#data:get
+				 *
+				 * @type {Object}
+				 * @property {boolean} fresh status of data to response
+				 */
+				this.emit('data:get', {fresh: newData});
+			}
 		}
 
 		// there are some listeners
