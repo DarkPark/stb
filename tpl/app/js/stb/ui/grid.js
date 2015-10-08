@@ -75,7 +75,7 @@ function Grid ( config ) {
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) {	throw new Error(__filename + ': wrong config type'); }
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
 		// init parameters checks
 		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
 		//if ( config.navigate  && typeof config.navigate  !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
@@ -178,7 +178,7 @@ Grid.prototype.constructor = Grid;
  */
 Grid.prototype.renderItemDefault = function ( $item, data ) {
 	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) {	throw new Error(__filename + ': wrong arguments number'); }
+		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
 		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
 	}
 
@@ -666,12 +666,11 @@ Grid.prototype.translate = Grid.prototype.defaultTranslate;
  * @fires module:stb/ui/grid~Grid#data:error
  */
 Grid.prototype.move = function ( direction ) {
-	var self = this,
-		x = this.focusX,
-		y = this.focusY,
-		move = true,
+	var x        = this.focusX,
+		y        = this.focusY,
+		move     = true,
 		overflow = false,
-		cycle = false,
+		cycle    = false,
 		newData, i, j;
 
 	if ( DEBUG ) {
@@ -707,10 +706,9 @@ Grid.prototype.move = function ( direction ) {
 						// jump to the first row
 						y = 0;
 						cycle = true;
-					} else {
-						// grid edge
-						overflow = true;
 					}
+					// grid edge
+					overflow = true;
 				}
 				break;
 
