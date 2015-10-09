@@ -788,6 +788,7 @@ Grid.prototype.move = function ( direction ) {
 						 * @event module:stb/ui/grid~Grid#data:error
 						 */
 						self.emit('data:error', error);
+						return false;
 					}
 				}
 
