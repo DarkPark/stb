@@ -1026,7 +1026,7 @@ Player.prototype.parseTime = function ( sec ) {
 Player.prototype.addListener = function (name, callback) {
 	var currentTime;
 
-	Emitter.prototype.addListener.call(this, name, callback);
+	Component.prototype.addListener.call(this, name, callback);
 
 	// to emit duration event instantly
 	if (name === 'duration') {
