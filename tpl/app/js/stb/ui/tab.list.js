@@ -19,11 +19,11 @@ var Component = require('../component');
  *
  * @example
  * var TabList = require('stb/ui/tab.list'),
- *     tabs = new TabList({
+ *     tabList = new TabList({
  *         $node: window.someElementId,
  *         children: [
- *             new Panel({
- *                 $node: document.anotherElementId
+ *             new TabItem({
+ *                 $node: window.anotherElementId
  *             })
  *         ],
  *         events: {
@@ -36,12 +36,17 @@ var Component = require('../component');
  *         }
  *     });
  *
- * page.add(tabs);
+ * page.add(tabList);
  */
 function TabList ( config ) {
 	// sanitize
 	config = config || {};
 
+	/**
+	 * Active at the moment tab item.
+	 *
+	 * @type {TabItem}
+	 */
 	this.current = null;
 
 	if ( DEBUG ) {
@@ -60,7 +65,8 @@ function TabList ( config ) {
 	Component.call(this, config);
 
 	if ( config.current ) {
-		config.current.activate();
+		// make the given tab active
+		config.current.show();
 	}
 }
 
@@ -68,42 +74,6 @@ function TabList ( config ) {
 // inheritance
 TabList.prototype = Object.create(Component.prototype);
 TabList.prototype.constructor = TabList;
-
-
-/**
- * Insert tab into specific index.
- * If index not provided, insert tab into the end.
- *
- * @param tab
- * @param index
- */
-TabList.prototype.insert = function ( tab, index ) {
-	var prevIndex;
-
-	if ( DEBUG ) {
-		if ( tab.constructor.name !== 'TabItem' ) { throw 'not a tab'; }
-	}
-
-	prevIndex = this.children.indexOf(tab);
-
-	if ( prevIndex !== -1 ) {
-		this.children.splice(prevIndex, 1);
-		this.$body.removeChild(tab.$node);
-	}
-
-	debug.log('insert tab into ' + index);
-
-	if ( index === this.children.length ) {
-		this.$body.appendChild(tab.$node);
-	} else {
-		this.$body.insertBefore(tab.$node, this.$body.children[index]);
-	}
-	this.children.splice(index, 0, tab);
-
-	if ( !tab.parent ) {
-		tab.parent = this;
-	}
-};
 
 
 if ( DEBUG ) {

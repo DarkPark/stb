@@ -11,7 +11,8 @@ var Component = require('../component');
 
 /**
  * Tab item implementation.
- * This component has redefined methods 'show' and 'hide', use them to show/hide tab.
+ * This component has redefined methods 'show' and 'hide', use them to switch between tabs.
+ * All tab items are created invisible by default.
  *
  * @constructor
  * @extends Component
@@ -20,44 +21,47 @@ var Component = require('../component');
  *
  * @example
  * var TabItem = require('stb/ui/tab.item'),
- *     tab = new TabItem({
- *         $node: document.getElementById('someId'),
+ *     tabItem = new TabItem({
+ *         $node: window.someId,
  *         children: [
  *             new Panel({
- *                 $node: document.getElementById('anotherId')
+ *                 $node: window.anotherId
  *             })
  *         ],
  *         events: {
- *             activate: function ( event ) {
- *                 this.children[0].$body.innerText = event.data;
- *                 this.children[0].focus();
+ *             show: function ( event ) {
+ *                 // tab was activated
+ *             },
+ *             hide: function ( event ) {
+ *                 // tab was hidden
  *             }
  *         }
  *     });
  *
- * page.add(tab);
+ * tabList.add(tabItem);
  */
 function TabItem ( config ) {
 	// sanitize
 	config = config || {};
 
 	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) {
-			throw new Error(__filename + ': wrong config type');
-		}
-		if ( config.className && typeof config.className !== 'string' ) {
-			throw new Error(__filename + ': wrong or empty config.className');
-		}
+		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
 	}
 
 	// can't accept focus
 	config.focusable = config.focusable || false;
 
 	// set default className if classList property empty or undefined
-	config.className = 'tabItem ' + (config.className || '');
+	config.className = 'tabItem hidden ' + (config.className || '');
+
+	// prevent parent hiding
+	config.visible = null;
 
 	// parent constructor call
 	Component.call(this, config);
+
+	this.visible = false;
 }
 
 
@@ -66,99 +70,78 @@ TabItem.prototype = Object.create(Component.prototype);
 TabItem.prototype.constructor = TabItem;
 
 
-if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentTabItem = TabItem;
-}
-
-
 /**
  * Make the tab visible, i.e. set active tab, and notify subscribers.
  * Hide previous visible tab if exists.
  *
- * @param {Object} data custom data which passed into handlers
+ * @param {Object} [data] custom data which passed into handlers
  *
- * @return {boolean} apply result
+ * @return {boolean} operation status
  *
- * @fires module:stb/component~Component#show
+ * @fires module:stb/ui/tab.item~TabItem#show
  */
-Component.prototype.show = function ( data ) {
-	var prev;
+TabItem.prototype.show = function ( data ) {
+	var prev = null;
+
+	if ( DEBUG ) {
+		if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
+		if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': wrong parent for tab item'); }
+		if ( this.parent.current && !(this.parent.current instanceof TabItem) ) { throw new Error(__filename + ': wrong current tab item type'); }
+	}
 
 	// is it hidden
 	if ( !this.visible ) {
-		if ( DEBUG ) {
-			if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
-			if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': no parent for tab item'); }
-		}
-
+		// hide previous tab
 		if ( this.parent.current ) {
 			prev = this.parent.current;
-			prev.hide();
+			prev.hide(data);
 		}
-		// correct style
-		this.$node.classList.remove('hidden');
-		// flag
-		this.visible = true;
-		// make link
+
+		Component.prototype.show.call(this, data);
 		this.parent.current = this;
 
-		// there are some listeners
-		if ( this.events['show'] ) {
-			/**
-			 * Make the component visible.
-			 *
-			 * @event module:stb/component~Component#show
-			 */
-			this.emit('show', data);
-		}
+		/*// there are some listeners
+		if ( this.parent.events['switch'] ) {
+			this.parent.emit('switch', {prev: prev, curr: this});
+		}*/
 
 		return true;
 	}
 
 	// nothing was done
-	return false;
+	return true;
 };
 
 
 /**
  * Make the tab hidden and notify subscribers.
  *
- * @return {boolean} apply result
+ * @return {boolean} operation status
  *
- * @fires module:stb/component~Component#hide
+ * @fires module:stb/ui/tab.item~TabItem#hide
  */
-Component.prototype.hide = function () {
-	// is it visible
-	if ( this.visible ) {
-		if ( DEBUG ) {
-			if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
-			if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': no parent for tab item'); }
-		}
+TabItem.prototype.hide = function () {
+	if ( DEBUG ) {
+		if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
+		if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': wrong parent for tab item'); }
+		if ( this.parent.current && !(this.parent.current instanceof TabItem) ) { throw new Error(__filename + ': wrong current tab item type'); }
+	}
 
-		// correct style
-		this.$node.classList.add('hidden');
-		// flag
-		this.visible = false;
-		// remove link
+	if ( Component.prototype.hide.call(this) ) {
 		this.parent.current = null;
-
-		// there are some listeners
-		if ( this.events['hide'] ) {
-			/**
-			 * Make the component hidden.
-			 *
-			 * @event module:stb/component~Component#hide
-			 */
-			this.emit('hide');
-		}
 
 		return true;
 	}
 
 	// nothing was done
-	return false;
+	return true;
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentTabItem = TabItem;
+}
 
 
 // public

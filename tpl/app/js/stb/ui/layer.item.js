@@ -11,6 +11,7 @@ var Component = require('../component');
 
 /**
  * Layer item implementation.
+ * All layer items are created visible by default.
  *
  * @constructor
  * @extends Component
@@ -19,11 +20,11 @@ var Component = require('../component');
  *
  * @example
  * var LayerItem = require('stb/ui/layer.item'),
- *     layer = new LayerItem({
- *         $node: document.getElementById('someId'),
+ *     layerItem = new LayerItem({
+ *         $node: window.someId,
  *         children: [
  *             new Panel({
- *                 $node: document.getElementById('anotherId')
+ *                 $node: window.anotherId
  *             })
  *         ],
  *         events: {
@@ -34,7 +35,7 @@ var Component = require('../component');
  *         }
  *     });
  *
- * page.add(layer);
+ * layerList.add(layerItem);
  */
 function LayerItem ( config ) {
 	// sanitize
@@ -45,18 +46,8 @@ function LayerItem ( config ) {
 		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
 	}
 
-
-	/**
-	 * Component z-index value.
-	 * @type {(boolean|number)}
-	 */
-	this.zIndex = false;
-
 	// can't accept focus
 	config.focusable = config.focusable || false;
-
-	// hidden by default
-	config.visible = config.visible || false;
 
 	// set default className if classList property empty or undefined
 	config.className = 'layerItem ' + (config.className || '');
@@ -71,267 +62,112 @@ LayerItem.prototype = Object.create(Component.prototype);
 LayerItem.prototype.constructor = LayerItem;
 
 
-if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentLayerItem = LayerItem;
-}
+/**
+ * Delete this component and clear all associated events.
+ */
+LayerItem.prototype.remove = function () {
+	var map    = this.parent.map,
+		zIndex = this.$node.style.zIndex,
+		mapSize, i;
+
+	// remove
+	map.splice(zIndex, 1);
+
+	// reindex
+	for ( i = 0, mapSize = map.length; i < mapSize; i++ ) { map[i].$node.style.zIndex = i; }
+
+	// parent invoke
+	Component.prototype.remove.call(this);
+
+	/*// there are some listeners
+	if ( this.parent.events['change'] ) {
+		// notify listeners
+		this.emit('change', {state: 'remove', item: this});
+	}*/
+};
+
+
+/**
+ * Move layer by the given shift value.
+ *
+ * @private
+ *
+ * @param {number} shift direction and shift size
+ * @param {string} type movement type
+ *
+ * @fires module:stb/ui/layer.item~LayerItem#move
+ */
+LayerItem.prototype.move = function ( shift, type ) {
+	var map     = this.parent.map,
+		mapSize = map.length,
+		zIndex  = Number(this.$node.style.zIndex),
+		i;
+
+	if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+	if ( Number(shift) !== shift ) { throw new Error(__filename + ': shift must be a number'); }
+	if ( typeof type !== 'string' || type.length === 0 ) { throw new Error(__filename + ': wrong or empty type'); }
+
+	// move
+	map.splice(zIndex, 1);
+	map.splice(zIndex + shift, 0, this);
+
+	// reindex
+	for ( i = 0; i < mapSize; i++ ) { map[i].$node.style.zIndex = i; }
+
+	// there are some listeners
+	if ( this.events['move'] ) {
+		// notify listeners
+		this.emit('move', {shift: shift, type: type});
+	}
+
+	/*// there are some listeners
+	if ( this.parent.events['change'] ) {
+		// notify listeners
+		this.emit('change', {state: event, item: this});
+	}*/
+};
 
 
 /**
  * Move layer up in the order of the list.
- * Does nothing if layer already at top.
  *
- * @param {object} [data] data for layer
- *
- * @return {boolean} apply result
- *
- * @fires module:stb/ui/layer.item~LayerItem#move:up
- * @fires module:stb/ui/layer.list~LayerList#item:change
+ * @param {number} [step=1] shift size
  */
-LayerItem.prototype.moveUp = function ( data ) {
-	if ( DEBUG ) {
-		if ( !this.parent ) { throw new Error(__filename + ': no parent for layer item'); }
-		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
-	}
-
-	if ( typeof this.zIndex === 'number' ) {
-		// z-index was provided
-		if ( this.zIndex < ( this.parent.children.length - 1 + this.parent.zIndex ) ) {
-			this.parent.map[this.zIndex] = this.parent.map[this.zIndex + 1];
-			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
-			this.parent.map[this.zIndex].zIndex = this.zIndex;
-			++this.zIndex;
-			this.$node.style.zIndex = this.zIndex;
-			this.parent.map[this.zIndex] = this;
-
-			if ( this.events['move:up'] ) {
-				this.emit('move:up', {data: data});
-			}
-
-			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {state: 'move:up', component: this});
-			}
-
-			return true;
-		}
-	} else if ( this.$node.nextSibling ) {
-		// logic with DOM level manipulation
-		// not in the end
-
-		if ( this.$node.nextSibling === this.parent.$body.lastChild ) {
-			// penultimate element
-			this.parent.$body.appendChild(this.$node);
-		} else {
-			this.parent.$body.insertBefore(this.$node, this.$node.nextSibling.nextSibling);
-		}
-
-
-		if ( this.events['move:up'] ) {
-			this.emit('move:up', {data: data});
-		}
-
-		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:up', component: this});
-		}
-
-		return true;
-	}
-
-	return false;
+LayerItem.prototype.moveUp = function ( step ) {
+	this.move(step || 1, 'up');
 };
 
 
 /**
  * Move layer down in the order of the list.
- * Does nothing if layer already at bottom.
  *
- * @param {object} [data] data for layer
- *
- * @return {boolean} apply result
- *
- * @fires module:stb/ui/layer.item~LayerItem#move:down
- * @fires module:stb/ui/layer.list~LayerList#item:change
+ * @param {number} [step=-1] shift size
  */
-LayerItem.prototype.moveDown = function ( data ) {
-	if ( DEBUG ) {
-		if ( !this.parent ) { throw new Error(__filename + ': no parent for layer item'); }
-		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
-	}
-
-	if ( typeof this.zIndex === 'number' ) {
-		// z-index was provided
-		if ( this.zIndex > this.parent.zIndex ) {
-			this.parent.map[this.zIndex] = this.parent.map[this.zIndex - 1];
-			this.parent.map[this.zIndex].$node.style.zIndex = this.zIndex;
-			this.parent.map[this.zIndex].zIndex = this.zIndex;
-			--this.zIndex;
-			this.$node.style.zIndex = this.zIndex;
-			this.parent.map[this.zIndex] = this;
-
-			if ( this.events['move:up'] ) {
-				this.emit('move:up', {data: data});
-			}
-
-			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {state: 'move:down', component: this});
-			}
-
-			return true;
-		}
-	} else if ( this.$node.previousSibling ) {
-		// logic with DOM level manipulation
-		// not in the start
-
-		this.parent.$body.insertBefore(this.$node, this.$node.previousSibling);
-
-		if ( this.events['move:down'] ) {
-			this.emit('move:down', {data: data});
-		}
-
-		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:down', component: this});
-		}
-
-		return true;
-	}
-
-	return false;
+LayerItem.prototype.moveDown = function ( step ) {
+	this.move(-step || -1, 'down');
 };
 
 
 /**
  * Move layer to the top of the layers list.
- * Does nothing if layer already at bottom.
- *
- * @param {object} [data] data for layer
- *
- * @return {boolean} apply result
- *
- * @fires module:stb/ui/layer.item~LayerItem#move:top
- * @fires module:stb/ui/layer.list~LayerList#item:change
  */
-LayerItem.prototype.moveTop = function ( data ) {
-	var i, size;
-
-	if ( DEBUG ) {
-		if ( !this.parent ) { throw new Error(__filename + ': no parent for layer item'); }
-		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
-	}
-
-	if ( typeof this.zIndex === 'number' ) {
-		// z-index was provided
-		debug.info([this.zIndex, this.parent.children.length, this.parent.zIndex]);
-
-		if ( this.zIndex < ( this.parent.children.length + this.parent.zIndex - 1 ) ) {
-			// not on the top
-
-			// loop through the layers which are upper then current
-			for ( i = this.zIndex, size = this.parent.zIndex + this.parent.children.length - 1; i < size; ++i ) {
-				debug.log('moving layer from ' + (i + 1) + ' to ' + i + ' zIndex');
-				this.parent.map[i] = this.parent.map[i + 1];
-				this.parent.map[i].$node.style.zIndex = i;
-				this.parent.map[i].zIndex = i;
-			}
-			this.zIndex = this.parent.children.length + this.parent.zIndex - 1;
-			this.$node.style.zIndex = this.zIndex;
-			this.parent.map[this.zIndex] = this;
-
-			if ( this.events['move:top'] ) {
-				this.emit('move:top', {data: data});
-			}
-
-			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {state: 'move:top', component: this});
-			}
-
-			return true;
-		}
-	} else if ( this.$node !== this.parent.$body.lastChild ) {
-		// logic with DOM level manipulation
-		// not in the end
-
-		this.parent.$body.appendChild(this.$node);
-
-		if ( this.events['move:top'] ) {
-			this.emit('move:top', {data: data});
-		}
-
-		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:top', component: this});
-		}
-
-		return true;
-	}
-
-	return false;
+LayerItem.prototype.moveTop = function () {
+	this.move(this.parent.map.length, 'top');
 };
 
 
 /**
  * Move layer to the bottom of the layers list.
- * Does nothing if layer already at top.
- *
- * @param {object} [data] data for layer
- *
- * @return {boolean} apply result
- *
- * @fires module:stb/ui/layer.item~LayerItem#move:bottom
- * @fires module:stb/ui/layer.list~LayerList#item:change
  */
-LayerItem.prototype.moveBottom = function ( data ) {
-	var i, size;
-
-	if ( DEBUG ) {
-		if ( !this.parent ) { throw new Error(__filename + ': no parent for layer item'); }
-		if ( this.parent.constructor.name !== 'LayerList' ) { throw new Error(__filename + ': no parent for layer item'); }
-	}
-
-	if ( typeof this.zIndex === 'number' ) {
-		// z-index was provided
-
-		if ( this.zIndex > this.parent.zIndex ) {
-			// not on the top
-
-			// loop through the layers which are below then current
-			for ( i = this.zIndex, size = this.parent.zIndex; i > size; --i ) {
-				debug.log('moving layer from ' + (i - 1) + ' to ' + i + ' zIndex');
-				this.parent.map[i] = this.parent.map[i - 1];
-				this.parent.map[i].$node.style.zIndex = i;
-				this.parent.map[i].zIndex = i;
-			}
-			this.zIndex = this.parent.zIndex;
-			this.$node.style.zIndex = this.zIndex;
-			this.parent.map[this.zIndex] = this;
-
-			if ( this.events['move:bottom'] ) {
-				this.emit('move:bottom', {data: data});
-			}
-
-			if ( this.parent.events['item:change'] ) {
-				this.emit('item:change', {state: 'move:bottom', component: this});
-			}
-
-			return true;
-		}
-	} else if ( this.$node !== this.parent.$body.firstChild ) {
-		// logic with DOM level manipulation
-		// not at the start
-
-		this.parent.$body.insertBefore(this.$node, this.parent.$body.firstChild);
-
-		if ( this.events['move:bottom'] ) {
-			this.emit('move:bottom', {data: data});
-		}
-
-		if ( this.parent.events['item:change'] ) {
-			this.parent.emit('item:change', {state: 'move:bottom', component: this});
-		}
-
-		return true;
-	}
-
-	return false;
+LayerItem.prototype.moveBottom = function () {
+	this.move(-this.$node.style.zIndex, 'bottom');
 };
+
+
+if ( DEBUG ) {
+	// expose to the global scope
+	window.ComponentLayerItem = LayerItem;
+}
 
 
 // public
