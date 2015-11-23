@@ -29,16 +29,15 @@ gulp.task('pack:clean', function () {
 gulp.task('pack:develop', function () {
 	var outName = util.format(zipName, pkgInfo.name, pkgInfo.version, 'develop');
 
-	log(title, 'create archive: ' +  outName.bold);
+	log(title, 'create archive: ' + outName.bold);
 
 	return gulp.src([
-			path.join(global.paths.build, 'font', '**', '*'),
-			path.join(global.paths.build, 'img', '**', '*'),
-			path.join(global.paths.build, 'css', 'develop.*'),
-			path.join(global.paths.build, 'js', 'develop.*'),
-			path.join(global.paths.build, 'develop.html')
-		],
-		{base: global.paths.build})
+		path.join(global.paths.build, 'font', '**', '*'),
+		path.join(global.paths.build, 'img', '**', '*'),
+		path.join(global.paths.build, 'css', 'develop.*'),
+		path.join(global.paths.build, 'js', 'develop.*'),
+		path.join(global.paths.build, 'develop.html')
+	], {base: global.paths.build})
 		.pipe(plumber())
 		.pipe(zip(outName))
 		.pipe(gulp.dest(global.paths.root));
@@ -49,16 +48,15 @@ gulp.task('pack:develop', function () {
 gulp.task('pack:release', function () {
 	var outName = util.format(zipName, pkgInfo.name, pkgInfo.version, 'release');
 
-	log(title, 'create archive: ' +  outName.bold);
+	log(title, 'create archive: ' + outName.bold);
 
 	return gulp.src([
-			path.join(global.paths.build, 'font', '**', '*'),
-			path.join(global.paths.build, 'img', '**', '*'),
-			path.join(global.paths.build, 'css', 'release.*'),
-			path.join(global.paths.build, 'js', 'release.*'),
-			path.join(global.paths.build, 'index.html')
-		],
-		{base: global.paths.build})
+		path.join(global.paths.build, 'font', '**', '*'),
+		path.join(global.paths.build, 'img', '**', '*'),
+		path.join(global.paths.build, 'css', 'release.*'),
+		path.join(global.paths.build, 'js', 'release.*'),
+		path.join(global.paths.build, 'index.html')
+	], {base: global.paths.build})
 		.pipe(plumber())
 		.pipe(zip(outName))
 		.pipe(gulp.dest(global.paths.root));
