@@ -518,7 +518,7 @@ Player.prototype.play = function ( url, config ) {
 	} else {
 		solution = 'auto';
 	}
-	position = '' || ' position:' + config.position;
+	position = config.position ? ' position:' + config.position : '';
 	gSTB.Play(solution + ' ' + url + position, config.proxy);
 };
 
