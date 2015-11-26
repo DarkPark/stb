@@ -11,11 +11,6 @@ var app    = require('./stb/app'),
 	router = require('./stb/router');
 
 
-// determine run mode
-app.data.windowId = stbWebWindow.windowId();
-app.data.isPortal = app.data.windowId === 1;
-
-
 // main application events
 app.addListeners({
 	// all resources are loaded
