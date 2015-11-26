@@ -87,8 +87,9 @@ Emitter.prototype = {
 		// initialization may be required
 		this.events[name] = this.events[name] || [];
 		// append this new event to the list
-		this.events[name].push(function onceWrapper ( data ) {
-			callback(data);
+		this.events[name].push(function onceWrapper (/*data*/) {
+			//callback(data);
+			callback.apply(this, arguments);
 			self.removeListener(name, onceWrapper);
 		});
 	},
@@ -189,8 +190,8 @@ Emitter.prototype = {
 	 *
 	 * @param {string} name event identifier
 	 * @param {Object} [data] options to send
+	 * @param {Function} [callback] callback to send
 	 *
-	 * @todo consider use context
 	 *
 	 * @example
 	 * obj.emit('init');
@@ -201,7 +202,7 @@ Emitter.prototype = {
 	 *     this.emit('click', {event: event});
 	 * }
 	 */
-	emit: function ( name, data ) {
+	emit: function ( name, data, callback ) {
 		var event = this.events[name],
 			i;
 
@@ -223,7 +224,8 @@ Emitter.prototype = {
 
 				// invoke the callback with parameters
 				// http://jsperf.com/function-calls-direct-vs-apply-vs-call-vs-bind/6
-				event[i].call(this, data);
+				//event[i].call(this, data);
+				event[i].apply(this, Array.prototype.slice.call(arguments, 1));
 			}
 		}
 	}

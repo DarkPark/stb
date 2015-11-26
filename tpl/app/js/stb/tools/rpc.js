@@ -24,34 +24,34 @@ var Emitter   = require('../emitter'),
  * var ws = new RPC('ws://example.com');
  *
  *    // answer mode
- *		ws.send(
- *			'getUserList',
- *			null,
- *			function(error, result){
+ *        ws.send(
+ *            'getUserList',
+ *            null,
+ *            function(error, result){
  * 				if(error){
  * 					console.log('some error happened');
  * 				} else {
  * 					console.log(result);
  * 				}
  * 			}
- *		);
+ *        );
  *
  *    // notification mode
- *		ws.addListener(
- *			'dataUpdatedSuccessfully',
- *			function(event){
+ *        ws.addListener(
+ *            'dataUpdatedSuccessfully',
+ *            function(event){
  * 				console.log(event);
  * 			}
- *		);
+ *        );
  *
  *  // execution mode
- *		ws.addListener(
- *			'getBoxData',
- *			function(event){
- * 				console.log(event.params);
- * 				event.done(false,{name:'box', mac:1234312});
+ *        ws.addListener(
+ *            'getBoxData',
+ *            function(event, callback){
+ * 				console.log(event);
+ * 				callback(false,{name:'box', mac:1234312});
  * 			}
- *		);
+ *        );
  */
 function RPC ( url ) {
 	var self = this;
@@ -73,8 +73,7 @@ function RPC ( url ) {
 		if ( typeof self.onError === 'function' ) { self.onError(event); }
 	};
 	connection.onmessage = function ( event ) {
-		var message = event.data,
-			eventData;
+		var message = event.data;
 
 		debug.log('server said:' + message);
 		try {
@@ -89,14 +88,14 @@ function RPC ( url ) {
 			} else if ( !message.id && message.method ) { // notification mode: some notification from server
 				self.emit(message.method, message.params);
 			} else if ( message.id && message.method ) {  // execution mode: run this method and report to server
-				eventData = {
-					done: function ( error, result ) {
+				self.emit(
+					message.method,
+					message.params ? message.params : null,
+					function ( error, result ) {
 						connection.send(JSON.stringify({error: error, result: result, id: message.id}));
 						debug.log('we said:' + JSON.stringify({error: error, result: result, id: message.id}));
 					}
-				};
-				if ( message.params ) { eventData.params = message.params; }
-				self.emit(message.method, eventData);
+				);
 			}
 		} catch ( e ) {
 			debug.log('error websocket response');
