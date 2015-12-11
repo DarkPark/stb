@@ -9,6 +9,7 @@
 var Model    = require('./model'),
 	router   = require('./router'),
 	keys     = require('./keys'),
+	metrics  = require('../../../config/metrics'),
 	keyCodes = {},
 	app, key;
 
@@ -267,7 +268,7 @@ app.EVENT_DVB_ANTENNA_OFF = 43;
 
 
 // apply screen size, position and margins
-app.setScreen(require('../../../config/metrics')[screen.height]);
+app.setScreen(metrics[screen.height] || metrics[720]);
 
 
 // extract key codes
