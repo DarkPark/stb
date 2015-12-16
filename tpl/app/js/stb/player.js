@@ -335,6 +335,9 @@ Player.prototype.mediaListener = function ( event ) {
 					});
 				}
 			}, 1000);
+			if ( self.events['playback:begin'] ) {
+				self.emit('playback:begin');
+			}
 			break;
 		case app.EVENT_GET_MEDIA_INFO :
 			self.totalDurationSec = gSTB.GetMediaLen();
