@@ -39,7 +39,7 @@ program
 	.action(function () {
 		// copy everything
 		ncp(path.join(pathStb, 'tpl'), pathApp, errorHandler);
-		ncp(path.join(pathStb, '.eslintrc'), path.join(pathApp, '.eslintrc'), errorHandler);
+		ncp(path.join(pathStb, '.eslintrc.json'), path.join(pathApp, '.eslintrc.json'), errorHandler);
 		ncp(path.join(pathStb, 'license.md'), path.join(pathApp, 'license.md'), errorHandler);
 		ncp(path.join(pathStb, '.editorconfig'), path.join(pathApp, '.editorconfig'), errorHandler);
 		ncp(path.join(pathStb, '.gitattributes'), path.join(pathApp, '.gitattributes'), errorHandler);
