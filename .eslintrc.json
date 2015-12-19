@@ -1,7 +1,8 @@
 {
 	"env": {
 		"browser": true,
-		"node": true
+		"node": true,
+		"commonjs": true
 	},
 
 	"globals": {
@@ -40,7 +41,6 @@
 		"no-irregular-whitespace": 2,
 		"no-negated-in-lhs": 2,
 		"no-obj-calls": 2,
-		"no-reserved-keys": 2,
 		"no-sparse-arrays": 2,
 		"no-unreachable": 2,
 		"use-isnan": 2,
@@ -58,6 +58,7 @@
 		"eqeqeq": 1,
 		"no-alert": 1,
 		"no-caller": 1,
+		"no-case-declarations": 2,
 		"no-else-return": 1,
 		"no-eval": 1,
 		"no-extend-native": [2, {"exceptions": []}],
@@ -78,6 +79,7 @@
 		"no-self-compare": 1,
 		"no-sequences": 1,
 		"no-unused-expressions": 1,
+		"no-useless-call": 2,
 		"no-void": 1,
 		"no-with": 1,
 		"radix": 1,
@@ -100,14 +102,16 @@
 		"no-process-exit": 0,
 
 		"array-bracket-spacing": [2, "never"],
+		"block-spacing": [2, "always"],
 		"brace-style": [1, "1tbs", {"allowSingleLine": true}],
 		"camelcase": 1,
 		"comma-spacing": [1, {"before": false, "after": true}],
 		"comma-style": [1, "last"],
+		"computed-property-spacing": [2, "never"],
 		"consistent-this": [1, "self"],
 		"eol-last": 1,
 		"func-names": 0,
-		"indent": [2, "tab", {"indentSwitchCase": true}],
+		"indent": [2, "tab", {"SwitchCase": 1, "VariableDeclarator": 1}],
 		"key-spacing": [0, { "align": "colon" }],
 		"linebreak-style": [2, "unix"],
 		"new-cap": 1,
@@ -122,6 +126,7 @@
 		"no-spaced-func": 1,
 		"no-trailing-spaces": [2, {"skipBlankLines": true}],
 		"no-unneeded-ternary": 1,
+		"object-curly-spacing": [2, "never"],
 		"one-var": [1, "always"],
 		"quote-props": [1, "as-needed"],
 		"quotes": [1, "single", "avoid-escape"],
@@ -130,7 +135,6 @@
 		"space-after-keywords": [1, "always"],
 		"space-before-blocks": [1, "always"],
 		"space-before-function-paren": [1, {"anonymous": "always", "named": "always"}],
-		"space-in-brackets": [1, "never"],
 		"space-in-parens": [0, "always"],
 		"space-infix-ops": 1,
 		"space-return-throw-case": 1,
