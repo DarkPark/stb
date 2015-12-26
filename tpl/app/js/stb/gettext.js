@@ -7,9 +7,9 @@
 'use strict';
 
 var Emitter = require('./emitter'),
-	gettext = new Emitter(),
-	meta    = null,
-	data    = null;
+    gettext = new Emitter(),
+    meta    = null,
+    data    = null;
 
 
 /**
@@ -28,56 +28,56 @@ var Emitter = require('./emitter'),
  * });
  */
 gettext.load = function ( config, callback ) {
-	var xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
 
-	if ( DEBUG ) {
-		if ( !config.name || typeof config.name !== 'string' ) { throw new Error(__filename + ': config.name must be a nonempty string'); }
-		if ( typeof callback !== 'function' ) { throw new Error(__filename + ': wrong callback type'); }
-	}
+    if ( DEBUG ) {
+        if ( !config.name || typeof config.name !== 'string' ) { throw new Error(__filename + ': config.name must be a nonempty string'); }
+        if ( typeof callback !== 'function' ) { throw new Error(__filename + ': wrong callback type'); }
+    }
 
-	// defaults
-	config.ext  = config.ext  || 'json';
-	config.path = config.path || 'lang';
+    // defaults
+    config.ext  = config.ext  || 'json';
+    config.path = config.path || 'lang';
 
-	/* todo: get rid of JSON.parse in future
-	xhr.overrideMimeType('application/json');
-	xhr.responseType = 'json';/**/
+    /* todo: get rid of JSON.parse in future
+    xhr.overrideMimeType('application/json');
+    xhr.responseType = 'json';/**/
 
-	xhr.responseType = 'text';
+    xhr.responseType = 'text';
 
-	xhr.onload = function () {
-		var json;
+    xhr.onload = function () {
+        var json;
 
-		try {
-			json = JSON.parse(xhr.responseText);
-			meta = json.meta;
-			data = json.data;
-			callback(null, data);
-		} catch ( error ) {
-			meta = null;
-			data = null;
-			xhr.onerror(error);
-		}
+        try {
+            json = JSON.parse(xhr.responseText);
+            meta = json.meta;
+            data = json.data;
+            callback(null, data);
+        } catch ( error ) {
+            meta = null;
+            data = null;
+            xhr.onerror(error);
+        }
 
-		// there are some listeners
-		if ( gettext.events['load'] ) {
-			// notify listeners
-			gettext.emit('load');
-		}
-	};
+        // there are some listeners
+        if ( gettext.events['load'] ) {
+            // notify listeners
+            gettext.emit('load');
+        }
+    };
 
-	xhr.onerror = function ( error ) {
-		callback(error);
+    xhr.onerror = function ( error ) {
+        callback(error);
 
-		// there are some listeners
-		if ( gettext.events['error'] ) {
-			// notify listeners
-			gettext.emit('error');
-		}
-	};
+        // there are some listeners
+        if ( gettext.events['error'] ) {
+            // notify listeners
+            gettext.emit('error');
+        }
+    };
 
-	xhr.open('GET', config.path + '/' + config.name + '.' + config.ext, true);
-	xhr.send(null);
+    xhr.open('GET', config.path + '/' + config.name + '.' + config.ext, true);
+    xhr.send(null);
 };
 
 
@@ -94,7 +94,7 @@ gettext.load = function ( config, callback ) {
  * console.log(gettext('some line to be localized'));
  */
 window.gettext = function ( msgId ) {
-	return data && data[''][msgId] ? data[''][msgId] : msgId;
+    return data && data[''][msgId] ? data[''][msgId] : msgId;
 };
 
 
@@ -112,7 +112,7 @@ window.gettext = function ( msgId ) {
  * console.log(pgettext('some context', 'some text'));
  */
 window.pgettext = function ( context, msgId ) {
-	return data && data[context][msgId] ? data[context][msgId] : msgId;
+    return data && data[context][msgId] ? data[context][msgId] : msgId;
 };
 
 
@@ -131,19 +131,19 @@ window.pgettext = function ( context, msgId ) {
  * console.log(ngettext('{0} cat', '{0} cats', 1));
  */
 window.ngettext = function ( msgId, plural, value ) {
-	/* eslint no-eval: 0 */
+    /* eslint no-eval: 0 */
 
-	if ( DEBUG ) {
-		if ( Number(value) !== value ) { throw new Error(__filename + ': value must be a number'); }
-	}
+    if ( DEBUG ) {
+        if ( Number(value) !== value ) { throw new Error(__filename + ': value must be a number'); }
+    }
 
-	if ( data && meta ) {
-		// translation
-		return data[''][msgId][eval('var n = ' + value + '; ' + meta.plural)];
-	}
+    if ( data && meta ) {
+        // translation
+        return data[''][msgId][eval('var n = ' + value + '; ' + meta.plural)];
+    }
 
-	// english
-	return value === 1 ? msgId : plural;
+    // english
+    return value === 1 ? msgId : plural;
 };
 
 

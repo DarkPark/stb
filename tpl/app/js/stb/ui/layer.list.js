@@ -31,29 +31,29 @@ var Component = require('../component');
  * page.add(layerList);
  */
 function LayerList ( config ) {
-	// sanitize
-	config = config || {};
+    // sanitize
+    config = config || {};
 
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+        if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+    }
 
-	/**
-	 * z-index to layer items map.
-	 *
-	 * @type {Array}
-	 */
-	this.map = [];
+    /**
+     * z-index to layer items map.
+     *
+     * @type {Array}
+     */
+    this.map = [];
 
-	// can't accept focus
-	config.focusable = config.focusable || false;
+    // can't accept focus
+    config.focusable = config.focusable || false;
 
-	// set default className if classList property empty or undefined
-	config.className = 'layerList ' + (config.className || '');
+    // set default className if classList property empty or undefined
+    config.className = 'layerList ' + (config.className || '');
 
-	// parent constructor call
-	Component.call(this, config);
+    // parent constructor call
+    Component.call(this, config);
 }
 
 
@@ -66,25 +66,25 @@ LayerList.prototype.constructor = LayerList;
  * Add a new component(s) as a child.
  */
 LayerList.prototype.add = function () {
-	var i, child;
+    var i, child;
 
-	// parent invoke
-	Component.prototype.add.apply(this, arguments);
+    // parent invoke
+    Component.prototype.add.apply(this, arguments);
 
-	// walk through all the given elements
-	for ( i = 0; i < arguments.length; i++ ) {
-		child = arguments[i];
+    // walk through all the given elements
+    for ( i = 0; i < arguments.length; i++ ) {
+        child = arguments[i];
 
-		// rework map and indexes
-		child.$node.style.zIndex = this.map.length;
-		this.map[this.map.length] = child;
-	}
+        // rework map and indexes
+        child.$node.style.zIndex = this.map.length;
+        this.map[this.map.length] = child;
+    }
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentLayerList = LayerList;
+    // expose to the global scope
+    window.ComponentLayerList = LayerList;
 }
 
 

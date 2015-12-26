@@ -7,7 +7,7 @@
 'use strict';
 
 var Component = require('../component'),
-	keys      = require('../keys');
+    keys      = require('../keys');
 
 
 /**
@@ -47,111 +47,111 @@ var Component = require('../component'),
  * @fires module:stb/ui/list~List#click:item
  */
 function List ( config ) {
-	// current execution context
-	//var self = this;
+    // current execution context
+    //var self = this;
 
-	// sanitize
-	config = config || {};
+    // sanitize
+    config = config || {};
 
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		// init parameters checks
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-		if ( config.type      && Number(config.type) !== config.type  ) { throw new Error(__filename + ': config.type must be a number'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+        // init parameters checks
+        if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+        if ( config.type      && Number(config.type) !== config.type  ) { throw new Error(__filename + ': config.type must be a number'); }
+    }
 
-	/**
-	 * Link to the currently focused DOM element.
-	 *
-	 * @type {Element}
-	 */
-	this.$focusItem = null;
+    /**
+     * Link to the currently focused DOM element.
+     *
+     * @type {Element}
+     */
+    this.$focusItem = null;
 
-	/**
-	 * Position of the visible window to render.
-	 *
-	 * @type {number}
-	 */
-	this.viewIndex = null;
+    /**
+     * Position of the visible window to render.
+     *
+     * @type {number}
+     */
+    this.viewIndex = null;
 
-	/**
-	 * Component data to visualize.
-	 *
-	 * @type {Array}
-	 */
-	this.data = [];
+    /**
+     * Component data to visualize.
+     *
+     * @type {Array}
+     */
+    this.data = [];
 
-	/**
-	 * Component orientation.
-	 *
-	 * @type {number}
-	 */
-	this.type = this.TYPE_VERTICAL;
+    /**
+     * Component orientation.
+     *
+     * @type {number}
+     */
+    this.type = this.TYPE_VERTICAL;
 
-	/**
-	 * Amount of visible items on a page.
-	 *
-	 * @type {number}
-	 */
-	this.size = 5;
+    /**
+     * Amount of visible items on a page.
+     *
+     * @type {number}
+     */
+    this.size = 5;
 
-	/**
-	 * Allow or not to jump to the opposite side of a list when there is nowhere to go next.
-	 *
-	 * @type {boolean}
-	 */
-	this.cycle = false;
+    /**
+     * Allow or not to jump to the opposite side of a list when there is nowhere to go next.
+     *
+     * @type {boolean}
+     */
+    this.cycle = false;
 
-	/**
-	 * Associated ScrollBar component link.
-	 *
-	 * @type {ScrollBar}
-	 */
-	this.scroll = null;
+    /**
+     * Associated ScrollBar component link.
+     *
+     * @type {ScrollBar}
+     */
+    this.scroll = null;
 
-	// horizontal or vertical
-	if ( config.type ) {
-		// apply
-		this.type = config.type;
-	}
+    // horizontal or vertical
+    if ( config.type ) {
+        // apply
+        this.type = config.type;
+    }
 
-	// set default className if classList property empty or undefined
-	config.className = 'list ' + (config.className || '');
+    // set default className if classList property empty or undefined
+    config.className = 'list ' + (config.className || '');
 
-	if ( this.type === this.TYPE_HORIZONTAL ) {
-		config.className += ' horizontal';
-	}
+    if ( this.type === this.TYPE_HORIZONTAL ) {
+        config.className += ' horizontal';
+    }
 
-	// parent constructor call
-	Component.call(this, config);
+    // parent constructor call
+    Component.call(this, config);
 
-	// component setup
-	this.init(config);
+    // component setup
+    this.init(config);
 
-	// custom navigation method
-	//if ( config.navigate ) {
-	//	if ( DEBUG ) {
-	//		if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
-	//	}
-	//	// apply
-	//	this.navigate = config.navigate;
-	//}
+    // custom navigation method
+    //if ( config.navigate ) {
+    //    if ( DEBUG ) {
+    //        if ( typeof config.navigate !== 'function' ) { throw new Error(__filename + ': wrong config.navigate type'); }
+    //    }
+    //    // apply
+    //    this.navigate = config.navigate;
+    //}
 
-	// navigation by keyboard
-	//this.addListener('keydown', this.navigate);
+    // navigation by keyboard
+    //this.addListener('keydown', this.navigate);
 
-	// navigation by mouse
-	//this.$body.addEventListener('mousewheel', function ( event ) {
-	//	// scrolling by Y axis
-	//	if ( self.type === self.TYPE_VERTICAL && event.wheelDeltaY ) {
-	//		self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
-	//	}
-	//
-	//	// scrolling by X axis
-	//	if ( self.type === self.TYPE_HORIZONTAL && event.wheelDeltaX ) {
-	//		self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
-	//	}
-	//});
+    // navigation by mouse
+    //this.$body.addEventListener('mousewheel', function ( event ) {
+    //    // scrolling by Y axis
+    //    if ( self.type === self.TYPE_VERTICAL && event.wheelDeltaY ) {
+    //        self.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+    //    }
+    //
+    //    // scrolling by X axis
+    //    if ( self.type === self.TYPE_HORIZONTAL && event.wheelDeltaX ) {
+    //        self.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+    //    }
+    //});
 }
 
 
@@ -171,7 +171,7 @@ List.prototype.TYPE_HORIZONTAL = 2;
  * @param {*} data associated with this item data
  */
 List.prototype.renderItemDefault = function ( $item, data ) {
-	$item.innerText = data.value;
+    $item.innerText = data.value;
 };
 
 
@@ -190,50 +190,50 @@ List.prototype.renderItem = List.prototype.renderItemDefault;
  * @type {Object.<string, function>}
  */
 List.prototype.defaultEvents = {
-	/**
-	 * Default method to handle mouse wheel events.
-	 *
-	 * @param {Event} event generated event
-	 */
-	mousewheel: function ( event ) {
-		// scrolling by Y axis
-		if ( this.type === this.TYPE_VERTICAL && event.wheelDeltaY ) {
-			this.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
-		}
+    /**
+     * Default method to handle mouse wheel events.
+     *
+     * @param {Event} event generated event
+     */
+    mousewheel: function ( event ) {
+        // scrolling by Y axis
+        if ( this.type === this.TYPE_VERTICAL && event.wheelDeltaY ) {
+            this.move(event.wheelDeltaY > 0 ? keys.up : keys.down);
+        }
 
-		// scrolling by X axis
-		if ( this.type === this.TYPE_HORIZONTAL && event.wheelDeltaX ) {
-			this.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
-		}
-	},
+        // scrolling by X axis
+        if ( this.type === this.TYPE_HORIZONTAL && event.wheelDeltaX ) {
+            this.move(event.wheelDeltaX > 0 ? keys.left : keys.right);
+        }
+    },
 
-	/**
-	 * Default method to handle keyboard keydown events.
-	 *
-	 * @param {Event} event generated event
-	 */
-	keydown: function ( event ) {
-		switch ( event.code ) {
-			case keys.up:
-			case keys.down:
-			case keys.right:
-			case keys.left:
-			case keys.pageUp:
-			case keys.pageDown:
-			case keys.home:
-			case keys.end:
-				// cursor move only on arrow keys
-				this.move(event.code);
-				break;
-			case keys.ok:
-				// there are some listeners
-				if ( this.events['click:item'] ) {
-					// notify listeners
-					this.emit('click:item', {$item: this.$focusItem, event: event});
-				}
-				break;
-		}
-	}
+    /**
+     * Default method to handle keyboard keydown events.
+     *
+     * @param {Event} event generated event
+     */
+    keydown: function ( event ) {
+        switch ( event.code ) {
+            case keys.up:
+            case keys.down:
+            case keys.right:
+            case keys.left:
+            case keys.pageUp:
+            case keys.pageDown:
+            case keys.home:
+            case keys.end:
+                // cursor move only on arrow keys
+                this.move(event.code);
+                break;
+            case keys.ok:
+                // there are some listeners
+                if ( this.events['click:item'] ) {
+                    // notify listeners
+                    this.emit('click:item', {$item: this.$focusItem, event: event});
+                }
+                break;
+        }
+    }
 };
 
 
@@ -243,26 +243,26 @@ List.prototype.defaultEvents = {
  * @param {Event} event generated event source of movement
  */
 //List.prototype.navigateDefault = function ( event ) {
-//	switch ( event.code ) {
-//		case keys.up:
-//		case keys.down:
-//		case keys.right:
-//		case keys.left:
-//		case keys.pageUp:
-//		case keys.pageDown:
-//		case keys.home:
-//		case keys.end:
-//			// cursor move only on arrow keys
-//			this.move(event.code);
-//			break;
-//		case keys.ok:
-//			// there are some listeners
-//			if ( this.events['click:item'] ) {
-//				// notify listeners
-//				this.emit('click:item', {$item: this.$focusItem, event: event});
-//			}
-//			break;
-//	}
+//    switch ( event.code ) {
+//        case keys.up:
+//        case keys.down:
+//        case keys.right:
+//        case keys.left:
+//        case keys.pageUp:
+//        case keys.pageDown:
+//        case keys.home:
+//        case keys.end:
+//            // cursor move only on arrow keys
+//            this.move(event.code);
+//            break;
+//        case keys.ok:
+//            // there are some listeners
+//            if ( this.events['click:item'] ) {
+//                // notify listeners
+//                this.emit('click:item', {$item: this.$focusItem, event: event});
+//            }
+//            break;
+//    }
 //};
 
 
@@ -283,32 +283,32 @@ List.prototype.defaultEvents = {
  * @return {Array} reworked incoming data
  */
 function normalize ( data ) {
-	var i, item;
+    var i, item;
 
-	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+        if ( !Array.isArray(data) ) { throw new Error(__filename + ': wrong data type'); }
+    }
 
-	// rows
-	for ( i = 0; i < data.length; i++ ) {
-		// cell value
-		item = data[i];
-		// primitive value
-		if ( typeof item !== 'object' ) {
-			// wrap with defaults
-			item = data[i] = {
-				value: data[i]
-			};
-		}
+    // rows
+    for ( i = 0; i < data.length; i++ ) {
+        // cell value
+        item = data[i];
+        // primitive value
+        if ( typeof item !== 'object' ) {
+            // wrap with defaults
+            item = data[i] = {
+                value: data[i]
+            };
+        }
 
-		if ( DEBUG ) {
-			//if ( !('value' in item) ) { throw new Error(__filename + ': field "value" is missing'); }
-			if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw new Error(__filename + ': item.mark must be boolean'); }
-		}
-	}
+        if ( DEBUG ) {
+            //if ( !('value' in item) ) { throw new Error(__filename + ': field "value" is missing'); }
+            if ( ('mark' in item) && Boolean(item.mark) !== item.mark ) { throw new Error(__filename + ': item.mark must be boolean'); }
+        }
+    }
 
-	return data;
+    return data;
 }
 
 
@@ -318,112 +318,112 @@ function normalize ( data ) {
  * @param {Object} config init parameters (subset of constructor config params)
  */
 List.prototype.init = function ( config ) {
-	var self     = this,
-		currSize = this.$body.children.length,
-		/**
-		 * Item mouse click handler.
-		 *
-		 * @param {Event} event click event data
-		 *
-		 * @this Element
-		 *
-		 * @fires module:stb/ui/list~List#click:item
-		 */
-		onClick = function ( event ) {
-			if ( this.data ) {
-				self.focusItem(this);
+    var self     = this,
+        currSize = this.$body.children.length,
+        /**
+         * Item mouse click handler.
+         *
+         * @param {Event} event click event data
+         *
+         * @this Element
+         *
+         * @fires module:stb/ui/list~List#click:item
+         */
+        onClick = function ( event ) {
+            if ( this.data ) {
+                self.focusItem(this);
 
-				// there are some listeners
-				if ( self.events['click:item'] ) {
-					// notify listeners
-					self.emit('click:item', {$item: this, event: event});
-				}
-			}
-		},
-		item, i;
+                // there are some listeners
+                if ( self.events['click:item'] ) {
+                    // notify listeners
+                    self.emit('click:item', {$item: this, event: event});
+                }
+            }
+        },
+        item, i;
 
-	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+    }
 
-	// apply cycle behaviour
-	if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
+    // apply cycle behaviour
+    if ( config.cycle !== undefined ) { this.cycle = config.cycle; }
 
-	// apply ScrollBar link
-	if ( config.scroll ) { this.scroll = config.scroll; }
+    // apply ScrollBar link
+    if ( config.scroll ) { this.scroll = config.scroll; }
 
-	// apply list of items
-	if ( config.data ) {
-		if ( DEBUG ) {
-			if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
-		}
-		// prepare user data
-		this.data = normalize(config.data);
-	}
+    // apply list of items
+    if ( config.data ) {
+        if ( DEBUG ) {
+            if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
+        }
+        // prepare user data
+        this.data = normalize(config.data);
+    }
 
-	// custom render method
-	if ( config.render ) {
-		if ( DEBUG ) {
-			if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
-		}
-		// apply
-		this.renderItem = config.render;
-	}
+    // custom render method
+    if ( config.render ) {
+        if ( DEBUG ) {
+            if ( typeof config.render !== 'function' ) { throw new Error(__filename + ': wrong config.render type'); }
+        }
+        // apply
+        this.renderItem = config.render;
+    }
 
-	// list items amount on page
-	if ( config.size ) {
-		if ( DEBUG ) {
-			if ( Number(config.size) !== config.size ) { throw new Error(__filename + ': config.size must be a number'); }
-			if ( config.size <= 0 ) { throw new Error(__filename + ': config.size should be positive'); }
-		}
-		// apply
-		this.size = config.size;
-	}
+    // list items amount on page
+    if ( config.size ) {
+        if ( DEBUG ) {
+            if ( Number(config.size) !== config.size ) { throw new Error(__filename + ': config.size must be a number'); }
+            if ( config.size <= 0 ) { throw new Error(__filename + ': config.size should be positive'); }
+        }
+        // apply
+        this.size = config.size;
+    }
 
-	// geometry has changed or initial draw
-	if ( this.size !== currSize ) {
-		// non-empty list
-		if ( currSize > 0 ) {
-			// clear old items
-			this.$body.innerText = null;
-		}
+    // geometry has changed or initial draw
+    if ( this.size !== currSize ) {
+        // non-empty list
+        if ( currSize > 0 ) {
+            // clear old items
+            this.$body.innerText = null;
+        }
 
-		// create new items
-		for ( i = 0; i < this.size; i++ ) {
-			item = document.createElement('div');
-			item.index = i;
-			item.className = 'item';
+        // create new items
+        for ( i = 0; i < this.size; i++ ) {
+            item = document.createElement('div');
+            item.index = i;
+            item.className = 'item';
 
-			item.addEventListener('click', onClick);
-			this.$body.appendChild(item);
-		}
-	}
+            item.addEventListener('click', onClick);
+            this.$body.appendChild(item);
+        }
+    }
 
-	// view window position
-	if ( config.viewIndex !== undefined ) {
-		if ( DEBUG ) {
-			if ( Number(config.viewIndex) !== config.viewIndex ) { throw new Error(__filename + ': config.viewIndex must be a number'); }
-			if ( config.viewIndex < 0 ) { throw new Error(__filename + ': config.viewIndex should be positive'); }
-		}
-	}
-	// reset current view window position
-	this.viewIndex = null;
+    // view window position
+    if ( config.viewIndex !== undefined ) {
+        if ( DEBUG ) {
+            if ( Number(config.viewIndex) !== config.viewIndex ) { throw new Error(__filename + ': config.viewIndex must be a number'); }
+            if ( config.viewIndex < 0 ) { throw new Error(__filename + ': config.viewIndex should be positive'); }
+        }
+    }
+    // reset current view window position
+    this.viewIndex = null;
 
-	// set focus item
-	if ( config.focusIndex !== undefined ) {
-		if ( DEBUG ) {
-			if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': config.focusIndex must be a number'); }
-			if ( config.focusIndex < 0 ) { throw new Error(__filename + ': config.focusIndex should be positive'); }
-			if ( config.focusIndex > this.data.length - 1 ) { throw new Error(__filename + ': config.focusIndex should be less than data size'); }
-		}
+    // set focus item
+    if ( config.focusIndex !== undefined ) {
+        if ( DEBUG ) {
+            if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': config.focusIndex must be a number'); }
+            if ( config.focusIndex < 0 ) { throw new Error(__filename + ': config.focusIndex should be positive'); }
+            if ( config.focusIndex > this.data.length - 1 ) { throw new Error(__filename + ': config.focusIndex should be less than data size'); }
+        }
 
-		// jump to the necessary item
-		this.focusIndex(config.focusIndex);
-	} else {
-		// go to the first page
-		this.renderView(config.viewIndex || 0);
-	}
+        // jump to the necessary item
+        this.focusIndex(config.focusIndex);
+    } else {
+        // go to the first page
+        this.renderView(config.viewIndex || 0);
+    }
 };
 
 
@@ -448,71 +448,71 @@ List.prototype.init = function ( config ) {
  * @fires module:stb/ui/list~List#move:view
  */
 List.prototype.renderView = function ( index ) {
-	var $item, i, itemData, prevIndex, currIndex;
+    var $item, i, itemData, prevIndex, currIndex;
 
-	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
-		if ( index < 0 ) { throw new Error(__filename + ': index should be more than zero'); }
-		if ( index >= this.data.length ) { throw new Error(__filename + ': index should be less than data size'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+        if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
+        if ( index < 0 ) { throw new Error(__filename + ': index should be more than zero'); }
+        if ( index >= this.data.length ) { throw new Error(__filename + ': index should be less than data size'); }
+    }
 
-	// has the view window position changed
-	if ( this.viewIndex !== index ) {
-		// save for emit
-		prevIndex = this.viewIndex;
-		// sync global pointer
-		this.viewIndex = currIndex = index;
+    // has the view window position changed
+    if ( this.viewIndex !== index ) {
+        // save for emit
+        prevIndex = this.viewIndex;
+        // sync global pointer
+        this.viewIndex = currIndex = index;
 
-		// rebuild all visible items
-		for ( i = 0; i < this.size; i++ ) {
-			// shortcuts
-			$item    = this.$body.children[i];
-			itemData = this.data[index];
+        // rebuild all visible items
+        for ( i = 0; i < this.size; i++ ) {
+            // shortcuts
+            $item    = this.$body.children[i];
+            itemData = this.data[index];
 
-			// real item or stub
-			if ( itemData ) {
-				// correct inner data/index and render
-				$item.data  = itemData;
-				$item.index = index;
-				this.renderItem($item, itemData);
+            // real item or stub
+            if ( itemData ) {
+                // correct inner data/index and render
+                $item.data  = itemData;
+                $item.index = index;
+                this.renderItem($item, itemData);
 
-				// apply CSS
-				if ( itemData.mark ) {
-					$item.classList.add('mark');
-				} else {
-					$item.classList.remove('mark');
-				}
-			} else {
-				// nothing to render
-				$item.data = $item.index = undefined;
-				$item.innerHTML = '&nbsp;';
-			}
-			index++;
-		}
+                // apply CSS
+                if ( itemData.mark ) {
+                    $item.classList.add('mark');
+                } else {
+                    $item.classList.remove('mark');
+                }
+            } else {
+                // nothing to render
+                $item.data = $item.index = undefined;
+                $item.innerHTML = '&nbsp;';
+            }
+            index++;
+        }
 
-		// there are some listeners
-		if ( this.events['move:view'] ) {
-			// notify listeners
-			this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
-		}
+        // there are some listeners
+        if ( this.events['move:view'] ) {
+            // notify listeners
+            this.emit('move:view', {prevIndex: prevIndex, currIndex: currIndex});
+        }
 
-		// there are some listeners
-		if ( this.events['select:item'] ) {
-			this.emit('select:item', {$item: $item});
-		}
+        // there are some listeners
+        if ( this.events['select:item'] ) {
+            this.emit('select:item', {$item: $item});
+        }
 
-		// update a linked scroll component
-		if ( this.scroll ) {
-			this.scroll.scrollTo(this.viewIndex);
-		}
+        // update a linked scroll component
+        if ( this.scroll ) {
+            this.scroll.scrollTo(this.viewIndex);
+        }
 
-		// full rebuild
-		return true;
-	}
+        // full rebuild
+        return true;
+    }
 
-	// nothing was done
-	return false;
+    // nothing was done
+    return false;
 };
 
 
@@ -545,114 +545,114 @@ List.prototype.renderView = function ( index ) {
  * @fires module:stb/ui/list~List#overflow
  */
 List.prototype.move = function ( direction ) {
-	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+        if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
+    }
 
-	if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
-		// still can go backward
-		if ( this.$focusItem && this.$focusItem.index > 0 ) {
-			if ( this.$focusItem === this.$body.firstChild ) {
-				this.renderView(this.viewIndex - 1);
-			} else {
-				this.focusItem(this.$focusItem.previousSibling);
-			}
-		} else {
-			// already at the beginning
-			if ( this.cycle ) {
-				// jump to the end of the list
-				this.move(keys.end);
+    if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
+        // still can go backward
+        if ( this.$focusItem && this.$focusItem.index > 0 ) {
+            if ( this.$focusItem === this.$body.firstChild ) {
+                this.renderView(this.viewIndex - 1);
+            } else {
+                this.focusItem(this.$focusItem.previousSibling);
+            }
+        } else {
+            // already at the beginning
+            if ( this.cycle ) {
+                // jump to the end of the list
+                this.move(keys.end);
 
-				// there are some listeners
-				if ( this.events['cycle'] ) {
-					// notify listeners
-					this.emit('cycle', {direction: direction});
-				}
-			} else {
-				// there are some listeners
-				if ( this.events['overflow'] ) {
-					// notify listeners
-					this.emit('overflow', {direction: direction});
-				}
-			}
-		}
-	}
-	if ( (direction === keys.down && this.type === this.TYPE_VERTICAL) || (direction === keys.right && this.type === this.TYPE_HORIZONTAL) ) {
-		// still can go forward
-		if ( this.$focusItem && this.$focusItem.index < this.data.length - 1 ) {
-			if ( this.$focusItem === this.$body.lastChild ) {
-				this.renderView(this.viewIndex + 1);
-			} else {
-				this.focusItem(this.$focusItem.nextSibling);
-			}
-		} else {
-			// already at the beginning
-			if ( this.cycle ) {
-				// jump to the beginning of the list
-				this.move(keys.home);
+                // there are some listeners
+                if ( this.events['cycle'] ) {
+                    // notify listeners
+                    this.emit('cycle', {direction: direction});
+                }
+            } else {
+                // there are some listeners
+                if ( this.events['overflow'] ) {
+                    // notify listeners
+                    this.emit('overflow', {direction: direction});
+                }
+            }
+        }
+    }
+    if ( (direction === keys.down && this.type === this.TYPE_VERTICAL) || (direction === keys.right && this.type === this.TYPE_HORIZONTAL) ) {
+        // still can go forward
+        if ( this.$focusItem && this.$focusItem.index < this.data.length - 1 ) {
+            if ( this.$focusItem === this.$body.lastChild ) {
+                this.renderView(this.viewIndex + 1);
+            } else {
+                this.focusItem(this.$focusItem.nextSibling);
+            }
+        } else {
+            // already at the beginning
+            if ( this.cycle ) {
+                // jump to the beginning of the list
+                this.move(keys.home);
 
-				// there are some listeners
-				if ( this.events['cycle'] ) {
-					// notify listeners
-					this.emit('cycle', {direction: direction});
-				}
-			} else {
-				// there are some listeners
-				if ( this.events['overflow'] ) {
-					// notify listeners
-					this.emit('overflow', {direction: direction});
-				}
-			}
-		}
-	}
+                // there are some listeners
+                if ( this.events['cycle'] ) {
+                    // notify listeners
+                    this.emit('cycle', {direction: direction});
+                }
+            } else {
+                // there are some listeners
+                if ( this.events['overflow'] ) {
+                    // notify listeners
+                    this.emit('overflow', {direction: direction});
+                }
+            }
+        }
+    }
 
-	if ( direction === keys.pageUp ) {
-		// determine jump size
-		if ( this.viewIndex < this.size ) {
-			// first page
-			this.renderView(0);
-		} else {
-			// second page and further
-			this.renderView(this.viewIndex - this.size + 1);
-		}
+    if ( direction === keys.pageUp ) {
+        // determine jump size
+        if ( this.viewIndex < this.size ) {
+            // first page
+            this.renderView(0);
+        } else {
+            // second page and further
+            this.renderView(this.viewIndex - this.size + 1);
+        }
 
-		this.focusItem(this.$body.firstChild);
-	}
+        this.focusItem(this.$body.firstChild);
+    }
 
-	if ( direction === keys.pageDown ) {
-		// data is bigger then one page
-		if ( this.data.length > this.size ) {
-			// determine jump size
-			if ( this.viewIndex > this.data.length - this.size * 2 ) {
-				// last page
-				this.renderView(this.data.length - this.size);
-			} else {
-				// before the last page
-				this.renderView(this.viewIndex + this.size - 1);
-			}
-			this.focusItem(this.$body.lastChild);
-		} else {
-			// not the last item on the page
-			this.focusItem(this.$body.children[this.data.length - 1]);
-		}
-	}
+    if ( direction === keys.pageDown ) {
+        // data is bigger then one page
+        if ( this.data.length > this.size ) {
+            // determine jump size
+            if ( this.viewIndex > this.data.length - this.size * 2 ) {
+                // last page
+                this.renderView(this.data.length - this.size);
+            } else {
+                // before the last page
+                this.renderView(this.viewIndex + this.size - 1);
+            }
+            this.focusItem(this.$body.lastChild);
+        } else {
+            // not the last item on the page
+            this.focusItem(this.$body.children[this.data.length - 1]);
+        }
+    }
 
-	if ( direction === keys.home ) {
-		this.renderView(0);
-		this.focusItem(this.$body.firstChild);
-	}
+    if ( direction === keys.home ) {
+        this.renderView(0);
+        this.focusItem(this.$body.firstChild);
+    }
 
-	if ( direction === keys.end ) {
-		// data is bigger then one page
-		if ( this.data.length > this.size ) {
-			this.renderView(this.data.length - this.size);
-			this.focusItem(this.$body.lastChild);
-		} else {
-			// not the last item on the page
-			this.focusItem(this.$body.children[this.data.length - 1]);
-		}
-	}
+    if ( direction === keys.end ) {
+        // data is bigger then one page
+        if ( this.data.length > this.size ) {
+            this.renderView(this.data.length - this.size);
+            this.focusItem(this.$body.lastChild);
+        } else {
+            // not the last item on the page
+            this.focusItem(this.$body.children[this.data.length - 1]);
+        }
+    }
 };
 
 
@@ -668,81 +668,81 @@ List.prototype.move = function ( direction ) {
  * @fires module:stb/ui/list~List#blur:item
  */
 List.prototype.focusItem = function ( $item ) {
-	var $prev = this.$focusItem;
+    var $prev = this.$focusItem;
 
-	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+    }
 
-	// different element
-	if ( $item && $prev !== $item ) {
-		if ( DEBUG ) {
-			if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
-			if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
-		}
+    // different element
+    if ( $item && $prev !== $item ) {
+        if ( DEBUG ) {
+            if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+            if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
+        }
 
-		// some item is focused already
-		if ( $prev !== null ) {
-			if ( DEBUG ) {
-				if ( !($prev instanceof Element) ) { throw new Error(__filename + ': wrong $prev type'); }
-			}
+        // some item is focused already
+        if ( $prev !== null ) {
+            if ( DEBUG ) {
+                if ( !($prev instanceof Element) ) { throw new Error(__filename + ': wrong $prev type'); }
+            }
 
-			// style
-			$prev.classList.remove('focus');
+            // style
+            $prev.classList.remove('focus');
 
-			// there are some listeners
-			if ( this.events['blur:item'] ) {
-				/**
-				 * Remove focus from an element.
-				 *
-				 * @event module:stb/ui/list~List#blur:item
-				 *
-				 * @type {Object}
-				 * @property {Element} $item previously focused HTML element
-				 */
-				this.emit('blur:item', {$item: $prev});
-			}
-		}
-		// reassign
-		this.$focusItem = $item;
+            // there are some listeners
+            if ( this.events['blur:item'] ) {
+                /**
+                 * Remove focus from an element.
+                 *
+                 * @event module:stb/ui/list~List#blur:item
+                 *
+                 * @type {Object}
+                 * @property {Element} $item previously focused HTML element
+                 */
+                this.emit('blur:item', {$item: $prev});
+            }
+        }
+        // reassign
+        this.$focusItem = $item;
 
-		this.$focusItem.data = this.data[this.$focusItem.index];
+        this.$focusItem.data = this.data[this.$focusItem.index];
 
-		// correct CSS
-		$item.classList.add('focus');
+        // correct CSS
+        $item.classList.add('focus');
 
-		// there are some listeners
-		if ( this.events['focus:item'] ) {
-			/**
-			 * Set focus to a DOM element.
-			 *
-			 * @event module:stb/ui/list~List#focus:item
-			 *
-			 * @type {Object}
-			 * @property {Element} $prev old/previous focused HTML element
-			 * @property {Element} $curr new/current focused HTML element
-			 */
-			this.emit('focus:item', {$prev: $prev, $curr: $item});
-		}
+        // there are some listeners
+        if ( this.events['focus:item'] ) {
+            /**
+             * Set focus to a DOM element.
+             *
+             * @event module:stb/ui/list~List#focus:item
+             *
+             * @type {Object}
+             * @property {Element} $prev old/previous focused HTML element
+             * @property {Element} $curr new/current focused HTML element
+             */
+            this.emit('focus:item', {$prev: $prev, $curr: $item});
+        }
 
-		// there are some listeners
-		if ( this.events['select:item'] ) {
-			/**
-			 * Set focus to a list item.
-			 *
-			 * @event module:stb/ui/list~List#select:item
-			 *
-			 * @type {Object}
-			 * @property {Element} $item new/current focused item
-			 */
-			this.emit('select:item', {$item: $item});
-		}
+        // there are some listeners
+        if ( this.events['select:item'] ) {
+            /**
+             * Set focus to a list item.
+             *
+             * @event module:stb/ui/list~List#select:item
+             *
+             * @type {Object}
+             * @property {Element} $item new/current focused item
+             */
+            this.emit('select:item', {$item: $item});
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	// nothing was done
-	return false;
+    // nothing was done
+    return false;
 };
 
 
@@ -752,35 +752,35 @@ List.prototype.focusItem = function ( $item ) {
  * @param {number} index item data index
  */
 List.prototype.focusIndex = function ( index ) {
-	var viewIndex = this.viewIndex || 0;
+    var viewIndex = this.viewIndex || 0;
 
-	if ( DEBUG ) {
-		if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
-		if ( index < 0 ) { throw new Error(__filename + ': index should be positive'); }
-		if ( index > this.data.length - 1 ) { throw new Error(__filename + ': index should be less than data size'); }
-	}
+    if ( DEBUG ) {
+        if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
+        if ( index < 0 ) { throw new Error(__filename + ': index should be positive'); }
+        if ( index > this.data.length - 1 ) { throw new Error(__filename + ': index should be less than data size'); }
+    }
 
-	// determine direction
-	if ( index >= viewIndex + this.size ) {
-		// check range
-		index = index < this.data.length - 1 ? index : this.data.length - 1;
-		// move down
-		this.renderView(index - this.size + 1);
-		this.focusItem(this.$body.lastChild);
-	} else if ( index < viewIndex ) {
-		// check range
-		index = index > 0 ? index : 0;
-		// move up
-		this.renderView(index);
-		this.focusItem(this.$body.firstChild);
-	} else {
-		// no move
-		if ( this.viewIndex === null ) {
-			// first attempt
-			this.renderView(0);
-		}
-		this.focusItem(this.$body.children[index - viewIndex]);
-	}
+    // determine direction
+    if ( index >= viewIndex + this.size ) {
+        // check range
+        index = index < this.data.length - 1 ? index : this.data.length - 1;
+        // move down
+        this.renderView(index - this.size + 1);
+        this.focusItem(this.$body.lastChild);
+    } else if ( index < viewIndex ) {
+        // check range
+        index = index > 0 ? index : 0;
+        // move up
+        this.renderView(index);
+        this.focusItem(this.$body.firstChild);
+    } else {
+        // no move
+        if ( this.viewIndex === null ) {
+            // first attempt
+            this.renderView(0);
+        }
+        this.focusItem(this.$body.children[index - viewIndex]);
+    }
 };
 
 
@@ -791,28 +791,28 @@ List.prototype.focusIndex = function ( index ) {
  * @param {boolean} state true - marked, false - not marked
  */
 List.prototype.markItem = function ( $item, state ) {
-	if ( DEBUG ) {
-		if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
-		if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
-		if ( Boolean(state) !== state ) { throw new Error(__filename + ': state must be boolean'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+        if ( !($item instanceof Element) ) { throw new Error(__filename + ': wrong $item type'); }
+        if ( $item.parentNode !== this.$body ) { throw new Error(__filename + ': wrong $item parent element'); }
+        if ( Boolean(state) !== state ) { throw new Error(__filename + ': state must be boolean'); }
+    }
 
-	// correct CSS
-	if ( state ) {
-		$item.classList.add('mark');
-	} else {
-		$item.classList.remove('mark');
-	}
+    // correct CSS
+    if ( state ) {
+        $item.classList.add('mark');
+    } else {
+        $item.classList.remove('mark');
+    }
 
-	// apply flag
-	$item.data.mark = state;
+    // apply flag
+    $item.data.mark = state;
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentList = List;
+    // expose to the global scope
+    window.ComponentList = List;
 }
 
 

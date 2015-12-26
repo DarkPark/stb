@@ -9,18 +9,18 @@
 
 // public
 module.exports = {
-	// turn on/off server
-	active: true,
+    // turn on/off server
+    active: true,
 
-	// listening HTTP port to provide client interface
-	port: 8080,
+    // listening HTTP port to provide client interface
+    port: 8080,
 
-	// address to listen
-	host: '-all-',
+    // address to listen
+    host: '-all-',
 
-	// full logging
-	logging: false,
+    // full logging
+    logging: false,
 
-	// debug servers session id
-	name: 'anonymous'
+    // debug servers session id
+    name: 'anonymous'
 };

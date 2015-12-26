@@ -10,12 +10,12 @@
 'use strict';
 
 var vars = require('./720'),
-	data = {};
+    data = {};
 
 
 // multiply by 1.5 all vars
 Object.keys(vars).forEach(function ( name ) {
-	data[name] = vars[name] * 1.5;
+    data[name] = vars[name] * 1.5;
 });
 
 

@@ -13,25 +13,25 @@ var data = require('../app').data;
 
 // public
 module.exports = {
-	get: function ( name ) {
-		var value;
+    get: function ( name ) {
+        var value;
 
-		if ( data.host ) {
-			value = stbStorage.getItem(name);
-		} else {
-			value = localStorage.getItem(name);
-		}
+        if ( data.host ) {
+            value = stbStorage.getItem(name);
+        } else {
+            value = localStorage.getItem(name);
+        }
 
-		return value ? JSON.parse(value) : null;
-	},
+        return value ? JSON.parse(value) : null;
+    },
 
-	set: function ( name, value ) {
-		value = JSON.stringify(value);
+    set: function ( name, value ) {
+        value = JSON.stringify(value);
 
-		if ( data.host ) {
-			stbStorage.setItem(name, value);
-		} else {
-			localStorage.setItem(name, value);
-		}
-	}
+        if ( data.host ) {
+            stbStorage.setItem(name, value);
+        } else {
+            localStorage.setItem(name, value);
+        }
+    }
 };

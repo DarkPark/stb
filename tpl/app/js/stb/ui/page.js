@@ -39,47 +39,47 @@ var Component = require('../component');
  * });
  */
 function Page ( config ) {
-	// sanitize
-	config = config || {};
+    // sanitize
+    config = config || {};
 
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		// init parameters checks
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+        // init parameters checks
+        if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+    }
 
-	/**
-	 * Page visibility/active state flag.
-	 *
-	 * @readonly
-	 * @type {boolean}
-	 */
-	this.active = false;
+    /**
+     * Page visibility/active state flag.
+     *
+     * @readonly
+     * @type {boolean}
+     */
+    this.active = false;
 
-	/**
-	 * Link to the currently active component with focus.
-	 *
-	 * @readonly
-	 * @type {Component}
-	 */
-	this.activeComponent = null;
+    /**
+     * Link to the currently active component with focus.
+     *
+     * @readonly
+     * @type {Component}
+     */
+    this.activeComponent = null;
 
-	// set default className if classList property empty or undefined
-	config.className = 'page ' + (config.className || '');
+    // set default className if classList property empty or undefined
+    config.className = 'page ' + (config.className || '');
 
-	// parent constructor call
-	Component.call(this, config);
+    // parent constructor call
+    Component.call(this, config);
 
-	// state flag
-	this.active = this.$node.classList.contains('active');
+    // state flag
+    this.active = this.$node.classList.contains('active');
 
-	// correct DOM parent/child connection if necessary
-	if ( this.$node.parentNode === null ) {
-		document.body.appendChild(this.$node);
-	}
+    // correct DOM parent/child connection if necessary
+    if ( this.$node.parentNode === null ) {
+        document.body.appendChild(this.$node);
+    }
 
-	// always itself
-	this.page = this;
+    // always itself
+    this.page = this;
 }
 
 
@@ -89,8 +89,8 @@ Page.prototype.constructor = Page;
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentPage = Page;
+    // expose to the global scope
+    window.ComponentPage = Page;
 }
 
 

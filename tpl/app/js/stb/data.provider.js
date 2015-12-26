@@ -16,9 +16,9 @@ var Emitter = require('./emitter');
  * @constructor
  */
 function DataProvider ( config ) {
-	config = config || {};
+    config = config || {};
 
-	Emitter.call(this);
+    Emitter.call(this);
 
 }
 
@@ -44,7 +44,7 @@ DataProvider.prototype.constructor = DataProvider;
  */
 DataProvider.prototype.get = function ( direction, callback ) {
 
-	return true;
+    return true;
 };
 
 module.exports = DataProvider;

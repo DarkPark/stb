@@ -5,55 +5,55 @@
 
 
 .component.input {
-	width:            unit(@inputWidth, px);
-	height:           unit(@inputHeight, px);
-	border:           unit(@inputBorder, px) solid green;
-	font-size:        unit(@inputFontSize, px);
-	color:            #000;
-	background-color: #fff;
-	display:          table;
-	table-layout:     fixed;
+    width:            unit(@inputWidth, px);
+    height:           unit(@inputHeight, px);
+    border:           unit(@inputBorder, px) solid green;
+    font-size:        unit(@inputFontSize, px);
+    color:            #000;
+    background-color: #fff;
+    display:          table;
+    table-layout:     fixed;
 
-	.line {
-		cursor:         text;
-		display:        table-cell;
-		vertical-align: middle;
-		padding:        0 unit(@inputPaddingX, px);
-		overflow:       hidden;
-		white-space:    nowrap;
+    .line {
+        cursor:         text;
+        display:        table-cell;
+        vertical-align: middle;
+        padding:        0 unit(@inputPaddingX, px);
+        overflow:       hidden;
+        white-space:    nowrap;
 
-		> .char, > .placeholder, > .caret {
-			display:        inline-block;
-			vertical-align: middle;
-		}
+        > .char, > .placeholder, > .caret {
+            display:        inline-block;
+            vertical-align: middle;
+        }
 
-		> .caret {
-			height:      80%;
-			width:       2px;
-			margin-left: -2px;
-		}
+        > .caret {
+            height:      80%;
+            width:       2px;
+            margin-left: -2px;
+        }
 
-		> .placeholder {
-			color: #999;
-		}
-	}
+        > .placeholder {
+            color: #999;
+        }
+    }
 
-	&.focus {
-		.line {
-			> .caret {
-				background-color:                  #000000;
-				-webkit-animation:                 inputCursor 1s;
-				-webkit-animation-iteration-count: infinite;
-			}
-		}
-	}
+    &.focus {
+        .line {
+            > .caret {
+                background-color:                  #000000;
+                -webkit-animation:                 inputCursor 1s;
+                -webkit-animation-iteration-count: infinite;
+            }
+        }
+    }
 }
 
 @-webkit-keyframes inputCursor {
-	from {
-		background-color: #000000;
-	}
-	to {
-		background-color: transparent;
-	}
+    from {
+        background-color: #000000;
+    }
+    to {
+        background-color: transparent;
+    }
 }

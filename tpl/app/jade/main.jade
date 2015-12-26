@@ -1,15 +1,15 @@
 doctype html
 html
-	head
-		title=title
-		meta(charset="utf-8")
-		link(rel="icon", type="image/png", href="img/favicon.png")
+    head
+        title=title
+        meta(charset="utf-8")
+        link(rel="icon", type="image/png", href="img/favicon.png")
 
-		if develop
-			script(type='text/javascript', src='js/develop.js')
-		else
-			script(type='text/javascript', src='js/release.js')
+        if develop
+            script(type='text/javascript', src='js/develop.js')
+        else
+            script(type='text/javascript', src='js/release.js')
 
-	body
-		include ./pages/init.jade
-		include ./pages/main.jade
+    body
+        include ./pages/init.jade
+        include ./pages/main.jade

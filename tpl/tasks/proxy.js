@@ -8,21 +8,21 @@
 'use strict';
 
 var path   = require('path'),
-	gulp   = require('gulp'),
-	log    = require('gulp-util').log,
-	config = require(path.join(global.paths.config, 'proxy')),
-	title  = 'proxy   '.inverse;
+    gulp   = require('gulp'),
+    log    = require('gulp-util').log,
+    config = require(path.join(global.paths.config, 'proxy')),
+    title  = 'proxy   '.inverse;
 
 
 // start call redirection
 gulp.task('proxy', function ( done ) {
-	if ( config.active ) {
-		// start
-		require('code-proxy')(config);
-	} else {
-		// just exit
-		log(title, 'task is disabled'.grey);
+    if ( config.active ) {
+        // start
+        require('code-proxy')(config);
+    } else {
+        // just exit
+        log(title, 'task is disabled'.grey);
 
-		done();
-	}
+        done();
+    }
 });

@@ -9,10 +9,10 @@
 'use strict';
 
 var Emitter   = require('./emitter'),
-	preloader = new Emitter(),
-	queueSize = 0,
-	groups    = {},
-	verbose   = false;
+    preloader = new Emitter(),
+    queueSize = 0,
+    groups    = {},
+    verbose   = false;
 
 
 /**
@@ -51,43 +51,43 @@ var Emitter   = require('./emitter'),
  * @fires module:stb/preloader#done
  */
 function handler ( event ) {
-	// report
-	if ( event.type === 'error' ) {
-		debug.log('[preloader] group "' + this.group + '" link "' + this.src + '"', 'red');
-	} else {
-		if ( verbose ) {
-			debug.log('[preloader] group "' + this.group + '" link "' + this.src + '" (' + this.width + 'x' + this.height + ')');
-		}
-	}
+    // report
+    if ( event.type === 'error' ) {
+        debug.log('[preloader] group "' + this.group + '" link "' + this.src + '"', 'red');
+    } else {
+        if ( verbose ) {
+            debug.log('[preloader] group "' + this.group + '" link "' + this.src + '" (' + this.width + 'x' + this.height + ')');
+        }
+    }
 
-	queueSize--;
-	groups[this.group]--;
+    queueSize--;
+    groups[this.group]--;
 
-	// one link is done
-	if ( preloader.events['link'] ) {
-		// notify listeners
-		preloader.emit('link', {url: this.src, group: this.group});
-	}
+    // one link is done
+    if ( preloader.events['link'] ) {
+        // notify listeners
+        preloader.emit('link', {url: this.src, group: this.group});
+    }
 
-	// the whole group is done
-	if ( groups[this.group] === 0 ) {
-		debug.log('[preloader] group "' + this.group + '" loaded');
-		// one link is done
-		if ( preloader.events['group'] ) {
-			// notify listeners
-			preloader.emit('group', {name: this.group});
-		}
-	}
+    // the whole group is done
+    if ( groups[this.group] === 0 ) {
+        debug.log('[preloader] group "' + this.group + '" loaded');
+        // one link is done
+        if ( preloader.events['group'] ) {
+            // notify listeners
+            preloader.emit('group', {name: this.group});
+        }
+    }
 
-	// everything is done
-	if ( queueSize === 0 ) {
-		debug.log('[preloader] done');
-		// all links are done
-		if ( preloader.events['done'] ) {
-			// notify listeners
-			preloader.emit('done');
-		}
-	}
+    // everything is done
+    if ( queueSize === 0 ) {
+        debug.log('[preloader] done');
+        // all links are done
+        if ( preloader.events['done'] ) {
+            // notify listeners
+            preloader.emit('done');
+        }
+    }
 }
 
 
@@ -110,38 +110,38 @@ function handler ( event ) {
  * ]);
  */
 preloader.add = function ( links ) {
-	if ( DEBUG ) {
-		if ( !Array.isArray(links) ) { throw new Error(__filename + ': wrong argument links'); }
-	}
+    if ( DEBUG ) {
+        if ( !Array.isArray(links) ) { throw new Error(__filename + ': wrong argument links'); }
+    }
 
-	// walk through all the given links
-	links.forEach(function ( item ) {
-		var img   = new Image(),
-			url   = item.url   || item,
-			group = item.group || '';
+    // walk through all the given links
+    links.forEach(function ( item ) {
+        var img   = new Image(),
+            url   = item.url   || item,
+            group = item.group || '';
 
-		if ( DEBUG ) {
-			if ( typeof url !== 'string' ) { throw new Error(__filename + ': wrong url type'); }
-			if ( typeof group !== 'string' ) { throw new Error(__filename + ': wrong group type'); }
-			if ( url.trim() === '' ) { throw new Error(__filename + ': empty url'); }
-		}
+        if ( DEBUG ) {
+            if ( typeof url !== 'string' ) { throw new Error(__filename + ': wrong url type'); }
+            if ( typeof group !== 'string' ) { throw new Error(__filename + ': wrong group type'); }
+            if ( url.trim() === '' ) { throw new Error(__filename + ': empty url'); }
+        }
 
-		// increase counters
-		queueSize++;
-		groups[group] = groups[group] === undefined ? 1 : groups[group] + 1;
+        // increase counters
+        queueSize++;
+        groups[group] = groups[group] === undefined ? 1 : groups[group] + 1;
 
-		// build tag
-		img.src    = url;
-		img.group  = group;
-		img.onload = img.onerror = img.ontimeout = handler;
-	});
+        // build tag
+        img.src    = url;
+        img.group  = group;
+        img.onload = img.onerror = img.ontimeout = handler;
+    });
 
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.preloader = preloader;
+    // expose to the global scope
+    window.preloader = preloader;
 }
 
 

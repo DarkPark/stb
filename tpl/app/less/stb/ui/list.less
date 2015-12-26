@@ -5,54 +5,54 @@
 
 
 .component.list {
-	background-color: #333;
-	//display: table;
-	//table-layout: fixed;
-	width:            100%;
-	//min-height: 250px;
+    background-color: #333;
+    //display: table;
+    //table-layout: fixed;
+    width:            100%;
+    //min-height: 250px;
 
-	//> .body {
-	//display : table-column;
+    //> .body {
+    //display : table-column;
 
-	> .item {
-		cursor:         pointer;
-		padding:        0 unit(@listItemPaddingX, px);
-		vertical-align: middle;
-		height:         unit(@listItemHeight, px);
-		line-height:    unit(@listItemHeight, px);
-		//display: table-row;
+    > .item {
+        cursor:         pointer;
+        padding:        0 unit(@listItemPaddingX, px);
+        vertical-align: middle;
+        height:         unit(@listItemHeight, px);
+        line-height:    unit(@listItemHeight, px);
+        //display: table-row;
 
-		&.mark {
-			background-color: green;
-			color:            black;
-		}
+        &.mark {
+            background-color: green;
+            color:            black;
+        }
 
-		&.focus {
-			background-color: orange;
-			color:            black;
-		}
+        &.focus {
+            background-color: orange;
+            color:            black;
+        }
 
-		&.focus.mark {
-			background-color: #AE7200;
-			color:            white;
-		}
-	}
-	//}
+        &.focus.mark {
+            background-color: #AE7200;
+            color:            white;
+        }
+    }
+    //}
 }
 
 .component.list.horizontal {
-	display:      table;
-	table-layout: fixed;
-	width:        100%;
-	//min-height: 50px;
+    display:      table;
+    table-layout: fixed;
+    width:        100%;
+    //min-height: 50px;
 
-	//> .body {
-	//display : table-row;
+    //> .body {
+    //display : table-row;
 
-	> .item {
-		display:        table-cell;
-		text-align:     center;
-		vertical-align: middle;
-	}
-	//}
+    > .item {
+        display:        table-cell;
+        text-align:     center;
+        vertical-align: middle;
+    }
+    //}
 }
