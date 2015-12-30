@@ -44,10 +44,13 @@ require('tty-colors');
  */
 function log ( message ) {
     gSTB.Debug(message);
-    buffer.push(message);
-    if ( socket && socket.readyState === socket.OPEN ) {
-        socket.send(JSON.stringify(buffer));
-        buffer = [];
+
+    if ( config.active ) {
+        buffer.push(message);
+        if ( socket && socket.readyState === socket.OPEN ) {
+            socket.send(JSON.stringify(buffer));
+            buffer = [];
+        }
     }
 }
 
