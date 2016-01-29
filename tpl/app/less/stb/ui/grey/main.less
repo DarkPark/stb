@@ -1,0 +1,40 @@
+@import "480.less";
+@import "576.less";
+@import "720.less";
+@import "1280.less";
+
+@import "panel.less";
+@import "layout.less";
+
+
+.component.button {
+    background: #377cff;
+    &.focus {
+        background: #1D54AE;
+    }
+}
+
+.component.list {
+ background: transparent;
+    >.item {
+        background: transparent;
+        padding: 0;
+        &.focus {
+            background: transparent;
+            color: #ffffff;
+        }
+    }
+    &.focus >.item.focus {
+        background: #1D54AE;
+    }
+}
+
+.component.layout {
+    height: unit(@panelTitleHeight, px);
+    line-height: unit(@panelTitleHeight, px);
+    .button > .text {
+        height: unit(@panelTitleHeight, px);
+        line-height: unit(@panelTitleHeight, px);
+        box-sizing: border-box;
+    }
+}
