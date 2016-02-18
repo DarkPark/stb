@@ -50,6 +50,7 @@ function RadioList ( config ) {
 
     this.addListener('click:item', function ( event ) {
         var item = event.$item;
+
         item.checkBox.set(!item.checkBox.value);
         item.state = item.checkBox.value;
     });
@@ -78,6 +79,8 @@ RadioList.prototype.renderItemDefault = function ( $item, data ) {
         check = new CheckBox({
             group: this.group
         });
+
+    $item.innerHTML = '';
 
     // set state with set function to prevent multiple true values
     if ( data.state ) {

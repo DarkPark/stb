@@ -24,41 +24,58 @@ var List = require('./list'),
  *     size: 7,
  *     focusIndex: 0,
  *     data: [
- *         [
- *             {
- *                 className: 'star'
- *             },
- *             'Some text'
- *         ],
- *         ['Hello world',
- *             {
- *                 value: 'hi',
- *                 className: 'status'
- *             },
- *             'text',
- *             'label'
- *
- *         ],
- *         [
- *             {
- *                 className: 'big',
- *                 value: ' Some'
- *             },
- *             {
- *                 value: new Input()
- *             }
- *         ],
- *         [
- *             new Button({value: 'Ok'}),
- *             new Button({value: 'Cancel'}),
- *             new Button({value: 'Exit'})
- *
- *         ]
- *     ]
+ *         {
+ *         data: [
+ *                 {
+ *                     data: [
+ *                         {
+ *                             className: 'star'
+ *                         },
+ *                         'Some text'
+ *                     ],
+ *                     click: function () {
+ *                         // do something
+ *                     }
+ *                 },
+ *                 {
+ *                     data: [
+ *                         'Hello world',
+ *                         {
+ *                             value: 'hi',
+ *                             className: 'status'
+ *                         }
+ *                     ],
+ *                     click: someHandler
+ *                 },
+ *                 {
+ *                     data: [
+ *                         {
+ *                             className: 'big',
+ *                             value: ' Some'
+ *                         },
+ *                         {
+ *                             value: new Input()
+ *                         }
+ *                     ]
+ *                 },
+ *                 {
+ *                     data: [
+ *                         new Button({value: 'Ok'}),
+ *                         new Button({value: 'Cancel'}),
+ *                         new Button({value: 'Exit'})
+ *                     ]
+ *                 }
+ *             ]
  * })
  */
 function LayoutList ( config ) {
     var self = this;
+
+    /**
+     * Elements handlers
+     */
+    this.handlers = {};
+
 
     config.className = config.className || '' + ' layoutList';
 
@@ -78,6 +95,12 @@ function LayoutList ( config ) {
             self.focus();
             self.focusItem(event.$item);
         }
+
+        // do click callback if it present
+        if ( self.handlers[event.$item.index] ) {
+            self.handlers[event.$item.index]();
+        }
+
     });
 }
 
@@ -91,12 +114,14 @@ LayoutList.prototype.constructor = LayoutList;
  * @param {Element} $item in list
  * @param {array} data to render layout element
  */
-LayoutList.prototype.renderItemDefault = function ( $item, data ) {
+LayoutList.prototype.renderItemDefault = function ( $item, config ) {
     var layout;
+
+    $item.innerHTML = '';
 
     layout = new Layout({
         focusable:false,
-        data:data
+        data:config.data
     });
 
     $item.appendChild(layout.$node);
@@ -109,6 +134,10 @@ LayoutList.prototype.renderItemDefault = function ( $item, data ) {
         // add inner property to set that event comes from inner component
         this.parent.emit('click:item', {$item:$item, inner:true});
     });
+
+    if ( config.click ) {
+        this.handlers[$item.index] = config.click;
+    }
 
 };
 

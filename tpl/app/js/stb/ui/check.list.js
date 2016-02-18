@@ -64,6 +64,8 @@ CheckList.prototype.renderItemDefault = function ( $item, data ) {
             value: data.state || false
         });
 
+    $item.innerHTML = '';
+
     table.appendChild(tr);
 
     td.appendChild(check.$node);
