@@ -8,7 +8,7 @@
 var Component = require('../../component');
 
 /**
- * Grey theme panel implementation
+ * Graphite theme panel implementation
 
  * @constructor
  * @extends Component
@@ -65,7 +65,7 @@ function Panel ( config ) {
 
 
     // set default className if classList property empty or undefined
-    config.className = 'grey panel ' + (config.className || '');
+    config.className = 'graphite panel ' + (config.className || '');
 
     config.$body = document.createElement('div');
     config.$body.className = 'body';

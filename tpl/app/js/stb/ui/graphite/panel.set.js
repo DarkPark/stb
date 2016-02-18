@@ -1,4 +1,5 @@
 /**
+ * @module stb/ui/panel.set
  * @author Aleynikov Boris <alynikov.boris@gmail.com>.
  */
 
@@ -8,7 +9,7 @@ var Component = require('../../component'),
     keys      = require('../../keys');
 
 /**
- * Grey theme panel set implementation
+ * Graphite theme panel set implementation
  *
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  * @param {array} [config.panels] array of panels to use
@@ -34,7 +35,7 @@ function PanelSet ( config ) {
     config.focusable = config.focusable || false;
 
     // set default className if classList property empty or undefined
-    config.className = 'grey panelSet ' + (config.className || '');
+    config.className = 'graphite panelSet ' + (config.className || '');
 
     // parent constructor call
     Component.call(this, config);
@@ -90,14 +91,14 @@ function PanelSet ( config ) {
     }
 
     /*if ( config.focusIndex && config.focusIndex < this.panels.length ) {
-        this.panels[config.focusIndex].focus();
-    } else {
-        if ( config.panels.length > 1 ) {
-            this.panels[1].focus();
-        } else {
-            this.panels[0].focus();
-        }
-    }*/
+     this.panels[config.focusIndex].focus();
+     } else {
+     if ( config.panels.length > 1 ) {
+     this.panels[1].focus();
+     } else {
+     this.panels[0].focus();
+     }
+     }*/
 }
 
 PanelSet.prototype = Object.create(Component.prototype);
@@ -108,7 +109,7 @@ PanelSet.prototype.constructor = PanelSet;
  * Draw panels shadow after adding to DOM
  */
 PanelSet.prototype.drawShadow = function  () {
-  var i, height, top;
+    var i, height, top;
 
 
     for ( i = 0; i < this.panels.length; i++ ) {
