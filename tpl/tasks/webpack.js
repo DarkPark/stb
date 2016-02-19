@@ -15,7 +15,7 @@ var path     = require('path'),
     log      = require('gulp-util').log,
     del      = require('del'),
     pkgInfo  = require(path.join(global.paths.root, 'package.json')),
-    wpkInfo  = require(path.join(global.paths.root, 'node_modules', 'webpack-stream', 'node_modules', 'webpack', 'package.json')),
+    wpkInfo  = require(path.join(global.paths.root, 'node_modules', 'webpack', 'package.json')),
     warnings = false;
 
 
