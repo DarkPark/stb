@@ -1,6 +1,7 @@
 /**
- *
- * @author Aleynikov Boris <alynikov.boris@gmail.com>.
+ * @module stb/ui/value.list
+ * @author Aleynikov Boris <alynikov.boris@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -15,9 +16,19 @@ var Component = require('../component'),
  * @extends Component
  *
  * @param {Object}   [config={}]          init parameters (all inherited from the parent)
- * @param {array} [config.data] data to display
+ * @param {Array} [config.data] data to display
  * @param {function} [config.render] function to render data
  * @param {number} [config.index] index of start position to display data
+ *
+ * @example
+ * var ValueList = require('../stb/ui/value.list'),
+ *     newList = new ValueList({
+ *         data: [11, 22, 35, 56, 78],
+ *         cycle: true,
+ *         render: function ( $body ) {
+ *             $body.innerText = 'Number: ' + this.current.value;
+ *         }
+ *         });
  */
 function ValueList ( config ) {
 
@@ -31,12 +42,31 @@ function ValueList ( config ) {
 
     config.className = config.className || '' + ' valueList';
 
+    /**
+     * Component data
+     *
+     * @type {Array}
+     */
     this.data = [];
 
+    /**
+     * Current data index
+     *
+     * @type {number}
+     */
     this.currentIndex = 0;
 
-    this.value = null;
+    /**
+     * Current value
+     *
+     * @type {null}
+     */
+    this.current = null;
 
+    /**
+     *
+     * @type {boolean}
+     */
     this.cycle = false;
 
     Component.call(this, config);
@@ -44,8 +74,10 @@ function ValueList ( config ) {
     this.init(config);
 }
 
+// inheritance
 ValueList.prototype = Object.create(Component.prototype);
 ValueList.prototype.constructor = ValueList;
+
 
 /**
  * Init or reinit component
@@ -80,6 +112,7 @@ ValueList.prototype.init = function ( config ) {
 
 };
 
+
 /**
  * Default render function
  *
@@ -88,6 +121,7 @@ ValueList.prototype.init = function ( config ) {
 ValueList.prototype.renderValueDefault = function ( $body ) {
     $body.innerText = this.current.value;
 };
+
 
 /**
  * Method to render data
@@ -113,6 +147,7 @@ ValueList.prototype.updateData = function () {
      */
     this.emit('data:change', {current:this.current});
 };
+
 
 /**
  * List of all default event callbacks.
@@ -180,6 +215,7 @@ ValueList.prototype.change = function ( direction ) {
     }
 };
 
+
 /**
  * Make all the data items identical.
  * Wrap to objects if necessary.
@@ -206,7 +242,6 @@ function normalize ( data ) {
                 value: data[i]
             };
         }
-
     }
 
     return data;

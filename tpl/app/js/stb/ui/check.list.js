@@ -1,6 +1,7 @@
 /**
- *
- * @author Aleynikov Boris <alynikov.boris@gmail.com>.
+ *@ module stb/ui/check.list
+ * @author Aleynikov Boris <alynikov.boris@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -15,17 +16,18 @@ var List = require('../ui/list'),
  * @constructor
  * @extends List
  *
- * @param {Object}   [config={}]          init parameters (all inherited from the parent)
+ * @param {Object} [config={}] init parameters (all inherited from the parent)
  *
  * @example
- * new CheckList({
- *    focusIndex:0,
- *    data:[
- *        {state:false, title:'Some title', value:'string'},
- *        {state:true, title:'Some title 1', value:'number'},
- *        {state:false, title:'Some title 2', value:'object'}
- *    ]
- * })
+ * var CheckList = require('../stb/ui/check.list'),
+ *     new CheckList({
+ *         focusIndex:0,
+ *         data:[
+ *            {state:false, title:'Some title', value:'val1'},
+ *            {state:true, title:'Some title 1', value:'val2'},
+ *            {state:false, title:'Some title 2', value:'val3'}
+ *            ]
+ *     });
  */
 function CheckList ( config ) {
 

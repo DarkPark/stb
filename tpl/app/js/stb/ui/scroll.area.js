@@ -1,6 +1,7 @@
 /**
- *
- * @author Aleynikov Boris <alynikov.boris@gmail.com>.
+ * @module stb/ui/scroll.area
+ * @author Aleynikov Boris <alynikov.boris@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -15,8 +16,18 @@ var Component = require('../component'),
  * @constructor
  * @extends Component
  *
- * @param {object} config object
+ * @param {Object} config object
  * @param {number} [config.step] step in % of screen height to scroll area
+ *
+ * @example
+ * var ScrollArea = require('../stb/ui/scroll.area'),
+ *     textArea = new ScrollArea({
+ *         step: 5
+ *         });
+ *
+ * textArea.$body.innerText = 'Some long long long text to scroll..........';
+ * textArea.init();
+ *
  */
 function ScrollArea ( config ) {
 
@@ -27,7 +38,6 @@ function ScrollArea ( config ) {
         // init parameters checks
         if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
     }
-
 
     config.className = config.className || '' + ' scrollArea';
 
@@ -76,11 +86,12 @@ function ScrollArea ( config ) {
 
     // component setup
     this.init(config);
-
 }
+
 
 ScrollArea.prototype = Object.create(Component.prototype);
 ScrollArea.prototype.constructor = ScrollArea;
+
 
 /**
  * List of all default event callbacks.
@@ -131,7 +142,6 @@ ScrollArea.prototype.move = function ( direction ) {
             if ( this.scroll ) {
                 this.scroll.scrollTo(-this.topPosition);
             }
-
             this.$body.style.top =  this.topPosition + 'px';
             break;
         case keys.up:

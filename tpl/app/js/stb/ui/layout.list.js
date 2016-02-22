@@ -1,6 +1,7 @@
 /**
- *
- * @author Aleynikov Boris <alynikov.boris@gmail.com>.
+ * @module stb/ui/layout.list
+ * @author Aleynikov Boris <alynikov.boris@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -18,14 +19,14 @@ var List = require('./list'),
  *
  *
  * @example
- *
- * list = new LayoutList({
- *     propagate: true,
- *     size: 7,
- *     focusIndex: 0,
- *     data: [
- *         {
+ * var CheckList = require('../stb/ui/layout.list'),
+ *     list = new LayoutList({
+ *         propagate: true,
+ *         size: 7,
+ *         focusIndex: 0,
  *         data: [
+ *             {
+ *             data: [
  *                 {
  *                     data: [
  *                         {
@@ -66,7 +67,7 @@ var List = require('./list'),
  *                     ]
  *                 }
  *             ]
- * })
+ * });
  */
 function LayoutList ( config ) {
     var self = this;
@@ -75,7 +76,6 @@ function LayoutList ( config ) {
      * Elements handlers
      */
     this.handlers = {};
-
 
     config.className = config.className || '' + ' layoutList';
 
@@ -95,18 +95,17 @@ function LayoutList ( config ) {
             self.focus();
             self.focusItem(event.$item);
         }
-
         // do click callback if it present
         if ( self.handlers[event.$item.index] ) {
             self.handlers[event.$item.index]();
         }
-
     });
 }
 
 
 LayoutList.prototype = Object.create(List.prototype);
 LayoutList.prototype.constructor = LayoutList;
+
 
 /**
  * Default render function

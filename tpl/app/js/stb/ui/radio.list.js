@@ -1,6 +1,7 @@
 /**
- *
- * @author Aleynikov Boris <alynikov.boris@gmail.com>.
+ * @module stb/ui/radio.list
+ * @author Aleynikov Boris <alynikov.boris@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -19,14 +20,15 @@ var List = require('../ui/list'),
  * @param {Object}   [config={}]          init parameters (all inherited from the parent)
  *
  * @example
- * new RadioList({
- *    focusIndex:0,
- *    data:[
- *        {state:false, title:'Some title', value:'string'},
- *        {state:true, title:'Some title 1', value:'number'},
- *        {state:false, title:'Some title 2', value:'object'}
- *    ]
- * })
+ * var RadioList = require('../stb/ui/radio.list'),
+ *     rList = new RadioList({
+ *         focusIndex:0,
+ *         data:[
+ *            {state:false, title:'Some title', value:'string'},
+ *            {state:true, title:'Some title 1', value:'number'},
+ *            {state:false, title:'Some title 2', value:'object'}
+ *         ]
+ *     });
  */
 function RadioList ( config ) {
 
@@ -109,6 +111,7 @@ RadioList.prototype.renderItemDefault = function ( $item, data ) {
     $item.appendChild(table);
 
 };
+
 
 RadioList.prototype.renderItem = RadioList.prototype.renderItemDefault;
 

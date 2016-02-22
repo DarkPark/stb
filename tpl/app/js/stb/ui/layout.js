@@ -1,6 +1,7 @@
 /**
- *
- * @author Aleynikov Boris <alynikov.boris@gmail.com>.
+ * @module stb/ui/layout
+ * @author Aleynikov Boris <alynikov.boris@gmail.com>
+ * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
 'use strict';
@@ -16,22 +17,22 @@ var Component = require('../component'),
  * @extends Component
  *
  * @param {Object}   [config={}]          init parameters (all inherited from the parent)
- * @param {array} [config.data] array of items to add to layout
+ * @param {Array} [config.data] array of items to add to layout
  *
  * @example
- *
- * layout = new Layout({
- *          data:[
- *           'Some text'
- *           {
- *             className: 'icon star',
- *           },
- *           {
- *               value: new Input()
- *           },
- *           new Button({'value:'Ok'})
- *         ]
- *     });
+ * var Layout = require ('../stb/ui/layout'),
+ *     layout = new Layout({
+ *         data:[
+ *             'Some text'
+ *             {
+ *                 className: 'icon star',
+ *             },
+ *             {
+ *                 value: new Input()
+ *             },
+ *             new Button({'value:'Ok'})
+ *             ]
+ *         });
  */
 function Layout ( config ) {
 
@@ -48,7 +49,6 @@ function Layout ( config ) {
     }
 
     config.className = config.className || '' + ' layout';
-
 
     Component.call(this, config);
 
@@ -150,7 +150,6 @@ Layout.prototype.init = function ( config ) {
             }
         }
     }
-
 };
 
 
@@ -192,7 +191,6 @@ function normalize ( data ) {
             }
         }
     }
-
     return data;
 }
 
