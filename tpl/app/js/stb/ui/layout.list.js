@@ -77,7 +77,7 @@ function LayoutList ( config ) {
      */
     this.handlers = {};
 
-    config.className = config.className || '' + ' layoutList';
+    config.className = 'layoutList ' + (config.className || '');
 
     config.propagate = config.propagate || true;
 

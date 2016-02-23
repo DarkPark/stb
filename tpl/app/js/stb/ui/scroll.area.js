@@ -39,7 +39,7 @@ function ScrollArea ( config ) {
         if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
     }
 
-    config.className = config.className || '' + ' scrollArea';
+    config.className = ' scrollArea ' + (config.className || '');
 
     config.$body = document.createElement('div');
     config.$body.className = 'body';

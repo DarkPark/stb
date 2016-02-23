@@ -40,7 +40,7 @@ function ValueList ( config ) {
         if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
     }
 
-    config.className = config.className || '' + ' valueList';
+    config.className = 'valueList ' + (config.className || '');
 
     /**
      * Component data

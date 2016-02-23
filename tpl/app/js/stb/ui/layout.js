@@ -48,7 +48,7 @@ function Layout ( config ) {
         if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
     }
 
-    config.className = config.className || '' + ' layout';
+    config.className = 'layout ' + (config.className || '');
 
     Component.call(this, config);
 

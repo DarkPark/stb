@@ -31,7 +31,7 @@ var List = require('../ui/list'),
  */
 function CheckList ( config ) {
 
-    config.className = config.className || '' + ' checkList';
+    config.className = 'checkList ' + (config.className || '');
 
     List.call(this, config);
 
