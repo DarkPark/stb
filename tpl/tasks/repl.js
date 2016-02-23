@@ -13,7 +13,7 @@ var gulp = require('gulp');
 
 // start loop
 gulp.task('repl', function ( done ) {
-    var repl = require('gulp-repl');
+    var repl = require('gulp-repl')();
 
     // no unnecessary prompts
     repl.setPrompt('');
