@@ -46,7 +46,7 @@ function RadioList ( config ) {
      */
     this.$checked = null;
 
-    config.className = config.className || '' + ' radioList';
+    config.className = 'radioList ' + (config.className || '');
 
     List.call(this, config);
 

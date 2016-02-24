@@ -36,6 +36,9 @@ var Component = require('../component'),
  */
 function Layout ( config ) {
 
+    // sanitize
+    config = config || {};
+
     /**
      * Index of focused child component
      * @type {number}
@@ -48,7 +51,13 @@ function Layout ( config ) {
         if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
     }
 
-    config.className = config.className || '' + ' layout';
+    config.className = 'layout ' + (config.className || '');
+
+    /**
+     * Component data
+     * @type {Array}
+     */
+    this.data = [];
 
     Component.call(this, config);
 
@@ -100,6 +109,8 @@ Layout.prototype.init = function ( config ) {
     while (this.$node.firstChild) {
         this.$node.removeChild(this.$node.firstChild);
     }
+
+    this.data = data;
 
     for ( i = 0; i < data.length; i++ ) {
         item = data[i];
