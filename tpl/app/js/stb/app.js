@@ -11,27 +11,27 @@ var Model    = require('./model'),
     keys     = require('./keys'),
     metrics  = require('../../../config/metrics'),
     keyCodes = {},
-    app, key;
+    app, key, linkCSS;
 
 
 require('./shims');
 
 
 // inside frame/iframe
-if ( window.parent && window.parent.gSTB ) {
-    // link to the outer global objects
-    window.dvbManager         = window.parent.dvbManager;
-    window.epgManager         = window.parent.epgManager;
-    window.gSTB               = window.parent.gSTB;
-    window.pvrManager         = window.parent.pvrManager;
-    window.stbDownloadManager = window.parent.stbDownloadManager;
-    window.stbStorage         = window.parent.stbStorage;
-    window.stbUpdate          = window.parent.stbUpdate;
-    window.stbUPnP            = window.parent.stbUPnP;
-    window.stbWebWindow       = window.parent.stbWebWindow;
-    window.stbWindowMgr       = window.parent.stbWindowMgr;
-    window.timeShift          = window.parent.timeShift;
-}
+/*if ( window.parent && window.parent.gSTB ) {
+ // link to the outer global objects
+ window.dvbManager         = window.parent.dvbManager;
+ window.epgManager         = window.parent.epgManager;
+ window.gSTB               = window.parent.gSTB;
+ window.pvrManager         = window.parent.pvrManager;
+ window.stbDownloadManager = window.parent.stbDownloadManager;
+ window.stbStorage         = window.parent.stbStorage;
+ window.stbUpdate          = window.parent.stbUpdate;
+ window.stbUPnP            = window.parent.stbUPnP;
+ window.stbWebWindow       = window.parent.stbWebWindow;
+ window.stbWindowMgr       = window.parent.stbWindowMgr;
+ window.timeShift          = window.parent.timeShift;
+ }*/
 
 
 /**
@@ -92,8 +92,6 @@ app = new Model({
  * @return {boolean} operation status
  */
 app.setScreen = function ( metrics ) {
-    var linkCSS;
-
     if ( DEBUG ) {
         if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
     }
@@ -111,8 +109,6 @@ app.setScreen = function ( metrics ) {
         window.moveTo(0, 0);
         window.resizeTo(metrics.width, metrics.height);
 
-        // get the link tag
-        linkCSS = document.querySelector('link[rel=stylesheet]');
 
         // already was initialized
         if ( linkCSS && linkCSS instanceof HTMLLinkElement ) {
