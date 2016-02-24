@@ -13,11 +13,13 @@ var app     = require('../app'),
     metrics = require('../../../../config/metrics');
 
 
+window.localStorage = window.localStorage || window.stbStorage || (window.parent !== window ? window.parent.localStorage || window.parent.stbStorage : null);
+
 // set global mode
 app.data.debug = true;
 
 // STB device or emulation?
-app.data.host = !!(core.host);
+app.data.host = !!(window.gSTB || (window.parent && (window.parent.gSTB || window.parent.host)));
 
 // platform?
 if ( app.data.host ) {
@@ -26,11 +28,14 @@ if ( app.data.host ) {
 }
 
 // apply screen size, position, margins and styles
-app.setScreen(
-    metrics[storage.get('screen.height')] ||
-    metrics[screen.height] ||
-    metrics[720]
-);
+if ( localStorage && localStorage.getItem('screen.height') ) {
+    app.setScreen(metrics[localStorage.getItem('screen.height')]);
+} else {
+    app.setScreen(
+        metrics[screen.height] ||
+        metrics[720]
+    );
+}
 
 
 // additional dev modules
