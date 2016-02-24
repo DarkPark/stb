@@ -15,7 +15,7 @@ var dom     = require('../dom'),
 
 
 // web inspector is allowed only without SpyJS
-if ( config.active && !storage.get('spyjs.active') ) {
+if ( config.active && (window.localStorage ? !localStorage.getItem('spyjs.active') : true ) ) {
     // load external script
     document.head.appendChild(dom.tag('script', {
         type: 'text/javascript',

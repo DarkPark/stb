@@ -14,8 +14,7 @@ var util    = require('util'),
     app     = require('../app'),
     request = require('../request'),
     dom     = require('../dom'),
-    grid    = require('./grid'),
-    storage = require('./storage');
+    grid    = require('./grid');
 
 
 // additional top-level key handler
@@ -29,7 +28,7 @@ window.addEventListener('load', function developEventListenerLoad () {
 
     grid.init();
 
-    if ( storage.get('grid.active') ) {
+    if ( localStorage && localStorage.get('grid.active') ) {
         grid.show();
     }
 
@@ -82,7 +81,9 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
                 grid.show();
             }
             debug.log('show grid: ' + grid.active, 'red');
-            storage.set('grid.active', grid.active);
+            if ( localStorage ) {
+                localStorage.setItem('grid.active', grid.active);
+            }
             break;
 
         // numpad 6
@@ -97,14 +98,40 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
                 debug.log('SpyJS in this mode is available only on STB devices.', 'red');
             } else {
                 // SpyJS enable/disable
-                if ( !storage.get('spyjs.active') ) {
-                    // try to "ping" proxy server
+                if ( localStorage ) {
+                    if ( !localStorage.getItem('spyjs.active') ) {
+                        // try to "ping" proxy server
+                        request.ajax(document.location.protocol + '//' + location.hostname + ':3546', {
+                            method: 'get',
+                            onload: function () {
+                                // proxy seems ready
+                                //isSpyJs = true;
+                                localStorage.setItem('spyjs.active', true);
+                                debug.log('SpyJS: enable', 'red');
+                                debug.log('SpyJS: set proxy to ' + location.hostname + ':' + 3546);
+
+                                gSTB.SetWebProxy(location.hostname, 3546, '', '', '');
+                                location.reload();
+                            },
+                            onerror: function () {
+                                debug.log('SpyJS: no connection (check SpyJS is started on the server)', 'red');
+                            }
+                        });
+                    } else {
+                        if ( localStorage ) {
+                            localStorage.setItem('spyjs.active', false);
+                        }
+                        gSTB.ResetWebProxy();
+                        debug.log('SpyJS: disable', 'red');
+                        location.reload();
+                    }
+                } else {
+                    // enable always if no localStorage (can't understand running or not)
                     request.ajax(document.location.protocol + '//' + location.hostname + ':3546', {
                         method: 'get',
                         onload: function () {
                             // proxy seems ready
                             //isSpyJs = true;
-                            storage.set('spyjs.active', true);
                             debug.log('SpyJS: enable', 'red');
                             debug.log('SpyJS: set proxy to ' + location.hostname + ':' + 3546);
 
@@ -115,12 +142,6 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
                             debug.log('SpyJS: no connection (check SpyJS is started on the server)', 'red');
                         }
                     });
-                } else {
-                    //isSpyJs = false;
-                    storage.set('spyjs.active', false);
-                    gSTB.ResetWebProxy();
-                    debug.log('SpyJS: disable', 'red');
-                    location.reload();
                 }
             }
             break;
@@ -170,24 +191,26 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
  */
 function changeScreenDimension ( width, height ) {
     // check if it's necessary
-    if ( Number(storage.get('screen.height')) !== height ) {
-        // yes
-        debug.log(util.format('switch to %sx%s', width, height), 'red');
+    if ( localStorage ) {
+        if ( Number(localStorage.getItem('screen.height')) !== height ) {
+            // yes
+            debug.log(util.format('switch to %sx%s', width, height), 'red');
 
-        // save in case of document reload
-        storage.set('screen.height', height);
-        storage.set('screen.width',  width);
+            // save in case of document reload
+            localStorage.setItem('screen.height', height);
+            localStorage.setItem('screen.width',  width);
 
-        // hide content to avoid raw HTML blinking
-        document.body.style.display = 'none';
+            // hide content to avoid raw HTML blinking
+            document.body.style.display = 'none';
 
-        // apply new metrics
-        app.setScreen(require('../../../../config/metrics')[height]);
+            // apply new metrics
+            app.setScreen(require('../../../../config/metrics')[height]);
 
-        // restore visibility
-        document.body.style.display = '';
-    } else {
-        // not really
-        debug.log('no resolution change: new and current values are identical', 'red');
+            // restore visibility
+            document.body.style.display = '';
+        } else {
+            // not really
+            debug.log('no resolution change: new and current values are identical', 'red');
+        }
     }
 }
