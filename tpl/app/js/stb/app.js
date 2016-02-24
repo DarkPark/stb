@@ -16,8 +16,6 @@ var Model    = require('./model'),
 
 require('./shims');
 
-window.localStorage = window.localStorage || window.stbStorage || (window.parent !== window ? window.parent.localStorage || window.parent.stbStorage : null);
-
 // inside frame/iframe
 /*if ( window.parent && window.parent.gSTB ) {
  // link to the outer global objects
