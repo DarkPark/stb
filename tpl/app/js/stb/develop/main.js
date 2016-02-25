@@ -9,7 +9,6 @@
 'use strict';
 
 var app     = require('../app'),
-    storage = require('./storage'),
     metrics = require('../../../../config/metrics');
 
 

@@ -10,7 +10,6 @@
 
 var dom     = require('../dom'),
     util    = require('util'),
-    storage = require('./storage'),
     config  = require('../../../../config/weinre');
 
 
