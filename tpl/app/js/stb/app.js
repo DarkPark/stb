@@ -108,7 +108,7 @@ app.setScreen = function ( metrics ) {
         linkCSS = document.createElement('link');
         linkCSS.rel  = 'stylesheet';
         linkCSS.href = 'css/' + (DEBUG ? 'develop.' : 'release.') + metrics.height + '.css?' + +new Date();
-        document.head.insertBefore(linkCSS, document.head.childNodes[0]);
+        document.head.appendChild(linkCSS);
 
         // provide global access
         this.data.metrics = metrics;
