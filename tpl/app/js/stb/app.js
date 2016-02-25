@@ -16,7 +16,9 @@ var Model    = require('./model'),
 
 require('./shims');
 
-window.localStorage = window.localStorage || window.parent.localStorage || window.parent.stbStorage;
+// app inside sandbox iframe
+window.localStorage = window.parent.localStorage || window.parent.stbStorage;
+window.core = window.parent.core;
 
 // inside frame/iframe
 /*if ( window.parent && window.parent.gSTB ) {
