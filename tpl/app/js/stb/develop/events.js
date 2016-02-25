@@ -28,7 +28,7 @@ window.addEventListener('load', function developEventListenerLoad () {
 
     grid.init();
 
-    if ( localStorage && localStorage.get('grid.active') ) {
+    if ( localStorage && localStorage.getItem('grid.active') ) {
         grid.show();
     }
 
