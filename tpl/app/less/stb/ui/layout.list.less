@@ -1,0 +1,33 @@
+.component.list.layoutList {
+    >.item {
+        >.layout {
+            >.icon {
+                width: unit(@panelTitleHeight, px);
+                &:before {
+                    display: block;
+                    font-family: 'icons';
+                    content: '1';
+                    text-align: center;
+                    width: 100%;
+                    height: 100%;
+                    // TODO: fix font size after font rework
+                }
+            }
+            >.number {
+                width: unit(@panelTitleHeight, px);
+            }
+            // icons here
+            >.icon {
+                &.noFavorite:before {
+                    content: 'D';
+                }
+                &.favorite:before {
+                    content: 'C';
+                }
+                &.search:before {
+                    content: 'M';
+                }
+            }
+        }
+    }
+}
