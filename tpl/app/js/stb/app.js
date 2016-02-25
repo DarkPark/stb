@@ -20,21 +20,6 @@ require('./shims');
 window.localStorage = window.parent.localStorage || window.parent.stbStorage;
 window.core = window.parent.core;
 
-// inside frame/iframe
-/*if ( window.parent && window.parent.gSTB ) {
- // link to the outer global objects
- window.dvbManager         = window.parent.dvbManager;
- window.epgManager         = window.parent.epgManager;
- window.gSTB               = window.parent.gSTB;
- window.pvrManager         = window.parent.pvrManager;
- window.stbDownloadManager = window.parent.stbDownloadManager;
- window.stbStorage         = window.parent.stbStorage;
- window.stbUpdate          = window.parent.stbUpdate;
- window.stbUPnP            = window.parent.stbUPnP;
- window.stbWebWindow       = window.parent.stbWebWindow;
- window.stbWindowMgr       = window.parent.stbWindowMgr;
- window.timeShift          = window.parent.timeShift;
- }*/
 
 
 /**
@@ -123,7 +108,7 @@ app.setScreen = function ( metrics ) {
         linkCSS = document.createElement('link');
         linkCSS.rel  = 'stylesheet';
         linkCSS.href = 'css/' + (DEBUG ? 'develop.' : 'release.') + metrics.height + '.css?' + +new Date();
-        document.head.appendChild(linkCSS);
+        document.head.insertBefore(linkCSS, document.head.childNodes[0]);
 
         // provide global access
         this.data.metrics = metrics;
