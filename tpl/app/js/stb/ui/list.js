@@ -353,15 +353,6 @@ List.prototype.init = function ( config ) {
     // apply ScrollBar link
     if ( config.scroll ) { this.scroll = config.scroll; }
 
-    // apply list of items
-    if ( config.data ) {
-        if ( DEBUG ) {
-            if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
-        }
-        // prepare user data
-        this.data = normalize(config.data);
-    }
-
     // custom render method
     if ( config.render ) {
         if ( DEBUG ) {
@@ -410,6 +401,29 @@ List.prototype.init = function ( config ) {
     // reset current view window position
     this.viewIndex = null;
 
+    if ( config.data && config.data.length ) {
+        this.setData(config);
+    }
+};
+
+/**
+ * Set data and render inner structures and HTML.
+ *
+ * @param {Object} config init parameters (subset of constructor config params)
+ */
+List.prototype.setData = function ( config ) {
+    // apply list of items
+    if ( config.data ) {
+        if ( DEBUG ) {
+            if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
+        }
+        // prepare user data
+        this.data = normalize(config.data);
+    }
+
+    // reset current view window position
+    this.viewIndex = null;
+
     // set focus item
     if ( config.focusIndex !== undefined ) {
         if ( DEBUG ) {
@@ -421,11 +435,13 @@ List.prototype.init = function ( config ) {
         // jump to the necessary item
         this.focusIndex(config.focusIndex);
     } else {
+        if ( this.$focusItem ) {
+            this.blurItem(this.$focusItem);
+        }
         // go to the first page
         this.renderView(config.viewIndex || 0);
     }
 };
-
 
 /**
  * Shift the visible view window event.
@@ -740,11 +756,52 @@ List.prototype.focusItem = function ( $item ) {
 
         return true;
     }
-
     // nothing was done
     return false;
 };
 
+/**
+ * Highlight the given DOM element as blur.
+ * Remove focus from the item and generate associated event.
+ *
+ * @param {Node|Element} $item element to focus
+ *
+ * @return {boolean} operation status
+ *
+ * @fires module:stb/ui/list~List#focus:item
+ * @fires module:stb/ui/list~List#blur:item
+ */
+List.prototype.blurItem = function ( $item ) {
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+    }
+
+    // different element
+    if ( $item ) {
+        if ( $item === this.$focusItem ) {
+            this.$focusItem = null;
+        }
+
+        $item.classList.remove('focus');
+
+        // there are some listeners
+        if ( this.events['blur:item'] ) {
+            /**
+             * Remove focus from an element.
+             *
+             * @event module:stb/ui/list~List#blur:item
+             *
+             * @type {Object}
+             * @property {Element} $item previously focused HTML element
+             */
+            this.emit('blur:item', {$item: $item});
+        }
+        return true;
+    }
+
+    // nothing was done
+    return false;
+};
 
 /**
  * Set the given item focused by item index.
