@@ -353,15 +353,6 @@ List.prototype.init = function ( config ) {
     // apply ScrollBar link
     if ( config.scroll ) { this.scroll = config.scroll; }
 
-    // apply list of items
-    if ( config.data ) {
-        if ( DEBUG ) {
-            if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
-        }
-        // prepare user data
-        this.data = normalize(config.data);
-    }
-
     // custom render method
     if ( config.render ) {
         if ( DEBUG ) {
@@ -410,6 +401,26 @@ List.prototype.init = function ( config ) {
     // reset current view window position
     this.viewIndex = null;
 
+    if ( config.data && config.data.length ) {
+        this.setData(config);
+    }
+};
+
+/**
+ * Set data and render inner structures and HTML.
+ *
+ * @param {Object} config init parameters (subset of constructor config params)
+ */
+List.prototype.setData = function ( config ) {
+    // apply list of items
+    if ( config.data ) {
+        if ( DEBUG ) {
+            if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
+        }
+        // prepare user data
+        this.data = normalize(config.data);
+    }
+
     // set focus item
     if ( config.focusIndex !== undefined ) {
         if ( DEBUG ) {
@@ -425,7 +436,6 @@ List.prototype.init = function ( config ) {
         this.renderView(config.viewIndex || 0);
     }
 };
-
 
 /**
  * Shift the visible view window event.
