@@ -429,7 +429,7 @@ List.prototype.setData = function ( config ) {
         if ( DEBUG ) {
             if ( Number(config.focusIndex) !== config.focusIndex ) { throw new Error(__filename + ': config.focusIndex must be a number'); }
             if ( config.focusIndex < 0 ) { throw new Error(__filename + ': config.focusIndex should be positive'); }
-            if ( config.focusIndex > this.data.length - 1 ) { throw new Error(__filename + ': config.focusIndex should be less than data size'); }
+            //if ( config.focusIndex > this.data.length - 1 ) { throw new Error(__filename + ': config.focusIndex should be less than data size'); }
         }
 
         // jump to the necessary item
@@ -470,7 +470,7 @@ List.prototype.renderView = function ( index ) {
         if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
         if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
         if ( index < 0 ) { throw new Error(__filename + ': index should be more than zero'); }
-        if ( index >= this.data.length ) { throw new Error(__filename + ': index should be less than data size'); }
+        //if ( index >= this.data.length ) { throw new Error(__filename + ': index should be less than data size'); }
     }
 
     // has the view window position changed
