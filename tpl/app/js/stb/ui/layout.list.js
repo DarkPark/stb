@@ -25,10 +25,8 @@ var List = require('./list'),
  *         size: 7,
  *         focusIndex: 0,
  *         data: [
- *             {
- *             data: [
  *                 {
- *                     data: [
+ *                     items: [
  *                         {
  *                             className: 'star'
  *                         },
@@ -39,17 +37,20 @@ var List = require('./list'),
  *                     }
  *                 },
  *                 {
- *                     data: [
+ *                     items: [
  *                         'Hello world',
  *                         {
  *                             value: 'hi',
  *                             className: 'status'
  *                         }
  *                     ],
+ *                     value:{
+ *                         uri: 'http://55.55.55.55/some'
+ *                     },
  *                     click: someHandler
  *                 },
  *                 {
- *                     data: [
+ *                     items: [
  *                         {
  *                             className: 'big',
  *                             value: ' Some'
@@ -60,7 +61,7 @@ var List = require('./list'),
  *                     ]
  *                 },
  *                 {
- *                     data: [
+ *                     items: [
  *                         new Button({value: 'Ok'}),
  *                         new Button({value: 'Cancel'}),
  *                         new Button({value: 'Exit'})
@@ -106,7 +107,7 @@ function LayoutList ( config ) {
         }
         // do click callback if it present
         if ( self.handlers[event.$item.index] ) {
-            self.handlers[event.$item.index]();
+            self.handlers[event.$item.index](event.$item);
         }
     });
 }
@@ -115,7 +116,7 @@ function LayoutList ( config ) {
 LayoutList.prototype = Object.create(List.prototype);
 LayoutList.prototype.constructor = LayoutList;
 
-
+/*eslint id-length:0*/
 /**
  * Default render function
  *
@@ -126,10 +127,10 @@ LayoutList.prototype.renderItemDefault = function ( $item, config ) {
     var layout, i;
 
     if ( $item.ready && this.fixedData ) {
-        for ( i = 0; i < config.data.length; i++ ) {
-            if ( typeof config.data[i].value === 'string' ) {
-                $item.layout.$node.childNodes[i].innerText = config.data[i].value;
-                $item.layout.$node.childNodes[i].className = config.data[i].className;
+        for ( i = 0; i < config.children.length; i++ ) {
+            if ( typeof config.children[i].value === 'string' ) {
+                $item.layout.$node.childNodes[i].innerText = config.children[i].value;
+                $item.layout.$node.childNodes[i].className = config.children[i].className;
             }
         }
     } else {
@@ -140,7 +141,7 @@ LayoutList.prototype.renderItemDefault = function ( $item, config ) {
 
         layout = new Layout({
             focusable:false,
-            data:config.data
+            data:config.items
         });
 
         $item.appendChild(layout.$node);
@@ -160,8 +161,7 @@ LayoutList.prototype.renderItemDefault = function ( $item, config ) {
         // item is rendered
         $item.ready = true;
     }
-
-
+    $item.value = config.value || {};
 
 };
 
