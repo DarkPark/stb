@@ -11,6 +11,7 @@
                     width: 100%;
                     height: 100%;
                     // TODO: fix font size after font rework
+                    font-size: unit(@fontSize * 1.5, px);
                 }
             }
             >.number {
@@ -26,6 +27,12 @@
                 }
                 &.search:before {
                     content: 'M';
+                }
+                &.categories:before {
+                    content: 'J';
+                }
+                &.byNumber:before {
+                    content: 'L';
                 }
             }
         }

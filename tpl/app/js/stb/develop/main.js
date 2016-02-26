@@ -26,6 +26,13 @@ if ( app.data.host ) {
     require('./weinre');
 }
 
+// inside frame/iframe
+if ( window.parent && window.parent.gSTB ) {
+    // link to the outer gSTB global object
+    // only for gSTB.Debug
+    window.gSTB = window.parent.gSTB;
+}
+
 // apply screen size, position, margins and styles
 if ( localStorage && localStorage.getItem('screen.height') ) {
     app.setScreen(metrics[localStorage.getItem('screen.height')]);

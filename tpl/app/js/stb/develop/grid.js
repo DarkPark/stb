@@ -8,7 +8,18 @@
 
 'use strict';
 
-var data    = require('../app').data;
+var data    = require('../app').data,
+    points = (window.localStorage && localStorage.getItem('grid.points'));
+
+if ( points ) {
+    try {
+        points = JSON.parse(points);
+    } catch ( error ) {
+        points = [];
+    }
+} else {
+    points = [];
+}
 
 
 // public
@@ -35,7 +46,7 @@ module.exports = window.grid = {
     cursorY: 0,
 
     // list of click points
-    points: (window.localStorage && localStorage.getItem('grid.points') ? localStorage.getItem('grid.points') : []) || [],
+    points: points,
 
     // points to snap
     snaps: [],
@@ -159,7 +170,7 @@ module.exports = window.grid = {
         this.repaint();
         this.drawPointer();
         if ( localStorage ) {
-            localStorage.setItem('grid.points', this.points);
+            localStorage.setItem('grid.points', JSON.stringify(this.points));
         }
     },
 
