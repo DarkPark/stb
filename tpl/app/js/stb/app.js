@@ -389,23 +389,31 @@ app.defaultEvents = {
      */
     keydown: function ( event ) {
         var page = router.current,
-            activeComponent;
+            activeComponent,
+            eventData = { // native event won't work in desktop browser because of operations with code field
+                keyCode: event.keyCode,
+                stop: event.stop,
+                shiftKey: event.shiftKey,
+                altKey: event.altKey,
+                type: event.type,
+                native: event
+            };
 
         if ( DEBUG ) {
             if ( !page ) { throw new Error(__filename + ': app should have at least one page'); }
         }
 
         // filter phantoms
-        if ( event.keyCode === 0 ) { return; }
+        if ( eventData.keyCode === 0 ) { return; }
 
         // combined key code
-        event.code = event.keyCode;
+        eventData.code = eventData.keyCode;
 
         // apply key modifiers
-        if ( event.shiftKey ) { event.code += 1000; }
-        if ( event.altKey )   { event.code += 2000; }
+        if ( eventData.shiftKey ) { eventData.code += 1000; }
+        if ( eventData.altKey )   { eventData.code += 2000; }
 
-        debug.event(event);
+        debug.event(eventData);
 
         // page.activeComponent can be set to null in event handles
         activeComponent = page.activeComponent;
@@ -413,42 +421,42 @@ app.defaultEvents = {
         // current component handler
         if ( activeComponent && activeComponent !== page ) {
             // component is available and not page itself
-            if ( activeComponent.events[event.type] ) {
+            if ( activeComponent.events[eventData.type] ) {
                 // there are some listeners
-                activeComponent.emit(event.type, event);
+                activeComponent.emit(eventData.type, eventData);
             }
 
             // bubbling
             if (
-                !event.stop &&
+                !eventData.stop &&
                 activeComponent.propagate &&
                 activeComponent.parent &&
-                activeComponent.parent.events[event.type]
+                activeComponent.parent.events[eventData.type]
             ) {
-                activeComponent.parent.emit(event.type, event);
+                activeComponent.parent.emit(eventData.type, eventData);
             }
         }
 
         // page handler
-        if ( !event.stop ) {
+        if ( !eventData.stop ) {
             // not prevented
-            if ( page.events[event.type] ) {
+            if ( page.events[eventData.type] ) {
                 // there are some listeners
-                page.emit(event.type, event);
+                page.emit(eventData.type, eventData);
             }
 
             // global app handler
-            if ( !event.stop ) {
+            if ( !eventData.stop ) {
                 // not prevented
-                if ( app.events[event.type] ) {
+                if ( app.events[eventData.type] ) {
                     // there are some listeners
-                    app.emit(event.type, event);
+                    app.emit(eventData.type, eventData);
                 }
             }
         }
 
         // suppress non-printable keys in stb device (not in your browser)
-        if ( app.data.host && keyCodes[event.code] ) {
+        if ( app.data.host && keyCodes[eventData.code] ) {
             event.preventDefault();
         }
     },
