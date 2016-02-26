@@ -1,0 +1,93 @@
+.component.panelEx {
+    width:unit(@panelWidth, px);
+    height: unit(@panelHeight, px);
+    box-sizing: border-box;
+    padding: 0;
+    display: inline-block;
+    position: absolute;
+    z-index: 0;
+    >.title {
+        height: unit(@panelTitleHeight, px);
+        line-height: unit(@panelTitleHeight, px);
+        position: relative;
+        padding-left: unit(@safePadding, px);
+        text-transform: uppercase;
+        background-repeat: repeat-x;
+    }
+    .list .item{
+        height: unit(@panelTitleHeight, px);
+        line-height: unit(@panelTitleHeight, px);
+    }
+    &.main {
+        width: unit(@panelMainWidth, px);
+        top: unit(@mainPanelTop, px);
+        left: unit(@mainPanelLeft, px);
+        height: unit(@panelMainHeight, px);
+        z-index : 2;
+        .list .item{
+            height: unit(@panelMainTitleHeight, px);
+            line-height: unit(@panelMainTitleHeight, px);
+        }
+        >.title {
+            height: unit(@panelMainTitleHeight, px);
+            line-height: unit(@panelMainTitleHeight, px);
+            font-size: unit(@panelMainTitleFontSize, px)
+        }
+        &.size2 {
+            width: unit(@panelMain2xWidth, px);
+        }
+        &.size3 {
+            width: unit(@panelMain2xWidth, px);
+        }
+    }
+
+    &.left {
+        top: unit(@leftPanelTop, px);
+        left: unit(@pagePadding, px);
+    }
+    &.right {
+        top: unit(@leftPanelTop, px);
+        right: unit(@pagePadding, px);
+    }
+
+    >.overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    &.active {
+        z-index: 3;
+        >.overlay {
+            visibility: hidden;
+        }
+    }
+    >.shadow {
+        width: unit(@panelShadowWidth, px);
+        position: absolute;
+        top: 0;
+        z-index: -1;
+        display: none;
+        &.left {
+            left: unit(-@panelShadowWidth, px);
+        }
+        &.right {
+            right: unit(-@panelShadowWidth, px);
+        }
+    }
+
+    &.leftShadow {
+        >.shadow.left {
+            display: block;
+        }
+    }
+    &.rightShadow {
+        >.shadow.right {
+            display: block;
+        }
+    }
+    &.active >.shadow {
+        z-index: 1;
+    }
+}
