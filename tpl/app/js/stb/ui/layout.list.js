@@ -127,10 +127,10 @@ LayoutList.prototype.renderItemDefault = function ( $item, config ) {
     var layout, i;
 
     if ( $item.ready && this.fixedData ) {
-        for ( i = 0; i < config.children.length; i++ ) {
-            if ( typeof config.children[i].value === 'string' ) {
-                $item.layout.$node.childNodes[i].innerText = config.children[i].value;
-                $item.layout.$node.childNodes[i].className = config.children[i].className;
+        for ( i = 0; i < config.items.length; i++ ) {
+            if ( typeof config.items[i].value === 'string' ) {
+                $item.layout.$node.childNodes[i].innerText = config.items[i].value;
+                $item.layout.$node.childNodes[i].className = config.items[i].className;
             }
         }
     } else {
