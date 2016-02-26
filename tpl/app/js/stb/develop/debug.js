@@ -43,7 +43,7 @@ require('tty-colors');
  * @param {string} message data to output and send
  */
 function log ( message ) {
-    window.parent.gSTB.Debug(message);
+    gSTB.Debug(message);
 
     if ( config.active ) {
         buffer.push(message);
