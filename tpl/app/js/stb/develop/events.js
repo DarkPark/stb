@@ -82,7 +82,7 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
             }
             debug.log('show grid: ' + grid.active, 'red');
             if ( localStorage ) {
-                localStorage.setItem('grid.active', grid.active);
+                localStorage.setItem('grid.active', grid.active || '');
             }
             break;
 
@@ -119,7 +119,7 @@ window.addEventListener('keydown', function developEventListenerKeydown ( event 
                         });
                     } else {
                         if ( localStorage ) {
-                            localStorage.setItem('spyjs.active', false);
+                            localStorage.setItem('spyjs.active', '');
                         }
                         gSTB.ResetWebProxy();
                         debug.log('SpyJS: disable', 'red');
