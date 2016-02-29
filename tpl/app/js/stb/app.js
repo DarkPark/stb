@@ -574,6 +574,43 @@ for ( key in app.defaultEvents ) {
 }
 
 
+/**
+ * Show app.
+ */
+app.show = function () {
+    if ( this.events['show'] ) {
+        this.emit('show');
+    }
+
+    core.call('show');
+}
+
+
+/**
+ * Hide app.
+ */
+app.hide = function () {
+    if ( this.events['hide'] ) {
+        this.emit('hide');
+    }
+
+    core.call('hide');
+}
+
+
+/**
+ * Exit app.
+ * Destroy all app.
+ */
+app.exit = function () {
+    if ( this.events['hide'] ) {
+        this.emit('hide');
+    }
+
+    core.call('exit');
+}
+
+
 // Creating stbEvent instance
 window.stbEvent = {};
 
