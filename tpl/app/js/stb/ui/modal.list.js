@@ -17,39 +17,38 @@ var Component = require('../component'),
  * @param {Object} [config={}] init parameters (all inherited from the parent)
  *
  * @example
- *
- * main = new Panel({
- *             title:'Some Panel',
- *             className:'aaa',
- *             size: 7,
- *             focusIndex: 0,
- *             data: [
- *                 {
- *                     items: [
- *                         {
- *                             className: 'star'
- *                         },
- *                         'Some text'
- *                     ],
- *                     click: function () {
- *                         // do something
- *                     }
- *                 },
- *                 {
- *                     items: [
- *                         'Hello world',
- *                         {
- *                             value: 'hi',
- *                             className: 'status'
- *                         }
- *                     ],
- *                     value:{
- *                         uri: 'http://55.55.55.55/some'
- *                     },
- *                     click: someHandler
- *                 }
- *             ]
- *         });
+ *  var main = new ModalList({
+ *      title: 'Some Panel',
+ *      className: 'aaa',
+ *      size: 7,
+ *      focusIndex: 0,
+ *      data: [
+ *          {
+ *              items: [
+ *                  {
+ *                      className: 'star'
+ *                  },
+ *                  'Some text'
+ *              ],
+ *              click: function () {
+ *                  // do something
+ *              }
+ *          },
+ *          {
+ *              items: [
+ *                  'Hello world',
+ *                  {
+ *                      value: 'hi',
+ *                      className: 'status'
+ *                  }
+ *              ],
+ *              value: {
+ *                  uri: 'http://55.55.55.55/some'
+ *              },
+ *              click: someHandler
+ *          }
+ *      ]
+ * });
  */
 function ModalList ( config ) {
     var self = this;
@@ -72,7 +71,7 @@ function ModalList ( config ) {
     }
 
     // set default className if classList property empty or undefined
-    config.className = 'ModalList ' + (config.className || '');
+    config.className = 'modalList ' + (config.className || '');
 
     config.$body = document.createElement('div');
     config.$body.className = 'body';
@@ -111,6 +110,7 @@ function ModalList ( config ) {
     });
 }
 
+
 // inheritance
 ModalList.prototype = Object.create(Component.prototype);
 ModalList.prototype.constructor = ModalList;
@@ -127,15 +127,6 @@ ModalList.prototype.defaultEvents = {
             this.children[0].focus();
         }
     }
-};
-
-
-/**
- * Redefine default component focus to set panel as active even when give focus to children components
- */
-ModalList.prototype.focus = function () {
-    Component.prototype.focus.call(this);
-    this.$node.classList.add('active');
 };
 
 
