@@ -72,7 +72,7 @@ function ModalList ( config ) {
     }
 
     // set default className if classList property empty or undefined
-    config.className = 'ModalList panelEx ' + (config.className || '');
+    config.className = 'ModalList ' + (config.className || '');
 
     config.$body = document.createElement('div');
     config.$body.className = 'body';
@@ -80,15 +80,22 @@ function ModalList ( config ) {
     // parent constructor call
     Component.call(this, config);
 
+    // add table-cell wrapper
+    this.$node.appendChild(this.$wrapperCell = document.createElement('div'));
+    this.$wrapperCell.className = 'wrapperCell';
+    this.$wrapperCell.appendChild(this.$wrapper = document.createElement('div'));
+    this.$wrapper.className = 'wrapper';
+
     // add title to panel
     if ( config.title ) {
         this.$title = document.createElement('div');
         this.$title.className = 'title';
         this.$title.innerText = config.title;
-        this.$node.appendChild(this.$title);
+        this.$wrapper.appendChild(this.$title);
     }
 
-    this.$node.appendChild(this.$body);
+    // add table-cell wrapper
+    this.$wrapper.appendChild(this.$body);
 
     this.layoutList = new LayoutList({
         focusIndex: config.focusIndex || 0,

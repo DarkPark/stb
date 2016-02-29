@@ -1,0 +1,45 @@
+.component.ModalList {
+    width:unit(@availWidth, px);
+    height:unit(@availHeight, px);
+    position:absolute;
+    left:unit(@safePadding, px);
+    top:unit(@safePadding, px);
+    display:table;
+
+    > div.wrapperCell {
+        width:unit(@availWidth, px);
+        height:unit(@availHeight, px);
+        display:table-cell;
+        vertical-align:middle;
+
+        > div.wrapper {
+            height:auto;
+            width:unit(@panelMainWidth, px);  /*width:unit(@panelMain2xWidth, px);*/
+            margin:auto;
+            box-sizing:border-box;
+            padding:0;
+
+            .list .item {
+                height:unit(@panelMainTitleHeight, px);
+                line-height:unit(@panelMainTitleHeight, px);
+            }
+            > .title {
+                height:unit(@panelMainTitleHeight, px);
+                line-height:unit(@panelMainTitleHeight, px);
+                font-size:unit(@panelMainTitleFontSize, px)
+            }
+            > .title {
+                height:unit(@panelTitleHeight, px);
+                line-height:unit(@panelTitleHeight, px);
+                position:relative;
+                padding-left:unit(@safePadding, px);
+                text-transform:uppercase;
+                background-repeat:repeat-x;
+            }
+            .list .item {
+                height:unit(@panelTitleHeight, px);
+                line-height:unit(@panelTitleHeight, px);
+            }
+        }
+    }
+}
