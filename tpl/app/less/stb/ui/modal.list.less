@@ -6,6 +6,10 @@
     top:0;
     display:table;
 
+    &.active > div.wrapperCell > div.wrapper > .overlay {
+        visibility:hidden;
+    }
+
     > div.wrapperCell {
         width:unit(@width, px);
         height:unit(@height, px);
@@ -14,10 +18,19 @@
 
         > div.wrapper {
             height:auto;
-            width:unit(@panelMainWidth, px);  /*width:unit(@panelMain2xWidth, px);*/
+            width:unit(@panelMainWidth, px);
             margin:auto;
             box-sizing:border-box;
             padding:0;
+
+            .overlay {
+                width:100%;
+                height:100%;
+                position:absolute;
+                top:0;
+                left:0;
+                background:rgba(9, 9, 9, 0.6);
+            }
 
             .list .item {
                 height:unit(@panelMainTitleHeight, px);
