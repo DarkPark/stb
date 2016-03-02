@@ -19,6 +19,7 @@ var Component = require('../component');
  * @param {Object} [config.title] message title
  * @param {Object} [config.className] message classname
  * @param {Object} [config.icon] icon at header
+ * @param {Object} [config.visible] visibility flag
  * @param {Object} [config.children] content (inherited from the parent)
  *
  *
@@ -46,7 +47,8 @@ function ModalMessage ( config ) {
 
     // set default className if classList property empty or undefined
     config.className = 'modalMessage ' + (config.className || '');
-
+    // hide by default
+    config.visible = config.visible || false;
     // create centered div
     config.$body = document.createElement('div');
     config.$body.className = 'body';
