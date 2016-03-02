@@ -53,7 +53,7 @@ function RadioList ( config ) {
     this.addListener('click:item', function ( event ) {
         var item = event.$item;
 
-        item.checkBox.set(!item.checkBox.value);
+        item.checkBox.set(true);
         item.state = item.checkBox.value;
     });
 
