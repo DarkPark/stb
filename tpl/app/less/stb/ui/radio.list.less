@@ -2,6 +2,14 @@
     > .item {
         .checkBoxWrapper > .component.checkBox {
             display : block;
+            &:after {
+                font-family: 'icons';
+                display: block;
+                content: 'W';
+            }
+            &.checked:after {
+                content: 'X';
+            }
         }
     }
 }
