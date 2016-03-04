@@ -31,6 +31,7 @@ var List = require('../ui/list'),
  *     });
  */
 function RadioList ( config ) {
+    var self = this;
 
     /**
      * Checkbox group name
@@ -55,6 +56,22 @@ function RadioList ( config ) {
 
         item.checkBox.set(true);
         item.state = item.checkBox.value;
+
+        /**
+         * Select element from list.
+         *
+         * @event
+         *
+         * @type {Object}
+         * @property {Element} previous selected element
+         * @property {Element} current selected element
+         */
+        self.emit('select', {
+            $last: self.$checked,
+            $curr: item
+        });
+
+        self.$checked = item;
     });
 
 }
