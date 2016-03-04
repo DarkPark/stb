@@ -503,6 +503,7 @@ List.prototype.renderView = function ( index ) {
                 // nothing to render
                 $item.data = $item.index = undefined;
                 $item.innerHTML = '&nbsp;';
+                $item.ready = false;
             }
             index++;
         }
@@ -814,7 +815,7 @@ List.prototype.focusIndex = function ( index ) {
     if ( DEBUG ) {
         if ( Number(index) !== index ) { throw new Error(__filename + ': index must be a number'); }
         if ( index < 0 ) { throw new Error(__filename + ': index should be positive'); }
-        if ( index > this.data.length - 1 ) { throw new Error(__filename + ': index should be less than data size'); }
+        //if ( index > this.data.length - 1 ) { throw new Error(__filename + ': index should be less than data size'); }
     }
 
     // determine direction
