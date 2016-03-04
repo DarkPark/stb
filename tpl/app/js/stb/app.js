@@ -11,7 +11,7 @@ var Model    = require('./model'),
     keys     = require('./keys'),
     metrics  = require('../../../config/metrics'),
     keyCodes = {},
-    app, key, linkCSS;
+    app, key, linkCSS, linkThemeCSS;
 
 
 require('./shims');
@@ -118,6 +118,17 @@ app.setScreen = function ( metrics ) {
             // remove all current CSS styles
             document.head.removeChild(linkCSS);
         }
+
+        // already was initialized
+        if ( linkThemeCSS && linkThemeCSS instanceof HTMLLinkElement ) {
+            // remove all current CSS styles
+            document.head.removeChild(linkThemeCSS);
+        }
+
+        linkThemeCSS = document.createElement('link');
+        linkThemeCSS.rel  = 'stylesheet';
+        linkThemeCSS.href = core.theme.path + metrics.height + '.css?' + +new Date();
+        document.head.appendChild(linkThemeCSS);
 
         // load CSS file base on resolution
         linkCSS = document.createElement('link');
@@ -583,7 +594,7 @@ app.show = function () {
     }
 
     core.call('show');
-}
+};
 
 
 /**
@@ -595,7 +606,7 @@ app.hide = function () {
     }
 
     core.call('hide');
-}
+};
 
 
 /**
@@ -608,7 +619,7 @@ app.exit = function () {
     }
 
     core.call('exit');
-}
+};
 
 
 // Creating stbEvent instance
