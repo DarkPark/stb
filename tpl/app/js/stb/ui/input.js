@@ -393,6 +393,7 @@ Input.prototype.setValue = function ( value ) {
         this.$line.innerText = '';
         this.$line.appendChild(this.$caret);
         this.$line.appendChild(this.$placeholder);
+        this.$caret.index = 0;
     }
 
     // there are some listeners
