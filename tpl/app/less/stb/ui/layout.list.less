@@ -3,38 +3,26 @@
         >.layout {
             >.icon {
                 width: unit(@panelTitleHeight, px);
-                &:before {
-                    display: block;
-                    font-family: 'icons';
-                    content: '1';
-                    text-align: center;
-                    width: 100%;
-                    height: 100%;
-                    // TODO: fix font size after font rework
-                    font-size: unit(@fontSize * 1.5, px);
+                font-family: 'icons';
+                text-align: center;
+                font-size: unit(@fontSize * 1.6, px);
+                &.yellow {
+                    color: #FEC500;
+                }
+                &.red {
+                    color: #FF0000;
+                }
+                &.green {
+                    color: #04E900;
+                }
+                &.blue {
+                    color:#1CACFF;
                 }
             }
             >.number {
                 width: unit(@panelTitleHeight, px);
             }
-            // icons here
-            >.icon {
-                &.noFavorite:before {
-                    content: 'D';
-                }
-                &.favorite:before {
-                    content: 'C';
-                }
-                &.search:before {
-                    content: 'M';
-                }
-                &.categories:before {
-                    content: 'J';
-                }
-                &.byNumber:before {
-                    content: 'L';
-                }
-            }
+
         }
     }
 }
