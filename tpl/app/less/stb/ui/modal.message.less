@@ -24,7 +24,7 @@
             min-width:unit(@panelWidth * 0.75, px);
             max-height:80%;
 
-            > div.header {
+            & > div.header {
                 height:unit(@panelMainTitleHeight, px);
                 line-height:unit(@panelMainTitleHeight, px);
                 font-size:unit(@panelMainTitleFontSize, px);
@@ -46,7 +46,18 @@
                 }
 
             }
-            > div.body > .component.list .item { padding:0 unit(@safePadding, px); }
+            & > div.body > .component.list .item {
+                height:unit(@panelTitleHeight, px);
+                line-height:unit(@panelTitleHeight, px);
+                text-align:left;
+                padding:0;
+
+                .component.checkBox, .component.layout > div.icon {
+                    height:unit(@panelTitleHeight, px);
+                    line-height:unit(@panelTitleHeight, px);
+                    width:unit(@panelTitleHeight, px);
+                }
+            }
         }
     }
 }
