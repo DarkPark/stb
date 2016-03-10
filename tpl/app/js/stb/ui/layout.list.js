@@ -16,7 +16,7 @@ var List = require('./list'),
  * @extends List
  *
  * @param {object} config object
- *
+ * @param {Element} [config.noData=''] element or string to display if set empty data
  *
  * @example
  * var CheckList = require('../stb/ui/layout.list'),
@@ -24,6 +24,7 @@ var List = require('./list'),
  *         propagate: true,
  *         size: 7,
  *         focusIndex: 0,
+ *         noData: 'No channels'
  *         data: [
  *                 {
  *                     items: [
@@ -71,7 +72,8 @@ var List = require('./list'),
  * });
  */
 function LayoutList ( config ) {
-    var self = this;
+    var self = this,
+        $wrap;
 
     config = config || {};
 
@@ -79,6 +81,13 @@ function LayoutList ( config ) {
      * Elements handlers
      */
     this.handlers = {};
+
+    /**
+     * No data placeholder
+     *
+     * @type {Element}
+     */
+    this.$noData = null;
 
     config.className = 'layoutList ' + (config.className || '');
 
@@ -91,7 +100,33 @@ function LayoutList ( config ) {
      */
     this.fixedData = config.fixedData || false;
 
+    //config.$body = document.createElement('div');
+
+    config.$body = document.createElement('div');
+    config.$body.className = 'body';
+
+    this.$noData = document.createElement('div');
+    this.$noData.className = 'noData hidden';
+
     List.call(this, config);
+
+    this.$node.appendChild(this.$body);
+
+
+    if ( config.noData ) {
+        if ( DEBUG ) {
+            if ( typeof config.noData !== 'string' && !(config.noData instanceof Element) ) { throw new Error(__filename + ': wrong config.$noData type'); }
+        }
+        if ( config.noData instanceof Element ) {
+            this.$noData.appendChild(config.noData);
+        } else if ( typeof config.noData === 'string' ) {
+            $wrap = document.createElement('div');
+            $wrap.innerText = config.noData;
+            this.$noData.appendChild($wrap);
+        }
+
+        this.$node.appendChild(this.$noData);
+    }
 
     // add handler to focus inner layout
     this.addListener('click:item', function ( event ) {
@@ -126,7 +161,7 @@ LayoutList.prototype.constructor = LayoutList;
 LayoutList.prototype.renderItemDefault = function ( $item, config ) {
     var layout, i;
 
-    if ( $item.ready && this.fixedData ) {
+    if ( $item.ready && this.fixedData && !$item.innerHTML.length ) {
         for ( i = 0; i < config.items.length; i++ ) {
             if ( typeof config.items[i].value === 'string' ) {
                 $item.layout.$node.childNodes[i].innerText = config.items[i].value;
@@ -165,6 +200,26 @@ LayoutList.prototype.renderItemDefault = function ( $item, config ) {
 
 };
 
+
+LayoutList.prototype.setData = function ( config ) {
+    List.prototype.setData.call(this, config);
+
+    if ( config.data && config.data.length ) {
+        this.$noData.classList.add('hidden');
+    } else {
+        this.$noData.classList.remove('hidden');
+    }
+};
+
+
+LayoutList.prototype.init = function ( config ) {
+    List.prototype.init.call(this, config);
+    if ( config.data && config.data.length ) {
+        this.$noData.classList.add('hidden');
+    } else {
+        this.$noData.classList.remove('hidden');
+    }
+};
 
 LayoutList.prototype.renderItem = LayoutList.prototype.renderItemDefault;
 

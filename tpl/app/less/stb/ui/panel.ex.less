@@ -57,10 +57,16 @@
         top: 0;
         left: 0;
     }
+    .component.scrollBar {
+        display: none;
+    }
     &.active {
         z-index: 3;
         >.overlay {
             visibility: hidden;
+        }
+        .component.scrollBar {
+            display: block;
         }
     }
     >.shadow {
