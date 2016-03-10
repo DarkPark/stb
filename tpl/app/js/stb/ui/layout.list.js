@@ -211,6 +211,16 @@ LayoutList.prototype.setData = function ( config ) {
     }
 };
 
+
+LayoutList.prototype.init = function ( config ) {
+    List.prototype.init.call(this, config);
+    if ( config.data && config.data.length ) {
+        this.$noData.classList.add('hidden');
+    } else {
+        this.$noData.classList.remove('hidden');
+    }
+};
+
 LayoutList.prototype.renderItem = LayoutList.prototype.renderItemDefault;
 
 
