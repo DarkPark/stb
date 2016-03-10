@@ -1,28 +1,57 @@
 .component.list.layoutList {
-    >.item {
-        >.layout {
-            >.icon {
-                width: unit(@panelTitleHeight, px);
-                font-family: 'icons';
-                text-align: center;
-                font-size: unit(@fontSize * 1.6, px);
-                &.yellow {
-                    color: #FEC500;
+    >.body {
+        >.item {
+            >.layout {
+                >.icon {
+                    width: unit(@panelTitleHeight, px);
+                    font-family: 'icons';
+                    text-align: center;
+                    font-size: unit(@fontSize * 1.6, px);
+                    &.yellow {
+                        color: #FEC500;
+                    }
+                    &.red {
+                        color: #FF0000;
+                    }
+                    &.green {
+                        color: #04E900;
+                    }
+                    &.blue {
+                        color:#1CACFF;
+                    }
                 }
-                &.red {
-                    color: #FF0000;
+                >.number {
+                    width: unit(@panelTitleHeight, px);
                 }
-                &.green {
-                    color: #04E900;
-                }
-                &.blue {
-                    color:#1CACFF;
-                }
-            }
-            >.number {
-                width: unit(@panelTitleHeight, px);
-            }
 
+            }
+        }
+    }
+    position: relative;
+    .noData {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        &:before {
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            content: "";
+        }
+        >div {
+            display: inline-block;
+            vertical-align: middle;
+            width: 100%;
+            text-align: center;
+
+        }
+        &.hidden {
+            visibility: hidden;
         }
     }
 }
