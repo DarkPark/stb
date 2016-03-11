@@ -18,6 +18,9 @@
         height: unit(@panelTitleHeight, px);
         line-height: unit(@panelTitleHeight, px);
         font-size: unit(@fontSize * 0.9, px);
+        .icon {
+            font-size: unit(@fontSize * 1.75, px);
+        }
     }
     &.main {
         width: unit(@panelMainWidth, px);
@@ -29,6 +32,9 @@
             height: unit(@panelMainTitleHeight, px);
             line-height: unit(@panelMainTitleHeight, px);
             font-size: unit(@fontSize, px);
+            .icon {
+                font-size: unit(@fontSize * 1.25, px);
+            }
         }
         >.title {
             height: unit(@panelMainTitleHeight, px);
@@ -41,6 +47,7 @@
         &.size3 {
             width: unit(@panelMain2xWidth, px);
         }
+
     }
 
     &.left {
