@@ -133,12 +133,14 @@ function LayoutList ( config ) {
         // focus inner layout of item
         if ( event.$item.layout.children.length && !event.inner ) {
             event.$item.layout.children[event.$item.layout.focusIndex].focus();
+            event.$item.classList.remove('focus');
         }
 
         // only focus item if we click mouse
         if ( event.inner ) {
             self.focus();
             self.focusItem(event.$item);
+            event.$item.classList.add('focus');
         }
         // do click callback if it present
         if ( self.handlers[event.$item.index] ) {
