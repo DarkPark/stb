@@ -136,11 +136,20 @@ PanelEx.prototype.defaultEvents = {
  */
 PanelEx.prototype.focus = function () {
     this.parent.panels[this.parent.focusIndex].$node.classList.remove('active');
+    this.parent.panels[this.parent.focusIndex].$node.classList.remove('top');
     Component.prototype.focus.call(this);
     this.parent.focusIndex = this.index;
     this.$node.classList.add('active');
+    this.$node.classList.add('top');
 };
 
+/**
+ * Blur panel
+ */
+PanelEx.prototype.blur = function () {
+    this.parent.panels[this.parent.focusIndex].$node.classList.remove('active');
+    Component.prototype.blur.call(this);
+};
 
 if ( DEBUG ) {
     // expose to the global scope
