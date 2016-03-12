@@ -143,4 +143,19 @@ PanelSet.prototype.drawShadow = function  () {
     }
 };
 
+/**
+ *
+ */
+PanelSet.prototype.focus = function () {
+    Component.prototype.focus.call(this);
+    this.panels[this.focusIndex].focus();
+};
+
+/**
+ *
+ */
+PanelSet.prototype.blur = function () {
+    this.panels[this.focusIndex].blur();
+};
+
 module.exports = PanelSet;
