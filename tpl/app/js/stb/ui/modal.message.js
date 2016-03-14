@@ -33,6 +33,8 @@ var Component = require('../component');
  *
  */
 function ModalMessage ( config ) {
+    var $overlay;
+
     // sanitize
     config = config || {};
 
@@ -45,6 +47,8 @@ function ModalMessage ( config ) {
         if ( config.$body ) { throw new Error(__filename + ': config.$body should not be provided in ModalMessage manually'); }
     }
 
+    // usually can't accept focus
+    config.focusable = config.focusable || false;
     // set default className if classList property empty or undefined
     config.className = 'modalMessage ' + (config.className || '');
     // hide by default
@@ -76,9 +80,13 @@ function ModalMessage ( config ) {
         this.$icon.className = 'icon ' + config.icon;
     }
 
+    $overlay = document.createElement('div');
+    $overlay.className = 'overlay';
+
     // add to dom
     this.$node.firstChild.firstChild.appendChild(this.$header);
     this.$node.firstChild.firstChild.appendChild(this.$body);
+    this.$node.firstChild.firstChild.appendChild($overlay);
 }
 
 
@@ -86,6 +94,25 @@ function ModalMessage ( config ) {
 ModalMessage.prototype = Object.create(Component.prototype);
 ModalMessage.prototype.constructor = ModalMessage;
 
+
+/**
+ * Redefine default component focus to set additional css
+ */
+ModalMessage.prototype.focus = function () {
+    this.$node.classList.add('active');
+    Component.prototype.focus.call(this);
+    if ( this.children[0] && this.children[0] instanceof Component ) {
+        this.children[0].focus();
+    }
+};
+
+/**
+ * Blur message
+ */
+ModalMessage.prototype.blur = function () {
+    this.$node.classList.remove('active');
+    Component.prototype.blur.call(this);
+};
 
 if ( DEBUG ) {
     // expose to the global scope
