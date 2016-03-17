@@ -651,9 +651,9 @@ app.exit = function ( callback ) {
                                 app.emit('exit');
                             }
 
-                            core.call('exit');
                             exitModal.hide();
                             exitModal.remove();
+                            core.call('exit');
                         }
                     },
                     {
