@@ -637,19 +637,21 @@ app.exit = function ( callback ) {
                     {
                         items: [
                             {
-                                value: _('Exit')
+                                value: gettext('Exit')
                             }
                         ],
                         click: function () {
-                            if ( callback(true) ) {
-                                app.exit();
-
-                                if ( this.events['exit'] ) {
-                                    this.emit('exit');
+                            if ( typeof callback === 'function' ) {
+                                if ( callback(true) ) {
+                                    exitModal.hide();
+                                    exitModal.remove();
                                 }
-
-                                core.call('exit');
                             }
+                            if ( this.events['exit'] ) {
+                                this.emit('exit');
+                            }
+
+                            core.call('exit');
                             exitModal.hide();
                             exitModal.remove();
                         }
@@ -657,11 +659,13 @@ app.exit = function ( callback ) {
                     {
                         items: [
                             {
-                                value: _('Cancel')
+                                value: gettext('Cancel')
                             }
                         ],
                         click: function () {
-                            callback(false);
+                            if ( typeof callback === 'function' ) {
+                                callback(false);
+                            }
                             exitModal.hide();
                             exitModal.remove();
                         }
@@ -671,7 +675,10 @@ app.exit = function ( callback ) {
                     keydown: function ( event ) {
                         LayoutList.prototype.defaultEvents.keydown.call(this, event);
                         if ( event.code === keys.back ) {
-                            callback(false);
+                            event.stop = true;
+                            if ( typeof callback === 'function' ) {
+                                callback(false);
+                            }
                             exitModal.hide();
                             exitModal.remove();
                         }
