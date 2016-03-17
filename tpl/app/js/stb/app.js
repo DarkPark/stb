@@ -647,8 +647,8 @@ app.exit = function ( callback ) {
                                     exitModal.remove();
                                 }
                             }
-                            if ( this.events['exit'] ) {
-                                this.emit('exit');
+                            if ( app.events['exit'] ) {
+                                app.emit('exit');
                             }
 
                             core.call('exit');
