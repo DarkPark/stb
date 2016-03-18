@@ -137,6 +137,13 @@ TabItem.prototype.hide = function () {
     return true;
 };
 
+TabItem.prototype.defaultEvents = {
+    focus : function () {
+        if ( this.children.length ) {
+            this.children[0].focus();
+        }
+    }
+};
 
 if ( DEBUG ) {
     // expose to the global scope
