@@ -638,9 +638,8 @@ app.exit = function ( callback ) {
                                 if ( callback(true) ) {
                                     exitModal.hide();
                                     exitModal.remove();
+                                    return;
                                 }
-
-                                return;
                             }
                             if ( app.events['exit'] ) {
                                 app.emit('exit');
