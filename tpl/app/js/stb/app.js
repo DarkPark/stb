@@ -598,18 +598,6 @@ app.show = function () {
 
 
 /**
- * Hide app.
- */
-app.hide = function () {
-    if ( this.events['hide'] ) {
-        this.emit('hide');
-    }
-
-    core.call('hide');
-};
-
-
-/**
  * Exit app.
  * Destroy all app.
  */
