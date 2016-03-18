@@ -88,6 +88,11 @@ ValueList.prototype.init = function ( config ) {
 
     if ( config.cycle ) { this.cycle = config.cycle; }
 
+    if ( config.render ) {
+        // apply render function
+        this.renderValue = config.render;
+    }
+
     if ( config.data ) {
         if ( DEBUG ) {
             if ( config.index && config.index > config.data.length - 1 || config.index < 0 ) { throw new Error(__filename + ': config.index should be positive and less then data size'); }
@@ -103,13 +108,6 @@ ValueList.prototype.init = function ( config ) {
         // no render if no data
         this.updateData();
     }
-
-    if ( config.render ) {
-        // apply render function
-        this.renderValue = config.render;
-    }
-
-
 };
 
 

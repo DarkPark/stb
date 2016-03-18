@@ -598,20 +598,13 @@ app.show = function () {
 
 
 /**
- * Hide app.
- */
-app.hide = function () {
-    if ( this.events['hide'] ) {
-        this.emit('hide');
-    }
-
-    core.call('hide');
-};
-
-
-/**
- * Exit app.
- * Destroy all app.
+ * Exit from app.
+ * Destroy all application instance.
+ * If callback function provided, and callback returns boolean 'true', application will stay alive.
+ *
+ * @fires module:/stb/app#exit
+ *
+ * @param [callback] provide callback if u want to handle exit result, or cancel it
  */
 app.exit = function ( callback ) {
     var ModalMessage = require('./ui/modal.message'),
@@ -645,6 +638,7 @@ app.exit = function ( callback ) {
                                 if ( callback(true) ) {
                                     exitModal.hide();
                                     exitModal.remove();
+                                    return;
                                 }
                             }
                             if ( app.events['exit'] ) {
