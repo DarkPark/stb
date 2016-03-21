@@ -78,7 +78,7 @@ request.ajax = function ( url, options ) {
 
         // actual request
         //client.send(this.encode(options.data));
-        client.send(options.data ? JSON.stringify(options.data) : null);
+        client.send(options.data ? options.data : null);//JSON.stringify()
 
         return client;
     }
