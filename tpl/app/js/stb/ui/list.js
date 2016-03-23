@@ -115,6 +115,14 @@ function List ( config ) {
         this.type = config.type;
     }
 
+    /**
+     * Associated data provider
+     *
+     * @type {Provider}
+     */
+    this.provider = null;
+
+
     // set default className if classList property empty or undefined
     config.className = 'list ' + (config.className || '');
 
@@ -353,6 +361,10 @@ List.prototype.init = function ( config ) {
     // apply ScrollBar link
     if ( config.scroll ) { this.scroll = config.scroll; }
 
+    // apply data provider
+    if ( config.provider ) { this.provider = config.provider; }
+
+
     // custom render method
     if ( config.render ) {
         if ( DEBUG ) {
@@ -401,9 +413,38 @@ List.prototype.init = function ( config ) {
     // reset current view window position
     this.viewIndex = null;
 
-    if ( config.data && config.data.length ) {
+    if ( this.provider ) {
+        this.provider.get( null, function ( error, data ) {
+            if ( error ) {
+                if ( self.events['data:error'] ) {
+                    /**
+                     * Provider get error while take new data
+                     *
+                     * @event module:stb/ui/list~List#data:error
+                     */
+                    self.emit('data:error', error);
+                }
+            } else {
+                if ( data && data.length ) {
+                    config.data = data;
+                    self.setData(config);
+                }
+                if ( self.events['data:get'] ) {
+                    /**
+                     * Provider request new data
+                     *
+                     * @event module:stb/ui/list~List#data:get
+                     *
+                     * @type {Object}
+                     */
+                    self.emit('data:get');
+                }
+            }
+        });
+    } else if ( config.data && config.data.length ) {
         this.setData(config);
     }
+
 };
 
 /**
@@ -562,6 +603,7 @@ List.prototype.renderView = function ( index ) {
  * @fires module:stb/ui/list~List#overflow
  */
 List.prototype.move = function ( direction ) {
+    var self = this;
     if ( DEBUG ) {
         if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
         if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
@@ -576,23 +618,50 @@ List.prototype.move = function ( direction ) {
                 this.focusItem(this.$focusItem.previousSibling);
             }
         } else {
-            // already at the beginning
-            if ( this.cycle ) {
-                // jump to the end of the list
-                this.move(keys.end);
 
-                // there are some listeners
-                if ( this.events['cycle'] ) {
-                    // notify listeners
-                    this.emit('cycle', {direction: direction});
-                }
+            if ( this.provider ) {
+                this.provider.get(direction, function ( error, data ) {
+                    if ( error ) {
+                        if ( self.events['data:error'] ) {
+                            /**
+                             * Provider get error while take new data
+                             *
+                             * @event module:stb/ui/list~List#data:error
+                             */
+                            self.emit('data:error', error);
+                        }
+                    } else {
+                        if ( data && data.length ) {
+                            if ( self.$focusItem === self.$body.firstChild ) {
+                                self.renderView(self.viewIndex - 1);
+                            } else {
+                                self.focusItem(self.$focusItem.previousSibling);
+                            }
+                        } else {
+                            // already at the beginning
+                            if ( self.cycle ) {
+                                // jump to the beginning of the list
+                                self.move(keys.home);
+                            }
+                            if ( self.events['overflow'] ) {
+                                // notify listeners
+                                self.emit('overflow', {direction: direction, cycle: self.cycle});
+                            }
+                        }
+                    }
+                });
             } else {
-                // there are some listeners
+                // already at the beginning
+                if ( this.cycle ) {
+                    // jump to the end of the list
+                    this.move(keys.end);
+                }
                 if ( this.events['overflow'] ) {
                     // notify listeners
-                    this.emit('overflow', {direction: direction});
+                    this.emit('overflow', {direction: direction, cycle: this.cycle});
                 }
             }
+
         }
     }
     if ( (direction === keys.down && this.type === this.TYPE_VERTICAL) || (direction === keys.right && this.type === this.TYPE_HORIZONTAL) ) {
@@ -604,21 +673,46 @@ List.prototype.move = function ( direction ) {
                 this.focusItem(this.$focusItem.nextSibling);
             }
         } else {
-            // already at the beginning
-            if ( this.cycle ) {
-                // jump to the beginning of the list
-                this.move(keys.home);
-
-                // there are some listeners
-                if ( this.events['cycle'] ) {
-                    // notify listeners
-                    this.emit('cycle', {direction: direction});
-                }
+            if ( this.provider ) {
+                this.provider.get(direction, function ( error, data ) {
+                    if ( error ) {
+                        if ( self.events['data:error'] ) {
+                            /**
+                             * Provider get error while take new data
+                             *
+                             * @event module:stb/ui/list~List#data:error
+                             */
+                            self.emit('data:error', error);
+                        }
+                    } else {
+                        if ( data && data.length ) {
+                            if ( self.$focusItem === self.$body.lastChild ) {
+                                self.renderView(self.viewIndex + 1);
+                            } else {
+                                self.focusItem(self.$focusItem.nextSibling);
+                            }
+                        } else {
+                            // already at the beginning
+                            if ( self.cycle ) {
+                                // jump to the beginning of the list
+                                self.move(keys.home);
+                            }
+                            if ( self.events['overflow'] ) {
+                                // notify listeners
+                                self.emit('overflow', {direction: direction, cycle: self.cycle});
+                            }
+                        }
+                    }
+                });
             } else {
-                // there are some listeners
+                // already at the beginning
+                if ( this.cycle ) {
+                    // jump to the beginning of the list
+                    this.move(keys.home);
+                }
                 if ( this.events['overflow'] ) {
                     // notify listeners
-                    this.emit('overflow', {direction: direction});
+                    this.emit('overflow', {direction: direction, cycle: this.cycle});
                 }
             }
         }
