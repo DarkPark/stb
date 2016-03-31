@@ -34,15 +34,16 @@ var Component = require('../component'),
  * @constructor
  * @extends Component
  *
- * @param {Object}   [config={}]          init parameters (all inherited from the parent)
- * @param {Array}    [config.data=[]]     component data to visualize
- * @param {function} [config.render]      method to build each grid cell content
- * @param {function} [config.navigate]    method to move focus according to pressed keys
- * @param {number}   [config.size=5]      amount of visible items on a page
- * @param {number}   [config.viewIndex=0] move view window to this position on init
- * @param {number}   [config.focusIndex]  list item index to make item focused (move view window to this position)
- * @param {boolean}  [config.cycle=true]  allow or not to jump to the opposite side of a list when there is nowhere to go next
- * @param {boolean}  [config.scroll=null] associated ScrollBar component link
+ * @param {Object}   [config={}]            init parameters (all inherited from the parent)
+ * @param {Array}    [config.data=[]]       component data to visualize
+ * @param {function} [config.render]        method to build each grid cell content
+ * @param {function} [config.navigate]      method to move focus according to pressed keys
+ * @param {number}   [config.size=5]        amount of visible items on a page
+ * @param {number}   [config.viewIndex=0]   move view window to this position on init
+ * @param {number}   [config.focusIndex]    list item index to make item focused (move view window to this position)
+ * @param {boolean}  [config.cycle=true]    allow or not to jump to the opposite side of a list when there is nowhere to go next
+ * @param {boolean}  [config.scroll=null]   associated ScrollBar component link
+ * @param {object}   [config.provider]      data provider
  *
  * @fires module:stb/ui/list~List#click:item
  */
