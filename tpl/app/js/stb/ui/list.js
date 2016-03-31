@@ -464,6 +464,9 @@ List.prototype.setData = function ( config ) {
 
     // reset current view window position
     this.viewIndex = null;
+    if ( this.$focusItem ) {
+        this.blurItem(this.$focusItem);
+    }
 
     // set focus item
     if ( config.focusIndex !== undefined ) {
@@ -603,22 +606,108 @@ List.prototype.renderView = function ( index ) {
  * @fires module:stb/ui/list~List#overflow
  */
 List.prototype.move = function ( direction ) {
-    var self = this;
+    var self = this,
+        force = false;
+
     if ( DEBUG ) {
         if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
         if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
     }
 
-    if ( (direction === keys.up && this.type === this.TYPE_VERTICAL) || (direction === keys.left && this.type === this.TYPE_HORIZONTAL) ) {
-        // still can go backward
-        if ( this.$focusItem && this.$focusItem.index > 0 ) {
-            if ( this.$focusItem === this.$body.firstChild ) {
-                this.renderView(this.viewIndex - 1);
+    switch ( direction ) {
+        case keys.left:
+            if ( this.type === this.TYPE_HORIZONTAL ) {
+                force = true;
             } else {
-                this.focusItem(this.$focusItem.previousSibling);
+                break;
             }
-        } else {
-
+        case keys.up:
+            if ( force || this.type === this.TYPE_VERTICAL ) {
+                if ( this.$focusItem && this.$focusItem.index > 0 ) {
+                    if ( this.$focusItem === this.$body.firstChild ) {
+                        this.renderView(this.viewIndex - 1);
+                    } else {
+                        this.focusItem(this.$focusItem.previousSibling);
+                    }
+                } else {
+                    if ( this.provider ) {
+                        this.provider.get(direction, function ( error, data ) {
+                            if ( error ) {
+                                if ( self.events['data:error'] ) {
+                                    /**
+                                     * Provider get error while take new data
+                                     *
+                                     * @event module:stb/ui/list~List#data:error
+                                     */
+                                    self.emit('data:error', error);
+                                }
+                            } else {
+                                if ( data && data.length ) {
+                                    self.setData({data: data, focusIndex: self.$focusItem.index});
+                                }
+                            }
+                        });
+                    } else {
+                        // already at the beginning
+                        if ( this.cycle ) {
+                            // jump to the end of the list
+                            this.move(keys.end);
+                        }
+                        if ( this.events['overflow'] ) {
+                            // notify listeners
+                            this.emit('overflow', {direction: direction, cycle: this.cycle});
+                        }
+                    }
+                }
+            }
+            break;
+        case keys.right:
+            if ( this.type === this.TYPE_HORIZONTAL ) {
+                force = true;
+            } else {
+                break;
+            }
+        case keys.down:
+            if ( force || this.type === this.TYPE_VERTICAL ) {
+                if ( this.$focusItem && this.$focusItem.index < this.data.length - 1 ) {
+                    if ( this.$focusItem === this.$body.lastChild ) {
+                        this.renderView(this.viewIndex + 1);
+                    } else {
+                        this.focusItem(this.$focusItem.nextSibling);
+                    }
+                } else {
+                    if ( this.provider ) {
+                        this.provider.get(direction, function ( error, data ) {
+                            if ( error ) {
+                                if ( self.events['data:error'] ) {
+                                    /**
+                                     * Provider get error while take new data
+                                     *
+                                     * @event module:stb/ui/list~List#data:error
+                                     */
+                                    self.emit('data:error', error);
+                                }
+                            } else {
+                                if ( data && data.length ) {
+                                    self.setData({data: data, focusIndex: self.$focusItem.index});
+                                }
+                            }
+                        });
+                    } else {
+                        // already at the beginning
+                        if ( this.cycle ) {
+                            // jump to the beginning of the list
+                            this.move(keys.home);
+                        }
+                        if ( this.events['overflow'] ) {
+                            // notify listeners
+                            this.emit('overflow', {direction: direction, cycle: this.cycle});
+                        }
+                    }
+                }
+            }
+            break;
+        case keys.pageUp:
             if ( this.provider ) {
                 this.provider.get(direction, function ( error, data ) {
                     if ( error ) {
@@ -632,47 +721,23 @@ List.prototype.move = function ( direction ) {
                         }
                     } else {
                         if ( data && data.length ) {
-                            if ( self.$focusItem === self.$body.firstChild ) {
-                                self.renderView(self.viewIndex - 1);
-                            } else {
-                                self.focusItem(self.$focusItem.previousSibling);
-                            }
-                        } else {
-                            // already at the beginning
-                            if ( self.cycle ) {
-                                // jump to the beginning of the list
-                                self.move(keys.home);
-                            }
-                            if ( self.events['overflow'] ) {
-                                // notify listeners
-                                self.emit('overflow', {direction: direction, cycle: self.cycle});
-                            }
+                            self.setData({data: data, focusIndex: 0});
                         }
                     }
                 });
+                return;
+            }
+            if ( this.viewIndex < this.size ) {
+                // first page
+                this.renderView(0);
             } else {
-                // already at the beginning
-                if ( this.cycle ) {
-                    // jump to the end of the list
-                    this.move(keys.end);
-                }
-                if ( this.events['overflow'] ) {
-                    // notify listeners
-                    this.emit('overflow', {direction: direction, cycle: this.cycle});
-                }
+                // second page and further
+                this.renderView(this.viewIndex - this.size + 1);
             }
 
-        }
-    }
-    if ( (direction === keys.down && this.type === this.TYPE_VERTICAL) || (direction === keys.right && this.type === this.TYPE_HORIZONTAL) ) {
-        // still can go forward
-        if ( this.$focusItem && this.$focusItem.index < this.data.length - 1 ) {
-            if ( this.$focusItem === this.$body.lastChild ) {
-                this.renderView(this.viewIndex + 1);
-            } else {
-                this.focusItem(this.$focusItem.nextSibling);
-            }
-        } else {
+            this.focusItem(this.$body.firstChild);
+            break;
+        case keys.pageUp:
             if ( this.provider ) {
                 this.provider.get(direction, function ( error, data ) {
                     if ( error ) {
@@ -686,83 +751,110 @@ List.prototype.move = function ( direction ) {
                         }
                     } else {
                         if ( data && data.length ) {
-                            if ( self.$focusItem === self.$body.lastChild ) {
-                                self.renderView(self.viewIndex + 1);
-                            } else {
-                                self.focusItem(self.$focusItem.nextSibling);
-                            }
-                        } else {
-                            // already at the beginning
-                            if ( self.cycle ) {
-                                // jump to the beginning of the list
-                                self.move(keys.home);
-                            }
-                            if ( self.events['overflow'] ) {
-                                // notify listeners
-                                self.emit('overflow', {direction: direction, cycle: self.cycle});
-                            }
+                            self.setData({data: data, focusIndex: 0});
                         }
                     }
                 });
-            } else {
-                // already at the beginning
-                if ( this.cycle ) {
-                    // jump to the beginning of the list
-                    this.move(keys.home);
-                }
-                if ( this.events['overflow'] ) {
-                    // notify listeners
-                    this.emit('overflow', {direction: direction, cycle: this.cycle});
-                }
+                break;
             }
-        }
-    }
+            if ( this.viewIndex < this.size ) {
+                // first page
+                this.renderView(0);
+            } else {
+                // second page and further
+                this.renderView(this.viewIndex - this.size + 1);
+            }
 
-    if ( direction === keys.pageUp ) {
-        // determine jump size
-        if ( this.viewIndex < this.size ) {
-            // first page
+            this.focusItem(this.$body.firstChild);
+            break;
+        case keys.pageDown:
+            if ( this.provider ) {
+                this.provider.get(direction, function ( error, data ) {
+                    if ( error ) {
+                        if ( self.events['data:error'] ) {
+                            /**
+                             * Provider get error while take new data
+                             *
+                             * @event module:stb/ui/list~List#data:error
+                             */
+                            self.emit('data:error', error);
+                        }
+                    } else {
+                        if ( data && data.length ) {
+                            self.setData({data: data, focusIndex: data.length < self.size ?  data.length - 1 : self.size - 1});
+                        }
+                    }
+                });
+                break;
+            }
+            // data is bigger then one page
+            if ( this.data.length > this.size ) {
+                // determine jump size
+                if ( this.viewIndex > this.data.length - this.size * 2 ) {
+                    // last page
+                    this.renderView(this.data.length - this.size);
+                } else {
+                    // before the last page
+                    this.renderView(this.viewIndex + this.size - 1);
+                }
+                this.focusItem(this.$body.lastChild);
+            } else {
+                // not the last item on the page
+                this.focusItem(this.$body.children[this.data.length - 1]);
+            }
+            break;
+        case keys.home:
+            if ( this.provider ) {
+                this.provider.get(direction, function ( error, data ) {
+                    if ( error ) {
+                        if ( self.events['data:error'] ) {
+                            /**
+                             * Provider get error while take new data
+                             *
+                             * @event module:stb/ui/list~List#data:error
+                             */
+                            self.emit('data:error', error);
+                        }
+                    } else {
+                        if ( data && data.length ) {
+                            self.setData({data: data, focusIndex: 0});
+                        }
+                    }
+                });
+                break;
+            }
             this.renderView(0);
-        } else {
-            // second page and further
-            this.renderView(this.viewIndex - this.size + 1);
-        }
-
-        this.focusItem(this.$body.firstChild);
-    }
-
-    if ( direction === keys.pageDown ) {
-        // data is bigger then one page
-        if ( this.data.length > this.size ) {
-            // determine jump size
-            if ( this.viewIndex > this.data.length - this.size * 2 ) {
-                // last page
-                this.renderView(this.data.length - this.size);
-            } else {
-                // before the last page
-                this.renderView(this.viewIndex + this.size - 1);
+            this.focusItem(this.$body.firstChild);
+            break;
+        case keys.end:
+            if ( this.provider ) {
+                this.provider.get(direction, function ( error, data ) {
+                    if ( error ) {
+                        if ( self.events['data:error'] ) {
+                            /**
+                             * Provider get error while take new data
+                             *
+                             * @event module:stb/ui/list~List#data:error
+                             */
+                            self.emit('data:error', error);
+                        }
+                    } else {
+                        if ( data && data.length ) {
+                            self.setData({data: data, focusIndex: data.length < self.size ?  data.length - 1 : self.size - 1});
+                        }
+                    }
+                });
+                break;
             }
-            this.focusItem(this.$body.lastChild);
-        } else {
-            // not the last item on the page
-            this.focusItem(this.$body.children[this.data.length - 1]);
-        }
-    }
+            if ( this.data.length > this.size ) {
+                this.renderView(this.data.length - this.size);
+                this.focusItem(this.$body.lastChild);
+            } else {
+                // not the last item on the page
+                this.focusItem(this.$body.children[this.data.length - 1]);
+            }
+            break;
 
-    if ( direction === keys.home ) {
-        this.renderView(0);
-        this.focusItem(this.$body.firstChild);
-    }
-
-    if ( direction === keys.end ) {
-        // data is bigger then one page
-        if ( this.data.length > this.size ) {
-            this.renderView(this.data.length - this.size);
-            this.focusItem(this.$body.lastChild);
-        } else {
-            // not the last item on the page
-            this.focusItem(this.$body.children[this.data.length - 1]);
-        }
     }
 };
 
