@@ -320,7 +320,6 @@ app.defaultEvents = {
         app.data.time.load = event.timeStamp;
         
         if ( window.core.ready ) {
-            window.core.call('app:ready');
             // global handler
             // there are some listeners
             if ( app.events[event.type] ) {
@@ -592,6 +591,18 @@ app.defaultEvents = {
 for ( key in app.defaultEvents ) {
     window.addEventListener(key, app.defaultEvents[key]);
 }
+
+
+/**
+ * Show app.
+ */
+app.show = function () {
+    if ( this.events['show'] ) {
+        this.emit('show');
+    }
+
+    window.core.call('app:ready');
+};
 
 
 /**
