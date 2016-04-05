@@ -16,9 +16,17 @@ var Model    = require('./model'),
 
 require('./shims');
 
+window.core = window.parent.getCoreInstanse(window);
+window.core.once('load', function () {
+    console.log('core loaded');
+
+    if ( app.data.time.load ) {
+        app.defaultEvents.load({type: 'load'});
+    }
+});
+
 // app inside sandbox iframe
 window.localStorage = window.parent.localStorage || window.parent.stbStorage;
-window.core = window.parent.core;
 
 // inside frame/iframe
 if ( window.parent && window.parent.gSTB ) {
@@ -127,7 +135,7 @@ app.setScreen = function ( metrics ) {
 
         linkThemeCSS = document.createElement('link');
         linkThemeCSS.rel  = 'stylesheet';
-        linkThemeCSS.href = core.theme.path + metrics.height + '.css?' + +new Date();
+        linkThemeCSS.href = window.core.theme.path + metrics.height + '.css?' + +new Date();
         document.head.appendChild(linkThemeCSS);
 
         // load CSS file base on resolution
@@ -305,39 +313,39 @@ app.defaultEvents = {
      * @param {Event} event generated object with event data
      */
     load: function ( event ) {
-        //var path;
-
         debug.event(event);
+        debug.log('app loaded', 'green');
 
         // time mark
         app.data.time.load = event.timeStamp;
-
-        // global handler
-        // there are some listeners
-        if ( app.events[event.type] ) {
-            // notify listeners
-            app.emit(event.type, event);
-        }
-
-        // local handler on each page
-        router.pages.forEach(function forEachPages ( page ) {
-            debug.log('component ' + page.constructor.name + '.' + page.id + ' load', 'green');
-
+        
+        if ( window.core.ready ) {
+            // global handler
             // there are some listeners
-            if ( page.events[event.type] ) {
+            if ( app.events[event.type] ) {
                 // notify listeners
-                page.emit(event.type, event);
+                app.emit(event.type, event);
             }
-        });
+            // local handler on each page
+            router.pages.forEach(function forEachPages ( page ) {
+                debug.log('component ' + page.constructor.name + '.' + page.id + ' load', 'green');
 
-        // time mark
-        app.data.time.done = +new Date();
+                // there are some listeners
+                if ( page.events[event.type] ) {
+                    // notify listeners
+                    page.emit(event.type, event);
+                }
+            });
+            console.log(router.pages);
 
-        // everything is ready
-        // and there are some listeners
-        if ( app.events['done'] ) {
-            // notify listeners
-            app.emit('done', event);
+            // time mark
+            app.data.time.done = +new Date();
+            // everything is ready
+            // and there are some listeners
+            if ( app.events['done'] ) {
+                // notify listeners
+                app.emit('done', event);
+            }
         }
     },
 
@@ -593,7 +601,7 @@ app.show = function () {
         this.emit('show');
     }
 
-    core.call('show');
+    window.core.call('app:ready');
 };
 
 
