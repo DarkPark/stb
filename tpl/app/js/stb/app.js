@@ -336,7 +336,6 @@ app.defaultEvents = {
                     page.emit(event.type, event);
                 }
             });
-            console.log(router.pages);
 
             // time mark
             app.data.time.done = +new Date();
