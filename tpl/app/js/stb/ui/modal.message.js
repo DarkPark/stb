@@ -114,11 +114,6 @@ ModalMessage.prototype.blur = function () {
     Component.prototype.blur.call(this);
 };
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentModalMessage = ModalMessage;
-}
-
 
 // public
 module.exports = ModalMessage;

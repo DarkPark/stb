@@ -156,11 +156,5 @@ CheckBox.prototype.set = function ( value ) {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentCheckBox = CheckBox;
-}
-
-
 // public
 module.exports = CheckBox;

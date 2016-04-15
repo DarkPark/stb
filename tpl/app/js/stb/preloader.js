@@ -139,11 +139,5 @@ preloader.add = function ( links ) {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.preloader = preloader;
-}
-
-
 // public
 module.exports = preloader;

@@ -260,11 +260,5 @@ ScrollBar.prototype.scrollTo = function ( value ) {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentScrollBar = ScrollBar;
-}
-
-
 // public
 module.exports = ScrollBar;

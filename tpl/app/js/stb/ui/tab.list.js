@@ -82,11 +82,5 @@ TabList.prototype = Object.create(Component.prototype);
 TabList.prototype.constructor = TabList;
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentTabList = TabList;
-}
-
-
 // public
 module.exports = TabList;

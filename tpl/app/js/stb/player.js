@@ -1043,11 +1043,6 @@ Player.prototype.addListener = function (name, callback) {
     }
 };
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.Player = Player;
-}
-
 
 // public
 module.exports = Player;

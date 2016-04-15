@@ -235,11 +235,5 @@ Emitter.prototype = {
 Emitter.prototype.constructor = Emitter;
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.Emitter = Emitter;
-}
-
-
 // public
 module.exports = Emitter;

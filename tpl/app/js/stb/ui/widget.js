@@ -59,11 +59,5 @@ Widget.prototype = Object.create(Component.prototype);
 Widget.prototype.constructor = Widget;
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentWidget = Widget;
-}
-
-
 // public
 module.exports = Widget;

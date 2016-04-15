@@ -48,11 +48,5 @@ ModalBox.prototype = Object.create(Component.prototype);
 ModalBox.prototype.constructor = ModalBox;
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentModalBox = ModalBox;
-}
-
-
 // public
 module.exports = ModalBox;

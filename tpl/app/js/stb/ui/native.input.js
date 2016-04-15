@@ -262,11 +262,5 @@ NativeInput.prototype.setValue = function ( value ) {
 };
 
 
-if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentNativeInput = NativeInput;
-}
-
-
 // public
 module.exports = NativeInput;

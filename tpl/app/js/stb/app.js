@@ -969,11 +969,5 @@ if ( window.gSTB && gSTB.SetNativeStringMode ) {
 }
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.app = app;
-}
-
-
 // public
 module.exports = app;
