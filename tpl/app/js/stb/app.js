@@ -336,7 +336,6 @@ app.defaultEvents = {
                     page.emit(event.type, event);
                 }
             });
-            console.log(router.pages);
 
             // time mark
             app.data.time.done = +new Date();
@@ -967,12 +966,6 @@ if ( window.gSTB && gSTB.SetNativeStringMode ) {
     /* eslint new-cap: 0 */
 
     gSTB.SetNativeStringMode(true);
-}
-
-
-if ( DEBUG ) {
-    // expose to the global scope
-    window.app = app;
 }
 
 

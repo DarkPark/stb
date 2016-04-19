@@ -145,11 +145,6 @@ TabItem.prototype.defaultEvents = {
     }
 };
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentTabItem = TabItem;
-}
-
 
 // public
 module.exports = TabItem;

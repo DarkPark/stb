@@ -82,11 +82,5 @@ LayerList.prototype.add = function () {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentLayerList = LayerList;
-}
-
-
 // public
 module.exports = LayerList;

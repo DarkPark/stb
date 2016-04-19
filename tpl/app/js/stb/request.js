@@ -115,11 +115,5 @@ request.encode = function ( data ) {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.request = request;
-}
-
-
 // public
 module.exports = request;

@@ -134,11 +134,5 @@ Stack.prototype.pop = function () {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.Stack = Stack;
-}
-
-
 // public
 module.exports = Stack;

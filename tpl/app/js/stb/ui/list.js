@@ -1054,11 +1054,5 @@ List.prototype.markItem = function ( $item, state ) {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentList = List;
-}
-
-
 // public
 module.exports = List;

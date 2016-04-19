@@ -167,11 +167,5 @@ dom.remove = function ( nodes ) {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.dom = dom;
-}
-
-
 // public
 module.exports = dom;

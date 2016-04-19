@@ -164,11 +164,5 @@ LayerItem.prototype.moveBottom = function () {
 };
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentLayerItem = LayerItem;
-}
-
-
 // public
 module.exports = LayerItem;

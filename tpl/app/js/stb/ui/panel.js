@@ -62,11 +62,5 @@ Panel.prototype = Object.create(Component.prototype);
 Panel.prototype.constructor = Panel;
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentPanel = Panel;
-}
-
-
 // public
 module.exports = Panel;

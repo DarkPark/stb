@@ -88,11 +88,5 @@ Page.prototype = Object.create(Component.prototype);
 Page.prototype.constructor = Page;
 
 
-if ( DEBUG ) {
-    // expose to the global scope
-    window.ComponentPage = Page;
-}
-
-
 // public
 module.exports = Page;
