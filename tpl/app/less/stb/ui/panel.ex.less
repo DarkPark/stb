@@ -6,6 +6,9 @@
     display: inline-block;
     position: absolute;
     z-index: 0;
+    >.body {
+        overflow: hidden;
+    }
     >.title {
         height: unit(@panelTitleHeight, px);
         line-height: unit(@panelTitleHeight, px);
@@ -13,6 +16,8 @@
         padding-left: unit(@safePadding, px);
         text-transform: uppercase;
         background-repeat: repeat-x;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .list .item{
         height: unit(@panelTitleHeight, px);
