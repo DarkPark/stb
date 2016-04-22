@@ -70,16 +70,16 @@ function TabList ( config ) {
     }
 }
 
+// inheritance
+TabList.prototype = Object.create(Component.prototype);
+TabList.prototype.constructor = TabList;
+
 TabList.prototype.focus = function () {
     Component.prototype.focus.call(this);
     if ( this.current.focusable ) {
         this.current.focus();
     }
 };
-
-// inheritance
-TabList.prototype = Object.create(Component.prototype);
-TabList.prototype.constructor = TabList;
 
 
 // public
