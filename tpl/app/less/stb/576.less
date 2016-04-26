@@ -36,7 +36,6 @@
 @scrollBarHeight: 4 * 1.2;
 @scrollBarWidth:  4;
 
-// TODO:fix correct vars
 // redefine common vars
 @scrollBarWidth         : 2;
 
@@ -45,15 +44,65 @@
 @safePadding            :20;
 @pagePadding            :50;
 // grey panel
-@panelWidth             :355;
-@panelHeight            :480;
-@panelTitleHeight       :60;
-@panelMainWidth         :480;
-@panelMainHeight        :560;
+@panelWidth             :230;
+@panelHeight            :360;
+@panelTitleHeight       :45;
+@panelMainWidth         :390;
+@panelMainHeight        :400;
 @panelMain2xWidth       :780;
-@panelMainTitleHeight   :70;
+@panelMainTitleHeight   :50;
 @panelMainTitleFontSize :24;
-@leftPanelTop           :115;
-@mainPanelTop           :70;
-@mainPanelLeft          :400;
-@panelShadowWidth       :20;
+@leftPanelTop           :100;
+@mainPanelTop           :80;
+@mainPanelLeft          :200;
+@panelShadowWidth       :10;
+
+.component.panelEx {
+    &.main {
+        &.position-right {
+            left: 240px;
+        }
+        &.position-left {
+            left: 90px;
+        }
+    }
+    &.right {
+        >.title {
+            background: #151515;
+            -webkit-transform: rotate(90deg);
+            width: unit(@panelHeight, px);
+            position: absolute;
+            top: 157px;
+            right: -158px;
+            text-align: center;
+            padding: 0;
+            z-index: 1;
+
+        }
+    }
+    &.left {
+        >.title {
+            background: #151515;
+            -webkit-transform: rotate(-90deg);
+            width: unit(@panelHeight, px);
+            position: absolute;
+            top: 157px;
+            left: -158px;
+            text-align: center;
+            padding: 0;
+            z-index: 1;
+
+        }
+    }
+    &.expand >.title {
+        //background: red;
+        width: inherit;
+        -webkit-transform: none;
+        position: static;
+        text-align: left;
+        padding-left: unit(@safePadding, px);
+    }
+    >.shadow {
+        //display: none!important;
+    }
+}
