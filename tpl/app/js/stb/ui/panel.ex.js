@@ -141,7 +141,7 @@ PanelEx.prototype.focus = function () {
     this.parent.focusIndex = this.index;
     this.$node.classList.add('active');
     this.$node.classList.add('top');
-    if ( this.index === 0 && this.parent.panels[1].main ) {
+    if ( this.index === 0 && this.parent.panels[1] && this.parent.panels[1].main ) {
         this.parent.panels[1].$node.classList.remove('position-left');
         this.parent.panels[1].$node.classList.add('position-right');
         this.parent.panels[2].$node.classList.remove('expand');
