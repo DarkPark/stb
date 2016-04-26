@@ -53,6 +53,13 @@ function PanelSet ( config ) {
     // set special panels classes
     if ( config.panels && !config.panels[0].main ) {
         config.panels[0].$node.classList.add('left');
+        // small resolution special class
+        config.panels[0].$node.classList.add('expand');
+    }
+
+    if (  config.panels && config.panels[1].main ) {
+        // small resolution special class
+        config.panels[1].$node.classList.add('position-right');
     }
 
     if ( config.panels && config.panels[2] && config.panels[1].main ) {
