@@ -57,7 +57,7 @@ function PanelSet ( config ) {
         config.panels[0].$node.classList.add('expand');
     }
 
-    if (  config.panels && config.panels[1].main ) {
+    if (  config.panels && config.panels[1] && config.panels[1].main ) {
         // small resolution special class
         config.panels[1].$node.classList.add('position-right');
     }
