@@ -35,7 +35,7 @@ var Component = require('../component'),
  *            f4: {title: 'end'} // button f3 will stay in same state
  *        }
  *    });
- * page.add(page.Footer);
+ * page.add(page.footer);
  */
 function Footer ( config ) {
     var self;
