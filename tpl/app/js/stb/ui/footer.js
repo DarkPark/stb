@@ -29,7 +29,7 @@ var Component = require('../component'),
  *
  * page.footer = new Footer({
  *        parent: page,
- *        buttons: {
+ *        data: {
  *            f1: false,
  *            f2: {title: 'start', action: function () {}},
  *            f4: {title: 'end'} // button f3 will stay in same state
