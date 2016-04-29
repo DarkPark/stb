@@ -5,7 +5,8 @@
 'use strict';
 
 var keys = require('./keys'),
-	blocked = false;
+	blocked = false,
+    delta = 0;
 
 /**
  * Data cacher
@@ -41,10 +42,11 @@ function DataCacher ( config ) {
 	this.head = 0;
 	this.tail = 0;
 	this.pos = 0;
-	this.cacheSize = ( config.cacheSize || 1 ) * this.size;
+	this.cacheSize = ( config.cacheSize || 2 ) * this.size;
 	this.config = config.request || {};
 	this.botEmptyLine = false;
 	this.maxCount = config.count;
+    this.headItem = config.headItem;
 
 	this.getter = config.getter;
 }
@@ -72,6 +74,10 @@ DataCacher.prototype.get = function ( direction, callback ) {
 			this.getter(function ( e, data ) {
 				if ( !e ) {
 					self.data = data;
+                    if ( self.headItem ) {
+                        self.data.unshift(self.headItem);
+                        delta = 1;
+                    }
 					self.tail = data.length;
 					receivedData = self.data.slice(self.pos, self.pos + self.size);
 					blocked = false;
@@ -233,7 +239,7 @@ DataCacher.prototype.checkNext = function ( cb ) {
 			}
 		}
 		this.config.limit = count;
-		this.config.offset = this.tail;
+        this.config.offset = this.tail - delta;
 		if ( cb ) {
 			blocked = true;
 		}
@@ -274,14 +280,21 @@ DataCacher.prototype.checkPrev = function ( cb ) {
 			if ( count > this.head ) {
 				count = this.head;
 			}
+            this.config.offset = this.head - count - delta;
+            if ( this.config.offset < 0 ) {
+                this.config.offset = 0;
+                count -= delta;
+            }
 			this.config.limit = count;
-			this.config.offset = this.head - count;
 			if ( cb ) {
 				blocked = true;
 			}
 			this.getter(function ( e, data ) {
 				if ( !e ) {
 					self.data = data.concat(self.data);
+                    if ( self.config.offset === 0 && self.headItem && self.data[0] !== self.headItem ) {
+                        self.data.unshift(self.headItem);
+                    }
 					self.tail -= data.length;
 					self.pos += data.length;
 					count = self.data.length - 2 * self.cacheSize;
@@ -295,14 +308,19 @@ DataCacher.prototype.checkPrev = function ( cb ) {
 					cb(e, self.data.slice(self.pos, self.pos + self.size));
 				}
 				blocked = false;
-				console.log('pos ' + self.pos + ' head ' + self.head + ' count ' + count + ' teil ' + self.tail);
 			}, this.config);
 		}
 	} else {
-		if ( this.pos < 0 ) {
-			this.pos = 0;
-			cb(false, self.data.slice(self.pos, self.pos + self.size));
-		}
+        if ( this.headItem && this.data[0] !== this.headItem ) {
+            this.data.unshift(this.headItem);
+        }
+
+        if ( this.pos < 0 ) {
+            this.pos = 0;
+        }
+        if ( cb ) {
+            cb(false, self.data.slice(self.pos, self.pos + self.size));
+        }
 	}
 };
 
