@@ -26,7 +26,7 @@ function Clock ( config ) {
             hours = time.getHours(),
             mins  = time.getMinutes();
 
-        body.textContent = (hours > 9 ? hours : '0' + hours) + ':' + (mins > 9 ? mins : '0' + mins);
+        body.innerText = (hours > 9 ? hours : '0' + hours) + ':' + (mins > 9 ? mins : '0' + mins);
         //pmDate.innerText = (date > 9 ? date : '0' + date) + '.' + (month > 9 ? month : '0' + month) + '.' + year;
     }
 
