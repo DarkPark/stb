@@ -49,6 +49,9 @@ function DataCacher ( config ) {
     this.headItem = config.headItem;
 
 	this.getter = config.getter;
+
+    blocked = false;
+    delta = 0;
 }
 
 DataCacher.prototype.constructor = DataCacher;
