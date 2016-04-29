@@ -1,6 +1,6 @@
 'use strict';
 
-var Component = require('../stb/component');
+var Component = require('../component');
 
 function Clock ( config ) {
     var body = document.createElement('div');
