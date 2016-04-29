@@ -59,7 +59,7 @@
 'use strict';
 
 var Emitter = require('./emitter'),
-	router;
+    router;
 
 
 /**
@@ -123,40 +123,40 @@ router.ids = {};
  * @fires module:stb/router#init
  */
 router.init = function ( pages ) {
-	var i, l, item;
+    var i, l, item;
 
-	if ( pages ) {
-		if ( DEBUG ) {
-			if ( !Array.isArray(pages) ) { throw new Error(__filename + ': wrong pages type'); }
-		}
+    if ( pages ) {
+        if ( DEBUG ) {
+            if ( !Array.isArray(pages) ) { throw new Error(__filename + ': wrong pages type'); }
+        }
 
-		// reset page list
-		this.pages = [];
+        // reset page list
+        this.pages = [];
 
-		// apply list
-		this.pages = pages;
+        // apply list
+        this.pages = pages;
 
-		// extract ids
-		for ( i = 0, l = pages.length; i < l; i++ ) {
-			item = pages[i];
-			this.ids[item.id] = item;
+        // extract ids
+        for ( i = 0, l = pages.length; i < l; i++ ) {
+            item = pages[i];
+            this.ids[item.id] = item;
 
-			// find the currently active page
-			if ( item.active ) {
-				this.current = item;
-			}
-		}
+            // find the currently active page
+            if ( item.active ) {
+                this.current = item;
+            }
+        }
 
-		// there are some listeners
-		if ( this.events['init'] ) {
-			// notify listeners
-			this.emit('init', {pages: pages});
-		}
+        // there are some listeners
+        if ( this.events['init'] ) {
+            // notify listeners
+            this.emit('init', {pages: pages});
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
 };
 
 
@@ -173,18 +173,18 @@ router.init = function ( pages ) {
  * {name: 'main', data: ['some', 'additional', 'data']}
  */
 router.parse = function ( hash ) {
-	var page = {
-		name: '',
-		data: []
-	};
+    var page = {
+        name: '',
+        data: []
+    };
 
-	// get and decode all parts
-	page.data = hash.split('/').map(decodeURIComponent);
-	// the first part is a page id
-	// everything else is optional path
-	page.name = page.data.shift().slice(1);
+    // get and decode all parts
+    page.data = hash.split('/').map(decodeURIComponent);
+    // the first part is a page id
+    // everything else is optional path
+    page.name = page.data.shift().slice(1);
 
-	return page;
+    return page;
 };
 
 
@@ -202,17 +202,17 @@ router.parse = function ( hash ) {
  * '#main/some/additional/data'
  */
 router.stringify = function ( name, data ) {
-	// validation
-	data = Array.isArray(data) ? data : [];
+    // validation
+    data = Array.isArray(data) ? data : [];
 
-	// encode all parts
-	name = encodeURIComponent(name);
-	data = data.map(encodeURIComponent);
-	// add encoded name to the beginning
-	data.unshift(name);
+    // encode all parts
+    name = encodeURIComponent(name);
+    data = data.map(encodeURIComponent);
+    // add encoded name to the beginning
+    data.unshift(name);
 
-	// build an uri
-	return data.join('/');
+    // build an uri
+    return data.join('/');
 };
 
 
@@ -226,26 +226,26 @@ router.stringify = function ( name, data ) {
  * @return {boolean} operation status
  */
 router.show = function ( page, data ) {
-	// page available and can be hidden
-	if ( page && !page.active ) {
-		// apply visibility
-		page.$node.classList.add('active');
-		page.active  = true;
-		this.current = page;
+    // page available and can be hidden
+    if ( page && !page.active ) {
+        // apply visibility
+        page.$node.classList.add('active');
+        page.active  = true;
+        this.current = page;
 
-		// there are some listeners
-		if ( page.events['show'] ) {
-			// notify listeners
-			page.emit('show', {page: page, data: data});
-		}
+        // there are some listeners
+        if ( page.events['show'] ) {
+            // notify listeners
+            page.emit('show', {page: page, data: data});
+        }
 
-		debug.log('component ' + page.constructor.name + '.' + page.id + ' show', 'green');
+        debug.log('component ' + page.constructor.name + '.' + page.id + ' show', 'green');
 
-		return true;
-	}
+        return true;
+    }
 
-	// nothing was done
-	return false;
+    // nothing was done
+    return false;
 };
 
 
@@ -257,26 +257,26 @@ router.show = function ( page, data ) {
  * @return {boolean} operation status
  */
 router.hide = function ( page ) {
-	// page available and can be hidden
-	if ( page && page.active ) {
-		// apply visibility
-		page.$node.classList.remove('active');
-		page.active  = false;
-		this.current = null;
+    // page available and can be hidden
+    if ( page && page.active ) {
+        // apply visibility
+        page.$node.classList.remove('active');
+        page.active  = false;
+        this.current = null;
 
-		// there are some listeners
-		if ( page.events['hide'] ) {
-			// notify listeners
-			page.emit('hide', {page: page});
-		}
+        // there are some listeners
+        if ( page.events['hide'] ) {
+            // notify listeners
+            page.emit('hide', {page: page});
+        }
 
-		debug.log('component ' + page.constructor.name + '.' + page.id + ' hide', 'grey');
+        debug.log('component ' + page.constructor.name + '.' + page.id + ' hide', 'grey');
 
-		return true;
-	}
+        return true;
+    }
 
-	// nothing was done
-	return false;
+    // nothing was done
+    return false;
 };
 
 
@@ -290,43 +290,43 @@ router.hide = function ( page ) {
  * @return {boolean} operation status
  */
 router.navigate = function ( name, data ) {
-	var pageFrom = this.current,
-		pageTo   = this.ids[name];
+    var pageFrom = this.current,
+        pageTo   = this.ids[name];
 
-	if ( DEBUG ) {
-		if ( router.pages.length > 0 ) {
-			if ( !pageTo || typeof pageTo !== 'object' ) { throw new Error(__filename + ': wrong pageTo type'); }
-			if ( !('active' in pageTo) ) { throw new Error(__filename + ': missing field "active" in pageTo'); }
-		}
-	}
+    if ( DEBUG ) {
+        if ( router.pages.length > 0 ) {
+            if ( !pageTo || typeof pageTo !== 'object' ) { throw new Error(__filename + ': wrong pageTo type'); }
+            if ( !('active' in pageTo) ) { throw new Error(__filename + ': missing field "active" in pageTo'); }
+        }
+    }
 
-	// valid not already active page
-	if ( pageTo && !pageTo.active ) {
-		debug.log('router.navigate: ' + name, pageTo === pageFrom ? 'grey' : 'green');
+    // valid not already active page
+    if ( pageTo && !pageTo.active ) {
+        debug.log('router.navigate: ' + name, pageTo === pageFrom ? 'grey' : 'green');
 
-		// update url
-		location.hash = this.stringify(name, data);
+        // update url
+        location.hash = this.stringify(name, data);
 
-		// apply visibility
-		this.hide(this.current);
-		this.show(pageTo, data);
+        // apply visibility
+        this.hide(this.current);
+        this.show(pageTo, data);
 
-		// there are some listeners
-		if ( this.events['navigate'] ) {
-			// notify listeners
-			this.emit('navigate', {from: pageFrom, to: pageTo});
-		}
+        // there are some listeners
+        if ( this.events['navigate'] ) {
+            // notify listeners
+            this.emit('navigate', {from: pageFrom, to: pageTo});
+        }
 
-		// store
-		this.history.push(pageTo);
+        // store
+        this.history.push(pageTo);
 
-		return true;
-	}
+        return true;
+    }
 
-	debug.log('router.navigate: ' + name, 'red');
+    debug.log('router.navigate: ' + name, 'red');
 
-	// nothing was done
-	return false;
+    // nothing was done
+    return false;
 };
 
 
@@ -337,45 +337,45 @@ router.navigate = function ( name, data ) {
  * @return {boolean} operation status
  */
 router.back = function () {
-	var pageFrom, pageTo;
+    var pageFrom, pageTo;
 
-	debug.log('router.back', this.history.length > 1 ? 'green' : 'red');
+    debug.log('router.back', this.history.length > 1 ? 'green' : 'red');
 
-	// there are some pages in the history
-	if ( this.history.length > 1 ) {
-		// remove the current
-		pageFrom = this.history.pop();
+    // there are some pages in the history
+    if ( this.history.length > 1 ) {
+        // remove the current
+        pageFrom = this.history.pop();
 
-		// new tail
-		pageTo = this.history[this.history.length - 1];
+        // new tail
+        pageTo = this.history[this.history.length - 1];
 
-		// valid not already active page
-		if ( pageTo && !pageTo.active ) {
-			// update url
-			location.hash = pageTo.id;
+        // valid not already active page
+        if ( pageTo && !pageTo.active ) {
+            // update url
+            location.hash = pageTo.id;
 
-			// apply visibility
-			this.hide(this.current);
-			this.show(pageTo);
+            // apply visibility
+            this.hide(this.current);
+            this.show(pageTo);
 
-			// there are some listeners
-			if ( this.events['navigate'] ) {
-				// notify listeners
-				this.emit('navigate', {from: pageFrom, to: pageTo});
-			}
+            // there are some listeners
+            if ( this.events['navigate'] ) {
+                // notify listeners
+                this.emit('navigate', {from: pageFrom, to: pageTo});
+            }
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 
-	// nothing was done
-	return false;
+    // nothing was done
+    return false;
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.router = router;
+    // expose to the global scope
+    window.router = router;
 }
 
 

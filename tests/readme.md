@@ -6,10 +6,10 @@ To create a new test put a file `my.test.js` in the `units` directory and it wil
 
 In order to manually start compilation process run
 
-	$ gulp webpack
+    $ gulp webpack
 
 or set up watchers for automatic rebuild on any change
 
-	$ gulp
+    $ gulp
 
 To execute the tests it's necessary to open `index.html` in a web browser.

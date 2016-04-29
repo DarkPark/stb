@@ -8,33 +8,33 @@
 'use strict';
 
 var util = require('util'),
-	path = require('path'),
-	gulp = require('gulp'),
-	open = require('open'),
-	port = require(path.join(global.paths.config, 'static')).port;
+    path = require('path'),
+    gulp = require('gulp'),
+    open = require('open'),
+    port = require(path.join(global.paths.config, 'static')).port;
 
 
 // framework documentation
 gulp.task('open:doc', function () {
-	open('http://darkpark.github.io/stb/');
+    open('http://darkpark.github.io/stb/');
 });
 
 
 // develop index page
 gulp.task('open:develop', function () {
-	open(util.format('http://localhost:%s/develop.html', port));
+    open(util.format('http://localhost:%s/develop.html', port));
 });
 
 
 // release index page
 gulp.task('open:release', function () {
-	open(util.format('http://localhost:%s/index.html', port));
+    open(util.format('http://localhost:%s/index.html', port));
 });
 
 
 // weinre main page
 gulp.task('open:weinre', function () {
-	open(util.format('http://localhost:%s/client/#anonymous', require(path.join(global.paths.config, 'weinre')).port));
+    open(util.format('http://localhost:%s/client/#anonymous', require(path.join(global.paths.config, 'weinre')).port));
 });
 
 

@@ -13,15 +13,15 @@ var gulp = require('gulp');
 
 // start loop
 gulp.task('repl', function ( done ) {
-	var repl = require('gulp-repl');
+    var repl = require('gulp-repl')();
 
-	// no unnecessary prompts
-	repl.setPrompt('');
+    // no unnecessary prompts
+    repl.setPrompt('');
 
-	// Ctrl+C was pressed
-	repl.on('SIGINT', function () {
-		process.exit();
+    // Ctrl+C was pressed
+    repl.on('SIGINT', function () {
+        process.exit();
 
-		done();
-	});
+        done();
+    });
 });

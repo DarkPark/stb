@@ -4,26 +4,26 @@ Compiles to a set of css files in the application directory `./build/css/*.css`.
 
 Global variables:
 
-	// global absolute paths
-	@pathApp
-	@pathImgFull
+    // global absolute paths
+    @pathApp
+    @pathImgFull
 
-	// relative paths
-	@pathImg
+    // relative paths
+    @pathImg
 
-	// window dimension
-	@height
-	@width
+    // window dimension
+    @height
+    @width
 
-	// safe zone padding
-	@availTop
-	@availRight
-	@availBottom
-	@availLeft
+    // safe zone padding
+    @availTop
+    @availRight
+    @availBottom
+    @availLeft
 
-	// font sizes
-	@fontSize
+    // font sizes
+    @fontSize
 
-	// visible page content size
-	@availHeight
-	@availWidth
+    // visible page content size
+    @availHeight
+    @availWidth

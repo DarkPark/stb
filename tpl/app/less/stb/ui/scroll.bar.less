@@ -5,33 +5,33 @@
 
 
 .component.scrollBar {
-	background-color: grey;
-	display:          inline-block;
-	height:           100%;
-	width:            unit(@scrollBarWidth, px);
-	vertical-align:   bottom;
+    background-color: grey;
+    display:          inline-block;
+    height:           100%;
+    width:            unit(@scrollBarWidth, px);
+    vertical-align:   bottom;
 
-	.thumb {
-		display:          block;
-		width:            unit(@scrollBarWidth, px);
-		min-height:       unit(@scrollBarWidth, px);
-		background-color: white;
+    .thumb {
+        display:          block;
+        width:            unit(@scrollBarWidth, px);
+        min-height:       unit(@scrollBarWidth, px);
+        background-color: white;
 
-		&.hidden {
-			display: none;
-		}
-	}
+        &.hidden {
+            display: none;
+        }
+    }
 }
 
 .component.scrollBar.horizontal {
-	display: block;
-	height:  unit(@scrollBarHeight, px);
-	width:   100%;
+    display: block;
+    height:  unit(@scrollBarHeight, px);
+    width:   100%;
 
-	.thumb {
-		display:        inline-block;
-		vertical-align: top;
-		height:         unit(@scrollBarHeight, px);
-		min-width:      unit(@scrollBarHeight, px);
-	}
+    .thumb {
+        display:        inline-block;
+        vertical-align: top;
+        height:         unit(@scrollBarHeight, px);
+        min-width:      unit(@scrollBarHeight, px);
+    }
 }

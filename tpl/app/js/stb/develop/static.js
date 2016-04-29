@@ -9,14 +9,14 @@
 'use strict';
 
 var dom    = require('../dom'),
-	config = require('../../../../config/static');
+    config = require('../../../../config/static');
 
 
 // livereload activation
 if ( config.livereload ) {
-	// load external script
-	document.head.appendChild(dom.tag('script', {
-		type: 'text/javascript',
-		src: '//' + location.hostname + ':' + (config.livereload === true ? 35729 : config.livereload) + '/livereload.js'
-	}));
+    // load external script
+    document.head.appendChild(dom.tag('script', {
+        type: 'text/javascript',
+        src: '//' + location.hostname + ':' + (config.livereload === true ? 35729 : config.livereload) + '/livereload.js'
+    }));
 }

@@ -8,7 +8,7 @@
 'use strict';
 
 var fs   = require('fs'),
-	path = require('path');
+    path = require('path');
 
 
 /**
@@ -17,18 +17,18 @@ var fs   = require('fs'),
  * @param {string} dir folder with modules
  */
 function load ( dir ) {
-	// may be missing
-	if ( fs.existsSync(dir) ) {
-		// get file list and walk through it
-		require('fs').readdirSync(dir).forEach(function ( name ) {
-			// make correct absolute path
-			name = path.join(dir, name);
-			// check file type
-			if ( path.extname(name) === '.js' ) {
-				require(name);
-			}
-		});
-	}
+    // may be missing
+    if ( fs.existsSync(dir) ) {
+        // get file list and walk through it
+        require('fs').readdirSync(dir).forEach(function ( name ) {
+            // make correct absolute path
+            name = path.join(dir, name);
+            // check file type
+            if ( path.extname(name) === '.js' ) {
+                require(name);
+            }
+        });
+    }
 }
 
 
@@ -38,11 +38,11 @@ require('tty-colors');
 
 // general app paths
 global.paths = {
-	root:   process.env.PATH_ROOT   || __dirname,
-	tasks:  process.env.PATH_TASKS  || path.join(__dirname, 'tasks'),
-	app:    process.env.PATH_APP    || path.join(__dirname, 'app'),
-	build:  process.env.PATH_BUILD  || path.join(__dirname, 'build'),
-	config: process.env.PATH_CONFIG || path.join(__dirname, 'config')
+    root:   process.env.PATH_ROOT   || __dirname,
+    tasks:  process.env.PATH_TASKS  || path.join(__dirname, 'tasks'),
+    app:    process.env.PATH_APP    || path.join(__dirname, 'app'),
+    build:  process.env.PATH_BUILD  || path.join(__dirname, 'build'),
+    config: process.env.PATH_CONFIG || path.join(__dirname, 'config')
 };
 
 

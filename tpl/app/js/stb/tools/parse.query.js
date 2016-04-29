@@ -19,16 +19,16 @@
  * console.log(parseQuery('param=value&another_param=another_value'));
  */
 module.exports = function ( query ) {
-	var data = {};
+    var data = {};
 
-	// parse and fill the data
-	query.split('&').forEach(function ( part ) {
-		part = part.split('=');
-		// valid number on params
-		if ( part.length === 2 ) {
-			data[part[0]] = decodeURIComponent(part[1]);
-		}
-	});
+    // parse and fill the data
+    query.split('&').forEach(function ( part ) {
+        part = part.split('=');
+        // valid number on params
+        if ( part.length === 2 ) {
+            data[part[0]] = decodeURIComponent(part[1]);
+        }
+    });
 
-	return data;
+    return data;
 };

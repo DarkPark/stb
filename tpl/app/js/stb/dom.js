@@ -31,38 +31,38 @@ var dom = {};
  * dom.tag('link', {rel:'stylesheet', type:'text/css', href:'http://some.url/'});
  */
 dom.tag = function ( tagName, attrList, content ) {
-	var node = null,
-		i, name;
+    var node = null,
+        i, name;
 
-	// minimal param is given
-	if ( tagName ) {
-		// empty element
-		node = document.createElement(tagName);
+    // minimal param is given
+    if ( tagName ) {
+        // empty element
+        node = document.createElement(tagName);
 
-		// optional attribute list is given
-		if ( attrList && typeof attrList === 'object' ) {
-			for ( name in attrList ) {
-				// extend a new node with the given attributes
-				node[name] = attrList[name];
-			}
-		}
+        // optional attribute list is given
+        if ( attrList && typeof attrList === 'object' ) {
+            for ( name in attrList ) {
+                // extend a new node with the given attributes
+                node[name] = attrList[name];
+            }
+        }
 
-		// content (arguments except the first two)
-		for ( i = 2; i < arguments.length; i++ ) {
-			// some data is given
-			if ( arguments[i] ) {
-				// regular HTML tag or plain data
-				node.appendChild(
-					typeof arguments[i] === 'object' ?
-					arguments[i] :
-					document.createTextNode(arguments[i])
-				);
-			}
-		}
+        // content (arguments except the first two)
+        for ( i = 2; i < arguments.length; i++ ) {
+            // some data is given
+            if ( arguments[i] ) {
+                // regular HTML tag or plain data
+                node.appendChild(
+                    typeof arguments[i] === 'object' ?
+                    arguments[i] :
+                    document.createTextNode(arguments[i])
+                );
+            }
+        }
 
-	}
+    }
 
-	return node;
+    return node;
 };
 
 
@@ -81,20 +81,20 @@ dom.tag = function ( tagName, attrList, content ) {
  * dom.fragment('some text', 123, div3);
  */
 dom.fragment = function ( node ) {
-	// prepare placeholder
-	var i, fragment = document.createDocumentFragment();
+    // prepare placeholder
+    var i, fragment = document.createDocumentFragment();
 
-	// walk through all the given elements
-	for ( i = 0; i < arguments.length; i++ ) {
-		node = arguments[i];
-		// some data is given
-		if ( node ) {
-			// regular HTML tag or plain data
-			fragment.appendChild(typeof node === 'object' ? node : document.createTextNode(node));
-		}
-	}
+    // walk through all the given elements
+    for ( i = 0; i < arguments.length; i++ ) {
+        node = arguments[i];
+        // some data is given
+        if ( node ) {
+            // regular HTML tag or plain data
+            fragment.appendChild(typeof node === 'object' ? node : document.createTextNode(node));
+        }
+    }
 
-	return fragment;
+    return fragment;
 };
 
 
@@ -116,26 +116,26 @@ dom.fragment = function ( node ) {
  * add(some_div, div1, 'hello', 'world');
  */
 dom.add = function ( tagDst, content ) {
-	var i;
+    var i;
 
-	// valid HTML tag as the destination
-	if ( tagDst instanceof Node ) {
-		// append all except the first one
-		for ( i = 1; i < arguments.length; i++ ) {
-			// some data is given
-			if ( arguments[i] ) {
-				// regular HTML tag or plain data
-				tagDst.appendChild(
-					typeof arguments[i] === 'object' ?
-					arguments[i] :
-					document.createTextNode(arguments[i])
-				);
-			}
-		}
-		return tagDst;
-	}
+    // valid HTML tag as the destination
+    if ( tagDst instanceof Node ) {
+        // append all except the first one
+        for ( i = 1; i < arguments.length; i++ ) {
+            // some data is given
+            if ( arguments[i] ) {
+                // regular HTML tag or plain data
+                tagDst.appendChild(
+                    typeof arguments[i] === 'object' ?
+                    arguments[i] :
+                    document.createTextNode(arguments[i])
+                );
+            }
+        }
+        return tagDst;
+    }
 
-	return null;
+    return null;
 };
 
 
@@ -150,26 +150,26 @@ dom.add = function ( tagDst, content ) {
  * dom.remove(div1, div2, div3);
  */
 dom.remove = function ( nodes ) {
-	var count = 0,  // amount of successfully removed nodes
-		i;
+    var count = 0,  // amount of successfully removed nodes
+        i;
 
-	// walk through all the given elements
-	for ( i = 0; i < arguments.length; i++ ) {
-		// valid non-empty tag
-		if ( arguments[i] && arguments[i].parentNode ) {
-			if ( arguments[i].parentNode.removeChild(arguments[i]) === arguments[i] ) {
-				count++;
-			}
-		}
-	}
+    // walk through all the given elements
+    for ( i = 0; i < arguments.length; i++ ) {
+        // valid non-empty tag
+        if ( arguments[i] && arguments[i].parentNode ) {
+            if ( arguments[i].parentNode.removeChild(arguments[i]) === arguments[i] ) {
+                count++;
+            }
+        }
+    }
 
-	return arguments.length > 0 && count === arguments.length;
+    return arguments.length > 0 && count === arguments.length;
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.dom = dom;
+    // expose to the global scope
+    window.dom = dom;
 }
 
 

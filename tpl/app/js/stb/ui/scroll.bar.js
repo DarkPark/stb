@@ -37,85 +37,85 @@ var Component = require('../component');
  *     });
  */
 function ScrollBar ( config ) {
-	// sanitize
-	config = config || {};
+    // sanitize
+    config = config || {};
 
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		// init parameters checks
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-		if ( config.type      && Number(config.type) !== config.type  ) { throw new Error(__filename + ': config.type must be a number'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+        // init parameters checks
+        if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+        if ( config.type      && Number(config.type) !== config.type  ) { throw new Error(__filename + ': config.type must be a number'); }
+    }
 
-	/**
-	 * Visible area size.
-	 *
-	 * @type {number}
-	 */
-	this.viewSize = 10;
+    /**
+     * Visible area size.
+     *
+     * @type {number}
+     */
+    this.viewSize = 10;
 
-	/**
-	 * Scroll area actual height or width (if scroll is horizontal).
-	 *
-	 * @type {number}
-	 */
-	this.realSize = 100;
+    /**
+     * Scroll area actual height or width (if scroll is horizontal).
+     *
+     * @type {number}
+     */
+    this.realSize = 100;
 
-	/**
-	 * Scroll thumb position.
-	 *
-	 * @type {number}
-	 */
-	this.value = 0;
+    /**
+     * Scroll thumb position.
+     *
+     * @type {number}
+     */
+    this.value = 0;
 
-	/**
-	 * Component orientation.
-	 *
-	 * @type {number}
-	 */
-	this.type = this.TYPE_VERTICAL;
+    /**
+     * Component orientation.
+     *
+     * @type {number}
+     */
+    this.type = this.TYPE_VERTICAL;
 
-	/**
-	 * Geometry of the scroll thumb element.
-	 *
-	 * @type {ClientRect}
-	 */
-	this.thumbRect = null;
+    /**
+     * Geometry of the scroll thumb element.
+     *
+     * @type {ClientRect}
+     */
+    this.thumbRect = null;
 
-	/**
-	 * Geometry of the scroll track element.
-	 *
-	 * @type {ClientRect}
-	 */
-	this.trackRect = null;
+    /**
+     * Geometry of the scroll track element.
+     *
+     * @type {ClientRect}
+     */
+    this.trackRect = null;
 
-	// can't accept focus
-	config.focusable = config.focusable || false;
+    // can't accept focus
+    config.focusable = config.focusable || false;
 
-	// set default className if classList property empty or undefined
-	config.className = 'scrollBar ' + (config.className || '');
+    // set default className if classList property empty or undefined
+    config.className = 'scrollBar ' + (config.className || '');
 
-	// horizontal or vertical
-	if ( config.type ) {
-		// apply
-		this.type = config.type;
-	}
+    // horizontal or vertical
+    if ( config.type ) {
+        // apply
+        this.type = config.type;
+    }
 
-	if ( this.type === this.TYPE_HORIZONTAL ) {
-		config.className += ' horizontal';
-	}
+    if ( this.type === this.TYPE_HORIZONTAL ) {
+        config.className += ' horizontal';
+    }
 
-	// parent constructor call
-	Component.call(this, config);
+    // parent constructor call
+    Component.call(this, config);
 
-	// insert thumb line
-	this.$thumb = this.$body.appendChild(document.createElement('div'));
+    // insert thumb line
+    this.$thumb = this.$body.appendChild(document.createElement('div'));
 
-	// correct CSS class name
-	this.$thumb.className = 'thumb';
+    // correct CSS class name
+    this.$thumb.className = 'thumb';
 
-	// component setup
-	this.init(config);
+    // component setup
+    this.init(config);
 }
 
 
@@ -134,55 +134,55 @@ ScrollBar.prototype.TYPE_HORIZONTAL = 2;
  * @param {Object} config init parameters (subset of constructor config params)
  */
 ScrollBar.prototype.init = function ( config ) {
-	config = config || {};
+    config = config || {};
 
-	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+    }
 
-	// set actual scroll size
-	if ( config.realSize ) {
-		if ( DEBUG ) {
-			if ( Number(config.realSize) !== config.realSize ) { throw new Error(__filename + ': config.realSize value must be a number'); }
-		}
-		// apply
-		this.realSize = config.realSize;
-	}
+    // set actual scroll size
+    if ( config.realSize ) {
+        if ( DEBUG ) {
+            if ( Number(config.realSize) !== config.realSize ) { throw new Error(__filename + ': config.realSize value must be a number'); }
+        }
+        // apply
+        this.realSize = config.realSize;
+    }
 
-	// set visible area size
-	if ( config.viewSize ) {
-		if ( DEBUG ) {
-			if ( Number(config.viewSize) !== config.viewSize ) { throw new Error(__filename + ': config.viewSize value must be a number'); }
-			if ( config.viewSize <= 0 ) { throw new Error(__filename + ': config.viewSize value must be greater than 0'); }
-		}
-		// apply
-		this.viewSize = config.viewSize;
-	}
+    // set visible area size
+    if ( config.viewSize ) {
+        if ( DEBUG ) {
+            if ( Number(config.viewSize) !== config.viewSize ) { throw new Error(__filename + ': config.viewSize value must be a number'); }
+            if ( config.viewSize <= 0 ) { throw new Error(__filename + ': config.viewSize value must be greater than 0'); }
+        }
+        // apply
+        this.viewSize = config.viewSize;
+    }
 
-	// show or hide thumb
-	if ( this.viewSize >= this.realSize ) {
-		this.$thumb.classList.add('hidden');
-	} else {
-		this.$thumb.classList.remove('hidden');
-	}
+    // show or hide thumb
+    if ( this.viewSize >= this.realSize ) {
+        this.$thumb.classList.add('hidden');
+    } else {
+        this.$thumb.classList.remove('hidden');
+    }
 
-	// set thumb position
-	if ( config.value !== undefined ) {
-		// apply
-		this.scrollTo(config.value);
-	}
+    // set thumb position
+    if ( config.value !== undefined ) {
+        // apply
+        this.scrollTo(config.value);
+    }
 
-	// set thumb size
-	if ( this.type === this.TYPE_VERTICAL ) {
-		this.$thumb.style.height = (this.viewSize / this.realSize * 100) + '%';
-	} else {
-		this.$thumb.style.width = (this.viewSize / this.realSize * 100) + '%';
-	}
+    // set thumb size
+    if ( this.type === this.TYPE_VERTICAL ) {
+        this.$thumb.style.height = (this.viewSize / this.realSize * 100) + '%';
+    } else {
+        this.$thumb.style.width = (this.viewSize / this.realSize * 100) + '%';
+    }
 
-	// geometry
-	this.thumbRect = this.$thumb.getBoundingClientRect();
-	this.trackRect = this.$node.getBoundingClientRect();
+    // geometry
+    this.thumbRect = this.$thumb.getBoundingClientRect();
+    this.trackRect = this.$node.getBoundingClientRect();
 };
 
 
@@ -197,72 +197,72 @@ ScrollBar.prototype.init = function ( config ) {
  * @fires module:stb/ui/scroll.bar~ScrollBar#change
  */
 ScrollBar.prototype.scrollTo = function ( value ) {
-	if ( DEBUG ) {
-		if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-		if ( Number(value) !== value ) { throw new Error(__filename + ': value must be a number'); }
-		if ( this.realSize > this.viewSize && value > this.realSize - this.viewSize ) { throw new Error(__filename + ': value is greater than this.realSize-this.viewSize'); }
-		if ( value < 0 ) { throw new Error(__filename + ': value is less then 0'); }
-	}
+    if ( DEBUG ) {
+        if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
+        if ( Number(value) !== value ) { throw new Error(__filename + ': value must be a number'); }
+        if ( this.realSize > this.viewSize && value > this.realSize - this.viewSize ) { throw new Error(__filename + ': value is greater than this.realSize-this.viewSize'); }
+        if ( value < 0 ) { throw new Error(__filename + ': value is less then 0'); }
+    }
 
-	// value has changed
-	if ( this.value !== value ) {
-		// track and thumb geometry was not set
-		if ( this.thumbRect.height === 0 || this.thumbRect.width === 0 ) {
-			// apply
-			this.trackRect = this.$node.getBoundingClientRect();
-			this.thumbRect = this.$thumb.getBoundingClientRect();
-		}
+    // value has changed
+    if ( this.value !== value ) {
+        // track and thumb geometry was not set
+        if ( this.thumbRect.height === 0 || this.thumbRect.width === 0 ) {
+            // apply
+            this.trackRect = this.$node.getBoundingClientRect();
+            this.thumbRect = this.$thumb.getBoundingClientRect();
+        }
 
-		// set scroll bar width
-		if ( this.type === this.TYPE_VERTICAL ) {
-			this.$thumb.style.marginTop = ((this.trackRect.height - this.thumbRect.height) * value / (this.realSize - this.viewSize)) + 'px';
-		} else {
-			this.$thumb.style.marginLeft = ((this.trackRect.width - this.thumbRect.width) * value / (this.realSize - this.viewSize)) + 'px';
-		}
+        // set scroll bar width
+        if ( this.type === this.TYPE_VERTICAL ) {
+            this.$thumb.style.marginTop = ((this.trackRect.height - this.thumbRect.height) * value / (this.realSize - this.viewSize)) + 'px';
+        } else {
+            this.$thumb.style.marginLeft = ((this.trackRect.width - this.thumbRect.width) * value / (this.realSize - this.viewSize)) + 'px';
+        }
 
-		// there are some listeners
-		if ( this.events['change'] ) {
-			/**
-			 * Update scroll value.
-			 *
-			 * @event module:stb/ui/scroll.bar~ScrollBar#change
-			 *
-			 * @type {Object}
-			 * @property {number} prev old/previous scroll value
-			 * @property {number} curr new/current scroll value
-			 */
-			this.emit('change', {curr: value, prev: this.value});
-		}
+        // there are some listeners
+        if ( this.events['change'] ) {
+            /**
+             * Update scroll value.
+             *
+             * @event module:stb/ui/scroll.bar~ScrollBar#change
+             *
+             * @type {Object}
+             * @property {number} prev old/previous scroll value
+             * @property {number} curr new/current scroll value
+             */
+            this.emit('change', {curr: value, prev: this.value});
+        }
 
-		// is it the end?
-		if ( value >= this.realSize ) {
-			value = this.realSize;
+        // is it the end?
+        if ( value >= this.realSize ) {
+            value = this.realSize;
 
-			// there are some listeners
-			if ( this.events['done'] ) {
-				/**
-				 * Set scroll to its maximum value.
-				 *
-				 * @event module:stb/ui/scroll.bar~ScrollBar#done
-				 */
-				this.emit('done');
-			}
-		}
+            // there are some listeners
+            if ( this.events['done'] ) {
+                /**
+                 * Set scroll to its maximum value.
+                 *
+                 * @event module:stb/ui/scroll.bar~ScrollBar#done
+                 */
+                this.emit('done');
+            }
+        }
 
-		// set new value
-		this.value = value;
+        // set new value
+        this.value = value;
 
-		return true;
-	}
+        return true;
+    }
 
-	// nothing was done
-	return false;
+    // nothing was done
+    return false;
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentScrollBar = ScrollBar;
+    // expose to the global scope
+    window.ComponentScrollBar = ScrollBar;
 }
 
 

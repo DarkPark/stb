@@ -22,29 +22,29 @@ var Emitter = require('./emitter');
  *     stack2 = new Stack([1, 2, 3]);
  */
 function Stack ( data ) {
-	/**
-	 * Current top stack element.
-	 *
-	 * @readonly
-	 * @type {Object}
-	 */
-	this.current = null;
+    /**
+     * Current top stack element.
+     *
+     * @readonly
+     * @type {Object}
+     */
+    this.current = null;
 
-	/**
-	 * List of all stack elements.
-	 *
-	 * @readonly
-	 * @type {Object[]}
-	 */
-	this.data = data || [];
+    /**
+     * List of all stack elements.
+     *
+     * @readonly
+     * @type {Object[]}
+     */
+    this.data = data || [];
 
-	if ( DEBUG ) {
-		if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
-		if ( !Array.isArray(this.data) ) { throw new Error(__filename + ': wrong data type'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof this !== 'object' ) { throw new Error(__filename + ': must be constructed via new'); }
+        if ( !Array.isArray(this.data) ) { throw new Error(__filename + ': wrong data type'); }
+    }
 
-	// parent constructor call
-	Emitter.call(this);
+    // parent constructor call
+    Emitter.call(this);
 }
 
 
@@ -76,19 +76,19 @@ Stack.prototype.constructor = Stack;
  * stack.push({foo: 'bar'});
  */
 Stack.prototype.push = function ( data ) {
-	var prev = this.current;
+    var prev = this.current;
 
-	// apply
-	this.data.push(data);
+    // apply
+    this.data.push(data);
 
-	// link
-	this.current = data;
+    // link
+    this.current = data;
 
-	// there are some listeners
-	if ( this.events['push'] ) {
-		// notify listeners
-		this.emit('push', {prev: prev, curr: this.current});
-	}
+    // there are some listeners
+    if ( this.events['push'] ) {
+        // notify listeners
+        this.emit('push', {prev: prev, curr: this.current});
+    }
 };
 
 
@@ -113,30 +113,30 @@ Stack.prototype.push = function ( data ) {
  * var item = stack.pop();
  */
 Stack.prototype.pop = function () {
-	var prev = null;
+    var prev = null;
 
-	// there are some pages in the stack
-	if ( this.data.length > 0 ) {
-		// remove the current
-		prev = this.data.pop();
+    // there are some pages in the stack
+    if ( this.data.length > 0 ) {
+        // remove the current
+        prev = this.data.pop();
 
-		// set top element
-		this.current = this.data.length > 0 ? this.data[this.data.length - 1] : null;
+        // set top element
+        this.current = this.data.length > 0 ? this.data[this.data.length - 1] : null;
 
-		// there are some listeners
-		if ( this.events['pop'] ) {
-			// notify listeners
-			this.emit('pop', {prev: prev, curr: this.current});
-		}
-	}
+        // there are some listeners
+        if ( this.events['pop'] ) {
+            // notify listeners
+            this.emit('pop', {prev: prev, curr: this.current});
+        }
+    }
 
-	return prev;
+    return prev;
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.Stack = Stack;
+    // expose to the global scope
+    window.Stack = Stack;
 }
 
 

@@ -8,56 +8,56 @@
 'use strict';
 
 var path    = require('path'),
-	gulp    = require('gulp'),
-	jade    = require('gulp-jade'),
-	plumber = require('gulp-plumber'),
-	rename  = require('gulp-rename'),
-	del     = require('del'),
-	pkgInfo = require(path.join(global.paths.root, 'package.json'));
+    gulp    = require('gulp'),
+    jade    = require('gulp-jade'),
+    plumber = require('gulp-plumber'),
+    rename  = require('gulp-rename'),
+    del     = require('del'),
+    pkgInfo = require(path.join(global.paths.root, 'package.json'));
 
 
 // remove all html files
 gulp.task('jade:clean', function () {
-	return del([
-		path.join(global.paths.build, 'index.html'),
-		path.join(global.paths.build, 'develop.html')
-	]);
+    return del([
+        path.join(global.paths.build, 'index.html'),
+        path.join(global.paths.build, 'develop.html')
+    ]);
 });
 
 
 // generate html files
 gulp.task('jade:develop', function () {
-	return gulp
-		.src(path.join(global.paths.app, 'jade', 'main.jade'))
-		.pipe(plumber())
-		.pipe(jade({
-			pretty: '\t',
-			locals: {
-				develop: true,
-				title:   '[develop] ' + pkgInfo.name,
-				version: pkgInfo.version
-			}
-		}))
-		.pipe(rename('develop.html'))
-		.pipe(gulp.dest(global.paths.build));
+    return gulp
+        .src(path.join(global.paths.app, 'jade', 'main.jade'))
+        .pipe(plumber())
+        .pipe(jade({
+            pretty: '\t',
+            locals: {
+                develop: true,
+                title:   '[develop] ' + pkgInfo.name,
+                version: pkgInfo.version
+            }
+        }))
+        .pipe(rename('develop.html'))
+        .pipe(gulp.dest(global.paths.build));
 });
 
 
 // generate html files
 gulp.task('jade:release', function () {
-	return gulp
-		.src(path.join(global.paths.app, 'jade', 'main.jade'))
-		.pipe(plumber())
-		.pipe(jade({
-			pretty: false,
-			locals: {
-				develop: false,
-				title:   '[release] ' + pkgInfo.name,
-				version: pkgInfo.version
-			}
-		}))
-		.pipe(rename('index.html'))
-		.pipe(gulp.dest(global.paths.build));
+    return gulp
+        .src(path.join(global.paths.app, 'jade', 'main.jade'))
+        .pipe(plumber())
+        .pipe(jade({
+            pretty: false,
+            locals: {
+                develop: false,
+                title:   '[release] ' + pkgInfo.name,
+                version: pkgInfo.version
+            }
+        }))
+        .pipe(rename('index.html'))
+        .pipe(gulp.dest(global.paths.build));
 });
 
 

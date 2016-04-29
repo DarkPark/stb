@@ -9,16 +9,15 @@
 'use strict';
 
 var dom     = require('../dom'),
-	util    = require('util'),
-	storage = require('./storage'),
-	config  = require('../../../../config/weinre');
+    util    = require('util'),
+    config  = require('../../../../config/weinre');
 
 
 // web inspector is allowed only without SpyJS
-if ( config.active && !storage.get('spyjs.active') ) {
-	// load external script
-	document.head.appendChild(dom.tag('script', {
-		type: 'text/javascript',
-		src: util.format('//%s:%s/target/target-script-min.js#%s', location.hostname, config.port, config.name)
-	}));
+if ( config.active && (window.localStorage ? !localStorage.getItem('spyjs.active') : true ) ) {
+    // load external script
+    document.head.appendChild(dom.tag('script', {
+        type: 'text/javascript',
+        src: util.format('//%s:%s/target/target-script-min.js#%s', location.hostname, config.port, config.name)
+    }));
 }

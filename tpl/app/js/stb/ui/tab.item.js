@@ -41,27 +41,27 @@ var Component = require('../component');
  * tabList.add(tabItem);
  */
 function TabItem ( config ) {
-	// sanitize
-	config = config || {};
+    // sanitize
+    config = config || {};
 
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+        if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+    }
 
-	// can't accept focus
-	config.focusable = config.focusable || false;
+    // can't accept focus
+    config.focusable = config.focusable || false;
 
-	// set default className if classList property empty or undefined
-	config.className = 'tabItem hidden ' + (config.className || '');
+    // set default className if classList property empty or undefined
+    config.className = 'tabItem hidden ' + (config.className || '');
 
-	// prevent parent hiding
-	config.visible = null;
+    // prevent parent hiding
+    config.visible = null;
 
-	// parent constructor call
-	Component.call(this, config);
+    // parent constructor call
+    Component.call(this, config);
 
-	this.visible = false;
+    this.visible = false;
 }
 
 
@@ -81,35 +81,35 @@ TabItem.prototype.constructor = TabItem;
  * @fires module:stb/ui/tab.item~TabItem#show
  */
 TabItem.prototype.show = function ( data ) {
-	var prev = null;
+    var prev = null;
 
-	if ( DEBUG ) {
-		if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
-		if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': wrong parent for tab item'); }
-		if ( this.parent.current && !(this.parent.current instanceof TabItem) ) { throw new Error(__filename + ': wrong current tab item type'); }
-	}
+    if ( DEBUG ) {
+        if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
+        if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': wrong parent for tab item'); }
+        if ( this.parent.current && !(this.parent.current instanceof TabItem) ) { throw new Error(__filename + ': wrong current tab item type'); }
+    }
 
-	// is it hidden
-	if ( !this.visible ) {
-		// hide previous tab
-		if ( this.parent.current ) {
-			prev = this.parent.current;
-			prev.hide(data);
-		}
+    // is it hidden
+    if ( !this.visible ) {
+        // hide previous tab
+        if ( this.parent.current ) {
+            prev = this.parent.current;
+            prev.hide(data);
+        }
 
-		Component.prototype.show.call(this, data);
-		this.parent.current = this;
+        Component.prototype.show.call(this, data);
+        this.parent.current = this;
 
-		/*// there are some listeners
-		if ( this.parent.events['switch'] ) {
-			this.parent.emit('switch', {prev: prev, curr: this});
-		}*/
+        /*// there are some listeners
+        if ( this.parent.events['switch'] ) {
+            this.parent.emit('switch', {prev: prev, curr: this});
+        }*/
 
-		return true;
-	}
+        return true;
+    }
 
-	// nothing was done
-	return true;
+    // nothing was done
+    return true;
 };
 
 
@@ -121,26 +121,26 @@ TabItem.prototype.show = function ( data ) {
  * @fires module:stb/ui/tab.item~TabItem#hide
  */
 TabItem.prototype.hide = function () {
-	if ( DEBUG ) {
-		if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
-		if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': wrong parent for tab item'); }
-		if ( this.parent.current && !(this.parent.current instanceof TabItem) ) { throw new Error(__filename + ': wrong current tab item type'); }
-	}
+    if ( DEBUG ) {
+        if ( !this.parent ) { throw new Error(__filename + ': no parent for tab item'); }
+        if ( this.parent.constructor.name !== 'TabList' ) { throw new Error(__filename + ': wrong parent for tab item'); }
+        if ( this.parent.current && !(this.parent.current instanceof TabItem) ) { throw new Error(__filename + ': wrong current tab item type'); }
+    }
 
-	if ( Component.prototype.hide.call(this) ) {
-		this.parent.current = null;
+    if ( Component.prototype.hide.call(this) ) {
+        this.parent.current = null;
 
-		return true;
-	}
+        return true;
+    }
 
-	// nothing was done
-	return true;
+    // nothing was done
+    return true;
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentTabItem = TabItem;
+    // expose to the global scope
+    window.ComponentTabItem = TabItem;
 }
 
 

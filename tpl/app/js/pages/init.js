@@ -8,8 +8,8 @@
 'use strict';
 
 var id   = 'pageInit',
-	Page = require('../stb/ui/page'),
-	page = new Page({$node: document.getElementById(id)});
+    Page = require('../stb/ui/page'),
+    page = new Page({$node: document.getElementById(id)});
 
 
 // public

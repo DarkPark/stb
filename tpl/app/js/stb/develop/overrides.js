@@ -11,22 +11,22 @@
 
 // links to the origin
 var getElementById = document.getElementById,
-	querySelector  = document.querySelector;
+    querySelector  = document.querySelector;
 
 
 // improved error output when working with selection elements by id
 document.getElementById = function ( id ) {
-	var el = getElementById.call(document, id);
+    var el = getElementById.call(document, id);
 
-	if ( !el ) { throw new Error(__filename + ': no element with id ' + id); }
+    if ( !el ) { throw new Error(__filename + ': no element with id ' + id); }
 
-	return el;
+    return el;
 };
 
 document.querySelector = function ( selector ) {
-	var el = querySelector.call(document, selector);
+    var el = querySelector.call(document, selector);
 
-	if ( !el ) { throw new Error(__filename + ': no element with selector: ' + selector); }
+    if ( !el ) { throw new Error(__filename + ': no element with selector: ' + selector); }
 
-	return el;
+    return el;
 };

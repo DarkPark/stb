@@ -11,5 +11,5 @@
 
 // public
 module.exports = {
-	// put your vars here
+    // put your vars here
 };

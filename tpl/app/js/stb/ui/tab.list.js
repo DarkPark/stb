@@ -39,35 +39,35 @@ var Component = require('../component');
  * page.add(tabList);
  */
 function TabList ( config ) {
-	// sanitize
-	config = config || {};
+    // sanitize
+    config = config || {};
 
-	/**
-	 * Active at the moment tab item.
-	 *
-	 * @type {TabItem}
-	 */
-	this.current = null;
+    /**
+     * Active at the moment tab item.
+     *
+     * @type {TabItem}
+     */
+    this.current = null;
 
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-		if ( config.current && config.current.constructor.name !== 'TabItem' ) { throw new Error(__filename + ': wrong config.current type'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+        if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+        if ( config.current && config.current.constructor.name !== 'TabItem' ) { throw new Error(__filename + ': wrong config.current type'); }
+    }
 
-	// can't accept focus
-	config.focusable = config.focusable || false;
+    // can't accept focus
+    config.focusable = config.focusable || false;
 
-	// set default className if classList property empty or undefined
-	config.className = 'tabList ' + (config.className || '');
+    // set default className if classList property empty or undefined
+    config.className = 'tabList ' + (config.className || '');
 
-	// parent constructor call
-	Component.call(this, config);
+    // parent constructor call
+    Component.call(this, config);
 
-	if ( config.current ) {
-		// make the given tab active
-		config.current.show();
-	}
+    if ( config.current ) {
+        // make the given tab active
+        config.current.show();
+    }
 }
 
 
@@ -77,8 +77,8 @@ TabList.prototype.constructor = TabList;
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentTabList = TabList;
+    // expose to the global scope
+    window.ComponentTabList = TabList;
 }
 
 

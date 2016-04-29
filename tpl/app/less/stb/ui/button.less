@@ -5,46 +5,46 @@
 
 
 .component.button {
-	background-color: #002042;
-	display:          inline-table;
-	height:           unit(@buttonHeight, px);
-	//line-height:      unit(@buttonHeight, px);
-	//vertical-align:   middle;
-	cursor:           pointer;
+    background-color: #002042;
+    display:          inline-table;
+    height:           unit(@buttonHeight, px);
+    //line-height:      unit(@buttonHeight, px);
+    //vertical-align:   middle;
+    cursor:           pointer;
 
-	&:hover {
-		background-color: #005b9c;
-	}
+    &:hover {
+        background-color: #005b9c;
+    }
 
-	&.focus {
-		background-color: #005b9c;
-	}
+    &.focus {
+        background-color: #005b9c;
+    }
 
-	&.click {
-		background-color: #0073c4;
-	}
+    &.click {
+        background-color: #0073c4;
+    }
 
-	.icon {
-		height:     unit(@buttonHeight, px);
-		width:      unit(@buttonHeight, px);
-		display:    table-cell;
-		background: no-repeat center center;
-	}
+    .icon {
+        height:     unit(@buttonHeight, px);
+        width:      unit(@buttonHeight, px);
+        display:    table-cell;
+        background: no-repeat center center;
+    }
 
-	.text {
-		display:        table-cell;
-		//width: 100%;
-		padding:        unit(@buttonPaddingY, px) unit(@buttonPaddingX, px);
-		vertical-align: middle;
-		text-align:     center;
+    .text {
+        display:        table-cell;
+        //width: 100%;
+        padding:        unit(@buttonPaddingY, px) unit(@buttonPaddingX, px);
+        vertical-align: middle;
+        text-align:     center;
 
-		&:empty {
-			padding: 0;
-		}
+        &:empty {
+            padding: 0;
+        }
 
-		// correct space between icon and text
-		//&:not(:only-child) {
-		//	padding-left: 0;
-		//}
-	}
+        // correct space between icon and text
+        //&:not(:only-child) {
+        //    padding-left: 0;
+        //}
+    }
 }

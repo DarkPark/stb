@@ -38,22 +38,22 @@ var Component = require('../component');
  * layerList.add(layerItem);
  */
 function LayerItem ( config ) {
-	// sanitize
-	config = config || {};
+    // sanitize
+    config = config || {};
 
-	if ( DEBUG ) {
-		if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
-		if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-	}
+    if ( DEBUG ) {
+        if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
+        if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
+    }
 
-	// can't accept focus
-	config.focusable = config.focusable || false;
+    // can't accept focus
+    config.focusable = config.focusable || false;
 
-	// set default className if classList property empty or undefined
-	config.className = 'layerItem ' + (config.className || '');
+    // set default className if classList property empty or undefined
+    config.className = 'layerItem ' + (config.className || '');
 
-	// parent constructor call
-	Component.call(this, config);
+    // parent constructor call
+    Component.call(this, config);
 }
 
 
@@ -66,24 +66,24 @@ LayerItem.prototype.constructor = LayerItem;
  * Delete this component and clear all associated events.
  */
 LayerItem.prototype.remove = function () {
-	var map    = this.parent.map,
-		zIndex = this.$node.style.zIndex,
-		mapSize, i;
+    var map    = this.parent.map,
+        zIndex = this.$node.style.zIndex,
+        mapSize, i;
 
-	// remove
-	map.splice(zIndex, 1);
+    // remove
+    map.splice(zIndex, 1);
 
-	// reindex
-	for ( i = 0, mapSize = map.length; i < mapSize; i++ ) { map[i].$node.style.zIndex = i; }
+    // reindex
+    for ( i = 0, mapSize = map.length; i < mapSize; i++ ) { map[i].$node.style.zIndex = i; }
 
-	// parent invoke
-	Component.prototype.remove.call(this);
+    // parent invoke
+    Component.prototype.remove.call(this);
 
-	/*// there are some listeners
-	if ( this.parent.events['change'] ) {
-		// notify listeners
-		this.emit('change', {state: 'remove', item: this});
-	}*/
+    /*// there are some listeners
+    if ( this.parent.events['change'] ) {
+        // notify listeners
+        this.emit('change', {state: 'remove', item: this});
+    }*/
 };
 
 
@@ -98,33 +98,33 @@ LayerItem.prototype.remove = function () {
  * @fires module:stb/ui/layer.item~LayerItem#move
  */
 LayerItem.prototype.move = function ( shift, type ) {
-	var map     = this.parent.map,
-		mapSize = map.length,
-		zIndex  = Number(this.$node.style.zIndex),
-		i;
+    var map     = this.parent.map,
+        mapSize = map.length,
+        zIndex  = Number(this.$node.style.zIndex),
+        i;
 
-	if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
-	if ( Number(shift) !== shift ) { throw new Error(__filename + ': shift must be a number'); }
-	if ( typeof type !== 'string' || type.length === 0 ) { throw new Error(__filename + ': wrong or empty type'); }
+    if ( arguments.length !== 2 ) { throw new Error(__filename + ': wrong arguments number'); }
+    if ( Number(shift) !== shift ) { throw new Error(__filename + ': shift must be a number'); }
+    if ( typeof type !== 'string' || type.length === 0 ) { throw new Error(__filename + ': wrong or empty type'); }
 
-	// move
-	map.splice(zIndex, 1);
-	map.splice(zIndex + shift, 0, this);
+    // move
+    map.splice(zIndex, 1);
+    map.splice(zIndex + shift, 0, this);
 
-	// reindex
-	for ( i = 0; i < mapSize; i++ ) { map[i].$node.style.zIndex = i; }
+    // reindex
+    for ( i = 0; i < mapSize; i++ ) { map[i].$node.style.zIndex = i; }
 
-	// there are some listeners
-	if ( this.events['move'] ) {
-		// notify listeners
-		this.emit('move', {shift: shift, type: type});
-	}
+    // there are some listeners
+    if ( this.events['move'] ) {
+        // notify listeners
+        this.emit('move', {shift: shift, type: type});
+    }
 
-	/*// there are some listeners
-	if ( this.parent.events['change'] ) {
-		// notify listeners
-		this.emit('change', {state: event, item: this});
-	}*/
+    /*// there are some listeners
+    if ( this.parent.events['change'] ) {
+        // notify listeners
+        this.emit('change', {state: event, item: this});
+    }*/
 };
 
 
@@ -134,7 +134,7 @@ LayerItem.prototype.move = function ( shift, type ) {
  * @param {number} [step=1] shift size
  */
 LayerItem.prototype.moveUp = function ( step ) {
-	this.move(step || 1, 'up');
+    this.move(step || 1, 'up');
 };
 
 
@@ -144,7 +144,7 @@ LayerItem.prototype.moveUp = function ( step ) {
  * @param {number} [step=-1] shift size
  */
 LayerItem.prototype.moveDown = function ( step ) {
-	this.move(-step || -1, 'down');
+    this.move(-step || -1, 'down');
 };
 
 
@@ -152,7 +152,7 @@ LayerItem.prototype.moveDown = function ( step ) {
  * Move layer to the top of the layers list.
  */
 LayerItem.prototype.moveTop = function () {
-	this.move(this.parent.map.length, 'top');
+    this.move(this.parent.map.length, 'top');
 };
 
 
@@ -160,13 +160,13 @@ LayerItem.prototype.moveTop = function () {
  * Move layer to the bottom of the layers list.
  */
 LayerItem.prototype.moveBottom = function () {
-	this.move(-this.$node.style.zIndex, 'bottom');
+    this.move(-this.$node.style.zIndex, 'bottom');
 };
 
 
 if ( DEBUG ) {
-	// expose to the global scope
-	window.ComponentLayerItem = LayerItem;
+    // expose to the global scope
+    window.ComponentLayerItem = LayerItem;
 }
 
 

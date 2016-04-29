@@ -5,18 +5,18 @@
 
 
 .component {
-	// component's outer dom element
-	&.hidden {
-		// need to force
-		// as some components apply "display" later
-		display: none !important;
-	}
+    // component's outer dom element
+    &.hidden {
+        // need to force
+        // as some components apply "display" later
+        display: none !important;
+    }
 
-	div {
-		// The width and height (also including min-width, max-width, min-height and max-height properties) of an element
-		// are calculated as the width/height of the content plus the padding and border.
-		-webkit-box-sizing: border-box;
-	}
+    div {
+        // The width and height (also including min-width, max-width, min-height and max-height properties) of an element
+        // are calculated as the width/height of the content plus the padding and border.
+        -webkit-box-sizing: border-box;
+    }
 }
 
 
@@ -36,3 +36,8 @@
 @import "./ui/tab.list.less";
 @import "./ui/layer.item.less";
 @import "./ui/layer.list.less";
+@import "./ui/layout.less";
+@import "./ui/check.list.less";
+@import "./ui/radio.list.less";
+@import "./ui/scroll.area.less";
+@import "./ui/value.list.less";
