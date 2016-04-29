@@ -67,6 +67,7 @@ DataCacher.prototype.get = function ( direction, callback ) {
 	switch ( direction ) {
 		case null:
 			blocked = true;
+            this.config.offset = this.pos;
 			this.config.limit = this.cacheSize;
 			this.getter(function ( e, data ) {
 				if ( !e ) {
