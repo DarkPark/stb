@@ -1,6 +1,6 @@
 // component styles
 //
-// @author Stanislav Kalashnik <sk@infomir.eu>
+// @author Fedotov <d.fedotov@infomir.com>
 // @license GNU GENERAL PUBLIC LICENSE Version 3
 
 .component.footer {
@@ -28,21 +28,6 @@
                     visibility:inherit;
                     &.hidden { visibility:hidden; }
 
-                    & > .left, & > .right {
-                        display:none; //inline-block; // TODO: restore if needed
-                        height:unit(@panelMainTitleHeight / 2, px);
-                        width:unit(@panelMainTitleHeight / 4, px);
-                        padding:0;
-                        margin:0;
-                    }
-                    & > .left {
-                        border-bottom-left-radius:unit(@panelMainTitleHeight / 2, px);
-                        border-top-left-radius:unit(@panelMainTitleHeight / 2, px);
-                    }
-                    & > .right {
-                        border-bottom-right-radius:unit(@panelMainTitleHeight / 2, px);
-                        border-top-right-radius:unit(@panelMainTitleHeight / 2, px);
-                    }
                     & > .button {
                         display:inline-block;
                         height:unit(@panelMainTitleHeight / 2, px);
@@ -50,27 +35,22 @@
 
                         &.hidden { display:none; }
 
-                        .f1, .f2, .f3, .f4 {
-                            height:inherit;
-                            width:unit(@panelMainTitleHeight / 2, px);
-                            display:inline-block;
-                        }
+                        .f1, .f2, .f3, .f4 { width:unit(@panelMainTitleHeight / 2, px); }
                     }
                 }
             }
 
             .icon {
-                height:inherit;
                 width:unit(@panelMainTitleHeight / 2, px);
-                display:inline-block;
+                display:block;
+                float:left;
                 background:no-repeat center center;
             }
 
             .title {
-                display:inline-block;
+                display:block;
+                float:right;
                 text-align:center;
-                height:inherit;
-                line-height:inherit;
             }
         }
     }

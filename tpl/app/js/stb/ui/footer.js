@@ -1,6 +1,6 @@
 /**
  * @module stb/ui/footer
- * @author Stanislav Kalashnik <sk@infomir.eu>
+ // @author Fedotov <d.fedotov@infomir.com>
  * @license GNU GENERAL PUBLIC LICENSE Version 3
  */
 
@@ -78,19 +78,19 @@ function Footer ( config ) {
                 this.$wrapper = dom.tag('div', {className: 'wrapper hidden'},
                     dom.tag('div', {className: 'left'}),
                     this.buttons.f1.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'f1'}, 'F1'),
+                        dom.tag('div', {className: 'icon f1'}),
                         dom.tag('div', {className: 'title'})
                     ),
                     this.buttons.f2.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'f2'}, 'F2'),
+                        dom.tag('div', {className: 'icon f2'}),
                         dom.tag('div', {className: 'title'})
                     ),
                     this.buttons.f3.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'f3'}, 'F3'),
+                        dom.tag('div', {className: 'icon f3'}),
                         dom.tag('div', {className: 'title'})
                     ),
                     this.buttons.f4.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'f4'}, 'F4'),
+                        dom.tag('div', {className: 'icon f4'}),
                         dom.tag('div', {className: 'title'})
                     ),
                     dom.tag('div', {className: 'right'})
