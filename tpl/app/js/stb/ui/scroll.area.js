@@ -133,6 +133,8 @@ ScrollArea.prototype.move = function ( direction ) {
     switch ( direction ) {
         case keys.down:
             if ( this.topPosition - this.step * app.data.metrics.height / 100 < this.viewHeight - this.realHeight ) {
+                this.topPosition = this.viewHeight - this.realHeight;
+                this.$body.style.top =  this.topPosition + 'px';
                 this.emit('overflow', {direction: direction});
                 return;
             }
@@ -146,6 +148,8 @@ ScrollArea.prototype.move = function ( direction ) {
             break;
         case keys.up:
             if ( this.topPosition + this.step * app.data.metrics.height / 100 > 0 ) {
+                this.topPosition = 0;
+                this.$body.style.top =  this.topPosition + 'px';
                 this.emit('overflow', {direction: direction});
                 return;
             }
@@ -182,8 +186,8 @@ ScrollArea.prototype.init = function ( config ) {
 
     if ( this.scroll ) {
         this.scroll.init({
-            realSize:this.realHeight,
-            viewSize:this.viewHeight
+            realSize: this.realHeight,
+            viewSize: this.viewHeight
         });
     }
 };
