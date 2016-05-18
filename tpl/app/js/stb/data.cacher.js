@@ -41,7 +41,7 @@ function DataCacher ( config ) {
     this.data = [];
     this.head = 0;
     this.tail = 0;
-    this.pos = 0;
+    this.pos = config.pos || 0;
     this.cacheSize = ( config.cacheSize || 2 ) * this.size;
     this.config = config.request || {};
     this.botEmptyLine = false;
@@ -72,17 +72,27 @@ DataCacher.prototype.get = function ( direction, callback ) {
     switch ( direction ) {
         case null:
             blocked = true;
-            this.config.offset = this.pos;
-            this.config.limit = this.cacheSize;
+            //this.config.offset = this.pos;
+            if ( this.config.offset ) {
+                this.head = this.config.offset;
+                this.config.limit = 2 * this.cacheSize;
+            } else {
+                this.config.limit = this.cacheSize;
+            }
+
             this.getter(function ( e, data ) {
+                if ( self.headItem && !self.config.offset ) {
+                    data.unshift(self.headItem);
+                    delta = 1;
+                }
                 if ( !e ) {
                     self.data = data;
-                    self.tail = data.length;
-                    self.checkNext();
-                }
-                if ( self.headItem ) {
-                    self.data.unshift(self.headItem);
-                    delta = 1;
+                    self.tail = self.head + data.length;
+                    if ( data.length < self.config.limit ) {
+                        self.botEmptyLine = true;
+                    } else {
+                        self.checkNext();
+                    }
                 }
                 blocked = false;
                 receivedData = self.data.slice(self.pos, self.pos + self.size);
@@ -219,11 +229,13 @@ DataCacher.prototype.checkNext = function ( cb ) {
     if ( this.botEmptyLine ) {
         if ( this.pos > this.data.length - this.size ) {
             this.pos = this.data.length - this.size;
+            if ( this.pos < 0 ) {
+                this.pos = 0;
+            }
         }
         if ( cb ) {
             cb(false, this.data.slice(this.pos, this.pos + this.size));
         }
-
         return;
     }
 
@@ -233,6 +245,9 @@ DataCacher.prototype.checkNext = function ( cb ) {
             if ( count <= 0 ) {
                 if ( self.pos > self.data.length - self.size ) {
                     self.pos = self.data.length - self.size;
+                    if ( self.pos < 0 ) {
+                        self.pos = 0;
+                    }
                 }
                 if ( cb ) {
                     cb(false, self.data.slice(self.pos, self.pos + self.size));
@@ -263,6 +278,9 @@ DataCacher.prototype.checkNext = function ( cb ) {
                 }
                 if ( self.pos > self.data.length - self.size ) {
                     self.pos = self.data.length - self.size;
+                    if ( self.pos < 0 ) {
+                        self.pos = 0;
+                    }
                 }
             }
             if ( cb ) {
