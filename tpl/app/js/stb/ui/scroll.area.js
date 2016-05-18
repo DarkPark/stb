@@ -136,6 +136,9 @@ ScrollArea.prototype.move = function ( direction ) {
                 this.topPosition = this.viewHeight - this.realHeight;
                 this.$body.style.top =  this.topPosition + 'px';
                 this.emit('overflow', {direction: direction});
+                if ( this.scroll ) {
+                    this.scroll.scrollTo(-this.topPosition);
+                }
                 return;
             }
 
@@ -151,6 +154,9 @@ ScrollArea.prototype.move = function ( direction ) {
                 this.topPosition = 0;
                 this.$body.style.top =  this.topPosition + 'px';
                 this.emit('overflow', {direction: direction});
+                if ( this.scroll ) {
+                    this.scroll.scrollTo(-this.topPosition);
+                }
                 return;
             }
             this.topPosition += this.step * app.data.metrics.height / 100;
