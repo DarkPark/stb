@@ -62,6 +62,7 @@ function ModalMessage ( config ) {
 
     // add table-cell wrappers
     this.$node.appendChild(document.createElement('div'));
+    this.$node.firstChild.classList.add('alignBox');
     this.$node.firstChild.appendChild(document.createElement('div'));
 
     // add header div

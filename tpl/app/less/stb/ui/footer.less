@@ -26,7 +26,7 @@
                 & > .wrapper {
                     height:unit(@footerHeight, px);
                     visibility:inherit;
-                    &.hidden { visibility:hidden; }
+                    &.hidden { display:none; }
 
                     & > .button {
                         display:inline-block;
@@ -49,6 +49,13 @@
                 background:no-repeat center center;
 
                 &.info { text-align:right; }
+            }
+
+            .iconImg {
+                height:unit(@footerHeight, px);
+                line-height:unit(@footerHeight, px);
+                width:unit(@footerHeight, px);
+                text-align:center;
             }
 
             .title {

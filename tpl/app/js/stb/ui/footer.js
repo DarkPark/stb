@@ -21,19 +21,21 @@ var Component = require('../component'),
  * @param {Object} config={} init parameters
  * @param {Object} config.parent parent page
  * @param {boolean} [config.visible] visibility flag
- * @param {Object} [config.buttons] buttons config
- * @param {Object || boolean} [config.buttons.f1] f1 button config, if false button will be hidden
- * @param {string} [config.buttons.f1.title] f1 button title
- * @param {Function} [config.buttons.f1.action] f1 button press (click) action
+ * @param {Array} [config.data] buttons config
+ * @param {Object} [config.data.type] button type
+ * @param {string} [config.data.title] button title
+ * @param {Function} [config.data.action] button press (click) action
  *
- *
+ * @example
  * page.footer = new Footer({
  *        parent: page,
- *        data: {
- *            f1: false,
- *            f2: {title: 'start', action: function () {}},
- *            f4: {title: 'end'} // button f3 will stay in same state
- *        }
+ *        data: [
+ *            {type: 'info'},
+ *            {type: 'menu', action: function () {}},
+ *            {type: 'f1', title: 'stop', action: function () {}},
+ *            {type: 'f2', title: 'start', action: function () {}},
+ *            {type: 'f4', title: 'end', action: function () {}}
+ *        ]
  *    });
  * page.add(page.footer);
  */
@@ -60,44 +62,37 @@ function Footer ( config ) {
     // parent constructor call
     Component.call(this, config);
 
-    this.buttons = {
-        menu: {visibility: false},
-        info: {visibility: false},
-        f1: {visibility: false},
-        f2: {visibility: false},
-        f3: {visibility: false},
-        f4: {visibility: false}
-    };
+    this.tabs = [];
+
+    this.tab = 0;
 
     this.$node.appendChild(dom.tag('table', {},
         dom.tag('tr', {},
             dom.tag('td', {},
-                this.buttons.menu.$node = dom.tag('div', {className: 'icon menu'})
+                dom.tag('div', {className: 'icon menu'})
             ),
             dom.tag('td', {className: 'central'},
-                this.$wrapper = dom.tag('div', {className: 'wrapper hidden'},
-                    dom.tag('div', {className: 'left'}),
-                    this.buttons.f1.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'icon f1'}),
-                        dom.tag('div', {className: 'title'})
-                    ),
-                    this.buttons.f2.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'icon f2'}),
-                        dom.tag('div', {className: 'title'})
-                    ),
-                    this.buttons.f3.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'icon f3'}),
-                        dom.tag('div', {className: 'title'})
-                    ),
-                    this.buttons.f4.$node = dom.tag('div', {className: 'button hidden'},
-                        dom.tag('div', {className: 'icon f4'}),
-                        dom.tag('div', {className: 'title'})
-                    ),
-                    dom.tag('div', {className: 'right'})
+                this.tabs[0] = dom.tag('div', {className: 'wrapper hidden'},
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
+                ),
+                this.tabs[1] = dom.tag('div', {className: 'wrapper hidden'},
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
+                ),
+                this.tabs[2] = dom.tag('div', {className: 'wrapper hidden'},
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
+                ),
+                this.tabs[3] = dom.tag('div', {className: 'wrapper hidden'},
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
+                    dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
                 )
             ),
             dom.tag('td', {},
-                this.buttons.info.$node = dom.tag('div', {className: 'icon info'})
+                this.$info = dom.tag('div', {className: 'icon info'})
             )
         )
     ));
@@ -107,37 +102,29 @@ function Footer ( config ) {
     self = this;
 
     this.parent.addListener('keydown', function ( event ) {
+        var currTab = self.tabs[self.tab];
+
         switch ( event.code ) {
             case keys.f1:
-                if ( typeof self.buttons.f1.action === 'function' && self.buttons.f1.visibility ) {
-                    self.buttons.f1.action();
-                }
+                if ( currTab.f1 && typeof currTab.f1.action === 'function' ) { currTab.f1.action(); }
                 break;
             case keys.f2:
-                if ( typeof self.buttons.f2.action === 'function' && self.buttons.f2.visibility ) {
-                    self.buttons.f2.action();
-                }
+                if ( currTab.f2 && typeof currTab.f2.action === 'function' ) { currTab.f2.action(); }
                 break;
             case keys.f3:
-                if ( typeof self.buttons.f3.action === 'function' && self.buttons.f3.visibility ) {
-                    self.buttons.f3.action();
-                }
+                if ( currTab.f3 && typeof currTab.f3.action === 'function' ) { currTab.f3.action(); }
                 break;
             case keys.f4:
-                if ( typeof self.buttons.f4.action === 'function' && self.buttons.f4.visibility ) {
-                    self.buttons.f4.action();
-                }
+                if ( currTab.f4 && typeof currTab.f4.action === 'function' ) { currTab.f4.action(); }
                 break;
             case keys.menu:
-                if ( typeof self.buttons.menu.action === 'function' && self.buttons.menu.visibility ) {
-                    self.buttons.menu.action();
-                }
+                if ( currTab.menu && typeof currTab.menu.action === 'function' ) { currTab.menu.action(); }
                 break;
             case keys.info:
-                if ( self.$wrapper.classList.contains('hidden') ) {
-                    self.$wrapper.classList.remove('hidden');
+                if ( currTab.classList.contains('hidden') ) {
+                    currTab.classList.remove('hidden');
                 } else {
-                    self.$wrapper.classList.add('hidden');
+                    currTab.classList.add('hidden');
                 }
                 break;
         }
@@ -153,50 +140,49 @@ Footer.prototype.constructor = Footer;
 /**
  * Redefine buttons
  *
- * @param {Object} [config] buttons config
- * @param {Object} [config.f1] f1 button config, if false button will be hidden
- * @param {Object} [config.f1.title] f1 button title
- * @param {Object} [config.f1.action] f1 button press (click) action
+ * @param {Array} [config] buttons config
+ * @param {Object} [config.type] f1 button config, if false button will be hidden
+ * @param {Object} [config.title] f1 button title
+ * @param {Object} [config.action] f1 button press (click) action
  *
+ * @example
  * page.Footer.init({
- *            f1: false, // hide f1
- *            menu: true, // show menu
- *            info: true,
- *            f2: {title: 'start', action: function () {}},
- *            f4: {title: 'end'} // show f4 (if it was hidden) and set new title
+ *            {type: 'info'},
+ *            {type: 'menu', action: function () {}},
+ *            {type: 'f1', title: 'stop', action: function () {}},
+ *            {type: 'f2', title: 'start', action: function () {}},
+ *            {type: 'f4', title: 'end', action: function () {}}
  *    });
  */
 Footer.prototype.init = function ( config ) {
-    var item;
+    var visible = !this.tabs[this.tab].classList.contains('hidden'),
+        tab = 0,
+        i;
 
-    config = config || {};
+    config = config || [];
+    this.tabs[this.tab].classList.add('hidden');
+    this.$info.classList.add('hidden');
+    config.forEach(function ( item ) { if ( ['f1', 'f2', 'f3', 'f4'].indexOf(item.type) !== -1 ) { tab++; } });
+    this.tab = tab === 0 ? 0 : tab - 1;
+    tab = 0;
 
-    for ( item in config ) {
-        if ( config.hasOwnProperty(item) && this.buttons[item] !== undefined ) {
-            if ( !!config[item] !== this.buttons[item].visibility ) {
-                if ( this.buttons[item].visibility = !!config[item] ) {
-                    this.buttons[item].$node.classList.remove('hidden');
-                } else {
-                    this.buttons[item].$node.classList.add('hidden');
-                }
-            }
-            if ( config[item].action !== undefined ) {
-                this.buttons[item].action = config[item].action;
-                this.buttons[item].$node.onclick = config[item].action;
-            }
-            if ( item !== 'info' && item !== 'menu' ) {
-                if ( config[item].title !== undefined && config[item].title !== this.buttons[item].$node.children[1].innerHTML ) {
-                    this.buttons[item].$node.children[1].innerHTML = config[item].title;
-                }
+    for ( i = 0; i < config.length; i++ ) {
+        if ( DEBUG ) {
+            if ( ['f1', 'f2', 'f3', 'f4', 'menu', 'info'].indexOf(config[i].type) === -1 ) {
+                throw new Error(__filename + ': allowed footer buttons are: f1, f2, f3, f4, menu, info');
             }
         }
+        if ( config[i].type === 'info' ) {
+            this.$info.classList.remove('hidden'); // info button has only visibility flag
+            continue;
+        }
+        this.tabs[this.tab][config[i].type] = {action: config[i].action};
+        if ( config[i].type === 'menu' ) { continue; } // menu button has only action
+        this.tabs[this.tab].children[tab].children[0].className = 'iconImg ' + config[i].type;
+        this.tabs[this.tab].children[tab].children[1].innerText = config[i].title;
+        tab++;
     }
-
-    if ( !this.buttons.menu.visibility && !this.buttons.f1.visibility && !this.buttons.f2.visibility && !this.buttons.f3.visibility && !this.buttons.f4.visibility ) {
-        this.hide();
-    } else {
-        this.show();
-    }
+    if ( visible ) { this.tabs[this.tab].classList.remove('hidden'); }
 };
 
 
