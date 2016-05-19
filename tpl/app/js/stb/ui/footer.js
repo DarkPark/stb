@@ -146,13 +146,13 @@ Footer.prototype.constructor = Footer;
  * @param {Object} [config.action] f1 button press (click) action
  *
  * @example
- * page.Footer.init({
+ * page.Footer.init([
  *            {type: 'info'},
  *            {type: 'menu', action: function () {}},
  *            {type: 'f1', title: 'stop', action: function () {}},
  *            {type: 'f2', title: 'start', action: function () {}},
  *            {type: 'f4', title: 'end', action: function () {}}
- *    });
+ *    ]);
  */
 Footer.prototype.init = function ( config ) {
     var visible = !this.tabs[this.tab].classList.contains('hidden'),
