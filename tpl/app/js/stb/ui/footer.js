@@ -30,7 +30,6 @@ var Component = require('../component'),
  * page.footer = new Footer({
  *        parent: page,
  *        data: [
- *            {type: 'info'},
  *            {type: 'menu', action: function () {}},
  *            {type: 'f1', title: 'stop', action: function () {}},
  *            {type: 'f2', title: 'start', action: function () {}},
@@ -149,7 +148,6 @@ Footer.prototype.constructor = Footer;
  *
  * @example
  * page.Footer.init([
- *            {type: 'info'},
  *            {type: 'menu', action: function () {}},
  *            {type: 'f1', title: 'stop', action: function () {}},
  *            {type: 'f2', title: 'start', action: function () {}},
@@ -174,16 +172,13 @@ Footer.prototype.init = function ( config ) {
                 throw new Error(__filename + ': allowed footer buttons are: f1, f2, f3, f4, menu, info');
             }
         }
-        if ( config[i].type === 'info' ) {
-            this.$info.style.display = 'block'; // info button has only visibility flag
-            continue;
-        }
         this.tabs[this.tab][config[i].type] = {action: config[i].action};
         if ( config[i].type === 'menu' ) { continue; } // menu button has only action
         this.tabs[this.tab].children[tab].children[0].className = 'iconImg ' + config[i].type;
         this.tabs[this.tab].children[tab].children[1].innerText = config[i].title;
         tab++;
     }
+    if ( tab ) { this.$info.style.display = 'block'; }
     if ( visible && tab ) { this.tabs[this.tab].classList.remove('hidden'); }
 };
 
