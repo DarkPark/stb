@@ -121,10 +121,12 @@ function Footer ( config ) {
                 if ( currTab.menu && typeof currTab.menu.action === 'function' ) { currTab.menu.action(); }
                 break;
             case keys.info:
-                if ( currTab.classList.contains('hidden') ) {
-                    currTab.classList.remove('hidden');
-                } else {
-                    currTab.classList.add('hidden');
+                if ( self.$info.style.display !== 'none' ) {
+                    if ( currTab.classList.contains('hidden') ) {
+                        currTab.classList.remove('hidden');
+                    } else {
+                        currTab.classList.add('hidden');
+                    }
                 }
                 break;
         }
@@ -161,7 +163,7 @@ Footer.prototype.init = function ( config ) {
 
     config = config || [];
     this.tabs[this.tab].classList.add('hidden');
-    this.$info.classList.add('hidden');
+    this.$info.style.display = 'none';
     config.forEach(function ( item ) { if ( ['f1', 'f2', 'f3', 'f4'].indexOf(item.type) !== -1 ) { tab++; } });
     this.tab = tab === 0 ? 0 : tab - 1;
     tab = 0;
@@ -173,7 +175,7 @@ Footer.prototype.init = function ( config ) {
             }
         }
         if ( config[i].type === 'info' ) {
-            this.$info.classList.remove('hidden'); // info button has only visibility flag
+            this.$info.style.display = 'block'; // info button has only visibility flag
             continue;
         }
         this.tabs[this.tab][config[i].type] = {action: config[i].action};
@@ -182,7 +184,7 @@ Footer.prototype.init = function ( config ) {
         this.tabs[this.tab].children[tab].children[1].innerText = config[i].title;
         tab++;
     }
-    if ( visible ) { this.tabs[this.tab].classList.remove('hidden'); }
+    if ( visible && tab ) { this.tabs[this.tab].classList.remove('hidden'); }
 };
 
 
