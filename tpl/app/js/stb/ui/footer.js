@@ -103,31 +103,33 @@ function Footer ( config ) {
     this.parent.addListener('keydown', function ( event ) {
         var currTab = self.tabs[self.tab];
 
-        switch ( event.code ) {
-            case keys.f1:
-                if ( currTab.f1 && typeof currTab.f1.action === 'function' ) { currTab.f1.action(); }
-                break;
-            case keys.f2:
-                if ( currTab.f2 && typeof currTab.f2.action === 'function' ) { currTab.f2.action(); }
-                break;
-            case keys.f3:
-                if ( currTab.f3 && typeof currTab.f3.action === 'function' ) { currTab.f3.action(); }
-                break;
-            case keys.f4:
-                if ( currTab.f4 && typeof currTab.f4.action === 'function' ) { currTab.f4.action(); }
-                break;
-            case keys.menu:
-                if ( currTab.menu && typeof currTab.menu.action === 'function' ) { currTab.menu.action(); }
-                break;
-            case keys.info:
-                if ( self.$info.style.display !== 'none' ) {
-                    if ( currTab.classList.contains('hidden') ) {
-                        currTab.classList.remove('hidden');
-                    } else {
-                        currTab.classList.add('hidden');
+        if ( self.visible ) {
+            switch ( event.code ) {
+                case keys.f1:
+                    if ( currTab.f1 && typeof currTab.f1.action === 'function' ) { currTab.f1.action(); }
+                    break;
+                case keys.f2:
+                    if ( currTab.f2 && typeof currTab.f2.action === 'function' ) { currTab.f2.action(); }
+                    break;
+                case keys.f3:
+                    if ( currTab.f3 && typeof currTab.f3.action === 'function' ) { currTab.f3.action(); }
+                    break;
+                case keys.f4:
+                    if ( currTab.f4 && typeof currTab.f4.action === 'function' ) { currTab.f4.action(); }
+                    break;
+                case keys.menu:
+                    if ( currTab.menu && typeof currTab.menu.action === 'function' ) { currTab.menu.action(); }
+                    break;
+                case keys.info:
+                    if ( self.$info.style.display !== 'none' ) {
+                        if ( currTab.classList.contains('hidden') ) {
+                            currTab.classList.remove('hidden');
+                        } else {
+                            currTab.classList.add('hidden');
+                        }
                     }
-                }
-                break;
+                    break;
+            }
         }
     });
 }
