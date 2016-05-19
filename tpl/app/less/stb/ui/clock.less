@@ -1,9 +1,14 @@
-@clockBlockHeight: (@panelMainHeight - @panelHeight) / 2;
-// clock
+@clockBlockSurroundGap: 9;
+@clockBlockHeight: @leftPanelTop - @mainPanelTop - @clockBlockSurroundGap;
+
 .component.clock {
     color: #fff;
     height: unit(@clockBlockHeight, px);
-    right: unit(@pagePadding + @safePadding, px);
+    line-height: unit(@clockBlockHeight, px);
+    padding-right: unit(@safePadding, px);
     position: absolute;
-    top: unit(@leftPanelTop - @clockBlockHeight, px);
+    right: unit(@pagePadding, px);
+    text-align: right;
+    top: unit(@mainPanelTop, px);
+    width: unit(@panelWidth - @panelShadowWidth, px);
 }
