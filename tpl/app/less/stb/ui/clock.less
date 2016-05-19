@@ -3,7 +3,7 @@
 .component.clock {
     color: #fff;
     height: unit(@clockBlockHeight, px);
-    right: unit(@pagePadding, px);
+    right: unit(@pagePadding + @safePadding, px);
     position: absolute;
     top: unit(@leftPanelTop - @clockBlockHeight, px);
 }
