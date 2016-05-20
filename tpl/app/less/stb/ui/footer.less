@@ -4,11 +4,11 @@
 // @license GNU GENERAL PUBLIC LICENSE Version 3
 
 .component.footer {
-    width:unit(@width - 2 * @footerPadding, px);
+    width:unit(@width - 2 * (@safePadding + @pagePadding), px);
     height:unit(@footerHeight, px);
     line-height:unit(@footerHeight, px);
     position:absolute;
-    left:unit(@footerPadding, px);
+    left:unit(@safePadding + @pagePadding, px);
     bottom:unit(@footerPaddingBottom, px);
     display:table;
     z-index:10;
@@ -21,7 +21,7 @@
             width:unit(@footerHeight, px);
 
             &.central {
-                width:unit(@width - @footerPadding * 2 - @footerHeight * 2, px);
+                width:unit(@width - (@safePadding + @pagePadding) * 2 - @footerHeight * 2, px);
 
                 & > .wrapper {
                     height:unit(@footerHeight, px);

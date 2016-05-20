@@ -30,7 +30,6 @@ var Component = require('../component'),
  * page.footer = new Footer({
  *        parent: page,
  *        data: [
- *            {type: 'info'},
  *            {type: 'menu', action: function () {}},
  *            {type: 'f1', title: 'stop', action: function () {}},
  *            {type: 'f2', title: 'start', action: function () {}},
@@ -104,29 +103,33 @@ function Footer ( config ) {
     this.parent.addListener('keydown', function ( event ) {
         var currTab = self.tabs[self.tab];
 
-        switch ( event.code ) {
-            case keys.f1:
-                if ( currTab.f1 && typeof currTab.f1.action === 'function' ) { currTab.f1.action(); }
-                break;
-            case keys.f2:
-                if ( currTab.f2 && typeof currTab.f2.action === 'function' ) { currTab.f2.action(); }
-                break;
-            case keys.f3:
-                if ( currTab.f3 && typeof currTab.f3.action === 'function' ) { currTab.f3.action(); }
-                break;
-            case keys.f4:
-                if ( currTab.f4 && typeof currTab.f4.action === 'function' ) { currTab.f4.action(); }
-                break;
-            case keys.menu:
-                if ( currTab.menu && typeof currTab.menu.action === 'function' ) { currTab.menu.action(); }
-                break;
-            case keys.info:
-                if ( currTab.classList.contains('hidden') ) {
-                    currTab.classList.remove('hidden');
-                } else {
-                    currTab.classList.add('hidden');
-                }
-                break;
+        if ( self.visible ) {
+            switch ( event.code ) {
+                case keys.f1:
+                    if ( currTab.f1 && typeof currTab.f1.action === 'function' ) { currTab.f1.action(); }
+                    break;
+                case keys.f2:
+                    if ( currTab.f2 && typeof currTab.f2.action === 'function' ) { currTab.f2.action(); }
+                    break;
+                case keys.f3:
+                    if ( currTab.f3 && typeof currTab.f3.action === 'function' ) { currTab.f3.action(); }
+                    break;
+                case keys.f4:
+                    if ( currTab.f4 && typeof currTab.f4.action === 'function' ) { currTab.f4.action(); }
+                    break;
+                case keys.menu:
+                    if ( currTab.menu && typeof currTab.menu.action === 'function' ) { currTab.menu.action(); }
+                    break;
+                case keys.info:
+                    if ( self.$info.style.display !== 'none' ) {
+                        if ( currTab.classList.contains('hidden') ) {
+                            currTab.classList.remove('hidden');
+                        } else {
+                            currTab.classList.add('hidden');
+                        }
+                    }
+                    break;
+            }
         }
     });
 }
@@ -146,13 +149,12 @@ Footer.prototype.constructor = Footer;
  * @param {Object} [config.action] f1 button press (click) action
  *
  * @example
- * page.Footer.init({
- *            {type: 'info'},
+ * page.Footer.init([
  *            {type: 'menu', action: function () {}},
  *            {type: 'f1', title: 'stop', action: function () {}},
  *            {type: 'f2', title: 'start', action: function () {}},
  *            {type: 'f4', title: 'end', action: function () {}}
- *    });
+ *    ]);
  */
 Footer.prototype.init = function ( config ) {
     var visible = !this.tabs[this.tab].classList.contains('hidden'),
@@ -161,7 +163,7 @@ Footer.prototype.init = function ( config ) {
 
     config = config || [];
     this.tabs[this.tab].classList.add('hidden');
-    this.$info.classList.add('hidden');
+    this.$info.style.display = 'none';
     config.forEach(function ( item ) { if ( ['f1', 'f2', 'f3', 'f4'].indexOf(item.type) !== -1 ) { tab++; } });
     this.tab = tab === 0 ? 0 : tab - 1;
     tab = 0;
@@ -172,17 +174,14 @@ Footer.prototype.init = function ( config ) {
                 throw new Error(__filename + ': allowed footer buttons are: f1, f2, f3, f4, menu, info');
             }
         }
-        if ( config[i].type === 'info' ) {
-            this.$info.classList.remove('hidden'); // info button has only visibility flag
-            continue;
-        }
         this.tabs[this.tab][config[i].type] = {action: config[i].action};
         if ( config[i].type === 'menu' ) { continue; } // menu button has only action
         this.tabs[this.tab].children[tab].children[0].className = 'iconImg ' + config[i].type;
         this.tabs[this.tab].children[tab].children[1].innerText = config[i].title;
         tab++;
     }
-    if ( visible ) { this.tabs[this.tab].classList.remove('hidden'); }
+    if ( tab ) { this.$info.style.display = 'block'; }
+    if ( visible && tab ) { this.tabs[this.tab].classList.remove('hidden'); }
 };
 
 
