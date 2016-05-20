@@ -4,11 +4,12 @@
 .component.clock {
     color: #fff;
     height: unit(@clockBlockHeight, px);
-    line-height: unit(@clockBlockHeight, px);
+    line-height: unit(@clockBlockHeight + @clockBlockSurroundGap * 3, px);
     padding-right: unit(@safePadding, px);
     position: absolute;
     right: unit(@pagePadding, px);
     text-align: right;
     top: unit(@mainPanelTop, px);
     width: unit(@panelWidth - @panelShadowWidth / 5, px);
+    z-index: 100;
 }
