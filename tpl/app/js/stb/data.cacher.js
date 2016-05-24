@@ -29,7 +29,7 @@ var keys = require('./keys'),
  *			pageSize: 7,
  *			cacheSize: 2,
  *			request: {},
- *			getter: function ( callback, config ) {}
+ *			getter: function ( callback, config, count ) {}
  *		});
  *
  */
@@ -45,7 +45,7 @@ function DataCacher ( config ) {
     this.cacheSize = ( config.cacheSize || 2 ) * this.size;
     this.config = config.request || {};
     this.botEmptyLine = false;
-    this.maxCount = config.count;
+    this.maxCount = config.count || 0;
     this.headItem = config.headItem;
 
     this.getter = config.getter;
@@ -80,12 +80,13 @@ DataCacher.prototype.get = function ( direction, callback ) {
                 this.config.limit = this.cacheSize;
             }
 
-            this.getter(function ( e, data ) {
+            this.getter(function ( e, data, maxCount ) {
                 if ( self.headItem && !self.config.offset ) {
                     data.unshift(self.headItem);
                     delta = 1;
                 }
                 if ( !e ) {
+                    self.maxCount = maxCount;
                     self.data = data;
                     self.tail = self.head + data.length;
                     if ( data.length < self.config.limit ) {
@@ -165,8 +166,9 @@ DataCacher.prototype.get = function ( direction, callback ) {
                 blocked = true;
                 this.pos = 0;
                 this.config.limit = this.cacheSize;
-                this.getter(function ( e, data ) {
+                this.getter(function ( e, data, maxCount ) {
                     if ( !e ) {
+                        self.maxCount = maxCount;
                         self.data = data;
                         self.tail = data.length;
                         receivedData = self.data.slice(self.pos, self.pos + self.size);
@@ -200,8 +202,9 @@ DataCacher.prototype.get = function ( direction, callback ) {
                     this.tail = this.maxCount;
                     this.config.offset = this.head;
                     this.config.limit = 2 * this.cacheSize;
-                    this.getter(function ( e, data ) {
+                    this.getter(function ( e, data, maxCount ) {
                         if ( !e ) {
+                            self.maxCount = maxCount;
                             self.data = data;
                             self.pos = self.data.length - self.size;
                             if ( self.pos < 0 ) {
@@ -261,8 +264,9 @@ DataCacher.prototype.checkNext = function ( cb ) {
         if ( cb ) {
             blocked = true;
         }
-        this.getter(function ( e, data ) {
+        this.getter(function ( e, data, maxCount ) {
             if ( !e ) {
+                self.maxCount = maxCount;
                 if ( data.length < count ) {
                     self.botEmptyLine = true;
                 }
@@ -310,8 +314,9 @@ DataCacher.prototype.checkPrev = function ( cb ) {
             if ( cb ) {
                 blocked = true;
             }
-            this.getter(function ( e, data ) {
+            this.getter(function ( e, data, maxCount ) {
                 if ( !e ) {
+                    self.maxCount = maxCount;
                     self.data = data.concat(self.data);
                     if ( self.config.offset === 0 && self.headItem && self.data[0] !== self.headItem ) {
                         self.data.unshift(self.headItem);
