@@ -144,7 +144,9 @@ PanelEx.prototype.focus = function () {
     if ( this.index === 0 && this.parent.panels[1] && this.parent.panels[1].main ) {
         this.parent.panels[1].$node.classList.remove('position-left');
         this.parent.panels[1].$node.classList.add('position-right');
-        this.parent.panels[2].$node.classList.remove('expand');
+        if ( this.parent.panels[2] ) {
+            this.parent.panels[2].$node.classList.remove('expand');
+        }
         this.$node.classList.add('expand');
 
     } else if ( this.index === 2 && this.parent.panels[1].main ) {
