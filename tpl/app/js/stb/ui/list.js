@@ -429,6 +429,12 @@ List.prototype.init = function ( config ) {
                 if ( data ) {
                     config.data = data;
                     self.setData(config);
+                    if ( self.scroll ) {
+                        self.scroll.init({
+                            realSize: self.provider.maxCount,
+                            viewSize: self.provider.size
+                        });
+                    }
                 }
                 if ( self.events['data:get'] ) {
                     /**
@@ -455,6 +461,7 @@ List.prototype.init = function ( config ) {
  */
 List.prototype.setData = function ( config ) {
     // apply list of items
+
     if ( config.data ) {
         if ( DEBUG ) {
             if ( !Array.isArray(config.data) ) { throw new Error(__filename + ': wrong config.data type'); }
@@ -467,6 +474,13 @@ List.prototype.setData = function ( config ) {
     this.viewIndex = null;
     if ( this.$focusItem ) {
         this.blurItem(this.$focusItem);
+    }
+
+    if ( this.scroll && !this.provider ) {
+        this.scroll.init({
+            realSize: this.data.length,
+            viewSize: this.size
+        });
     }
 
     // set focus item
@@ -563,7 +577,7 @@ List.prototype.renderView = function ( index ) {
 
         // update a linked scroll component
         if ( this.scroll ) {
-            this.scroll.scrollTo(this.viewIndex);
+            this.scroll.scrollTo(this.provider? this.provider.head + this.provider.pos : this.viewIndex);
         }
 
         // full rebuild
