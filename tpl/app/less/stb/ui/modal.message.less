@@ -52,9 +52,10 @@
             & > div.body > .component.list .item {
                 height:unit(@panelTitleHeight, px);
                 line-height:unit(@panelTitleHeight, px);
-                padding:0 unit(@safePadding, px) 0 0;
+                padding:0 unit(@safePadding, px);
 
                 .component.checkBox, .component.layout > div.icon {
+                    margin-left:unit(@safePadding * (-1), px); // TODO: rework
                     width:unit(@panelTitleHeight, px);
                     height:unit(@panelTitleHeight, px);
                     line-height:unit(@panelTitleHeight, px);
