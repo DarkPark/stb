@@ -142,7 +142,7 @@ ScrollBar.prototype.init = function ( config ) {
     }
 
     // set actual scroll size
-    if ( config.realSize ) {
+    if ( config.realSize !== undefined ) {
         if ( DEBUG ) {
             if ( Number(config.realSize) !== config.realSize ) { throw new Error(__filename + ': config.realSize value must be a number'); }
         }

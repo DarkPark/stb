@@ -45,7 +45,7 @@ function RadioList ( config ) {
      *
      * @type {Element}
      */
-    this.$checked = null;
+    this.$checkedData = null;
 
     config.className = 'radioList ' + (config.className || '');
 
@@ -56,8 +56,9 @@ function RadioList ( config ) {
 
         item.checkBox.set(true);
         item.state = item.checkBox.value;
+        item.data.state = item.checkBox.value;
 
-        if ( self.$checked !== item ) {
+        if ( self.$checkedData !== item.data ) {
             /**
              * Select element from list.
              *
@@ -68,10 +69,11 @@ function RadioList ( config ) {
              * @property {Element} current selected element
              */
             self.emit('select', {
-                $last: self.$checked,
+                $last: self.$checkedData,
                 $curr: item
             });
-            self.$checked = item;
+            self.$checkedData.state = false;
+            self.$checkedData = item.data;
         }
 
     });
@@ -107,7 +109,6 @@ RadioList.prototype.renderItemDefault = function ( $item, data ) {
     if ( data.state ) {
         check.set(true);
         // set link to checked item
-        this.$checked = $item;
     }
 
     table.appendChild(tr);
@@ -131,9 +132,21 @@ RadioList.prototype.renderItemDefault = function ( $item, data ) {
 
 };
 
+RadioList.prototype.setData = function ( config ) {
+    var i;
+
+    List.prototype.setData.call(this, config);
+
+    for ( i = 0; i < this.data.length; i++ ) {
+        if ( this.data[i].state ) {
+            this.$checkedData = this.data[i];
+            break;
+        }
+    }
+
+};
 
 RadioList.prototype.renderItem = RadioList.prototype.renderItemDefault;
 
 
 module.exports = RadioList;
-

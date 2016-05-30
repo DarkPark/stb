@@ -134,7 +134,7 @@ ScrollArea.prototype.move = function ( direction ) {
         case keys.down:
             if ( this.topPosition - this.step * app.data.metrics.height / 100 < this.viewHeight - this.realHeight ) {
                 this.topPosition = this.viewHeight - this.realHeight;
-                this.$body.style.top =  this.topPosition + 'px';
+                //this.$body.style.top =  this.topPosition + 'px';
                 this.emit('overflow', {direction: direction});
                 if ( this.scroll ) {
                     this.scroll.scrollTo(-this.topPosition);
