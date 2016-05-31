@@ -236,7 +236,7 @@ List.prototype.defaultEvents = {
                 break;
             case keys.ok:
                 // there are some listeners
-                if ( this.events['click:item'] ) {
+                if ( this.events['click:item'] && this.$focusItem ) {
                     // notify listeners
                     this.emit('click:item', {$item: this.$focusItem, event: event});
                 }
@@ -432,7 +432,8 @@ List.prototype.init = function ( config ) {
                     if ( self.scroll ) {
                         self.scroll.init({
                             realSize: self.provider.maxCount,
-                            viewSize: self.provider.size
+                            viewSize: self.provider.size,
+                            value: self.provider.head + self.provider.pos
                         });
                     }
                 }
@@ -479,7 +480,8 @@ List.prototype.setData = function ( config ) {
     if ( this.scroll && !this.provider ) {
         this.scroll.init({
             realSize: this.data.length,
-            viewSize: this.size
+            viewSize: this.size,
+            value: config.viewIndex || 0
         });
     }
 

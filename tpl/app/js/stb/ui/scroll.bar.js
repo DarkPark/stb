@@ -142,7 +142,7 @@ ScrollBar.prototype.init = function ( config ) {
     }
 
     // set actual scroll size
-    if ( config.realSize ) {
+    if ( config.realSize !== undefined ) {
         if ( DEBUG ) {
             if ( Number(config.realSize) !== config.realSize ) { throw new Error(__filename + ': config.realSize value must be a number'); }
         }
@@ -151,10 +151,10 @@ ScrollBar.prototype.init = function ( config ) {
     }
 
     // set visible area size
-    if ( config.viewSize ) {
+    if ( config.viewSize !== undefined ) {
         if ( DEBUG ) {
             if ( Number(config.viewSize) !== config.viewSize ) { throw new Error(__filename + ': config.viewSize value must be a number'); }
-            if ( config.viewSize <= 0 ) { throw new Error(__filename + ': config.viewSize value must be greater than 0'); }
+            if ( config.viewSize < 0 ) { throw new Error(__filename + ': config.viewSize value must be greater than 0'); }
         }
         // apply
         this.viewSize = config.viewSize;

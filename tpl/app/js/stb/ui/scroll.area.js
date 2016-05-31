@@ -130,6 +130,11 @@ ScrollArea.prototype.defaultEvents = {
  * @param {number} direction to move
  */
 ScrollArea.prototype.move = function ( direction ) {
+
+    if ( this.realHeight <= this.viewHeight ) {
+        return;
+    }
+
     switch ( direction ) {
         case keys.down:
             if ( this.topPosition - this.step * app.data.metrics.height / 100 < this.viewHeight - this.realHeight ) {
@@ -181,7 +186,7 @@ ScrollArea.prototype.init = function ( config ) {
     this.realHeight = this.$body.offsetHeight;
     this.viewHeight = this.$node.offsetHeight;
     this.topPosition = 0;
-
+    this.$body.style.top =  this.topPosition + 'px';
     if ( config.scroll ) {
         this.scroll = config.scroll;
     }
@@ -193,7 +198,8 @@ ScrollArea.prototype.init = function ( config ) {
     if ( this.scroll ) {
         this.scroll.init({
             realSize: this.realHeight,
-            viewSize: this.viewHeight
+            viewSize: this.viewHeight,
+            value: this.topPosition
         });
     }
 };
