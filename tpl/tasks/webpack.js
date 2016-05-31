@@ -110,15 +110,15 @@ gulp.task('webpack:develop', function () {
         new webpack.webpack.DefinePlugin({
             DEBUG: true
     })];
-    
+
     if ( pkgInfo.config.name && pkgInfo.config.description) {
         // add translation for app name and description
         plugins.push(new webpack.webpack.BannerPlugin(util.format(
-            '*/(function(){var gettext = function(){};gettext("%s");gettext("%s");})()\n/*',
+            '/*\ngettext parser workaround\ngettext("%s");\ngettext("%s");\n*/\n',
             pkgInfo.config.name, pkgInfo.config.description
         )));
     }
-    
+
     return gulp
         .src(path.join(global.paths.app, 'js', 'stb', 'develop', 'main.js'))
         .pipe(plumber())
