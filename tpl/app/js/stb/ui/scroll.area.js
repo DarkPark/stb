@@ -137,7 +137,7 @@ ScrollArea.prototype.move = function ( direction ) {
                 //this.$body.style.top =  this.topPosition + 'px';
                 this.emit('overflow', {direction: direction});
                 if ( this.scroll ) {
-                    this.scroll.scrollTo(-this.topPosition);
+                    //this.scroll.scrollTo(-this.topPosition);
                 }
                 return;
             }
