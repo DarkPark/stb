@@ -151,10 +151,10 @@ ScrollBar.prototype.init = function ( config ) {
     }
 
     // set visible area size
-    if ( config.viewSize ) {
+    if ( config.viewSize !== undefined ) {
         if ( DEBUG ) {
             if ( Number(config.viewSize) !== config.viewSize ) { throw new Error(__filename + ': config.viewSize value must be a number'); }
-            if ( config.viewSize <= 0 ) { throw new Error(__filename + ': config.viewSize value must be greater than 0'); }
+            if ( config.viewSize < 0 ) { throw new Error(__filename + ': config.viewSize value must be greater than 0'); }
         }
         // apply
         this.viewSize = config.viewSize;
