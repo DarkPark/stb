@@ -65,6 +65,9 @@ function Input ( config ) {
     // set default className if classList property empty or undefined
     config.className = 'input ' + (config.className || '');
 
+    // Set maximum input length
+    config.maxlength = config.maxlength || 0;
+
     // parent constructor call
     Component.call(this, config);
 
@@ -188,6 +191,8 @@ Input.prototype.init = function ( config ) {
         this.$placeholder.innerText = config.placeholder;
     }
 
+    this.maxlength = config.maxlength;
+
     // char direction
     this.$line.dir = config.direction || 'ltr';
 };
@@ -214,40 +219,44 @@ Input.prototype.addChar = function ( char, index ) {
         if ( char.length !== 1 ) { throw new Error(__filename + ': char must be a string with length = 1'); }
     }
 
+    debug.log(index, 'yellow');
+
     // remove hint
     if ( this.value.length === 0 ) {
         this.$line.removeChild(this.$placeholder);
     }
 
-    // settings class name for span which presents one symbol in virtual input
-    $char.className = 'char';
+    if ( !this.maxlength || index <= this.maxlength ) {
+        // settings class name for span which presents one symbol in virtual input
+        $char.className = 'char';
 
-    // insert char into value
-    this.value = this.value.substring(0, index) + char + this.value.substring(index, this.value.length);
+        // insert char into value
+        this.value = this.value.substring(0, index) + char + this.value.substring(index, this.value.length);
 
-    // move caret
-    ++this.$caret.index;
+        // move caret
+        ++this.$caret.index;
 
-    if ( this.type === this.TYPE_PASSWORD ) {
-        $char.innerText = '*';
-    } else if ( char === ' ' ) {
-        $char.innerHTML = '&nbsp;';
-    } else {
-        $char.innerText = char;
-    }
+        if ( this.type === this.TYPE_PASSWORD ) {
+            $char.innerText = '*';
+        } else if ( char === ' ' ) {
+            $char.innerHTML = '&nbsp;';
+        } else {
+            $char.innerText = char;
+        }
 
-    if ( index >= this.value.length ) { // add char to the end, move caret to the end
-        this.$line.appendChild($char);
-        this.$line.appendChild(this.$caret);
-    } else { // move caret before index, append span before caret
-        this.$line.insertBefore(this.$caret, this.$line.children[index]);
-        this.$line.insertBefore($char, this.$caret);
-    }
+        if ( index >= this.value.length ) { // add char to the end, move caret to the end
+            this.$line.appendChild($char);
+            this.$line.appendChild(this.$caret);
+        } else { // move caret before index, append span before caret
+            this.$line.insertBefore(this.$caret, this.$line.children[index]);
+            this.$line.insertBefore($char, this.$caret);
+        }
 
-    // there are some listeners
-    if ( this.events['input'] ) {
-        // notify listeners
-        this.emit('input', {value: this.value});
+        // there are some listeners
+        if ( this.events['input'] ) {
+            // notify listeners
+            this.emit('input', {value: this.value});
+        }
     }
 };
 
