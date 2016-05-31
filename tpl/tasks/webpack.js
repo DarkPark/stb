@@ -114,7 +114,7 @@ gulp.task('webpack:develop', function () {
     if ( pkgInfo.config.name && pkgInfo.config.description) {
         // add translation for app name and description
         plugins.push(new webpack.webpack.BannerPlugin(util.format(
-            '/*\ngettext parser workaround\ngettext("%s");\ngettext("%s");\n*/\n',
+            '\ngettext parser workaround\ngettext("%s");\ngettext("%s");\n\n',
             pkgInfo.config.name, pkgInfo.config.description
         )));
     }
