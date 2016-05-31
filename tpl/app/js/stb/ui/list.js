@@ -236,7 +236,7 @@ List.prototype.defaultEvents = {
                 break;
             case keys.ok:
                 // there are some listeners
-                if ( this.events['click:item'] ) {
+                if ( this.events['click:item'] && this.$focusItem ) {
                     // notify listeners
                     this.emit('click:item', {$item: this.$focusItem, event: event});
                 }
