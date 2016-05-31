@@ -219,8 +219,6 @@ Input.prototype.addChar = function ( char, index ) {
         if ( char.length !== 1 ) { throw new Error(__filename + ': char must be a string with length = 1'); }
     }
 
-    debug.log(index, 'yellow');
-
     // remove hint
     if ( this.value.length === 0 ) {
         this.$line.removeChild(this.$placeholder);
