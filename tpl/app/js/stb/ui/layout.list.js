@@ -214,11 +214,11 @@ LayoutList.prototype.init = function ( config ) {
             this.$noData.appendChild($wrap);
         }
     }
-    if ( config.data && config.data.length ) {
-        this.$noData.classList.add('hidden');
-    } else {
-        this.$noData.classList.remove('hidden');
-    }
+    //if ( config.data && config.data.length ) {
+    //    this.$noData.classList.add('hidden');
+    //} else {
+    //    this.$noData.classList.remove('hidden');
+    //}
 
 
 };
