@@ -111,22 +111,7 @@ function LayoutList ( config ) {
     List.call(this, config);
 
     this.$node.appendChild(this.$body);
-
-
-    if ( config.noData ) {
-        if ( DEBUG ) {
-            if ( typeof config.noData !== 'string' && !(config.noData instanceof Element) ) { throw new Error(__filename + ': wrong config.$noData type'); }
-        }
-        if ( config.noData instanceof Element ) {
-            this.$noData.appendChild(config.noData);
-        } else if ( typeof config.noData === 'string' ) {
-            $wrap = document.createElement('div');
-            $wrap.innerText = config.noData;
-            this.$noData.appendChild($wrap);
-        }
-
-        this.$node.appendChild(this.$noData);
-    }
+    this.$node.appendChild(this.$noData);
 
     // add handler to focus inner layout
     this.addListener('click:item', function ( event ) {
@@ -213,12 +198,29 @@ LayoutList.prototype.setData = function ( config ) {
 
 
 LayoutList.prototype.init = function ( config ) {
+    var $wrap;
+
     List.prototype.init.call(this, config);
+    if ( config.noData ) {
+        if ( DEBUG ) {
+            if ( typeof config.noData !== 'string' && !(config.noData instanceof Element) ) { throw new Error(__filename + ': wrong config.$noData type'); }
+        }
+        this.$noData.innerHTML = '';
+        if ( config.noData instanceof Element ) {
+            this.$noData.appendChild(config.noData);
+        } else if ( typeof config.noData === 'string' ) {
+            $wrap = document.createElement('div');
+            $wrap.innerText = config.noData;
+            this.$noData.appendChild($wrap);
+        }
+    }
     if ( config.data && config.data.length ) {
         this.$noData.classList.add('hidden');
     } else {
         this.$noData.classList.remove('hidden');
     }
+
+
 };
 
 LayoutList.prototype.renderItem = LayoutList.prototype.renderItemDefault;
