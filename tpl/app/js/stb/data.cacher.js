@@ -22,6 +22,7 @@ var keys = require('./keys'),
  * @param {number}   [config.stepSize=5]  	step size (default 1)
  * @param {number}   [config.cacheSize=2]  	amount of cached pages (default 1)
  * @param {number}   [config.count=100]    	length of cached list
+ * @param {boolean}  [config.cycle=true]    allow or not to jump to the opposite side of a list when there is nowhere to go next
  *
  * @example
  * var Provider = require('stb/data.cacher'),
@@ -48,6 +49,7 @@ function DataCacher ( config ) {
     this.maxCount = config.count || 0;
     this.headItem = config.headItem;
 
+    this.cycle = config.cycle;
     this.getter = config.getter;
 
     blocked = false;
@@ -158,68 +160,13 @@ DataCacher.prototype.get = function ( direction, callback ) {
             if ( blocked ) {
                 break;
             }
-            if ( this.head === 0 ) {
-                this.pos = 0;
-                receivedData = this.data.slice(this.pos, this.pos + this.size);
-                callback(error, receivedData);
-            } else {
-                blocked = true;
-                this.pos = 0;
-                this.config.limit = this.cacheSize;
-                this.getter(function ( e, data, maxCount ) {
-                    if ( !e ) {
-                        self.maxCount = maxCount;
-                        self.data = data;
-                        self.tail = data.length;
-                        receivedData = self.data.slice(self.pos, self.pos + self.size);
-                        blocked = false;
-                        self.botEmptyLine = false;
-                    }
-                    callback(e, receivedData);
-                }, this.config);
-                break;
-            }
+            this.goHome(callback);
             break;
         case keys.end:
             if ( blocked ) {
                 break;
             }
-            if ( this.maxCount ) {
-                if ( this.tail === this.maxCount ) {
-                    self.pos = self.data.length - self.size;
-                    if ( self.pos < 0 ) {
-                        self.pos = 0;
-                    }
-                    receivedData = self.data.slice(self.pos, self.pos + self.size);
-                    self.botEmptyLine = true;
-                    callback(error, receivedData);
-                } else {
-                    blocked = true;
-                    this.head = this.maxCount - 2 * this.cacheSize;
-                    if ( this.head < 0 ) {
-                        this.head = 0;
-                    }
-                    this.tail = this.maxCount;
-                    this.config.offset = this.head;
-                    this.config.limit = 2 * this.cacheSize;
-                    this.getter(function ( e, data, maxCount ) {
-                        if ( !e ) {
-                            self.maxCount = maxCount;
-                            self.data = data;
-                            self.pos = self.data.length - self.size;
-                            if ( self.pos < 0 ) {
-                                self.pos = 0;
-                            }
-                            receivedData = self.data.slice(self.pos, self.pos + self.size);
-                            self.botEmptyLine = true;
-                            blocked = false;
-                        }
-                        callback(e, receivedData);
-                    }, this.config);
-                }
-            } else {
-                callback(true);
-            }
+            this.goEnd(callback);
             break;
     }
 };
@@ -231,6 +178,11 @@ DataCacher.prototype.checkNext = function ( cb ) {
 
     if ( this.botEmptyLine ) {
         if ( this.pos > this.data.length - this.size ) {
+            if ( this.cycle ) {
+                this.goHome(cb);
+                return;
+            }
+
             this.pos = this.data.length - this.size;
             if ( this.pos < 0 ) {
                 this.pos = 0;
@@ -342,11 +294,92 @@ DataCacher.prototype.checkPrev = function ( cb ) {
         }
 
         if ( this.pos < 0 ) {
+            if ( this.cycle ) {
+                this.goEnd(cb);
+                return;
+            }
             this.pos = 0;
         }
         if ( cb ) {
             cb(false, self.data.slice(self.pos, self.pos + self.size));
         }
+    }
+};
+
+DataCacher.prototype.goHome = function ( callback ) {
+    var receivedData = [],
+        self = this;
+
+    if ( this.head === 0 ) {
+        this.pos = 0;
+        receivedData = this.data.slice(this.pos, this.pos + this.size);
+        callback(false, receivedData, 0);
+    } else {
+        blocked = true;
+        this.pos = 0;
+        this.config.limit = this.cacheSize;
+        this.getter(function ( e, data, maxCount ) {
+            if ( !e ) {
+                self.maxCount = maxCount;
+                self.data = data;
+                self.tail = data.length;
+                receivedData = self.data.slice(self.pos, self.pos + self.size);
+                blocked = false;
+                self.botEmptyLine = false;
+            }
+            callback(e, receivedData, 0);
+        }, this.config);
+    }
+};
+
+DataCacher.prototype.goEnd = function ( callback ) {
+    var receivedData = [],
+        self = this,
+        pos;
+
+    if ( this.maxCount ) {
+        if ( this.tail === this.maxCount ) {
+            self.pos = self.data.length - self.size;
+            if ( self.pos < 0 ) {
+                self.pos = 0;
+            }
+            receivedData = self.data.slice(self.pos, self.pos + self.size);
+            pos = receivedData.length - 1;
+            if ( pos < 0 ) {
+                pos = 0;
+            }
+            self.botEmptyLine = true;
+            callback(false, receivedData, pos);
+        } else {
+            blocked = true;
+            this.head = this.maxCount - 2 * this.cacheSize;
+            if ( this.head < 0 ) {
+                this.head = 0;
+            }
+            this.tail = this.maxCount;
+            this.config.offset = this.head;
+            this.config.limit = 2 * this.cacheSize;
+            this.getter(function ( e, data, maxCount ) {
+                if ( !e ) {
+                    self.maxCount = maxCount;
+                    self.data = data;
+                    self.pos = self.data.length - self.size;
+                    if ( self.pos < 0 ) {
+                        self.pos = 0;
+                    }
+                    receivedData = self.data.slice(self.pos, self.pos + self.size);
+                    pos = receivedData.length - 1;
+                    if ( pos < 0 ) {
+                        pos = 0;
+                    }
+                    self.botEmptyLine = true;
+                    blocked = false;
+                }
+                callback(e, receivedData, pos);
+            }, this.config);
+        }
+    } else {
+        callback(true);
     }
 };
 
