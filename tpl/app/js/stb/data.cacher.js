@@ -317,12 +317,17 @@ DataCacher.prototype.goHome = function ( callback ) {
     } else {
         blocked = true;
         this.pos = 0;
+        this.head = 0;
+        this.config.offset = 0;
         this.config.limit = this.cacheSize;
         this.getter(function ( e, data, maxCount ) {
             if ( !e ) {
                 self.maxCount = maxCount;
                 self.data = data;
-                self.tail = data.length;
+                if ( self.headItem && self.data[0] !== self.headItem ) {
+                    self.data.unshift(self.headItem);
+                }
+                self.tail = self.data.length;
                 receivedData = self.data.slice(self.pos, self.pos + self.size);
                 blocked = false;
                 self.botEmptyLine = false;
