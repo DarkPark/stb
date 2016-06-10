@@ -647,7 +647,7 @@ List.prototype.move = function ( direction ) {
                     }
                 } else {
                     if ( this.provider ) {
-                        this.provider.get(direction, function ( error, data ) {
+                        this.provider.get(direction, function ( error, data, pos ) {
                             if ( error ) {
                                 if ( self.events['data:error'] ) {
                                     /**
@@ -659,7 +659,7 @@ List.prototype.move = function ( direction ) {
                                 }
                             } else {
                                 if ( data ) {
-                                    self.setData({data: data, focusIndex: self.$focusItem.index});
+                                    self.setData({data: data, focusIndex: pos || pos === 0 ? pos : self.$focusItem.index});
                                 }
                             }
                         });
@@ -693,7 +693,7 @@ List.prototype.move = function ( direction ) {
                     }
                 } else {
                     if ( this.provider ) {
-                        this.provider.get(direction, function ( error, data ) {
+                        this.provider.get(direction, function ( error, data, pos ) {
                             if ( error ) {
                                 if ( self.events['data:error'] ) {
                                     /**
@@ -705,7 +705,7 @@ List.prototype.move = function ( direction ) {
                                 }
                             } else {
                                 if ( data ) {
-                                    self.setData({data: data, focusIndex: self.$focusItem.index});
+                                    self.setData({data: data, focusIndex: pos || pos === 0 ? pos : self.$focusItem.index});
                                 }
                             }
                         });
@@ -725,7 +725,7 @@ List.prototype.move = function ( direction ) {
             break;
         case keys.pageUp:
             if ( this.provider ) {
-                this.provider.get(direction, function ( error, data ) {
+                this.provider.get(direction, function ( error, data, pos ) {
                     if ( error ) {
                         if ( self.events['data:error'] ) {
                             /**
@@ -737,7 +737,7 @@ List.prototype.move = function ( direction ) {
                         }
                     } else {
                         if ( data ) {
-                            self.setData({data: data, focusIndex: 0});
+                            self.setData({data: data, focusIndex: pos? pos : 0});
                         }
                     }
                 });
@@ -753,39 +753,9 @@ List.prototype.move = function ( direction ) {
 
             this.focusItem(this.$body.firstChild);
             break;
-        case keys.pageUp:
-            if ( this.provider ) {
-                this.provider.get(direction, function ( error, data ) {
-                    if ( error ) {
-                        if ( self.events['data:error'] ) {
-                            /**
-                             * Provider get error while take new data
-                             *
-                             * @event module:stb/ui/list~List#data:error
-                             */
-                            self.emit('data:error', error);
-                        }
-                    } else {
-                        if ( data ) {
-                            self.setData({data: data, focusIndex: 0});
-                        }
-                    }
-                });
-                break;
-            }
-            if ( this.viewIndex < this.size ) {
-                // first page
-                this.renderView(0);
-            } else {
-                // second page and further
-                this.renderView(this.viewIndex - this.size + 1);
-            }
-
-            this.focusItem(this.$body.firstChild);
-            break;
         case keys.pageDown:
             if ( this.provider ) {
-                this.provider.get(direction, function ( error, data ) {
+                this.provider.get(direction, function ( error, data, pos ) {
                     if ( error ) {
                         if ( self.events['data:error'] ) {
                             /**
@@ -797,7 +767,7 @@ List.prototype.move = function ( direction ) {
                         }
                     } else {
                         if ( data ) {
-                            self.setData({data: data, focusIndex: data.length < self.size ?  data.length - 1 : self.size - 1});
+                            self.setData({data: data, focusIndex: pos || pos === 0 ? pos : data.length < self.size ?  data.length - 1 : self.size - 1});
                         }
                     }
                 });
@@ -821,7 +791,7 @@ List.prototype.move = function ( direction ) {
             break;
         case keys.home:
             if ( this.provider ) {
-                this.provider.get(direction, function ( error, data ) {
+                this.provider.get(direction, function ( error, data, pos ) {
                     if ( error ) {
                         if ( self.events['data:error'] ) {
                             /**
@@ -833,7 +803,7 @@ List.prototype.move = function ( direction ) {
                         }
                     } else {
                         if ( data ) {
-                            self.setData({data: data, focusIndex: 0});
+                            self.setData({data: data, focusIndex: pos ? pos : 0});
                         }
                     }
                 });
@@ -844,7 +814,7 @@ List.prototype.move = function ( direction ) {
             break;
         case keys.end:
             if ( this.provider ) {
-                this.provider.get(direction, function ( error, data ) {
+                this.provider.get(direction, function ( error, data, pos ) {
                     if ( error ) {
                         if ( self.events['data:error'] ) {
                             /**
@@ -856,7 +826,7 @@ List.prototype.move = function ( direction ) {
                         }
                     } else {
                         if ( data ) {
-                            self.setData({data: data, focusIndex: data.length < self.size ?  data.length - 1 : self.size - 1});
+                            self.setData({data: data, focusIndex: pos || pos === 0 ? pos : data.length < self.size ?  data.length - 1 : self.size - 1});
                         }
                     }
                 });

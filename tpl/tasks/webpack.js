@@ -103,22 +103,6 @@ gulp.task('webpack:clean', function () {
 
 // generate js files
 gulp.task('webpack:develop', function () {
-    var plugins = [
-        // fix compilation persistence
-        new webpack.webpack.optimize.OccurenceOrderPlugin(true),
-        // global constants
-        new webpack.webpack.DefinePlugin({
-            DEBUG: true
-    })];
-
-    if ( pkgInfo.config.name && pkgInfo.config.description) {
-        // add translation for app name and description
-        plugins.push(new webpack.webpack.BannerPlugin(util.format(
-            '\ngettext parser workaround\ngettext("%s");\ngettext("%s");\n\n',
-            pkgInfo.config.name, pkgInfo.config.description
-        )));
-    }
-
     return gulp
         .src(path.join(global.paths.app, 'js', 'stb', 'develop', 'main.js'))
         .pipe(plumber())
@@ -143,7 +127,22 @@ gulp.task('webpack:develop', function () {
             },
             debug: true,
             cache: false,
-            plugins: plugins
+            module: {
+                loaders: [
+                    {
+                        test: /\.json/,
+                        loader: 'json'
+                    }
+                ]
+            },
+            plugins: [
+                // fix compilation persistence
+                new webpack.webpack.optimize.OccurenceOrderPlugin(true),
+                // global constants
+                new webpack.webpack.DefinePlugin({
+                    DEBUG: true
+                })
+            ]
         }, null, report))
         .pipe(gulp.dest(path.join(global.paths.build, 'js')));
 });
@@ -163,6 +162,14 @@ gulp.task('webpack:release', function () {
             },
             debug: false,
             cache: false,
+            module: {
+                loaders: [
+                    {
+                        test: /\.json/,
+                        loader: 'json'
+                    }
+                ]
+            },
             plugins: [
                 // fix compilation persistence
                 new webpack.webpack.optimize.OccurenceOrderPlugin(true),
