@@ -28,12 +28,13 @@ var Component = require('../component'),
  * @example
  * var Input = require('stb/ui/input'),
  *     input = new Input({
- *         placeholder: 'input password'
+ *         placeholder: 'input password',
  *         events: {
  *             input: function ( event ) {
  *                 debug.log(event.value);
  *             }
- *         }
+ *         },
+ *         autoKeyboard: false
  *     });
  */
 function Input ( config ) {
@@ -74,7 +75,7 @@ function Input ( config ) {
      * @type {boolean}
      */
     this.autoKeyboard = true;
-    
+
     if ( typeof config.autoKeyboard !== 'undefined' ) {
         this.autoKeyboard = !!config.autoKeyboard;
     }
@@ -118,7 +119,7 @@ function Input ( config ) {
             }
             gSTB.ShowVirtualKeyboard();
         });
-        
+
         this.addListener('blur', function () {
             if ( gSTB.IsVirtualKeyboardActive() ) {
                 gSTB.HideVirtualKeyboard();
