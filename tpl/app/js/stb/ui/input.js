@@ -23,6 +23,7 @@ var Component = require('../component'),
  * @param {string} [config.placeholder='password'] placeholder text value
  * @param {string} [config.type=Input.TYPE_TEXT] input type
  * @param {string} [config.direction='ltr'] symbol direction ('rtl' - right to left, 'ltr' - left to right)
+ * @param {string} [config.autoKeyboard=true] force keyboard on focus
  *
  * @example
  * var Input = require('stb/ui/input'),
