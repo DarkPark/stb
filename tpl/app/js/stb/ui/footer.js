@@ -172,7 +172,7 @@ Footer.prototype.init = function ( config ) {
     if ( this.tabs[this.tab].f2 ) { this.tabs[this.tab].f2.action = null; }
     if ( this.tabs[this.tab].f3 ) { this.tabs[this.tab].f3.action = null; }
     if ( this.tabs[this.tab].f4 ) { this.tabs[this.tab].f4.action = null; }
-    this.tabs[this.tab].menu.action = null;
+    if ( this.tabs[this.tab].menu ) { this.tabs[this.tab].menu.action = null; }
 
     for ( i = 0; i < config.length; i++ ) {
         if ( DEBUG ) {
