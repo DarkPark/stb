@@ -167,6 +167,12 @@ Footer.prototype.init = function ( config ) {
     config.forEach(function ( item ) { if ( ['f1', 'f2', 'f3', 'f4'].indexOf(item.type) !== -1 ) { tab++; } });
     this.tab = tab === 0 ? 0 : tab - 1;
     tab = 0;
+    // reset actions
+    if ( this.tabs[this.tab].f1 ) { this.tabs[this.tab].f1.action = null; }
+    if ( this.tabs[this.tab].f2 ) { this.tabs[this.tab].f2.action = null; }
+    if ( this.tabs[this.tab].f3 ) { this.tabs[this.tab].f3.action = null; }
+    if ( this.tabs[this.tab].f4 ) { this.tabs[this.tab].f4.action = null; }
+    if ( this.tabs[this.tab].menu ) { this.tabs[this.tab].menu.action = null; }
 
     for ( i = 0; i < config.length; i++ ) {
         if ( DEBUG ) {
