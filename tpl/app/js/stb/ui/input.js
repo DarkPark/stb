@@ -72,7 +72,11 @@ function Input ( config ) {
      * Show keyboard on input focus.
      * @type {boolean}
      */
-    this.autoKeyboard = !!config.autoKeyboard;
+    this.autoKeyboard = true;
+    
+    if ( typeof config.autoKeyboard !== 'undefined' ) {
+        this.autoKeyboard = !!config.autoKeyboard;
+    }
 
     // parent constructor call
     Component.call(this, config);
