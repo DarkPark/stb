@@ -68,6 +68,12 @@ function Input ( config ) {
     // Set maximum input length
     config.maxlength = config.maxlength || 0;
 
+    /**
+     * Show keyboard on input focus.
+     * @type {boolean}
+     */
+    this.autoKeyboard = !!config.autoKeyboard;
+
     // parent constructor call
     Component.call(this, config);
 
@@ -91,6 +97,29 @@ function Input ( config ) {
 
     // component setup
     this.init(config);
+
+    if ( this.autoKeyboard ) {
+        // add listeners
+        this.addListener('focus', function () {
+            var boxModel = this.$node.getBoundingClientRect();
+            if ( screen.height / 2 > boxModel.top + boxModel.height ) {
+                // input at top
+                debug.log('input at top');
+                stbWindowMgr.SetVirtualKeyboardCoord('none', boxModel.left, boxModel.top + (boxModel.height));
+            } else {
+                // input at bottom
+                debug.log('input at bottom');
+                stbWindowMgr.SetVirtualKeyboardCoord('none', boxModel.left, boxModel.top - (boxModel.height / 4 ) - app.data.metrics.keyboardHeight);
+            }
+            gSTB.ShowVirtualKeyboard();
+        });
+        
+        this.addListener('blur', function () {
+            if ( gSTB.IsVirtualKeyboardActive() ) {
+                gSTB.HideVirtualKeyboard();
+            }
+        });
+    }
 }
 
 

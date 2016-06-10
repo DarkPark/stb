@@ -17,9 +17,11 @@ module.exports = {
         availTop:    24,
         availBottom: 24,
         availRight:  32,
-        availLeft:   48
+        availLeft:   48,
         // project-specific vars
-        // put here ...
+
+        keyboardWidth: 558,
+        keyboardHeight: 311
     },
 
     576: {
@@ -30,9 +32,11 @@ module.exports = {
         availTop:    24,
         availBottom: 24,
         availRight:  26,
-        availLeft:   54
+        availLeft:   54,
         // project-specific vars
-        // put here ...
+
+        keyboardWidth: 558,
+        keyboardHeight: 311
     },
 
     720: {
@@ -43,9 +47,11 @@ module.exports = {
         availTop:    30,
         availBottom: 30,
         availRight:  40,
-        availLeft:   40
+        availLeft:   40,
         // project-specific vars
-        // put here ...
+
+        keyboardWidth: 818,
+        keyboardHeight: 311
     },
 
     1080: {
@@ -56,8 +62,10 @@ module.exports = {
         availTop:    45,
         availBottom: 45,
         availRight:  60,
-        availLeft:   60
+        availLeft:   60,
         // project-specific vars
-        // put here ...
+
+        keyboardWidth: 1227,
+        keyboardHeight: 467
     }
 };
