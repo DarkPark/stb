@@ -7,7 +7,8 @@
 'use strict';
 
 var Component = require('../component'),
-    keys      = require('../keys');
+    keys      = require('../keys'),
+    app       = require('../app');
 
 
 /**
@@ -23,16 +24,18 @@ var Component = require('../component'),
  * @param {string} [config.placeholder='password'] placeholder text value
  * @param {string} [config.type=Input.TYPE_TEXT] input type
  * @param {string} [config.direction='ltr'] symbol direction ('rtl' - right to left, 'ltr' - left to right)
+ * @param {string} [config.autoKeyboard=true] force keyboard on focus
  *
  * @example
  * var Input = require('stb/ui/input'),
  *     input = new Input({
- *         placeholder: 'input password'
+ *         placeholder: 'input password',
  *         events: {
  *             input: function ( event ) {
  *                 debug.log(event.value);
  *             }
- *         }
+ *         },
+ *         autoKeyboard: false
  *     });
  */
 function Input ( config ) {
@@ -72,7 +75,11 @@ function Input ( config ) {
      * Show keyboard on input focus.
      * @type {boolean}
      */
-    this.autoKeyboard = !!config.autoKeyboard;
+    this.autoKeyboard = true;
+
+    if ( typeof config.autoKeyboard !== 'undefined' ) {
+        this.autoKeyboard = !!config.autoKeyboard;
+    }
 
     // parent constructor call
     Component.call(this, config);
@@ -113,7 +120,7 @@ function Input ( config ) {
             }
             gSTB.ShowVirtualKeyboard();
         });
-        
+
         this.addListener('blur', function () {
             if ( gSTB.IsVirtualKeyboardActive() ) {
                 gSTB.HideVirtualKeyboard();
