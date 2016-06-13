@@ -7,7 +7,8 @@
 'use strict';
 
 var Component = require('../component'),
-    keys      = require('../keys');
+    keys      = require('../keys'),
+    app       = require('../app');
 
 
 /**
