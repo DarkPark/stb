@@ -1,5 +1,4 @@
 .idea
 node_modules
-build/js/*.map
-build/css/*.map
+app
 *.zip

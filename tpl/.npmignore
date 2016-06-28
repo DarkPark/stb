@@ -1,0 +1,7 @@
+src
+config
+tasks
+.idea
+gulpfile
+node_modules
+*.zip

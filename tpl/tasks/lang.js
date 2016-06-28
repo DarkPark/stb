@@ -22,7 +22,7 @@ var fs      = require('fs'),
 
 
 function po2js ( poFile, jsonFile ) {
-    var jsonDir  = path.join(global.paths.build, 'lang'),
+    var jsonDir  = path.join(global.paths.app, 'lang'),
         po       = require('gettext-parser').po.parse(fs.readFileSync(poFile, {encoding: 'utf8'})),
         contexts = po.translations,
         result   = {
@@ -147,8 +147,8 @@ function msgmerge ( langName, potFile, poFile, callback ) {
 
 
 function xgettext ( callback ) {
-    var srcFile = path.join(global.paths.build, 'js', 'develop.js'),
-        dstFile = path.join(global.paths.app, 'lang', 'messages.pot'),
+    var srcFile = path.join(global.paths.app, 'js', 'develop.js'),
+        dstFile = path.join(global.paths.src, 'lang', 'messages.pot'),
         title   = 'xgettext'.inverse,
         params  = [
             'xgettext',
@@ -225,8 +225,8 @@ gulp.task('lang', function ( done ) {
             }
 
             config.languages.forEach(function ( langName ) {
-                var poFile   = path.join(global.paths.app,   'lang', langName + '.po'),
-                    jsonFile = path.join(global.paths.build, 'lang', langName + '.json');
+                var poFile   = path.join(global.paths.src,   'lang', langName + '.po'),
+                    jsonFile = path.join(global.paths.app, 'lang', langName + '.json');
 
                 if ( fs.existsSync(poFile) ) {
                     // merge existing pot and po files
