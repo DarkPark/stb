@@ -19,21 +19,21 @@ var path  = require('path'),
 gulp.task('watch', function ( done ) {
     // img
     watch([
-        path.join(global.paths.app, 'img', '**', '*')
+        path.join(global.paths.src, 'img', '**', '*')
     ], function () {
         gulp.start('img');
     });
 
     // font
     watch([
-        path.join(global.paths.app, 'font', '**', '*')
+        path.join(global.paths.src, 'font', '**', '*')
     ], function () {
         gulp.start('font');
     });
 
     // webpack
     watch([
-        path.join(global.paths.app, 'js', '**', '*.js'),
+        path.join(global.paths.src, 'js', '**', '*.js'),
         path.join(global.paths.config, 'app[.]js'),
         path.join(global.paths.config, 'metrics[.]js')
     ], function () {
@@ -42,14 +42,14 @@ gulp.task('watch', function ( done ) {
 
     // jade
     watch([
-        path.join(global.paths.app, 'jade', '**', '*.jade')
+        path.join(global.paths.src, 'jade', '**', '*.jade')
     ], function () {
         gulp.start('jade:develop');
     });
 
     // less
     watch([
-        path.join(global.paths.app, 'less', '**', '*.{less,js}'),
+        path.join(global.paths.src, 'less', '**', '*.{less,js}'),
         path.join(global.paths.config, 'metrics[.]js')
     ], function () {
         gulp.start('less:develop');

@@ -15,7 +15,7 @@ var path    = require('path'),
 
 // remove all font files
 gulp.task('font:clean', function () {
-    return del([path.join(global.paths.build, 'font', '**', '*')]);
+    return del([path.join(global.paths.app, 'font', '**', '*')]);
 });
 
 
@@ -23,9 +23,9 @@ gulp.task('font:clean', function () {
 gulp.task('font', ['font:clean'], function () {
     return gulp
         .src([
-            path.join(global.paths.app, 'font', '**', '*'),
-            '!' + path.join(global.paths.app, 'font', 'readme.md')
+            path.join(global.paths.src, 'font', '**', '*'),
+            '!' + path.join(global.paths.src, 'font', 'readme.md')
         ])
         .pipe(plumber())
-        .pipe(gulp.dest(path.join(global.paths.build, 'font')));
+        .pipe(gulp.dest(path.join(global.paths.app, 'font')));
 });

@@ -19,8 +19,8 @@ var path    = require('path'),
 // remove all html files
 gulp.task('jade:clean', function () {
     return del([
-        path.join(global.paths.build, 'index.html'),
-        path.join(global.paths.build, 'develop.html')
+        path.join(global.paths.app, 'index.html'),
+        path.join(global.paths.app, 'develop.html')
     ]);
 });
 
@@ -28,7 +28,7 @@ gulp.task('jade:clean', function () {
 // generate html files
 gulp.task('jade:develop', function () {
     return gulp
-        .src(path.join(global.paths.app, 'jade', 'main.jade'))
+        .src(path.join(global.paths.src, 'jade', 'main.jade'))
         .pipe(plumber())
         .pipe(jade({
             pretty: '\t',
@@ -39,14 +39,14 @@ gulp.task('jade:develop', function () {
             }
         }))
         .pipe(rename('develop.html'))
-        .pipe(gulp.dest(global.paths.build));
+        .pipe(gulp.dest(global.paths.app));
 });
 
 
 // generate html files
 gulp.task('jade:release', function () {
     return gulp
-        .src(path.join(global.paths.app, 'jade', 'main.jade'))
+        .src(path.join(global.paths.src, 'jade', 'main.jade'))
         .pipe(plumber())
         .pipe(jade({
             pretty: false,
@@ -57,7 +57,7 @@ gulp.task('jade:release', function () {
             }
         }))
         .pipe(rename('index.html'))
-        .pipe(gulp.dest(global.paths.build));
+        .pipe(gulp.dest(global.paths.app));
 });
 
 

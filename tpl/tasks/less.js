@@ -26,7 +26,7 @@ var path       = require('path'),
  */
 function prepare ( resolution ) {
     var mName   = path.join(global.paths.config, 'metrics.js'),
-        vName   = path.join(global.paths.app, 'less', 'vars', resolution + '.js'),
+        vName   = path.join(global.paths.src, 'less', 'vars', resolution + '.js'),
         metrics = require(mName)[resolution],
         stbVars = require(vName),
         data    = {};
@@ -51,9 +51,9 @@ function prepare ( resolution ) {
     });
 
     // application paths
-    data.pathApp     = '"' + global.paths.app + '"';
+    data.pathApp     = '"' + global.paths.src + '"';
     data.pathImg     = '"../img/' + resolution + '"';
-    data.pathImgFull = '"' + path.join(global.paths.app, 'img', resolution.toString()) + '"';
+    data.pathImgFull = '"' + path.join(global.paths.src, 'img', resolution.toString()) + '"';
 
     return data;
 }
@@ -72,7 +72,7 @@ function develop ( resolution ) {
     // additional vars
     vars.mode = 'develop';
 
-    return gulp.src(path.join(global.paths.app, 'less', resolution + '.less'))
+    return gulp.src(path.join(global.paths.src, 'less', resolution + '.less'))
         .pipe(plumber())
         .pipe(sourceMaps.init())
         .pipe(less({
@@ -82,7 +82,7 @@ function develop ( resolution ) {
         }))
         .pipe(rename('develop.' + resolution + '.css'))
         .pipe(sourceMaps.write('./'))
-        .pipe(gulp.dest(path.join(global.paths.build, 'css')));
+        .pipe(gulp.dest(path.join(global.paths.app, 'css')));
 }
 
 
@@ -99,7 +99,7 @@ function release ( resolution ) {
     // additional vars
     vars.mode = 'release';
 
-    return gulp.src(path.join(global.paths.app, 'less', resolution + '.less'))
+    return gulp.src(path.join(global.paths.src, 'less', resolution + '.less'))
         .pipe(plumber())
         .pipe(less({
             ieCompat: false,
@@ -108,13 +108,13 @@ function release ( resolution ) {
         }))
         .pipe(rename('release.' + resolution + '.css'))
         .pipe(minifyCSS({rebase: false}))
-        .pipe(gulp.dest(path.join(global.paths.build, 'css')));
+        .pipe(gulp.dest(path.join(global.paths.app, 'css')));
 }
 
 
 // remove all css files
 gulp.task('less:clean', function () {
-    return del([path.join(global.paths.build, 'css', '**')]);
+    return del([path.join(global.paths.app, 'css', '**')]);
 });
 
 

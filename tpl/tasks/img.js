@@ -15,14 +15,14 @@ var path    = require('path'),
 
 // remove all images
 gulp.task('img:clean', function () {
-    return del([path.join(global.paths.build, 'img', '**', '*')]);
+    return del([path.join(global.paths.app, 'img', '**', '*')]);
 });
 
 
 // remove and copy
 gulp.task('img', ['img:clean'], function () {
     return gulp
-        .src([path.join(global.paths.app, 'img', '**', '*')])
+        .src([path.join(global.paths.src, 'img', '**', '*')])
         .pipe(plumber())
-        .pipe(gulp.dest(path.join(global.paths.build, 'img')));
+        .pipe(gulp.dest(path.join(global.paths.app, 'img')));
 });

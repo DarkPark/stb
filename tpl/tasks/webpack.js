@@ -95,8 +95,8 @@ function report ( err, stats ) {
 // remove all js and map files
 gulp.task('webpack:clean', function () {
     return del([
-        path.join(global.paths.build, 'js', 'release.*'),
-        path.join(global.paths.build, 'js', 'develop.*')
+        path.join(global.paths.app, 'js', 'release.*'),
+        path.join(global.paths.app, 'js', 'develop.*')
     ]);
 });
 
@@ -104,7 +104,7 @@ gulp.task('webpack:clean', function () {
 // generate js files
 gulp.task('webpack:develop', function () {
     return gulp
-        .src(path.join(global.paths.app, 'js', 'stb', 'develop', 'main.js'))
+        .src(path.join(global.paths.src, 'js', 'stb', 'develop', 'main.js'))
         .pipe(plumber())
         .pipe(webpack({
             output: {
@@ -113,7 +113,7 @@ gulp.task('webpack:develop', function () {
                 sourcePrefix: '\t\t\t'
             },
             resolve: {
-                //root: path.join(global.paths.app, 'js'),
+                //root: path.join(global.paths.src, 'js'),
                 extensions:['', '.js']
             },
             devtool: 'source-map',
@@ -144,14 +144,14 @@ gulp.task('webpack:develop', function () {
                 })
             ]
         }, null, report))
-        .pipe(gulp.dest(path.join(global.paths.build, 'js')));
+        .pipe(gulp.dest(path.join(global.paths.app, 'js')));
 });
 
 
 // generate js files
 gulp.task('webpack:release', function () {
     return gulp
-        .src(path.join(global.paths.app, 'js', 'main.js'))
+        .src(path.join(global.paths.src, 'js', 'main.js'))
         .pipe(plumber())
         .pipe(webpack({
             output: {
@@ -202,7 +202,7 @@ gulp.task('webpack:release', function () {
                 ))
             ]
         }, null, report))
-        .pipe(gulp.dest(path.join(global.paths.build, 'js')));
+        .pipe(gulp.dest(path.join(global.paths.app, 'js')));
 });
 
 

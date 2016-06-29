@@ -17,7 +17,7 @@ var path    = require('path'),
 gulp.task('lint', function () {
     return gulp
         .src([
-            path.join(global.paths.app,    'js', '**', '*.js'),
+            path.join(global.paths.src,    'js', '**', '*.js'),
             path.join(global.paths.config, '**', '*.js'),
             path.join(global.paths.tasks,  '**', '*.js')
         ])
