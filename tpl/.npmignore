@@ -1,9 +1,8 @@
 src
 config
 tasks
-.idea
-.gitignore
-.eslintignore
-gulpfile
+.*
+develop*
+gulpfile.js
 node_modules
 *.zip
