@@ -37,14 +37,14 @@ var Component = require('../component'),
  *
  * @example
  * page.footer = new Footer({
- *        parent: page,
- *        data: [
- *            {code: 122, action: function () {}},
- *            {code: 112, title: 'stop', action: function () {}},
- *            {code: 113, title: 'start', action: function () {}},
- *            {code: 115, title: 'end', action: function () {}}
- *        ]
- *    });
+ *     parent: page,
+ *     data: [
+ *         {code: 122, action: function () {}},
+ *         {code: 112, title: 'stop', action: function () {}},
+ *         {code: 113, title: 'start', action: function () {}},
+ *         {code: 115, title: 'end', action: function () {}}
+ *     ]
+ * });
  * page.add(page.footer);
  */
 function Footer ( config ) {
@@ -145,11 +145,11 @@ Footer.prototype.constructor = Footer;
  *
  * @example
  * page.Footer.init([
- *            {code: 122, action: function () {}},
- *            {code: 112, title: 'stop', action: function () {}},
- *            {code: 113, title: 'start', action: function () {}},
- *            {code: 115, title: 'end', action: function () {}}
- *    ]);
+ *     {code: 122, action: function () {}},
+ *     {code: 112, title: 'stop', action: function () {}},
+ *     {code: 113, title: 'start', action: function () {}},
+ *     {code: 115, title: 'end', action: function () {}}
+ * ]);
  */
 Footer.prototype.init = function ( config ) {
     var visible = !this.tabs[this.tab].$body.classList.contains('hidden'),
@@ -168,7 +168,7 @@ Footer.prototype.init = function ( config ) {
         }
     }
     if ( DEBUG ) {
-        if ( config.length - tab > 3 ) { throw new Error(__filename + ': only 4 functional buttons allowed in footer'); }
+        if ( config.length - tab > 3 ) { throw new Error(__filename + ': only 4 buttons allowed in footer'); }
     }
     this.tab = config.length - tab >= 0 ? config.length - tab : 0;
     this.tabs[this.tab].codes = {}; // reset actions
