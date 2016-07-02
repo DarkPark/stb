@@ -477,12 +477,22 @@ List.prototype.setData = function ( config ) {
         this.blurItem(this.$focusItem);
     }
 
-    if ( this.scroll && !this.provider ) {
-        this.scroll.init({
-            realSize: this.data.length,
-            viewSize: this.size,
-            value: config.viewIndex || 0
-        });
+    if ( this.scroll ) {
+        if ( this.provider ) {
+            if ( this.scroll.realSize !== this.provider.maxCount ) {
+                this.scroll.init({
+                    realSize: this.provider.maxCount,
+                    viewSize: this.provider.size,
+                    value: this.provider.head + this.provider.pos
+                });
+            }
+        } else {
+            this.scroll.init({
+                realSize: this.data.length,
+                viewSize: this.size,
+                value: config.viewIndex || 0
+            });
+        }
     }
 
     // set focus item
@@ -1042,3 +1052,4 @@ List.prototype.markItem = function ( $item, state ) {
 
 // public
 module.exports = List;
+
