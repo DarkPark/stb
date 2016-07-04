@@ -101,8 +101,8 @@ function Footer ( config ) {
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
                 )
             ),
-            dom.tag('td', {},
-                this.$info = dom.tag('div', {className: 'icon info'})
+            dom.tag('td', {}//,
+                //this.$info = dom.tag('div', {className: 'icon info'})
             )
         )
     ));
@@ -118,13 +118,13 @@ function Footer ( config ) {
             if ( currTab.codes[event.code] && typeof currTab.codes[event.code].action === 'function' ) {
                 currTab.codes[event.code].action();
             }
-            if ( event.code === keys.info && self.$info.style.display !== 'none' ) {
-                if ( currTab.$body.classList.contains('hidden') ) {
-                    currTab.$body.classList.remove('hidden');
-                } else {
-                    currTab.$body.classList.add('hidden');
-                }
-            }
+//            if ( event.code === keys.info && self.$info.style.display !== 'none' ) {
+//                if ( currTab.$body.classList.contains('hidden') ) {
+//                    currTab.$body.classList.remove('hidden');
+//                } else {
+//                    currTab.$body.classList.add('hidden');
+//                }
+//            }
         }
     });
 }
@@ -152,8 +152,8 @@ Footer.prototype.constructor = Footer;
  * ]);
  */
 Footer.prototype.init = function ( config ) {
-    var visible = !this.tabs[this.tab].$body.classList.contains('hidden'),
-        tab = 1,
+    var tab = 1,
+    //visible = !this.tabs[this.tab].$body.classList.contains('hidden'),
         i;
 
     config = config || [];
@@ -184,12 +184,12 @@ Footer.prototype.init = function ( config ) {
         this.tabs[this.tab].$body.children[tab].children[1].innerText = config[i].title;
         tab++;
     }
-    if ( tab ) {
-        this.$info.style.visibility = 'inherit';
-    } else {
-        this.$info.style.visibility = 'hidden';
-    }
-    if ( visible && tab ) { this.tabs[this.tab].$body.classList.remove('hidden'); }
+//    if ( tab ) {
+//        this.$info.style.visibility = 'inherit';
+//    } else {
+//        this.$info.style.visibility = 'hidden';
+//    }
+    if ( /*visible &&*/ tab ) { this.tabs[this.tab].$body.classList.remove('hidden'); }
 };
 
 
