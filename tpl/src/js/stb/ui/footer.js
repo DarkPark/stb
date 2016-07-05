@@ -9,7 +9,16 @@
 var Component = require('../component'),
     Page = require('./page'),
     keys = require('../keys'),
-    dom = require('../dom');
+    dom = require('../dom'),
+    classes = {
+        '8': 'back', '46': 'delete', '1009': 'channelPrev', '9': 'channelNext', '13': 'ok', '27': 'exit', '38': 'up',
+        '40': 'down', '37': 'left', '39': 'right', '33': 'pageUp', '34': 'pageDown', '35': 'end', '36': 'home',
+        '107': 'volumeUp', '109': 'volumeDown', '112': 'f1', '113': 'f2', '114': 'f3', '115': 'f4', '116': 'refresh',
+        '117': 'frame', '119': 'phone', '120': 'set', '121': 'tv', '122': 'menu', '123': 'web', '2032': 'mic',
+        '2066': 'rewind', '2070': 'forward', '2076': 'app', '2080': 'usbMounted', '2081': 'usbUnmounted',
+        '2082': 'playPause', '2083': 'stop', '2085': 'power', '2087': 'record', '2089': 'info', '2192': 'mute',
+        '2071': 'audio'
+    };
 
 
 /**
@@ -28,14 +37,14 @@ var Component = require('../component'),
  *
  * @example
  * page.footer = new Footer({
- *        parent: page,
- *        data: [
- *            {type: 'menu', action: function () {}},
- *            {type: 'f1', title: 'stop', action: function () {}},
- *            {type: 'f2', title: 'start', action: function () {}},
- *            {type: 'f4', title: 'end', action: function () {}}
- *        ]
- *    });
+ *     parent: page,
+ *     data: [
+ *         {code: 122, action: function () {}},
+ *         {code: 112, title: 'stop', action: function () {}},
+ *         {code: 113, title: 'start', action: function () {}},
+ *         {code: 115, title: 'end', action: function () {}}
+ *     ]
+ * });
  * page.add(page.footer);
  */
 function Footer ( config ) {
@@ -61,37 +70,39 @@ function Footer ( config ) {
     // parent constructor call
     Component.call(this, config);
 
-    this.tabs = [];
+    this.tabs = [
+        {$body: null, codes: {}}, {$body: null, codes: {}}, {$body: null, codes: {}}, {$body: null, codes: {}}
+    ];
 
     this.tab = 0;
 
     this.$node.appendChild(dom.tag('table', {},
         dom.tag('tr', {},
             dom.tag('td', {},
-                dom.tag('div', {className: 'icon menu'})
+                this.$menu = dom.tag('div', {className: 'icon menu'})
             ),
             dom.tag('td', {className: 'central'},
-                this.tabs[0] = dom.tag('div', {className: 'wrapper hidden'},
+                this.tabs[0].$body = dom.tag('div', {className: 'wrapper hidden'},
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
                 ),
-                this.tabs[1] = dom.tag('div', {className: 'wrapper hidden'},
+                this.tabs[1].$body = dom.tag('div', {className: 'wrapper hidden'},
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
                 ),
-                this.tabs[2] = dom.tag('div', {className: 'wrapper hidden'},
+                this.tabs[2].$body = dom.tag('div', {className: 'wrapper hidden'},
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
                 ),
-                this.tabs[3] = dom.tag('div', {className: 'wrapper hidden'},
+                this.tabs[3].$body = dom.tag('div', {className: 'wrapper hidden'},
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'})),
                     dom.tag('div', {className: 'button'}, dom.tag('div', {className: 'iconImg'}), dom.tag('div', {className: 'title'}))
                 )
             ),
-            dom.tag('td', {},
-                this.$info = dom.tag('div', {className: 'icon info'})
+            dom.tag('td', {}//,
+                //this.$info = dom.tag('div', {className: 'icon info'})
             )
         )
     ));
@@ -104,32 +115,16 @@ function Footer ( config ) {
         var currTab = self.tabs[self.tab];
 
         if ( self.visible ) {
-            switch ( event.code ) {
-                case keys.f1:
-                    if ( currTab.f1 && typeof currTab.f1.action === 'function' ) { currTab.f1.action(); }
-                    break;
-                case keys.f2:
-                    if ( currTab.f2 && typeof currTab.f2.action === 'function' ) { currTab.f2.action(); }
-                    break;
-                case keys.f3:
-                    if ( currTab.f3 && typeof currTab.f3.action === 'function' ) { currTab.f3.action(); }
-                    break;
-                case keys.f4:
-                    if ( currTab.f4 && typeof currTab.f4.action === 'function' ) { currTab.f4.action(); }
-                    break;
-                case keys.menu:
-                    if ( currTab.menu && typeof currTab.menu.action === 'function' ) { currTab.menu.action(); }
-                    break;
-                case keys.info:
-                    if ( self.$info.style.display !== 'none' ) {
-                        if ( currTab.classList.contains('hidden') ) {
-                            currTab.classList.remove('hidden');
-                        } else {
-                            currTab.classList.add('hidden');
-                        }
-                    }
-                    break;
+            if ( currTab.codes[event.code] && typeof currTab.codes[event.code].action === 'function' ) {
+                currTab.codes[event.code].action();
             }
+//            if ( event.code === keys.info && self.$info.style.display !== 'none' ) {
+//                if ( currTab.$body.classList.contains('hidden') ) {
+//                    currTab.$body.classList.remove('hidden');
+//                } else {
+//                    currTab.$body.classList.add('hidden');
+//                }
+//            }
         }
     });
 }
@@ -150,44 +145,51 @@ Footer.prototype.constructor = Footer;
  *
  * @example
  * page.Footer.init([
- *            {type: 'menu', action: function () {}},
- *            {type: 'f1', title: 'stop', action: function () {}},
- *            {type: 'f2', title: 'start', action: function () {}},
- *            {type: 'f4', title: 'end', action: function () {}}
- *    ]);
+ *     {code: 122, action: function () {}},
+ *     {code: 112, title: 'stop', action: function () {}},
+ *     {code: 113, title: 'start', action: function () {}},
+ *     {code: 115, title: 'end', action: function () {}}
+ * ]);
  */
 Footer.prototype.init = function ( config ) {
-    var visible = !this.tabs[this.tab].classList.contains('hidden'),
-        tab = 0,
+    var tab = 1,
+    //visible = !this.tabs[this.tab].$body.classList.contains('hidden'),
         i;
 
     config = config || [];
-    this.tabs[this.tab].classList.add('hidden');
-    this.$info.style.display = 'none';
-    config.forEach(function ( item ) { if ( ['f1', 'f2', 'f3', 'f4'].indexOf(item.type) !== -1 ) { tab++; } });
-    this.tab = tab === 0 ? 0 : tab - 1;
-    tab = 0;
-    // reset actions
-    if ( this.tabs[this.tab].f1 ) { this.tabs[this.tab].f1.action = null; }
-    if ( this.tabs[this.tab].f2 ) { this.tabs[this.tab].f2.action = null; }
-    if ( this.tabs[this.tab].f3 ) { this.tabs[this.tab].f3.action = null; }
-    if ( this.tabs[this.tab].f4 ) { this.tabs[this.tab].f4.action = null; }
-    if ( this.tabs[this.tab].menu ) { this.tabs[this.tab].menu.action = null; }
+
+    this.tabs[this.tab].$body.classList.add('hidden');
+    this.$menu.style.visibility = 'hidden';
 
     for ( i = 0; i < config.length; i++ ) {
-        if ( DEBUG ) {
-            if ( ['f1', 'f2', 'f3', 'f4', 'menu', 'info'].indexOf(config[i].type) === -1 ) {
-                throw new Error(__filename + ': allowed footer buttons are: f1, f2, f3, f4, menu, info');
-            }
+        if ( config[i].code === keys.menu ) {
+            tab++;
+            break;
         }
-        this.tabs[this.tab][config[i].type] = {action: config[i].action};
-        if ( config[i].type === 'menu' ) { continue; } // menu button has only action
-        this.tabs[this.tab].children[tab].children[0].className = 'iconImg ' + config[i].type;
-        this.tabs[this.tab].children[tab].children[1].innerText = config[i].title;
+    }
+    if ( DEBUG ) {
+        if ( config.length - tab > 3 ) { throw new Error(__filename + ': only 4 buttons allowed in footer'); }
+    }
+    this.tab = config.length - tab >= 0 ? config.length - tab : 0;
+    this.tabs[this.tab].codes = {}; // reset actions
+    tab = 0;
+
+    for ( i = 0; i < config.length; i++ ) {
+        this.tabs[this.tab].codes[config[i].code] = {action: config[i].action};
+        if ( config[i].code === keys.menu ) { // menu button has only action
+            this.$menu.style.visibility = 'inherit';
+            continue;
+        }
+        this.tabs[this.tab].$body.children[tab].children[0].className = 'iconImg ' + (classes[config[i].code] || '');
+        this.tabs[this.tab].$body.children[tab].children[1].innerText = config[i].title;
         tab++;
     }
-    if ( tab ) { this.$info.style.display = 'block'; }
-    if ( visible && tab ) { this.tabs[this.tab].classList.remove('hidden'); }
+//    if ( tab ) {
+//        this.$info.style.visibility = 'inherit';
+//    } else {
+//        this.$info.style.visibility = 'hidden';
+//    }
+    if ( /*visible &&*/ tab ) { this.tabs[this.tab].$body.classList.remove('hidden'); }
 };
 
 
