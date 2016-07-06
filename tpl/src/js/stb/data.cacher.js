@@ -99,6 +99,10 @@ DataCacher.prototype.get = function ( direction, callback ) {
                     self.maxCount = maxCount;
                     self.data = data;
                     self.tail = self.head + data.length;
+                    if ( self.head >= self.maxCount ) {
+                        self.goEnd(callback, true);
+                        return;
+                    }
                     if ( data.length < self.config.limit ) {
                         self.botEmptyLine = true;
                     }
@@ -340,12 +344,12 @@ DataCacher.prototype.checkPrev = function ( cb ) {
     }
 };
 
-DataCacher.prototype.goHome = function ( callback ) {
+DataCacher.prototype.goHome = function ( callback, refresh ) {
     var receivedData = [],
         self = this,
         time = new Date();
 
-    if ( this.head === 0 ) {
+    if ( this.head === 0 && !refresh ) {
         this.pos = 0;
         if ( this.checkTime && time.getTime() > this.lastCheccked + this.checkTime ) {
             this.refreshData(callback);
@@ -377,14 +381,14 @@ DataCacher.prototype.goHome = function ( callback ) {
     }
 };
 
-DataCacher.prototype.goEnd = function ( callback ) {
+DataCacher.prototype.goEnd = function ( callback, refresh ) {
     var receivedData = [],
         self = this,
         pos,
         time = new Date();
 
     if ( this.maxCount ) {
-        if ( this.tail === this.maxCount ) {
+        if ( this.tail === this.maxCount && !refresh ) {
             if ( this.checkTime && time.getTime() > this.lastCheccked + this.checkTime ) {
                 this.refreshData(function (e) {
                     if ( !e ) {
@@ -410,7 +414,6 @@ DataCacher.prototype.goEnd = function ( callback ) {
             if ( this.head < 0 ) {
                 this.head = 0;
             }
-            this.tail = this.maxCount;
             this.config.offset = this.head;
             this.config.limit = 2 * this.cacheSize;
             this.getter(function ( e, data, maxCount ) {
@@ -418,6 +421,7 @@ DataCacher.prototype.goEnd = function ( callback ) {
                     self.maxCount = maxCount;
                     self.data = data;
                     self.pos = self.data.length - self.size;
+                    self.tail = self.head + data.length;
                     if ( self.pos < 0 ) {
                         self.pos = 0;
                     }
@@ -443,6 +447,9 @@ DataCacher.prototype.refreshData = function ( callback ) {
         receivedData = [],
         time = new Date();
 
+    if ( this.pos < 0 ) {
+        this.pos = 0;
+    }
     this.config.offset = this.head;
     this.config.limit = this.tail - this.head;
     if ( this.config.limit <= 0 ) {
@@ -458,6 +465,10 @@ DataCacher.prototype.refreshData = function ( callback ) {
             self.maxCount = maxCount;
             self.data = data;
             self.tail = self.head + data.length;
+            if ( self.head >= self.maxCount ) {
+                self.goEnd(callback, true);
+                return;
+            }
             if ( data.length < self.config.limit ) {
                 self.botEmptyLine = true;
             }
