@@ -1,6 +1,9 @@
 'use strict';
 
-var Component = require('../component');
+var Component = require('../component'),
+    setTime,
+    timerId;
+
 
 function Clock ( config ) {
     var body = document.createElement('div');
@@ -18,7 +21,7 @@ function Clock ( config ) {
     // parent constructor call
     Component.call(this, config);
 
-    function setTime () {
+    setTime = function () {
         var time  = new Date(),
             year  = time.getFullYear(),
             month = time.getMonth() + 1,
@@ -27,16 +30,29 @@ function Clock ( config ) {
             mins  = time.getMinutes();
 
         body.innerText = (hours > 9 ? hours : '0' + hours) + ':' + (mins > 9 ? mins : '0' + mins);
-        //pmDate.innerText = (date > 9 ? date : '0' + date) + '.' + (month > 9 ? month : '0' + month) + '.' + year;
-    }
+    };
 
     setTime();
-    setInterval(setTime, 1000);
+    timerId = setInterval(setTime, 1000);
 
     this.$node.appendChild(body);
 }
 
-// inheritance
+
+core.addListeners({
+    hide: function () {
+        clearInterval(timerId);
+    },
+    'hide:auto': function () {
+        clearInterval(timerId);
+    },
+    maximize: function () {
+        setTime();
+        timerId = setInterval(setTime, 1000);
+    }
+});
+
+
 Clock.prototype = Object.create(Component.prototype);
 Clock.prototype.constructor = Clock;
 
