@@ -99,7 +99,7 @@ DataCacher.prototype.get = function ( direction, callback ) {
                     self.maxCount = maxCount;
                     self.data = data;
                     self.tail = self.head + data.length;
-                    if ( self.head >= self.maxCount ) {
+                    if ( self.maxCount && self.head >= self.maxCount ) {
                         self.goEnd(callback, true);
                         return;
                     }
@@ -465,7 +465,7 @@ DataCacher.prototype.refreshData = function ( callback ) {
             self.maxCount = maxCount;
             self.data = data;
             self.tail = self.head + data.length;
-            if ( self.head >= self.maxCount ) {
+            if ( self.maxCount && self.head >= self.maxCount ) {
                 self.goEnd(callback, true);
                 return;
             }
