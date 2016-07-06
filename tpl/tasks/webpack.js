@@ -104,7 +104,12 @@ gulp.task('webpack:clean', function () {
 // generate js files
 gulp.task('webpack:develop', function () {
     var plugins = [
-        ];
+        // fix compilation persistence
+        new webpack.webpack.optimize.OccurenceOrderPlugin(true),
+        // global constants
+        new webpack.webpack.DefinePlugin({
+            DEBUG: true
+        })];
 
     if ( pkgInfo.config.name && pkgInfo.config.description) {
         // add translation for app name and description
