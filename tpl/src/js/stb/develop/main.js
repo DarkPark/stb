@@ -20,12 +20,6 @@ app.data.debug = true;
 // STB device or emulation?
 app.data.host = !!(window.gSTB || (window.parent && (window.parent.gSTB || window.parent.host)));
 
-// platform?
-if ( app.data.host ) {
-    // web inspector
-    require('./weinre');
-}
-
 // inside frame/iframe
 if ( window.parent && window.parent.gSTB ) {
     // link to the outer gSTB global object

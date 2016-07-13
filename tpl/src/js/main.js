@@ -7,6 +7,8 @@
 
 'use strict';
 
+require('./stb/shims');
+
 var app    = require('./stb/app'),
     router = require('./stb/router');
 

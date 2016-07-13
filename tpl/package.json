@@ -30,7 +30,12 @@
         "webpack-stream": "^3.1.0",
         "weinre": "^2.0.0-pre-I0Z7U9OV",
         "ws": "^1.0.1",
-        "json-loader": "^0.5.4"
+        "json-loader": "^0.5.4",
+        "add-event-listener": "^0.0.1",
+        "json3": "^3.3.2",
+        "define-property": "^0.2.5",
+        "object-create": "^0.1.0",
+        "isarray": "^1.0.0"
     },
     "license": "GPL-3.0"
 }

@@ -21,7 +21,7 @@ gulp.task('static', function ( done ) {
 
     if ( config.active ) {
         // rfc 2616 compliant HTTP static file server
-        files  = new (require('node-static').Server)(global.paths.app, {cache: false});
+        files  = new (require('node-static').Server)(global.paths.root, {cache: false});
         msInit = +new Date();
 
         require('http').createServer(function createServer ( request, response ) {

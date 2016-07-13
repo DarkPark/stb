@@ -13,7 +13,11 @@ var path    = require('path'),
     plumber = require('gulp-plumber'),
     rename  = require('gulp-rename'),
     del     = require('del'),
-    pkgInfo = require(path.join(global.paths.root, 'package.json'));
+    pkgInfo = require(path.join(global.paths.root, 'package.json')),
+    ip      = require('ip').address(),
+
+    weinreConfig = require(path.join(global.paths.config, 'weinre')),
+    staticConfig = require(path.join(global.paths.config, 'static'));
 
 
 // remove all html files
@@ -35,11 +39,14 @@ gulp.task('jade:develop', function () {
             locals: {
                 develop: true,
                 title:   '[develop] ' + pkgInfo.name,
-                version: pkgInfo.version
+                version: pkgInfo.version,
+                weinre: weinreConfig.active,
+                weinreSrc: 'http://' + ip + ':' + weinreConfig.port + '/target/target-script-min.js#' + weinreConfig.name,
+                livereload: 'http://' + ip + ':' + (staticConfig.livereload === true ? 35729 : staticConfig.livereload) + '/livereload.js'
             }
         }))
         .pipe(rename('develop.html'))
-        .pipe(gulp.dest(global.paths.app));
+        .pipe(gulp.dest(global.paths.root));
 });
 
 
@@ -52,12 +59,14 @@ gulp.task('jade:release', function () {
             pretty: false,
             locals: {
                 develop: false,
+                livereload: false,
+                weinre: false,
                 title:   '[release] ' + pkgInfo.name,
                 version: pkgInfo.version
             }
         }))
         .pipe(rename('index.html'))
-        .pipe(gulp.dest(global.paths.app));
+        .pipe(gulp.dest(global.paths.root));
 });
 
 

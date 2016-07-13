@@ -21,46 +21,57 @@
 
 // public
 module.exports = {
-    back         : 8,    // Backspace
-    'delete'     : 46,
-    channelPrev  : 1009, // Shift+Tab
-    channelNext  : 9,    // Tab
-    ok           : 13,   // Enter
-    exit         : 27,   // Esc
-    up           : 38,   // UP ARROW
-    down         : 40,   // DOWN ARROW
-    left         : 37,   // LEFT ARROW
-    right        : 39,   // RIGHT ARROW
-    pageUp       : 33,   // Page Up
-    pageDown     : 34,   // Page Down
-    end          : 35,
-    home         : 36,
-    volumeUp     : 107,  // NUMPAD +
-    volumeDown   : 109,  // NUMPAD -
-    f1           : 112,  // F1
-    f2           : 113,  // F2
-    f3           : 114,  // F3
-    f4           : 115,  // F4
-    refresh      : 116,  // F5
-    frame        : 117,  // F6
-    phone        : 119,  // F8
-    set          : 120,  // F9
-    tv           : 121,  // F10
-    menu         : 122,  // F11
-    web          : 123,  // F12
-    mic          : 2032,
-    rewind       : 2066, // Alt+B
-    forward      : 2070, // Alt+F
-    app          : 2076, // Alt+L
-    usbMounted   : 2080, // Alt+P
-    usbUnmounted : 2081, // Alt+Q
-    playPause    : 2082, // Alt+R
-    stop         : 2083, // Alt+S
-    power        : 2085, // Alt+U
-    record       : 2087, // Alt+W
-    info         : 2089, // Alt+Y
-    mute         : 2192,
-    clock        : 2032,
-    audio        : 2071, // Alt+G
-    keyboard     : 2076  // Alt+L
+    num1        : 101,
+    num2        : 98,
+    num3        : 6,
+    num4        : 8,
+    num5        : 9,
+    num6        : 10,
+    num7        : 12,
+    num8        : 13,
+    num9        : 14,
+    num0        : 17,
+    preCh        : 259,
+
+    volumeUp     : 7,
+    volumeDown   : 11,
+    channelPrev  : 68,
+    channelNext  : 65,
+    mute         : 27,
+    channelList  : 84,
+    menu         : 262,
+
+    tools        : 75,
+    info         : 31,
+    back         : 88,
+    'return'     : 88,    //alias
+    exit         : 45,
+    up           : 29460,
+    down         : 29461,
+    left         : 4,
+    right        : 5,
+    ok           : 29443,
+    enter        : 29443, //alias
+
+    f1           : 108,
+    f2           : 20,
+    f3           : 21,
+    f4           : 22,
+    red          : 108,   // alias
+    green        : 20,    // alias
+    blue         : 21,    // alias
+    yellow       : 22,    // alias
+    a            : 108,   // alias
+    b            : 20,    // alias
+    c            : 21,    // alias
+    d            : 22,    // alias
+
+    rewind       : 69,
+    forward      : 72,
+    play         : 71,
+    pause        : 74,
+    stop         : 70,
+    record       : 192,
+
+    power        : 76
 };
