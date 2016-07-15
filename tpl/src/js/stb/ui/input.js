@@ -105,6 +105,9 @@ function Input ( config ) {
     // component setup
     this.init(config);
 
+    // Because stbWindowMgr is not available
+    this.autoKeyboard = false;
+
     if ( this.autoKeyboard ) {
         // add listeners
         this.addListener('focus', function () {
