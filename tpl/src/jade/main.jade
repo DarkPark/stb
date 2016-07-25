@@ -32,23 +32,14 @@ html
             }
 
         if develop
-            script(type='text/javascript', src='app/js/develop.js')
+            script(type='text/javascript', src='js/develop.js')
             if livereload
             script(type='text/javascript', src=livereload)
         else
-            script(type='text/javascript', src='app/js/release.js')
+            script(type='text/javascript', src='js/release.js')
 
         if weinre
             script(type='text/javascript', src=weinreSrc)
-
-        script(type='text/javascript', language='javascript', src='$MANAGER_WIDGET/Common/API/Widget.js')
-        script(type='text/javascript', language='javascript', src='$MANAGER_WIDGET/Common/API/TVKeyValue.js')
-        script(type='text/javascript', src='$MANAGER_WIDGET/Common/webapi/1.0/webapis.js')
-
-
-        object#plugin(classid='clsid:SAMSUNG-INFOLINK-SEF', style='position:absolute;left:0px;top:0px;width:0px;height:0px')
-        object#pluginPlayer(border='0', classid='clsid:SAMSUNG-INFOLINK-PLAYER', style='position:absolute;left:0px;top:0px;width:0px;height:0px')
-        object#pluginObjectAudio(border='0', classid='clsid:SAMSUNG-INFOLINK-AUDIO', style='opacity:0.0;background-color:#000000;width:0px;height:0px;')
 
     body
         include ./pages/init.jade

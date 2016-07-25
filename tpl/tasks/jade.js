@@ -46,7 +46,7 @@ gulp.task('jade:develop', function () {
             }
         }))
         .pipe(rename('develop.html'))
-        .pipe(gulp.dest(global.paths.root));
+        .pipe(gulp.dest(global.paths.app));
 });
 
 
@@ -66,7 +66,7 @@ gulp.task('jade:release', function () {
             }
         }))
         .pipe(rename('index.html'))
-        .pipe(gulp.dest(global.paths.root));
+        .pipe(gulp.dest(global.paths.app));
 });
 
 
