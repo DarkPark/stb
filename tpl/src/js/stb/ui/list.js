@@ -227,10 +227,6 @@ List.prototype.defaultEvents = {
             case keys.down:
             case keys.right:
             case keys.left:
-            case keys.pageUp:
-            case keys.pageDown:
-            case keys.home:
-            case keys.end:
                 // cursor move only on arrow keys
                 this.move(event.code);
                 break;
@@ -624,7 +620,7 @@ List.prototype.renderView = function ( index ) {
 /**
  * Move focus to the given direction.
  *
- * @param {number} direction arrow key code
+ * @param {number|string} direction arrow key code
  *
  * @fires module:stb/ui/list~List#cycle
  * @fires module:stb/ui/list~List#overflow
@@ -635,7 +631,7 @@ List.prototype.move = function ( direction ) {
 
     if ( DEBUG ) {
         if ( arguments.length !== 1 ) { throw new Error(__filename + ': wrong arguments number'); }
-        if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
+        //if ( Number(direction) !== direction ) { throw new Error(__filename + ': direction must be a number'); }
     }
     if ( !this.data.length ) {
         return;
@@ -677,7 +673,7 @@ List.prototype.move = function ( direction ) {
                         // already at the beginning
                         if ( this.cycle ) {
                             // jump to the end of the list
-                            this.move(keys.end);
+                            this.move('end');
                         }
                         if ( this.events['overflow'] ) {
                             // notify listeners
@@ -723,7 +719,7 @@ List.prototype.move = function ( direction ) {
                         // already at the beginning
                         if ( this.cycle ) {
                             // jump to the beginning of the list
-                            this.move(keys.home);
+                            this.move('home');
                         }
                         if ( this.events['overflow'] ) {
                             // notify listeners
@@ -733,73 +729,73 @@ List.prototype.move = function ( direction ) {
                 }
             }
             break;
-        case keys.pageUp:
-            if ( this.provider ) {
-                this.provider.get(direction, function ( error, data, pos ) {
-                    if ( error ) {
-                        if ( self.events['data:error'] ) {
-                            /**
-                             * Provider get error while take new data
-                             *
-                             * @event module:stb/ui/list~List#data:error
-                             */
-                            self.emit('data:error', error);
-                        }
-                    } else {
-                        if ( data ) {
-                            self.setData({data: data, focusIndex: pos? pos : 0});
-                        }
-                    }
-                });
-                return;
-            }
-            if ( this.viewIndex < this.size ) {
-                // first page
-                this.renderView(0);
-            } else {
-                // second page and further
-                this.renderView(this.viewIndex - this.size + 1);
-            }
-
-            this.focusItem(this.$body.firstChild);
-            break;
-        case keys.pageDown:
-            if ( this.provider ) {
-                this.provider.get(direction, function ( error, data, pos ) {
-                    if ( error ) {
-                        if ( self.events['data:error'] ) {
-                            /**
-                             * Provider get error while take new data
-                             *
-                             * @event module:stb/ui/list~List#data:error
-                             */
-                            self.emit('data:error', error);
-                        }
-                    } else {
-                        if ( data ) {
-                            self.setData({data: data, focusIndex: pos || pos === 0 ? pos : data.length < self.size ?  data.length - 1 : self.size - 1});
-                        }
-                    }
-                });
-                break;
-            }
-            // data is bigger then one page
-            if ( this.data.length > this.size ) {
-                // determine jump size
-                if ( this.viewIndex > this.data.length - this.size * 2 ) {
-                    // last page
-                    this.renderView(this.data.length - this.size);
-                } else {
-                    // before the last page
-                    this.renderView(this.viewIndex + this.size - 1);
-                }
-                this.focusItem(this.$body.lastChild);
-            } else {
-                // not the last item on the page
-                this.focusItem(this.$body.children[this.data.length - 1]);
-            }
-            break;
-        case keys.home:
+        // case keys.pageUp:
+        //     if ( this.provider ) {
+        //         this.provider.get(direction, function ( error, data, pos ) {
+        //             if ( error ) {
+        //                 if ( self.events['data:error'] ) {
+        //                     /**
+        //                      * Provider get error while take new data
+        //                      *
+        //                      * @event module:stb/ui/list~List#data:error
+        //                      */
+        //                     self.emit('data:error', error);
+        //                 }
+        //             } else {
+        //                 if ( data ) {
+        //                     self.setData({data: data, focusIndex: pos? pos : 0});
+        //                 }
+        //             }
+        //         });
+        //         return;
+        //     }
+        //     if ( this.viewIndex < this.size ) {
+        //         // first page
+        //         this.renderView(0);
+        //     } else {
+        //         // second page and further
+        //         this.renderView(this.viewIndex - this.size + 1);
+        //     }
+        //
+        //     this.focusItem(this.$body.firstChild);
+        //     break;
+        // case keys.pageDown:
+        //     if ( this.provider ) {
+        //         this.provider.get(direction, function ( error, data, pos ) {
+        //             if ( error ) {
+        //                 if ( self.events['data:error'] ) {
+        //                     /**
+        //                      * Provider get error while take new data
+        //                      *
+        //                      * @event module:stb/ui/list~List#data:error
+        //                      */
+        //                     self.emit('data:error', error);
+        //                 }
+        //             } else {
+        //                 if ( data ) {
+        //                     self.setData({data: data, focusIndex: pos || pos === 0 ? pos : data.length < self.size ?  data.length - 1 : self.size - 1});
+        //                 }
+        //             }
+        //         });
+        //         break;
+        //     }
+        //     // data is bigger then one page
+        //     if ( this.data.length > this.size ) {
+        //         // determine jump size
+        //         if ( this.viewIndex > this.data.length - this.size * 2 ) {
+        //             // last page
+        //             this.renderView(this.data.length - this.size);
+        //         } else {
+        //             // before the last page
+        //             this.renderView(this.viewIndex + this.size - 1);
+        //         }
+        //         this.focusItem(this.$body.lastChild);
+        //     } else {
+        //         // not the last item on the page
+        //         this.focusItem(this.$body.children[this.data.length - 1]);
+        //     }
+        //     break;
+        case 'home':
             if ( this.provider ) {
                 this.provider.get(direction, function ( error, data, pos ) {
                     if ( error ) {
@@ -822,7 +818,7 @@ List.prototype.move = function ( direction ) {
             this.renderView(0);
             this.focusItem(this.$body.firstChild);
             break;
-        case keys.end:
+        case 'end':
             if ( this.provider ) {
                 this.provider.get(direction, function ( error, data, pos ) {
                     if ( error ) {
