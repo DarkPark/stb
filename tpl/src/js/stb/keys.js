@@ -39,7 +39,7 @@ module.exports = {
     channelNext  : 65,
     mute         : 27,
     channelList  : 84,
-    menu         : 262,
+    menu         : 75,
 
     tools        : 75,
     info         : 31,
@@ -73,5 +73,6 @@ module.exports = {
     stop         : 70,
     record       : 192,
 
-    power        : 76
+    power        : 76,
+    guide        : 651
 };
