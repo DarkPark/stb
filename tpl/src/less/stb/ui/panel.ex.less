@@ -14,10 +14,28 @@
         line-height: unit(@panelTitleHeight, px);
         position: relative;
         padding-left: unit(@safePadding, px);
-        text-transform: uppercase;
+        padding-right: unit(@safePadding, px);
         background-repeat: repeat-x;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        .name {
+            text-transform: uppercase;
+        }
+
+        .amountConteiner {
+            width: unit(@panelAmountCWidth, px);
+
+            .amount {
+                float: right;
+                height: unit(@panelAmountHeight, px);
+                min-width: unit(@panelAmountWidth, px);
+                border-radius: unit(@panelAmountHeight/2, px);
+                font-size: unit(@fontSize * 0.9, px);
+                padding: 0 unit(@panelAmountHeight/4, px);
+                line-height: unit(@fontSize * 1.22, px);
+            }
+        }
     }
     .list .item{
         height: unit(@panelTitleHeight, px);

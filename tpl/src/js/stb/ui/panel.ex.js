@@ -6,7 +6,8 @@
 
 'use strict';
 
-var Component = require('../component');
+var Component = require('../component'),
+    Layout = require('./layout');
 
 /**
  * Extended panel implementation
@@ -61,7 +62,6 @@ function PanelEx ( config ) {
         if ( typeof config !== 'object' ) { throw new Error(__filename + ': wrong config type'); }
         // init parameters checks
         if ( config.className && typeof config.className !== 'string' ) { throw new Error(__filename + ': wrong or empty config.className'); }
-        if ( config.title && typeof config.title !== 'string' ) { throw new Error(__filename + ': wrong  config.title'); }
     }
 
     // set default className if classList property empty or undefined
@@ -99,10 +99,15 @@ function PanelEx ( config ) {
 
     // add title to panel
     if ( config.title ) {
-        this.$title = document.createElement('div');
-        this.$title.className = 'title';
-        this.$title.innerText = config.title;
-        this.$node.appendChild(this.$title);
+        if ( !Array.isArray(config.title) ) {
+            config.title = [config.title];
+        }
+        this.$title = new Layout ({
+            className: 'title',
+            data: config.title,
+            focusable: false
+        });
+        this.$node.appendChild(this.$title.$node);
     }
 
     this.$node.appendChild(this.$body);

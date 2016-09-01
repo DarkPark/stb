@@ -115,12 +115,7 @@ Layout.prototype.init = function ( config ) {
     for ( i = 0; i < data.length; i++ ) {
         item = data[i];
         // plain text
-        if ( typeof item.value === 'string' ) {
-            $wrapper = document.createElement('div');
-            $wrapper.textContent = item.value;
-            if ( item.className ) { $wrapper.className = item.className; }
-            this.$node.appendChild($wrapper);
-        } else if ( item.value instanceof HTMLElement ) {
+        if ( item.value instanceof HTMLElement ) {
             // HTML Element
 
             // if with wrapper
@@ -159,6 +154,11 @@ Layout.prototype.init = function ( config ) {
                 // without wrapper
                 this.add(item.value);
             }
+        } else {
+            $wrapper = document.createElement('div');
+            $wrapper.textContent = item.value;
+            if ( item.className ) { $wrapper.className = item.className; }
+            this.$node.appendChild($wrapper);
         }
     }
 };
