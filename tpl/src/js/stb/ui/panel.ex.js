@@ -22,7 +22,7 @@ var Component = require('../component'),
  *
  * main = new Panel({
  *            size: 1,
- *             title:'Left Panel',
+ *             title: ['Left Panel', {className: 'info'}],
  *             main:true,
  *             children:[
  *                 new List({
